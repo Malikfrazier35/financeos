@@ -1329,19 +1329,20 @@ export default function FinanceOS() {
             return (
               <div key={item.id}>
                 {showSection && (
-                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "14px 20px 4px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "16px 18px 6px" }}>
                     {item.section}
                   </div>
                 )}
                 <div onClick={() => navigate(item.id)} style={{
-                  display: "flex", alignItems: "center", gap: 10, padding: "9px 20px", cursor: "pointer",
-                  fontSize: 13, fontWeight: active ? 600 : 400,
+                  display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", margin: "1px 10px", cursor: "pointer",
+                  fontSize: 13, fontWeight: active ? 600 : 400, borderRadius: 8,
                   color: active ? c.text : c.textDim,
-                  background: active ? c.accentDim : "transparent",
-                  borderLeft: `2px solid ${active ? c.accent : "transparent"}`,
-                  transition: "all 0.12s",
+                  background: active ? c.accentMid : "transparent",
+                  boxShadow: active ? `0 0 0 1px ${c.accent}20, inset 0 1px 0 ${c.accent}10` : "none",
+                  transition: "all 0.15s cubic-bezier(0.22,1,0.36,1)",
+                  position: "relative",
                 }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.color = c.text; e.currentTarget.style.background = `${c.accent}08`; }}}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = `${c.accent}06`; }}}
                 onMouseLeave={e => { if (!active) { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}}
                 >
                   <Icon size={16} strokeWidth={active ? 2.5 : 1.5} />
@@ -1381,11 +1382,19 @@ export default function FinanceOS() {
       </div>
 
       {/* ── MAIN ── */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Topbar */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
+        {/* Ambient gradient orbs — inspired by bg-themes mesh gradients */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
+          <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}06 0%, transparent 70%)`, filter: "blur(80px)" }} />
+          <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "50%", height: "50%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)" }} />
+        </div>
+
+        {/* Topbar — frosted glass */}
         <div style={{
-          height: 52, borderBottom: `1px solid ${c.border}`, display: "flex", alignItems: "center",
-          justifyContent: "space-between", padding: "0 24px", flexShrink: 0, background: c.bg2,
+          height: 56, borderBottom: `1px solid ${c.border}`, display: "flex", alignItems: "center",
+          justifyContent: "space-between", padding: "0 28px", flexShrink: 0,
+          background: `${c.bg2}cc`, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+          position: "relative", zIndex: 10,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {/* Breadcrumb */}
@@ -1444,7 +1453,7 @@ export default function FinanceOS() {
         </div>
 
         {/* Content */}
-        <div key={view} className="view-fade" style={{ flex: 1, overflow: "auto", background: c.bg }}>
+        <div key={view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
           {view === "dashboard" && <DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} />}
           {view === "copilot" && <CopilotView c={c} toast={toast} />}
           {view === "pnl" && <PnlView c={c} onNav={navigate} />}
