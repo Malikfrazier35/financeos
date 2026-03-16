@@ -12,26 +12,39 @@ import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch
 
 const THEME = {
   dark: {
-    bg: "#09090b", bg2: "#0f0f12", surface: "#18181b", surfaceAlt: "#1f1f23",
-    border: "#27272a", borderSub: "#1e1e21", borderBright: "#3f3f46",
-    text: "#fafafa", textSec: "#a1a1aa", textDim: "#71717a", textFaint: "#52525b",
-    accent: "#0ea5e9", accentDim: "rgba(14,165,233,0.1)",
-    green: "#10b981", greenDim: "rgba(16,185,129,0.08)",
-    red: "#ef4444", redDim: "rgba(239,68,68,0.08)",
-    amber: "#f59e0b", amberDim: "rgba(245,158,11,0.08)",
+    bg: "#09090b", bg2: "#0c0c0f", surface: "#131316", surfaceAlt: "#1a1a1f",
+    border: "#23232a", borderSub: "#1b1b20", borderBright: "#33333a",
+    text: "#f0f2f5", textSec: "#9ca3b0", textDim: "#6b7280", textFaint: "#44495a",
+    accent: "#38bdf8", accentDim: "rgba(56,189,248,0.08)", accentMid: "rgba(56,189,248,0.15)",
+    green: "#34d399", greenDim: "rgba(52,211,153,0.08)",
+    red: "#f87171", redDim: "rgba(248,113,113,0.08)",
+    amber: "#fbbf24", amberDim: "rgba(251,191,36,0.08)",
     purple: "#a78bfa", purpleDim: "rgba(167,139,250,0.08)",
     cyan: "#22d3ee",
+    // Depth system
+    shadow1: "0 1px 2px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.15)",
+    shadow2: "0 4px 12px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.15)",
+    shadow3: "0 8px 30px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)",
+    cardGlow: "0 0 0 1px rgba(56,189,248,0.06), 0 4px 16px rgba(0,0,0,0.2)",
+    cardHoverGlow: "0 0 0 1px rgba(56,189,248,0.15), 0 8px 30px rgba(56,189,248,0.08), 0 4px 12px rgba(0,0,0,0.25)",
+    sidebarBg: "linear-gradient(180deg, #0c0c0f 0%, #08080a 100%)",
   },
   light: {
-    bg: "#fafafa", bg2: "#f4f4f5", surface: "#ffffff", surfaceAlt: "#f8f8fa",
-    border: "#e4e4e7", borderSub: "#ebebed", borderBright: "#d4d4d8",
-    text: "#09090b", textSec: "#52525b", textDim: "#71717a", textFaint: "#a1a1aa",
-    accent: "#0284c7", accentDim: "rgba(2,132,199,0.08)",
+    bg: "#f8f9fb", bg2: "#f0f1f4", surface: "#ffffff", surfaceAlt: "#f5f6f8",
+    border: "#e2e4e9", borderSub: "#eaecf0", borderBright: "#d1d5db",
+    text: "#0f1117", textSec: "#4b5563", textDim: "#6b7280", textFaint: "#9ca3af",
+    accent: "#0284c7", accentDim: "rgba(2,132,199,0.06)", accentMid: "rgba(2,132,199,0.12)",
     green: "#059669", greenDim: "rgba(5,150,105,0.06)",
     red: "#dc2626", redDim: "rgba(220,38,38,0.06)",
     amber: "#d97706", amberDim: "rgba(217,119,6,0.06)",
     purple: "#7c3aed", purpleDim: "rgba(124,58,237,0.06)",
     cyan: "#0891b2",
+    shadow1: "0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
+    shadow2: "0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+    shadow3: "0 8px 30px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
+    cardGlow: "0 0 0 1px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04)",
+    cardHoverGlow: "0 0 0 1px rgba(2,132,199,0.15), 0 8px 24px rgba(2,132,199,0.06), 0 4px 12px rgba(0,0,0,0.06)",
+    sidebarBg: "linear-gradient(180deg, #f0f1f4 0%, #e8e9ed 100%)",
   },
 };
 
@@ -329,26 +342,31 @@ const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
   const Icon = kpi.icon;
   return (
     <div onClick={onClick} style={{
-      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "18px 20px",
-      cursor: "pointer", transition: "border-color 0.15s, transform 0.15s, box-shadow 0.15s",
-      position: "relative", overflow: "hidden",
+      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px",
+      cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
+      position: "relative", overflow: "hidden", boxShadow: c.cardGlow,
       animation: `fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) ${index * 0.06}s both`,
     }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${c.accent}15`; }}
-    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = c.cardHoverGlow; }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+      {/* Subtle top accent line */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}00, ${c.accent}40, ${c.accent}00)`, opacity: 0.5 }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
         <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint }}>{kpi.label}</div>
-        <Icon size={14} color={c.textFaint} strokeWidth={1.5} />
+        <div style={{ width: 28, height: 28, borderRadius: 8, background: c.accentDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon size={14} color={c.accent} strokeWidth={2} />
+        </div>
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
           <div style={{
-            fontSize: 11, fontWeight: 700, marginTop: 4, padding: "2px 6px", borderRadius: 4, display: "inline-block",
+            fontSize: 11, fontWeight: 700, marginTop: 6, padding: "3px 8px", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 3,
             color: kpi.up ? c.green : c.red, background: kpi.up ? c.greenDim : c.redDim,
+            border: `1px solid ${kpi.up ? c.green : c.red}20`,
           }}>
-            {kpi.up ? "↑" : "↓"} {kpi.delta}
+            {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
           </div>
         </div>
         <Spark data={kpi.spark} color={kpi.up ? c.green : c.red} />
@@ -360,18 +378,24 @@ const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
 // ── INSIGHT ROW ──────────────────────────────────────────────
 const InsightRow = ({ item, c, onClick }) => (
   <div onClick={onClick} style={{
-    display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 14px",
-    background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 8,
-    cursor: "pointer", transition: "border-color 0.15s", marginBottom: 6,
+    display: "flex", gap: 12, alignItems: "flex-start", padding: "11px 14px",
+    background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 10,
+    cursor: "pointer", transition: "all 0.15s", marginBottom: 8,
+    borderLeft: `3px solid ${item.color}`, boxShadow: c.shadow1,
+    position: "relative",
   }}
-  onMouseEnter={e => e.currentTarget.style.borderColor = c.accent}
-  onMouseLeave={e => e.currentTarget.style.borderColor = c.borderSub}
+  onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = c.shadow2; e.currentTarget.style.transform = "translateX(2px)"; }}
+  onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.boxShadow = c.shadow1; e.currentTarget.style.transform = "none"; }}
   >
-    <div style={{ width: 6, height: 6, borderRadius: "50%", background: item.color, flexShrink: 0, marginTop: 5 }} />
     <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={{ fontSize: 12, color: c.text, lineHeight: 1.5 }}>{item.text}</div>
-      <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{item.source} · {item.time} ago</div>
+      <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.55, fontWeight: 500 }}>{item.text}</div>
+      <div style={{ fontSize: 10, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ fontWeight: 600 }}>{item.source}</span>
+        <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint, display: "inline-block" }} />
+        <span>{item.time} ago</span>
+      </div>
     </div>
+    <ChevronRight size={14} color={c.textFaint} style={{ flexShrink: 0, marginTop: 2 }} />
   </div>
 );
 
@@ -380,17 +404,37 @@ const InsightRow = ({ item, c, onClick }) => (
 // ══════════════════════════════════════════════════════════════
 const DashboardView = ({ c, onNav, toast, onDrawer }) => (
   <div style={{ padding: 32 }}>
+    {/* Welcome header */}
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+      <div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, Sarah</div>
+        <div style={{ fontSize: 13, color: c.textDim, marginTop: 4 }}>Here's your financial snapshot for {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.</div>
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ padding: "8px 14px", borderRadius: 8, background: c.surfaceAlt, border: `1px solid ${c.border}`, fontSize: 11, color: c.textSec, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }} onClick={() => onNav("copilot")}>
+          <Sparkles size={13} color={c.purple} /> Ask AI
+        </div>
+      </div>
+    </div>
+
     {/* KPI Grid */}
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 20 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
     </div>
 
     {/* Charts Row */}
-    <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16, marginBottom: 20 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
-          Revenue — Actual vs Budget vs Forecast ($K)
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 6, background: c.accentDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <TrendingUp size={13} color={c.accent} />
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Revenue — Actual vs Budget vs Forecast</span>
+          </div>
+          <span style={{ fontSize: 10, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>$K</span>
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={REVENUE_DATA} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
@@ -419,9 +463,13 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
       </div>
 
       {/* Segment Donut */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
-          Revenue by Segment
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Target size={13} color={c.purple} />
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Revenue by Segment</span>
         </div>
         <ResponsiveContainer width="100%" height={160}>
           <PieChart>
@@ -448,9 +496,13 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
     {/* Expense Bars + Insights */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
       {/* Expense Breakdown */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
-          OpEx Breakdown — Actual vs Budget ($K)
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: c.amberDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <DollarSign size={13} color={c.amber} />
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>OpEx Breakdown — Actual vs Budget</span>
         </div>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={EXPENSE_DATA} layout="vertical" margin={{ top: 0, right: 5, bottom: 0, left: 0 }}>
@@ -465,10 +517,16 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
       </div>
 
       {/* AI Insights Feed */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>AI Insights</div>
-          <div style={{ fontSize: 9, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: c.purpleDim, color: c.purple }}>4 active</div>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.purple}30, transparent)` }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 6, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Sparkles size={13} color={c.purple} />
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>AI Insights</span>
+          </div>
+          <div style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: c.purpleDim, color: c.purple, border: `1px solid ${c.purple}20` }}>4 active</div>
         </div>
         {INSIGHTS.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
       </div>
@@ -1219,27 +1277,32 @@ export default function FinanceOS() {
   return (
     <div style={{ display: "flex", height: "100vh", width: "100%", background: c.bg, color: c.text, fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14, overflow: "hidden" }}>
       <style>{`
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
-        ::-webkit-scrollbar { width: 5px; }
+        body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: ${c.borderBright}; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: ${c.textFaint}; }
         input[type="range"] { cursor: pointer; }
         input[type="range"]::-webkit-slider-thumb { cursor: pointer; }
+        ::selection { background: ${c.accentMid || c.accentDim}; }
         @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes cmdIn { from { opacity: 0; transform: scale(0.96) translateY(-8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .view-fade { animation: fadeIn 0.2s ease-out; }
+        .view-fade { animation: fadeIn 0.25s ease-out; }
+        .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.018; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
       `}</style>
+      {/* Subtle noise texture for depth */}
+      <div className="noise-overlay" />
 
       {/* ── SIDEBAR ── */}
       <div style={{
-        width: 220, minHeight: "100vh", background: mode === "dark" ? "#0c0c0e" : "#f0f0f2",
+        width: 230, minHeight: "100vh", background: c.sidebarBg,
         borderRight: `1px solid ${c.border}`, display: "flex", flexDirection: "column", flexShrink: 0,
+        boxShadow: "4px 0 20px rgba(0,0,0,0.15)",
       }}>
         {/* Logo */}
         <div style={{ padding: "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
