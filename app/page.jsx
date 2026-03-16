@@ -1248,32 +1248,208 @@ const ScenariosView = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // SETTINGS VIEW (minimal)
 // ══════════════════════════════════════════════════════════════
-const SettingsView = ({ c }) => (
-  <div style={{ padding: 32, maxWidth: 640 }}>
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 12 }}>Organization</div>
-      {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,499/mo billed annually" }].map(f => (
-        <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
-          <span style={{ color: c.textDim }}>{f.label}</span>
-          <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
+const SettingsView = ({ c, onLogout, toast }) => {
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  return (
+    <div style={{ padding: 32, maxWidth: 680 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
+        {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }].map(f => (
+          <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
+            <span style={{ color: c.textDim }}>{f.label}</span>
+            <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Billing</div>
+        <div style={{ fontSize: 12, color: c.textSec, lineHeight: 1.7, marginBottom: 14 }}>Your Growth plan renews annually on January 15. Next charge: $17,988. Payment method: Visa ending 4242.</div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+          >Manage Subscription</button>
+          <button style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+          >View Invoices</button>
         </div>
-      ))}
-    </div>
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 12 }}>Billing</div>
-      <div style={{ fontSize: 12, color: c.textSec, lineHeight: 1.7, marginBottom: 12 }}>Your Growth plan renews annually on January 15. Next charge: $17,988. Payment method: Visa ending 4242.</div>
-      <div style={{ display: "flex", gap: 8 }}>
-        <button style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Manage Subscription</button>
-        <button style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>View Invoices</button>
+      </div>
+      {/* Session */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Session</div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={onLogout} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, display: "flex", alignItems: "center", gap: 6, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = c.amber; e.currentTarget.style.color = c.amber; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+          ><LogOut size={13} /> Sign Out</button>
+        </div>
+      </div>
+      {/* Danger Zone */}
+      <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 8 }}>Danger Zone</div>
+        <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your account and all associated data. This action cannot be undone.</div>
+        {!deleteConfirm ? (
+          <button onClick={() => setDeleteConfirm(true)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.red}40`, background: c.redDim, color: c.red, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Delete Account</button>
+        ) : (
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: c.red, fontWeight: 600 }}>Are you sure?</span>
+            <button onClick={() => { setDeleteConfirm(false); toast("Account deletion requested — confirmation email sent.", "warning"); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: c.red, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Yes, Delete Everything</button>
+            <button onClick={() => setDeleteConfirm(false)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
+          </div>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+// ══════════════════════════════════════════════════════════════
+// MARKETING LANDING PAGE
+// ══════════════════════════════════════════════════════════════
+const LandingPage = ({ onLogin }) => {
+  const [billing, setBilling] = useState("annual");
+  const plans = [
+    { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"], link: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o" },
+    { name: "Growth", monthly: 1799, annual: 1499, features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Priority support"], popular: true, link: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q" },
+    { name: "Business", monthly: 4799, annual: 3999, features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee"], link: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s" },
+  ];
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", overflow: "auto" }}>
+      {/* Ambient */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: "-30%", right: "-15%", width: "70%", height: "70%", borderRadius: "50%", background: "radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 65%)", filter: "blur(100px)" }} />
+        <div style={{ position: "absolute", bottom: "-20%", left: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 65%)", filter: "blur(100px)" }} />
+      </div>
+
+      {/* Nav */}
+      <nav style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 48px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>F</div>
+          <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>FinanceOS</span>
+        </div>
+        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+          <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
+          <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
+          <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+          <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(56,189,248,0.25)" }}>Start Free Trial</button>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(56,189,248,0.08)", border: "1px solid rgba(56,189,248,0.15)", fontSize: 11, fontWeight: 600, color: "#38bdf8", marginBottom: 24, letterSpacing: "0.03em" }}>AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY</div>
+        <h1 style={{ fontSize: 56, fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.035em", marginBottom: 20 }}>
+          Financial planning<br />that thinks before<br />it answers
+        </h1>
+        <p style={{ fontSize: 18, color: "#6b7280", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400 }}>
+          FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+          <button onClick={onLogin} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(56,189,248,0.25)", transition: "transform 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+            onMouseLeave={e => e.currentTarget.style.transform = "none"}
+          >Try the Live Demo →</button>
+          <button style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Watch 2-min Overview</button>
+        </div>
+        <div style={{ marginTop: 16, fontSize: 12, color: "#44495a" }}>No credit card required · 30-day money-back guarantee</div>
+      </div>
+
+      {/* Social proof */}
+      <div style={{ textAlign: "center", padding: "40px 48px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ fontSize: 11, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16, fontWeight: 600 }}>Trusted by finance teams at</div>
+        <div style={{ display: "flex", justifyContent: "center", gap: 40, alignItems: "center", opacity: 0.3 }}>
+          {["Acme Corp", "TechFlow", "Meridian", "Nexus AI", "CloudScale"].map(co => (
+            <span key={co} style={{ fontSize: 16, fontWeight: 700, letterSpacing: "-0.02em" }}>{co}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* Features */}
+      <div id="features" style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Everything a modern<br />finance team needs</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>From variance detection to board-ready reports, powered by AI that shows its reasoning.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+          {[
+            { title: "AI Copilot", desc: "Ask questions in plain English. Get data-backed answers with visible reasoning — not a black box.", icon: "🧠" },
+            { title: "Forecast Optimizer", desc: "ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.", icon: "📈" },
+            { title: "Multi-Entity Consolidation", desc: "Automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.", icon: "🏢" },
+            { title: "Variance Detective", desc: "AI scans every line for favorable/unfavorable variances and explains the drivers automatically.", icon: "🔍" },
+            { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", icon: "⚡" },
+            { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", icon: "🔗" },
+          ].map(f => (
+            <div key={f.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24, transition: "border-color 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "#38bdf8"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "#23232a"}
+            >
+              <div style={{ fontSize: 28, marginBottom: 12 }}>{f.icon}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{f.title}</div>
+              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{f.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pricing */}
+      <div id="pricing" style={{ padding: "60px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Simple, transparent pricing</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", marginBottom: 20 }}>No hidden fees. No implementation charges. Cancel anytime.</p>
+          <div style={{ display: "inline-flex", background: "#131316", borderRadius: 8, padding: 3, border: "1px solid #23232a" }}>
+            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "7px 16px", borderRadius: 6, border: "none", background: billing === "monthly" ? "#23232a" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Monthly</button>
+            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "7px 16px", borderRadius: 6, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Annual (save 17%)</button>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+          {plans.map(p => (
+            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#38bdf8" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(56,189,248,0.15), 0 8px 30px rgba(56,189,248,0.08)" : "none" }}>
+              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 12px", borderRadius: 6, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", fontSize: 10, fontWeight: 700, color: "#fff" }}>MOST POPULAR</div>}
+              <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 16 }}>
+                <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>${billing === "annual" ? p.annual : p.monthly}</span>
+                <span style={{ fontSize: 13, color: "#6b7280" }}>/mo</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                {p.features.map(f => (
+                  <div key={f} style={{ fontSize: 13, color: "#9ca3b0", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ color: "#34d399", fontSize: 14 }}>✓</span> {f}
+                  </div>
+                ))}
+              </div>
+              <button onClick={onLogin} style={{
+                width: "100%", fontSize: 13, padding: "11px 0", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                background: p.popular ? "linear-gradient(135deg, #38bdf8, #a78bfa)" : "#23232a", color: "#fff",
+              }}>Get Started</button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ borderTop: "1px solid #1b1b20", padding: "32px 48px", maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 7, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 900, color: "#fff" }}>F</div>
+          <span style={{ fontSize: 13, fontWeight: 700 }}>FinanceOS</span>
+          <span style={{ fontSize: 11, color: "#44495a", marginLeft: 8 }}>© 2026</span>
+        </div>
+        <div style={{ display: "flex", gap: 24, fontSize: 12, color: "#6b7280" }}>
+          <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Privacy</a>
+          <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Terms</a>
+          <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Security</a>
+          <a href="mailto:hello@financeos.com" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // ══════════════════════════════════════════════════════════════
 // APP SHELL
 // ══════════════════════════════════════════════════════════════
 export default function FinanceOS() {
+  const [loggedIn, setLoggedIn] = useState(false);
   const [view, setView] = useState("dashboard");
   const [prevView, setPrevView] = useState(null);
   const [mode, setMode] = useState("dark");
@@ -1284,6 +1460,17 @@ export default function FinanceOS() {
   const [navHistory, setNavHistory] = useState(["dashboard"]);
   const { toasts, toast } = useToast();
   const c = THEME[mode];
+
+  const handleLogout = useCallback(() => {
+    setLoggedIn(false);
+    setView("dashboard");
+    setNavHistory(["dashboard"]);
+  }, []);
+
+  // Show marketing page when not logged in
+  if (!loggedIn) {
+    return <LandingPage onLogin={() => setLoggedIn(true)} />;
+  }
 
   // Navigation with history tracking
   const navigate = useCallback((v) => {
@@ -1348,7 +1535,11 @@ export default function FinanceOS() {
       }}>
         {/* Logo */}
         <div style={{ padding: "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", transition: "opacity 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.8"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+            title="Back to FinanceOS.com"
+          >
             <div style={{
               width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
               background: "linear-gradient(135deg, #0ea5e9, #7c3aed)", fontSize: 14, fontWeight: 900, color: "#fff",
@@ -1428,6 +1619,16 @@ export default function FinanceOS() {
               <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>VP Finance · Online</div>
             </div>
             <Settings size={13} color={c.textFaint} />
+          </div>
+          {/* Logout */}
+          <div onClick={handleLogout} style={{
+            display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", marginTop: 4, borderRadius: 8,
+            cursor: "pointer", fontSize: 12, color: c.textDim, transition: "all 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = c.redDim; e.currentTarget.style.color = c.red; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
+          >
+            <LogOut size={14} /> Sign Out
           </div>
         </div>
       </div>
@@ -1513,7 +1714,7 @@ export default function FinanceOS() {
           {view === "models" && <ScenariosView c={c} />}
           {view === "close" && <CloseView c={c} toast={toast} />}
           {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
-          {view === "settings" && <SettingsView c={c} />}
+          {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} />}
         </div>
       </div>
 
