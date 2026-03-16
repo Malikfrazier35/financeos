@@ -30,21 +30,21 @@ const THEME = {
     sidebarBg: "linear-gradient(180deg, #0c0c0f 0%, #08080a 100%)",
   },
   light: {
-    bg: "#f8f9fb", bg2: "#f0f1f4", surface: "#ffffff", surfaceAlt: "#f5f6f8",
-    border: "#e2e4e9", borderSub: "#eaecf0", borderBright: "#d1d5db",
-    text: "#0f1117", textSec: "#4b5563", textDim: "#6b7280", textFaint: "#9ca3af",
-    accent: "#0284c7", accentDim: "rgba(2,132,199,0.06)", accentMid: "rgba(2,132,199,0.12)",
-    green: "#059669", greenDim: "rgba(5,150,105,0.06)",
-    red: "#dc2626", redDim: "rgba(220,38,38,0.06)",
-    amber: "#d97706", amberDim: "rgba(217,119,6,0.06)",
-    purple: "#7c3aed", purpleDim: "rgba(124,58,237,0.06)",
-    cyan: "#0891b2",
-    shadow1: "0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
-    shadow2: "0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
-    shadow3: "0 8px 30px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-    cardGlow: "0 0 0 1px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04)",
-    cardHoverGlow: "0 0 0 1px rgba(2,132,199,0.15), 0 8px 24px rgba(2,132,199,0.06), 0 4px 12px rgba(0,0,0,0.06)",
-    sidebarBg: "linear-gradient(180deg, #f0f1f4 0%, #e8e9ed 100%)",
+    bg: "#f7f8fa", bg2: "#eef0f4", surface: "#ffffff", surfaceAlt: "#f3f4f7",
+    border: "#dfe2e8", borderSub: "#e8eaef", borderBright: "#cdd1d8",
+    text: "#0c0e14", textSec: "#3d4455", textDim: "#5c6478", textFaint: "#8b92a5",
+    accent: "#0369a1", accentDim: "rgba(3,105,161,0.06)", accentMid: "rgba(3,105,161,0.12)",
+    green: "#047857", greenDim: "rgba(4,120,87,0.06)",
+    red: "#b91c1c", redDim: "rgba(185,28,28,0.06)",
+    amber: "#b45309", amberDim: "rgba(180,83,9,0.06)",
+    purple: "#6d28d9", purpleDim: "rgba(109,40,217,0.06)",
+    cyan: "#0e7490",
+    shadow1: "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03)",
+    shadow2: "0 4px 14px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04)",
+    shadow3: "0 10px 35px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05)",
+    cardGlow: "0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03)",
+    cardHoverGlow: "0 8px 28px rgba(3,105,161,0.08), 0 0 0 1px rgba(3,105,161,0.12), 0 4px 14px rgba(0,0,0,0.06)",
+    sidebarBg: "linear-gradient(180deg, #eef0f4 0%, #e4e6eb 100%)",
   },
 };
 
@@ -1546,7 +1546,7 @@ export default function FinanceOS() {
   let currentSection = "";
 
   return (
-    <div style={{ display: "flex", height: "100vh", width: "100%", background: c.bg, color: c.text, fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14, overflow: "hidden" }}>
+    <div style={{ display: "flex", height: "100vh", width: "100%", background: c.bg, color: c.text, fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14, overflow: "hidden", transition: "background 0.4s ease, color 0.3s ease" }}>
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -1554,28 +1554,34 @@ export default function FinanceOS() {
         a { text-decoration: none; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: ${c.borderBright}; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: ${c.borderBright}; border-radius: 3px; transition: background 0.3s; }
         ::-webkit-scrollbar-thumb:hover { background: ${c.textFaint}; }
         input[type="range"] { cursor: pointer; }
         input[type="range"]::-webkit-slider-thumb { cursor: pointer; }
         ::selection { background: ${c.accentMid || c.accentDim}; }
+        /* Theme transition on all themeable properties */
+        .theme-transition, .theme-transition * {
+          transition: background 0.4s ease, background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease, fill 0.3s ease !important;
+        }
         @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes cmdIn { from { opacity: 0; transform: scale(0.96) translateY(-8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes themeSwitch { 0% { opacity: 0.92; } 100% { opacity: 1; } }
         .view-fade { animation: fadeIn 0.25s ease-out; }
-        .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.018; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+        .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }
       `}</style>
       {/* Subtle noise texture for depth */}
       <div className="noise-overlay" />
 
       {/* ── SIDEBAR ── */}
-      <div style={{
+      <div className="theme-transition" style={{
         width: 230, minHeight: "100vh", background: c.sidebarBg,
         borderRight: `1px solid ${c.border}`, display: "flex", flexDirection: "column", flexShrink: 0,
-        boxShadow: "4px 0 20px rgba(0,0,0,0.15)",
+        boxShadow: mode === "dark" ? "4px 0 20px rgba(0,0,0,0.15)" : "4px 0 20px rgba(0,0,0,0.04)",
+        transition: "background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease",
       }}>
         {/* Logo */}
         <div style={{ padding: "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
@@ -1586,8 +1592,10 @@ export default function FinanceOS() {
           >
             <div style={{
               width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
-              background: "linear-gradient(135deg, #0ea5e9, #7c3aed)", fontSize: 14, fontWeight: 900, color: "#fff",
-              boxShadow: "0 4px 12px rgba(14,165,233,0.25)",
+              background: mode === "dark" ? "linear-gradient(135deg, #0ea5e9, #7c3aed)" : "linear-gradient(135deg, #0369a1, #6d28d9)",
+              fontSize: 14, fontWeight: 900, color: "#fff",
+              boxShadow: mode === "dark" ? "0 4px 12px rgba(14,165,233,0.25)" : "0 4px 12px rgba(3,105,161,0.2)",
+              transition: "background 0.4s ease, box-shadow 0.4s ease",
             }}>F</div>
             <div>
               <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px" }}>FinanceOS</span>
@@ -1636,14 +1644,32 @@ export default function FinanceOS() {
         {/* Theme + User */}
         <div style={{ padding: "12px 14px", borderTop: `1px solid ${c.borderSub}` }}>
           <div onClick={toggleMode} style={{
-            display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8,
-            cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.15s",
+            display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 8,
+            cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.2s",
           }}
           onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textSec; }}
           >
-            {mode === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-            <span style={{ flex: 1 }}>{mode === "dark" ? "Light Mode" : "Dark Mode"}</span>
+            {/* Toggle pill */}
+            <div style={{
+              width: 36, height: 20, borderRadius: 10, position: "relative",
+              background: mode === "dark" ? "#1e293b" : "#bfdbfe",
+              border: `1px solid ${mode === "dark" ? "#334155" : "#93c5fd"}`,
+              transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+              flexShrink: 0,
+            }}>
+              <div style={{
+                position: "absolute", top: 2, width: 14, height: 14, borderRadius: "50%",
+                left: mode === "dark" ? 2 : 18,
+                background: mode === "dark" ? "#94a3b8" : "#f59e0b",
+                boxShadow: mode === "dark" ? "none" : "0 0 6px rgba(245,158,11,0.4)",
+                transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {mode === "dark" ? <Moon size={8} color="#1e293b" strokeWidth={2.5} /> : <Sun size={8} color="#fff" strokeWidth={2.5} />}
+              </div>
+            </div>
+            <span style={{ flex: 1, fontSize: 11, fontWeight: 500 }}>{mode === "dark" ? "Dark" : "Light"}</span>
             {autoTheme && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.05em" }}>AUTO</span>}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 10px", marginTop: 4, borderRadius: 8, cursor: "pointer", transition: "background 0.15s" }}
@@ -1655,7 +1681,7 @@ export default function FinanceOS() {
               <div style={{
                 width: 30, height: 30, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
                 background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff",
-                boxShadow: "0 2px 8px rgba(16,185,129,0.3)",
+                boxShadow: mode === "dark" ? "0 2px 8px rgba(16,185,129,0.3)" : "0 2px 8px rgba(4,120,87,0.2)",
               }}>SC</div>
               <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: c.green, border: `2px solid ${c.bg}` }} />
             </div>
@@ -1680,18 +1706,19 @@ export default function FinanceOS() {
 
       {/* ── MAIN ── */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
-        {/* Ambient gradient orbs — inspired by bg-themes mesh gradients */}
-        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
-          <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}06 0%, transparent 70%)`, filter: "blur(80px)" }} />
-          <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "50%", height: "50%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)" }} />
+        {/* Ambient gradient orbs — stronger in dark, softer in light */}
+        <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0, transition: "opacity 0.6s ease" }}>
+          <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}${mode === "dark" ? "08" : "04"} 0%, transparent 70%)`, filter: "blur(80px)", transition: "background 0.6s ease" }} />
+          <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "50%", height: "50%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}${mode === "dark" ? "06" : "03"} 0%, transparent 70%)`, filter: "blur(80px)", transition: "background 0.6s ease" }} />
         </div>
 
         {/* Topbar — frosted glass */}
-        <div style={{
+        <div className="theme-transition" style={{
           height: 56, borderBottom: `1px solid ${c.border}`, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 28px", flexShrink: 0,
           background: `${c.bg2}cc`, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
           position: "relative", zIndex: 10,
+          transition: "background 0.4s ease, border-color 0.4s ease",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {/* Breadcrumb */}
