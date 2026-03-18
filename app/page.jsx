@@ -2916,17 +2916,12 @@ export default function FinanceOS() {
   const [viewLoading, setViewLoading] = useState(false);
   const loadingTimer = useRef(null);
 
-  // Show marketing page when not logged in
-  if (!loggedIn) {
-    return <LandingPage onLogin={() => setLoggedIn(true)} />;
-  }
-
   // Navigation with history tracking + loading transition
+  // MUST be defined before the if(!loggedIn) return — React Rules of Hooks
   const navigate = useCallback((v) => {
     if (v === view) return;
     setPrevView(view);
     setViewLoading(true);
-    // Clear any pending timer to prevent race conditions
     if (loadingTimer.current) clearTimeout(loadingTimer.current);
     loadingTimer.current = setTimeout(() => {
       setView(v);
@@ -2941,7 +2936,7 @@ export default function FinanceOS() {
     });
   }, [view]);
 
-  // ⌘K shortcut
+  // ⌘K shortcut — MUST be before early return
   useEffect(() => {
     const handler = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen(true); }
@@ -2957,6 +2952,11 @@ export default function FinanceOS() {
   };
 
   const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
+
+  // Show marketing page when not logged in
+  if (!loggedIn) {
+    return <LandingPage onLogin={() => setLoggedIn(true)} />;
+  }
 
   let currentSection = "";
 
