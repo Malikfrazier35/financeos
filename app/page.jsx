@@ -79,7 +79,7 @@ class SectionBoundary extends Component {
       return (
         <div style={{
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          padding: 32, minHeight: 120, borderRadius: 14, textAlign: "center",
+          padding: 32, minHeight: 120, borderRadius: 16, textAlign: "center",
           background: this.props.bg || "transparent", border: `1px dashed ${this.props.borderColor || "#23232a"}`,
         }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: this.props.textColor || "#6b7280", marginBottom: 6 }}>
@@ -374,7 +374,7 @@ const LoadingSkeleton = ({ c }) => (
   <div style={{ padding: 32 }}>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {[0,1,2,3,4,5].map(i => (
-        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22 }}>
+        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22 }}>
           <Skeleton c={c} width={80} height={10} />
           <div style={{ height: 12 }} />
           <Skeleton c={c} width={120} height={28} />
@@ -383,7 +383,7 @@ const LoadingSkeleton = ({ c }) => (
         </div>
       ))}
     </div>
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 24 }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, marginBottom: 24 }}>
       <Skeleton c={c} width={200} height={12} />
       <div style={{ height: 16 }} />
       <Skeleton c={c} height={200} radius={8} />
@@ -759,7 +759,7 @@ const ChartTooltip = ({ active, payload, label, c }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: `${c.surface}f0`, border: `1px solid ${c.borderBright}`, borderRadius: 14, padding: "14px 18px",
+      background: `${c.surface}f0`, border: `1px solid ${c.borderBright}`, borderRadius: 16, padding: "14px 18px",
       fontSize: 12, boxShadow: `${c.shadow3}, 0 0 0 1px ${c.accent}08`, backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
       minWidth: 180, position: "relative", overflow: "hidden",
     }}>
@@ -1081,7 +1081,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     {/* Cross-sell banner — Blueprint required */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
       {/* Referral */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16 }}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: c.greenDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Users size={18} color={c.green} />
         </div>
@@ -1092,7 +1092,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
         <button onClick={() => toast("Referral link copied to clipboard", "success")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit" }}>Copy Link</button>
       </div>
       {/* Ecosystem */}
-      <div style={{ background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}06)`, border: `1px solid ${c.accent}20`, borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}06)`, border: `1px solid ${c.accent}20`, borderRadius: 16, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Layers size={18} color={c.purple} />
         </div>
@@ -1320,7 +1320,7 @@ const PnlView = ({ c, onNav, toast }) => {
         onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
@@ -1620,7 +1620,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
           const closing = st === "closing";
           const displayStatus = closing ? "Closing..." : st;
           return (
-            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 20, boxShadow: c.cardGlow }}>
+            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 20, boxShadow: c.cardGlow }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>{e.name}</span>
                 <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${(statusColors[displayStatus] || c.textDim)}18`, color: statusColors[displayStatus] || c.textDim }}>{displayStatus}</span>
@@ -1645,7 +1645,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       </div>
 
       {/* Consolidated P&L */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
         <div style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${c.borderSub}` }}>
           <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Consolidated P&L — Eliminations Applied</span>
           <span style={{ fontSize: 9, color: c.purple, fontWeight: 700 }}>Auto-eliminated $1.2M IC transactions</span>
@@ -1725,7 +1725,7 @@ const CloseView = ({ c, toast }) => {
       </div>
 
       {/* Progress bar */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 20, boxShadow: c.cardGlow }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, marginBottom: 20, boxShadow: c.cardGlow }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <span style={{ fontSize: 14, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
           <span style={{ fontSize: 11, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{doneCount}/{tasks.length} tasks</span>
@@ -1736,7 +1736,7 @@ const CloseView = ({ c, toast }) => {
       </div>
 
       {/* Task list */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
         {tasks.map((t, i) => {
           const priorityColors = { high: c.red, med: c.amber, low: c.textFaint };
           return (
@@ -1893,7 +1893,7 @@ const IntegrationsView = ({ c, toast }) => {
       {/* Connector grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 20, boxShadow: c.cardGlow, transition: "all 0.2s" }}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 20, boxShadow: c.cardGlow, transition: "all 0.2s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = co.color; e.currentTarget.style.transform = "translateY(-2px)"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
           >
@@ -2012,7 +2012,7 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Benchmark Scorecard */}
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 22px", marginBottom: 20, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 20 }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "16px 22px", marginBottom: 20, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 20 }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: c.text, whiteSpace: "nowrap" }}>Series A Readiness</div>
       <div style={{ flex: 1, display: "flex", gap: 4 }}>
         {[
@@ -2050,7 +2050,7 @@ const InvestorView = ({ c, toast }) => (
 
     {/* Cohort & Unit Economics */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue Cohort Analysis</div>
         {[
           { cohort: "Q1 2023", initial: "$2.1M", current: "$3.8M", retention: "181%", color: c.green },
@@ -2071,7 +2071,7 @@ const InvestorView = ({ c, toast }) => (
         ))}
       </div>
 
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Competitive Positioning</div>
         {[
           { metric: "ARR Growth Rate", us: "47.8%", benchmark: "30-40%", verdict: "Above" },
@@ -2092,7 +2092,7 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Fundraising Readiness */}
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Series A Readiness Checklist</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {[
@@ -2205,7 +2205,7 @@ const AdminView = ({ c, toast, onNav }) => {
 
         {/* Activity Feed */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Activity Log</div>
             {events.map((e, i) => (
               <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start" }}>
@@ -2218,7 +2218,7 @@ const AdminView = ({ c, toast, onNav }) => {
             ))}
           </div>
           {/* Quick Admin Actions */}
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Admin Actions</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {[
@@ -2250,7 +2250,7 @@ const AdminView = ({ c, toast, onNav }) => {
       </>)}
 
       {tab === "users" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", boxShadow: c.cardGlow }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
@@ -2306,7 +2306,7 @@ const AdminView = ({ c, toast, onNav }) => {
               </div>
             ))}
           </div>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue by Plan</div>
             {[
               { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13 },
@@ -2332,7 +2332,7 @@ const AdminView = ({ c, toast, onNav }) => {
         <div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {/* Service Status */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Service Status</div>
               {[
                 { name: "API Gateway", status: "operational", latency: "42ms" },
@@ -2352,7 +2352,7 @@ const AdminView = ({ c, toast, onNav }) => {
               ))}
             </div>
             {/* Security Headers */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security Posture</div>
               {[
                 { name: "HSTS Preload", grade: "A+", status: "active" },
@@ -2456,7 +2456,7 @@ const ScenariosView = ({ c, toast }) => {
         {showCompare ? compare.map(idx => {
           const s = scenarios[idx];
           return (
-            <div key={idx} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div key={idx} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
               {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%`, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
                 <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -2472,7 +2472,7 @@ const ScenariosView = ({ c, toast }) => {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {scenarios.map((s, i) => (
                 <div key={s.name} onClick={() => setSelected(i)} style={{
-                  background: c.surface, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 14, padding: 18, boxShadow: c.cardGlow,
+                  background: c.surface, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 16, padding: 18, boxShadow: c.cardGlow,
                   cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
                 }}
                   onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
@@ -2496,7 +2496,7 @@ const ScenariosView = ({ c, toast }) => {
             </div>
 
             {/* Sensitivity sliders */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
               {[
                 { key: "ndr", label: "Net Dollar Retention", value: drivers.ndr, min: 80, max: 150, unit: "%", color: c.accent },
@@ -2562,7 +2562,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       </div>
 
       {activeTab === "org" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
           {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -2574,7 +2574,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       )}
 
       {activeTab === "billing" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Billing & Subscription</div>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
             <div style={{ flex: 1, padding: 14, borderRadius: 10, background: c.accentDim, border: `1px solid ${c.accent}20` }}>
@@ -2606,7 +2606,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       )}
 
       {activeTab === "security" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security & Access</div>
           {[{ label: "Two-Factor Authentication", value: "Enabled (TOTP)", status: "green" }, { label: "Last Password Change", value: "42 days ago", status: "amber" }, { label: "Active Sessions", value: "2 devices", status: "accent" }, { label: "API Keys", value: "1 active (created Mar 2)", status: "accent" }, { label: "Audit Log", value: "312 events this month", status: "accent" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -2622,7 +2622,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
 
       {activeTab === "session" && (<>
         {/* Sign Out */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 6 }}>Active Session</div>
           <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>sarah.chen@acme.io</span> · VP Finance</div>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -2638,7 +2638,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
           </button>
         </div>
         {/* Delete Account */}
-        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account</div>
           <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This action is irreversible and takes effect within 24 hours.</div>
           {!deleteConfirm ? (
@@ -3417,7 +3417,7 @@ const LandingPage = ({ onLogin }) => {
             { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", Icon: Cpu, color: "#f87171" },
             { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
           ].map(f => (
-            <div key={f.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24, transition: "border-color 0.15s" }}
+            <div key={f.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 24, transition: "border-color 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.borderColor = "#60a5fa"}
               onMouseLeave={e => e.currentTarget.style.borderColor = "#23232a"}
             >
@@ -3447,7 +3447,7 @@ const LandingPage = ({ onLogin }) => {
             { step: 3, title: "Plan & scenario model", desc: "Run what-if scenarios, adjust assumptions with live sliders, and compare 4 models side-by-side.", color: "#34d399" },
             { step: 4, title: "Close & report", desc: "Multi-entity consolidation, variance commentary, and board-ready exports — all from one platform.", color: "#fbbf24" },
           ].map(s => (
-            <div key={s.step} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24, position: "relative" }}>
+            <div key={s.step} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 24, position: "relative" }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 14 }}>{s.step}</div>
               <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{s.title}</div>
               <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{s.desc}</div>
@@ -3494,7 +3494,7 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>How FinanceOS compares</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>Enterprise capability at mid-market pricing. No 6-month implementation.</p>
         </div>
-        <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, overflow: "hidden" }}>
+        <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, overflow: "hidden" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid #23232a" }}>
@@ -3545,7 +3545,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {plans.map(p => (
-            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 16, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 16px 48px rgba(96,165,250,0.15)" : "0 12px 40px rgba(0,0,0,0.3)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#33384a"; }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#23232a"; }}
             >
@@ -3615,7 +3615,7 @@ const LandingPage = ({ onLogin }) => {
             { title: "Row-Level Security", sub: "Every database query is scoped to your organization. Zero cross-tenant data leakage.", badge: "SUPABASE RLS" },
             { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, X-Frame-Options DENY, and 5 additional security headers.", badge: "VERCEL" },
           ].map(s => (
-            <div key={s.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 22, textAlign: "center" }}>
+            <div key={s.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 22, textAlign: "center" }}>
               <div style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 4, background: "rgba(52,211,153,0.08)", color: "#34d399", display: "inline-block", marginBottom: 12, letterSpacing: "0.06em" }}>{s.badge}</div>
               <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{s.title}</div>
               <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.6 }}>{s.sub}</div>
@@ -3636,7 +3636,7 @@ const LandingPage = ({ onLogin }) => {
             { name: "FinanceOS", desc: "AI-powered FP&A platform. Variance detection, scenario modeling, consolidation, and natural language querying.", color: "#60a5fa", market: "FP&A / Planning", price: "$599-$4,799/mo", current: true },
             { name: "Parallax", desc: "Aerospace supplier compliance OS. ITAR/EAR tracking, audit trails, supplier risk scoring, and regulatory mapping.", color: "#fbbf24", market: "Aerospace Compliance", price: "$799-$3,999/mo" },
           ].map(p => (
-            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.current ? p.color + "40" : "#23232a"}`, borderRadius: 14, padding: 24, position: "relative" }}>
+            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.current ? p.color + "40" : "#23232a"}`, borderRadius: 16, padding: 24, position: "relative" }}>
               {p.current && <div style={{ position: "absolute", top: -8, right: 16, padding: "3px 10px", borderRadius: 4, background: p.color, fontSize: 9, fontWeight: 700, color: "#000" }}>CURRENT PRODUCT</div>}
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 3, background: p.color }} />
@@ -3747,7 +3747,7 @@ const LandingPage = ({ onLogin }) => {
             { label: "Waitlist", value: "1,200+", delta: "Finance teams" },
             { label: "NPS Score", value: "72", delta: "Top quartile" },
           ].map(k => (
-            <div key={k.label} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: "20px 18px", textAlign: "center" }}>
+            <div key={k.label} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: "20px 18px", textAlign: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>{k.value}</div>
               <div style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", marginBottom: 2 }}>{k.label}</div>
               <div style={{ fontSize: 10, color: "#34d399", fontWeight: 600 }}>{k.delta}</div>
@@ -3757,7 +3757,7 @@ const LandingPage = ({ onLogin }) => {
 
         {/* Market + Differentiators */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24 }}>
+          <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 24 }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Market Opportunity</div>
             {[
               { metric: "Total Addressable Market", value: "$50B", note: "EPM/CPM global market" },
@@ -3773,7 +3773,7 @@ const LandingPage = ({ onLogin }) => {
             ))}
           </div>
 
-          <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24 }}>
+          <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 24 }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Why FinanceOS Wins</div>
             {[
               { point: "AI-native architecture", detail: "Built on Claude — not bolted on. Visible reasoning, not black box." },
@@ -4051,6 +4051,18 @@ export default function FinanceOS() {
         @keyframes themeSwitch { 0% { opacity: 0.92; } 100% { opacity: 1; } }
         @keyframes rippleOut { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
         @keyframes spin { to { transform: rotate(360deg); } }
+        /* Premium scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.3); }
+        /* Selection color */
+        ::selection { background: rgba(91,156,245,0.2); color: inherit; }
+        /* Details/summary for FAQ */
+        details summary::-webkit-details-marker { display: none; }
+        details summary { list-style: none; }
+        details[open] summary svg { transform: rotate(180deg); }
+        /* Smooth scrolling */
         /* ENV 4: Accessibility + Theme Refinement */
         :focus-visible { outline: 2px solid ${c.accent}; outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) {
