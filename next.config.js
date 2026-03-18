@@ -22,9 +22,8 @@ const nextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=(), serial=(), hid=()" },
           
           // Cross-Origin Policies
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+          { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
           
           // Content Security Policy
           {
@@ -35,10 +34,10 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://api.anthropic.com https://fonts.googleapis.com",
+              "connect-src 'self' https://*.supabase.co https://api.anthropic.com https://fonts.googleapis.com https://accounts.google.com https://appleid.apple.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://checkout.stripe.com",
+              "form-action 'self' https://checkout.stripe.com https://*.supabase.co https://accounts.google.com https://appleid.apple.com",
               "upgrade-insecure-requests",
             ].join("; "),
           },
@@ -57,7 +56,7 @@ const nextConfig = {
   async redirects() {
     return [
       // Redirect www to non-www (when custom domain is set)
-      { source: "/:path*", has: [{ type: "host", value: "www.financeos.com" }], destination: "https://financeos.com/:path*", permanent: true },
+      { source: "/:path*", has: [{ type: "host", value: "www.finance-os.app" }], destination: "https://finance-os.app/:path*", permanent: true },
     ];
   },
 };

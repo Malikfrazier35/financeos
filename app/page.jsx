@@ -5,10 +5,16 @@ import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch
 import { createClient } from "@supabase/supabase-js";
 
 // ── SUPABASE CLIENT ──────────────────────────────────────────
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://crecesswagluelvkesul.supabase.co",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg"
-);
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://crecesswagluelvkesul.supabase.co";
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true,
+    flowType: "implicit",
+  },
+});
 
 // ═══════════════════════════════════════════════════════════════
 // FINANCEOS — React Production Build
@@ -3171,11 +3177,35 @@ export default function FinanceOS() {
         const u = session.user;
         setUser({ name: u.user_metadata?.full_name || u.email?.split("@")[0] || "User", email: u.email || "" });
         setLoggedIn(true);
+        // Clean up URL hash after processing OAuth tokens
+        if (typeof window !== "undefined" && window.location.hash?.includes("access_token")) {
+          window.history.replaceState(null, "", window.location.pathname);
+        }
       } catch {}
     };
-    // Check for existing session on mount (handles OAuth redirect with hash tokens)
-    supabase.auth.getSession().then(({ data: { session } }) => handleSession(session)).catch(() => {});
-    // Listen for auth changes
+
+    // On page load: check for OAuth redirect tokens in URL hash
+    // This handles the case where createClient missed them during SSR
+    const initAuth = async () => {
+      try {
+        // getSession() will detect and exchange URL tokens if present
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) { handleSession(session); return; }
+        // If no session from getSession, check URL hash manually
+        if (typeof window !== "undefined" && window.location.hash) {
+          const params = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = params.get("access_token");
+          const refreshToken = params.get("refresh_token");
+          if (accessToken && refreshToken) {
+            const { data } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+            if (data?.session) handleSession(data.session);
+          }
+        }
+      } catch {}
+    };
+    initAuth();
+
+    // Listen for ongoing auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") && session?.user) {
         handleSession(session);
