@@ -2550,8 +2550,15 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
-  const [loading, setLoading] = useState(null); // null | "google" | "microsoft" | "apple" | "email"
+  const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
+  const [showPw, setShowPw] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  // Password strength
+  const pwStrength = password.length === 0 ? 0 : password.length < 6 ? 1 : password.length < 8 ? 2 : (password.match(/[A-Z]/) && password.match(/[0-9]/) && password.length >= 10) ? 4 : 3;
+  const pwLabel = ["", "Weak", "Fair", "Good", "Strong"][pwStrength];
+  const pwColor = ["transparent", "#ef4444", "#f59e0b", "#60a5fa", "#34d399"][pwStrength];
 
   // OAuth sign-in — redirects to provider
   const handleOAuth = async (provider) => {
@@ -2606,6 +2613,14 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
     onAuth({ method: "demo" });
   };
 
+  const handleForgot = async () => {
+    if (!email.trim()) { setError("Enter your email address first"); return; }
+    setLoading("forgot"); setError(null);
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: typeof window !== "undefined" ? window.location.origin : "https://finance-os.app" });
+    if (err) { setError(err.message); } else { setResetSent(true); }
+    setLoading(null);
+  };
+
   const inputStyle = {
     width: "100%", fontSize: 14, padding: "12px 14px", borderRadius: 10,
     border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5",
@@ -2620,14 +2635,12 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#6b7280", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
             <X size={14} />
           </button>
-          <div style={{ width: 44, height: 44, borderRadius: 14, background: authMode === "login" ? "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.08))" : "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(96,165,250,0.08))", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-            {authMode === "login" ? <Shield size={20} color="#a78bfa" /> : authMode === "signup" ? <Zap size={20} color="#60a5fa" /> : <Users size={20} color="#34d399" />}
-          </div>
-          <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>
+          <FosLogo size={36} />
+          <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 4, marginTop: 14 }}>
             {authMode === "login" ? "Welcome back" : authMode === "signup" ? "Start your free trial" : "Request a demo"}
           </div>
-          <div style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.5, marginBottom: 4 }}>
-            {authMode === "login" ? "Sign in to your FinanceOS workspace." : authMode === "signup" ? "14 days free. No credit card required." : "Our team will prepare a personalized walkthrough."}
+          <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.5 }}>
+            {authMode === "login" ? "Sign in to your FinanceOS workspace" : authMode === "signup" ? "14 days free · No credit card · Cancel anytime" : "Our team will prepare a personalized walkthrough"}
           </div>
         </div>
 
@@ -2635,101 +2648,105 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
         <div style={{ padding: "20px 32px 32px" }}>
           {/* SSO Buttons */}
           {(authMode === "login" || authMode === "signup") && (<>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-              <button onClick={() => handleOAuth("Google")} disabled={!!loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== "google" ? 0.5 : 1 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
-              ><GoogleIcon /> {loading === "google" ? "Redirecting..." : `${authMode === "login" ? "Sign in" : "Sign up"} with Google`}</button>
-              <button onClick={() => handleOAuth("Microsoft")} disabled={!!loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== "microsoft" ? 0.5 : 1 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
-              ><MicrosoftIcon /> {loading === "microsoft" ? "Redirecting..." : `${authMode === "login" ? "Sign in" : "Sign up"} with Microsoft`}</button>
-              <button onClick={() => handleOAuth("Apple")} disabled={!!loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== "apple" ? 0.5 : 1 }}
+            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+              {[
+                { name: "Google", icon: <GoogleIcon />, key: "google" },
+                { name: "Microsoft", icon: <MicrosoftIcon />, key: "microsoft" },
+                { name: "Apple", icon: <svg viewBox="0 0 24 24" width={15} height={15}><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>, key: "apple" },
+              ].map(p => (
+                <button key={p.key} onClick={() => handleOAuth(p.name === "Apple" ? "Apple" : p.name)} disabled={!!loading} style={{
+                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "11px 0", borderRadius: 10,
+                  border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
+                  cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== p.key ? 0.4 : 1,
+                }}
                 onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
-              ><svg viewBox="0 0 24 24" width={16} height={16}><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg> {loading === "apple" ? "Redirecting..." : `${authMode === "login" ? "Sign in" : "Sign up"} with Apple`}</button>
+                >{p.icon} {loading === p.key ? "..." : p.name}</button>
+              ))}
             </div>
             {error && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", fontSize: 12, color: "#ef4444", marginBottom: 8, textAlign: "center" }}>{error}</div>}
-            {/* Divider */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 16px" }}>
+            {resetSent && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)", fontSize: 12, color: "#34d399", marginBottom: 8, textAlign: "center" }}>Password reset link sent to {email}</div>}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 14px" }}>
               <div style={{ flex: 1, height: 1, background: "#23232a" }} />
-              <span style={{ fontSize: 11, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.06em" }}>or continue with email</span>
+              <span style={{ fontSize: 10, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.08em" }}>or email</span>
               <div style={{ flex: 1, height: 1, background: "#23232a" }} />
             </div>
           </>)}
 
-          {/* Form */}
-          {/* Fields — no <form> tag to prevent native submission conflicts */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* Fields */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {(authMode === "signup" || authMode === "demo") && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Full Name</label>
-                  <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Chen" style={inputStyle}
-                    onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-                    onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Company</label>
-                  <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp" style={inputStyle}
-                    onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-                    onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
-                  />
-                </div>
-              </div>
-            )}
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>{authMode === "demo" ? "Work Email" : "Email"}</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="sarah@company.com" style={inputStyle}
-                onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-                onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
-              />
-            </div>
-            {authMode !== "demo" && (
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create a password" : "Enter your password"} style={inputStyle}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="Full name" style={inputStyle}
+                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+                  onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+                />
+                <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" style={inputStyle}
                   onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
                   onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
                 />
               </div>
             )}
-            {authMode === "demo" && (
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Role</label>
-                <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
-                  <option value="">Select role...</option>
-                  <option>CFO / VP Finance</option>
-                  <option>FP&A Manager / Director</option>
-                  <option>Controller</option>
-                  <option>Finance Analyst</option>
-                  <option>RevOps / BizOps</option>
-                  <option>CEO / COO</option>
-                </select>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={authMode === "demo" ? "Work email" : "Email address"} style={inputStyle}
+              onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+              onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+              onKeyDown={e => e.key === "Enter" && (authMode === "demo" ? handleDemo() : handleEmail())}
+            />
+            {authMode !== "demo" && (
+              <div style={{ position: "relative" }}>
+                <input type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create password (8+ chars)" : "Password"} style={{ ...inputStyle, paddingRight: 44 }}
+                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+                  onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+                  onKeyDown={e => e.key === "Enter" && handleEmail()}
+                />
+                <button onClick={() => setShowPw(!showPw)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: 2 }}><Eye size={14} color={showPw ? "#60a5fa" : "#44495a"} /></button>
               </div>
+            )}
+            {authMode === "signup" && password.length > 0 && (
+              <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
+                {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= pwStrength ? pwColor : "#23232a", transition: "background 0.2s" }} />)}
+                <span style={{ fontSize: 10, fontWeight: 600, color: pwColor, marginLeft: 6, minWidth: 36 }}>{pwLabel}</span>
+              </div>
+            )}
+            {authMode === "demo" && (
+              <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+                <option value="">Select role...</option>
+                <option>CFO / VP Finance</option><option>FP&A Manager / Director</option><option>Controller</option><option>Finance Analyst</option><option>RevOps / BizOps</option><option>CEO / COO</option>
+              </select>
             )}
             <button onClick={() => authMode === "demo" ? handleDemo() : handleEmail()} disabled={!!loading} style={{
               width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
-              background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 4,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading === "email" ? 0.7 : 1, transition: "all 0.2s",
-            }}>
+              background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 2,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading === "email" ? 0.7 : 1,
+              transition: "all 0.2s", boxShadow: "0 4px 16px rgba(96,165,250,0.2)",
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-1px)"}
+            onMouseLeave={e => e.currentTarget.style.transform = "none"}
+            >
               {loading === "email" && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />}
-              {authMode === "login" ? "Sign In" : authMode === "signup" ? "Start Free Trial" : "Request Demo"}
+              {authMode === "login" ? "Sign In" : authMode === "signup" ? "Create Account" : "Request Demo"}
             </button>
           </div>
 
-          {/* Footer links */}
-          <div style={{ textAlign: "center", marginTop: 14, fontSize: 12, color: "#44495a" }}>
+          {/* Footer */}
+          <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: "#44495a" }}>
             {authMode === "login" ? (<>
-              <span style={{ cursor: "pointer", color: "#60a5fa" }} onClick={() => {}}>Forgot password?</span>
-              <span> · Don't have an account? </span>
-              <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => setAuthMode("signup")}>Start free trial</span>
+              <span style={{ cursor: "pointer", color: "#60a5fa" }} onClick={handleForgot}>{loading === "forgot" ? "Sending..." : "Forgot password?"}</span>
+              <span> · </span><span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); setResetSent(false); }}>Create account</span>
             </>) : authMode === "signup" ? (<>
-              Already have an account? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => setAuthMode("login")}>Sign in</span>
+              Already have an account? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("login"); setError(null); }}>Sign in</span>
             </>) : (<>
-              Just want to explore? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => setAuthMode("signup")}>Start free trial</span>
+              Want to explore first? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); }}>Start free trial</span>
             </>)}
+          </div>
+
+          {/* Trust signals */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1b1b20" }}>
+            {[{ icon: Shield, label: "SOC 2" }, { icon: Zap, label: "AES-256" }, { icon: Globe, label: "99.99% SLA" }].map(t => (
+              <div key={t.label} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, color: "#44495a", fontWeight: 600 }}>
+                <t.icon size={10} color="#44495a" /> {t.label}
+              </div>
+            ))}
           </div>
         </div>
       </div>
