@@ -2429,6 +2429,59 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   );
 };
 
+// ── PLAN PICKER — shows Stripe checkout links after signup ───
+const PLAN_OPTIONS = [
+  { name: "Starter", price: "$599", annual: "$499", desc: "3 entities · 5 users · P&L + Forecast",
+    monthlyLink: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", annualLink: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
+  { name: "Growth", price: "$1,799", annual: "$1,499", desc: "10 entities · 25 users · AI Copilot · Consolidation", popular: true,
+    monthlyLink: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", annualLink: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
+  { name: "Business", price: "$4,799", annual: "$3,999", desc: "Unlimited · Custom ML · SSO + RBAC · Dedicated CSM",
+    monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
+];
+
+const PlanPicker = ({ userName, onSkip, onSelect }) => {
+  const [billing, setBilling] = useState("annual");
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+      <div style={{ width: 720, maxHeight: "90vh", overflow: "auto", background: "#111114", border: "1px solid #23232a", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>
+            Welcome{userName && userName !== "Guest" ? `, ${userName}` : ""}! Choose your plan
+          </div>
+          <div style={{ fontSize: 13, color: "#6b7280" }}>Start with a 14-day free trial. Cancel anytime. 30-day money-back guarantee.</div>
+          <div style={{ display: "inline-flex", background: "#0c0c0f", borderRadius: 8, padding: 3, border: "1px solid #23232a", marginTop: 14 }}>
+            <button onClick={() => setBilling("monthly")} style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, border: "none", background: billing === "monthly" ? "#23232a" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Monthly</button>
+            <button onClick={() => setBilling("annual")} style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Annual (save 17%)</button>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+          {PLAN_OPTIONS.map(p => (
+            <div key={p.name} style={{ background: "#0c0c0f", border: p.popular ? "1px solid #60a5fa" : "1px solid #1b1b20", borderRadius: 14, padding: "20px 18px", position: "relative", transition: "all 0.2s" }}>
+              {p.popular && <div style={{ position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)", padding: "3px 10px", borderRadius: 6, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 700, color: "#fff" }}>RECOMMENDED</div>}
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
+                <span style={{ fontSize: 28, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{billing === "annual" ? p.annual : p.price}</span>
+                <span style={{ fontSize: 12, color: "#6b7280" }}>/mo</span>
+              </div>
+              <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.5, marginBottom: 14, minHeight: 32 }}>{p.desc}</div>
+              <button onClick={() => {
+                onSelect(p.name);
+                try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
+              }} style={{
+                width: "100%", padding: "10px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700,
+                background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
+              }}>Start {p.name} Trial</button>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" }}>Continue with free demo — choose a plan later</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ── PRODUCT DEMO (Jira-inspired tabbed showcase) ─────────────
 const DEMO_TABS = [
   { id: "planning", label: "FP&A Planning",
@@ -2523,8 +2576,8 @@ const LandingPage = ({ onLogin }) => {
   const [heroEmail, setHeroEmail] = useState("");
   const [emailStatus, setEmailStatus] = useState(null); // null | "saving" | "saved" | "error"
 
-  // Direct entry to dashboard — bypasses AuthModal entirely, zero crash risk
-  const enterDemo = () => { onLogin(); };
+  // Direct entry to dashboard — captures email if provided
+  const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "" }); };
 
   // Inline email signup → Supabase waitlist → enter demo
   const handleHeroSignup = async () => {
@@ -2534,11 +2587,13 @@ const LandingPage = ({ onLogin }) => {
       await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: "hero" }, { onConflict: "email" });
       setEmailStatus("saved");
     } catch { setEmailStatus("error"); }
-    enterDemo();
+    onLogin({ name: heroEmail.split("@")[0], email: heroEmail });
   };
 
-  // Auth modal callback — also goes straight to dashboard
-  const handleAuth = () => { onLogin(); };
+  // Auth modal callback — passes captured form data
+  const handleAuth = (data) => {
+    onLogin({ name: data?.name || data?.email?.split("@")[0] || "Guest", email: data?.email || "", method: data?.method });
+  };
 
   const plans = [
     { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"],
@@ -2999,7 +3054,9 @@ const LandingPage = ({ onLogin }) => {
 // ══════════════════════════════════════════════════════════════
 export default function FinanceOS() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState({ name: "Guest", email: "", plan: null });
   const [view, setView] = useState("dashboard");
+  const [showPlanPicker, setShowPlanPicker] = useState(false);
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
@@ -3054,8 +3111,10 @@ export default function FinanceOS() {
 
   const handleLogout = useCallback(() => {
     setLoggedIn(false);
+    setUser({ name: "Guest", email: "", plan: null });
     setView("dashboard");
     setNavHistory(["dashboard"]);
+    setShowPlanPicker(false);
   }, []);
 
   // View loading state — shows skeleton on view switch
@@ -3101,7 +3160,12 @@ export default function FinanceOS() {
 
   // Show marketing page when not logged in
   if (!loggedIn) {
-    return <LandingPage onLogin={() => setLoggedIn(true)} />;
+    return <LandingPage onLogin={(userData) => {
+      setUser(prev => ({ ...prev, ...userData }));
+      setLoggedIn(true);
+      // Show plan picker if no plan selected yet
+      if (!userData?.plan) setShowPlanPicker(true);
+    }} />;
   }
 
   let currentSection = "";
@@ -3309,18 +3373,18 @@ export default function FinanceOS() {
                 width: 30, height: 30, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
                 background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff",
                 boxShadow: mode === "dark" ? "0 2px 8px rgba(16,185,129,0.3)" : "0 2px 8px rgba(4,120,87,0.2)",
-              }}>SC</div>
+              }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
               <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: c.green, border: `2px solid ${c.bg}` }} />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>Sarah Chen</div>
-              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>VP Finance · Online</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{user.name || "Guest"}</div>
+              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>{user.plan ? `${user.plan} Plan` : "Free Trial"} · Online</div>
             </div>
             <Settings size={13} color={c.textFaint} />
           </div>
           ) : (
           <div style={{ textAlign: "center", marginTop: 4 }} onClick={() => navigate("settings")} title="Sarah Chen · Settings">
-            <div style={{ width: 30, height: 30, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff", cursor: "pointer" }}>SC</div>
+            <div style={{ width: 30, height: 30, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff", cursor: "pointer" }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
           </div>
           )}
           {/* Logout */}
@@ -3437,6 +3501,8 @@ export default function FinanceOS() {
       {/* ENV 5: Desktop Platform */}
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
+      {/* Plan Picker — shows after signup */}
+      {showPlanPicker && <PlanPicker userName={user.name} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); }} />}
     </div>
   );
 }
