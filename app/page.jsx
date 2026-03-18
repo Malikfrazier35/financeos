@@ -1364,9 +1364,10 @@ const PnlView = ({ c, onNav, toast }) => {
             <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
               {["Line Item", "Actual", "Budget", "Variance", "% Rev", "Notes"].map(h => (
                 <th key={h} style={{
-                  padding: "12px 14px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em",
+                  padding: "14px 14px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em",
                   color: c.textFaint, textAlign: h === "Line Item" || h === "Notes" ? "left" : "right",
                   background: c.surfaceAlt, position: "sticky", top: 0, zIndex: 2,
+                  borderBottom: `2px solid ${c.borderBright}`,
                 }}>{h}</th>
               ))}
             </tr>
@@ -1375,12 +1376,14 @@ const PnlView = ({ c, onNav, toast }) => {
             {PNL_DATA.map((section, si) => {
               const isRev = si === 0;
               const isCollapsed = collapsed[section.section];
+              const sectionColor = si === 0 ? c.green : si < 3 ? c.amber : c.red;
               return [
                 <tr key={`sec-${si}`} onClick={() => toggle(section.section)} style={{ cursor: "pointer", background: c.bg2 }}>
-                  <td colSpan={6} style={{ padding: "10px 12px", fontWeight: 800, fontSize: 12.5, color: c.text, borderBottom: `2px solid ${c.borderBright}` }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      {isCollapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+                  <td colSpan={6} style={{ padding: "11px 14px", fontWeight: 800, fontSize: 12.5, color: c.text, borderBottom: `2px solid ${c.borderBright}`, borderLeft: `3px solid ${sectionColor}` }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      {isCollapsed ? <ChevronRight size={14} color={c.textDim} /> : <ChevronDown size={14} color={c.textDim} />}
                       {section.section}
+                      <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: `${sectionColor}10`, color: sectionColor, marginLeft: 4 }}>{section.rows.length}</span>
                     </span>
                   </td>
                 </tr>,
@@ -1389,16 +1392,16 @@ const PnlView = ({ c, onNav, toast }) => {
                     onMouseEnter={e => e.currentTarget.style.background = c.accentMid || c.accentDim}
                     onMouseLeave={e => e.currentTarget.style.background = ri % 2 === 1 ? `${c.surfaceAlt}60` : "transparent"}
                   >
-                    <td style={{ padding: "9px 14px 9px 32px", color: c.text, fontWeight: 500 }}>{row.name}</td>
-                    <td style={{ textAlign: "right", padding: "9px 14px", color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.actual)}</td>
-                    <td style={{ textAlign: "right", padding: "9px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.budget)}</td>
+                    <td style={{ padding: "10px 14px 10px 34px", color: c.text, fontWeight: 500 }}>{row.name}</td>
+                    <td style={{ textAlign: "right", padding: "10px 14px", color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.actual)}</td>
+                    <td style={{ textAlign: "right", padding: "10px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.budget)}</td>
                     <VarCell actual={row.actual} budget={row.budget} revenue={isRev} />
-                    <td style={{ textAlign: "right", padding: "9px 14px", color: c.textDim, fontSize: 11 }}>{((row.actual / 51190) * 100).toFixed(1)}%</td>
-                    <td style={{ padding: "9px 14px", color: c.textDim, fontSize: 10 }}>{row.note}</td>
+                    <td style={{ textAlign: "right", padding: "10px 14px", color: c.textDim, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>{((row.actual / 51190) * 100).toFixed(1)}%</td>
+                    <td style={{ padding: "10px 14px", color: c.textDim, fontSize: 10, maxWidth: 120 }}>{row.note}</td>
                   </tr>
                 )) : []),
                 !isCollapsed && (
-                  <tr key={`tot-${si}`} style={{ borderTop: `2px solid ${c.borderBright}`, borderBottom: `2px solid ${c.borderBright}` }}>
+                  <tr key={`tot-${si}`} style={{ borderTop: `2px solid ${c.borderBright}`, borderBottom: `2px solid ${c.borderBright}`, background: `${sectionColor}05` }}>
                     <td style={{ padding: "8px 12px", fontWeight: 700, color: c.text }}>{section.total.name}</td>
                     <td style={{ textAlign: "right", padding: "8px 12px", fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(section.total.actual)}</td>
                     <td style={{ textAlign: "right", padding: "8px 12px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(section.total.budget)}</td>
@@ -1950,12 +1953,12 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
 
       {/* Category filter */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 16, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 4, marginBottom: 16, flexWrap: "wrap", background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, width: "fit-content" }}>
         {cats.map(cat => (
           <button key={cat} onClick={() => setFilter(cat)} style={{
-            fontSize: 11, padding: "6px 14px", borderRadius: 6, border: `1px solid ${filter === cat ? c.accent : c.border}`,
-            background: filter === cat ? c.accentDim : "transparent", color: filter === cat ? c.accent : c.textSec,
-            cursor: "pointer", fontFamily: "inherit", fontWeight: 600, textTransform: "capitalize",
+            fontSize: 11, padding: "6px 14px", borderRadius: 8, border: "none",
+            background: filter === cat ? c.accent : "transparent", color: filter === cat ? "#fff" : c.textSec,
+            cursor: "pointer", fontFamily: "inherit", fontWeight: 600, textTransform: "capitalize", transition: "all 0.15s",
           }}>{cat}</button>
         ))}
       </div>
@@ -1963,18 +1966,22 @@ const IntegrationsView = ({ c, toast }) => {
       {/* Connector grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 20, boxShadow: c.cardGlow, transition: "all 0.2s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = co.color; e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 20px", boxShadow: c.cardGlow, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${co.color}50`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${co.color}10, ${c.cardGlow}`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${co.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: co.color }}>{co.name[0]}</div>
+            {co.status === "connected" && <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${co.color}40, transparent)`, borderRadius: "0 0 2px 2px" }} />}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: `linear-gradient(135deg, ${co.color}18, ${co.color}08)`, border: `1px solid ${co.color}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: co.color }}>{co.name[0]}</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>{co.name}</div>
-                <div style={{ fontSize: 10, color: c.textDim }}>{co.cat}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>{co.name}</div>
+                <div style={{ fontSize: 10, color: c.textDim, fontWeight: 500 }}>{co.cat}</div>
               </div>
               {co.status === "connected" && (
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: c.green, boxShadow: `0 0 6px ${c.green}60`, animation: "pulse 2s infinite" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, color: c.green, background: c.greenDim, padding: "3px 8px", borderRadius: 5, border: `1px solid ${c.green}12` }}>
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
+                  Live
+                </div>
               )}
             </div>
             {co.status === "connected" && (
