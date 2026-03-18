@@ -2126,8 +2126,170 @@ const CookieConsent = ({ c }) => {
   );
 };
 
+
+// ══════════════════════════════════════════════════════════════
+// AUTH MODAL — Sign In / Sign Up / Demo Request
+// ══════════════════════════════════════════════════════════════
+const GoogleIcon = () => (
+  <svg viewBox="0 0 24 24" width={18} height={18}><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+);
+const MicrosoftIcon = () => (
+  <svg viewBox="0 0 24 24" width={18} height={18}><rect fill="#F25022" x="1" y="1" width="10" height="10"/><rect fill="#7FBA00" x="13" y="1" width="10" height="10"/><rect fill="#00A4EF" x="1" y="13" width="10" height="10"/><rect fill="#FFB900" x="13" y="13" width="10" height="10"/></svg>
+);
+
+const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
+  const [authMode, setAuthMode] = useState(initialMode || "login");
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onAuth({ email, name, company, role, method: "email" }); }, 1200);
+  };
+  const handleSSO = (provider) => {
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onAuth({ method: provider }); }, 800);
+  };
+
+  const inputStyle = {
+    width: "100%", fontSize: 14, padding: "12px 14px", borderRadius: 10,
+    border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5",
+    fontFamily: "'DM Sans', system-ui, sans-serif", outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: 420, maxHeight: "90vh", overflow: "auto", background: "#111114", border: "1px solid #23232a", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+        {/* Header */}
+        <div style={{ padding: "28px 32px 0", textAlign: "center", position: "relative" }}>
+          <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#6b7280", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+            <X size={14} />
+          </button>
+          <div style={{ width: 44, height: 44, borderRadius: 14, background: authMode === "login" ? "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.08))" : "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(96,165,250,0.08))", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+            {authMode === "login" ? <Shield size={20} color="#a78bfa" /> : authMode === "signup" ? <Zap size={20} color="#60a5fa" /> : <Users size={20} color="#34d399" />}
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>
+            {authMode === "login" ? "Welcome back" : authMode === "signup" ? "Start your free trial" : "Request a demo"}
+          </div>
+          <div style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.5, marginBottom: 4 }}>
+            {authMode === "login" ? "Sign in to your FinanceOS workspace." : authMode === "signup" ? "14 days free. No credit card required." : "Our team will prepare a personalized walkthrough."}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "20px 32px 32px" }}>
+          {/* SSO Buttons */}
+          {(authMode === "login" || authMode === "signup") && (<>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+              <button onClick={() => handleSSO("Google")} disabled={loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
+              ><GoogleIcon /> {authMode === "login" ? "Sign in" : "Sign up"} with Google</button>
+              <button onClick={() => handleSSO("Microsoft")} disabled={loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
+              ><MicrosoftIcon /> {authMode === "login" ? "Sign in" : "Sign up"} with Microsoft</button>
+            </div>
+            {/* Divider */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 16px" }}>
+              <div style={{ flex: 1, height: 1, background: "#23232a" }} />
+              <span style={{ fontSize: 11, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.06em" }}>or continue with email</span>
+              <div style={{ flex: 1, height: 1, background: "#23232a" }} />
+            </div>
+          </>)}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {(authMode === "signup" || authMode === "demo") && (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Full Name</label>
+                  <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Chen" required style={inputStyle}
+                    onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+                    onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Company</label>
+                  <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp" required style={inputStyle}
+                    onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+                    onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+                  />
+                </div>
+              </div>
+            )}
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>{authMode === "demo" ? "Work Email" : "Email"}</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="sarah@company.com" required style={inputStyle}
+                onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+                onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+              />
+            </div>
+            {authMode !== "demo" && (
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Password</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create a password" : "Enter your password"} required style={inputStyle}
+                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
+                  onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
+                />
+              </div>
+            )}
+            {authMode === "demo" && (
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Role</label>
+                <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+                  <option value="">Select role...</option>
+                  <option>CFO / VP Finance</option>
+                  <option>FP&A Manager / Director</option>
+                  <option>Controller</option>
+                  <option>Finance Analyst</option>
+                  <option>RevOps / BizOps</option>
+                  <option>CEO / COO</option>
+                </select>
+              </div>
+            )}
+            <button type="submit" disabled={loading} style={{
+              width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
+              background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 4,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading ? 0.7 : 1, transition: "all 0.2s",
+            }}>
+              {loading && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />}
+              {authMode === "login" ? "Sign In" : authMode === "signup" ? "Start Free Trial" : "Request Demo"}
+            </button>
+          </form>
+
+          {/* Footer links */}
+          <div style={{ textAlign: "center", marginTop: 14, fontSize: 12, color: "#44495a" }}>
+            {authMode === "login" ? (<>
+              <span style={{ cursor: "pointer", color: "#60a5fa" }} onClick={() => {}}>Forgot password?</span>
+              <span> · Don't have an account? </span>
+              <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => setAuthMode("signup")}>Start free trial</span>
+            </>) : authMode === "signup" ? (<>
+              Already have an account? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => setAuthMode("login")}>Sign in</span>
+            </>) : (<>
+              Just want to explore? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => setAuthMode("signup")}>Start free trial</span>
+            </>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
+  const [authModal, setAuthModal] = useState(null);
+
+  const handleAuth = (data) => {
+    setAuthModal(null);
+    onLogin(data);
+  };
+
   const plans = [
     { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"],
       linkMonthly: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", linkAnnual: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
@@ -2155,8 +2317,8 @@ const LandingPage = ({ onLogin }) => {
           <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
           <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
-          <button onClick={() => { onLogin(); }} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={() => { onLogin(); }} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
+          <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
       </nav>
 
@@ -2170,7 +2332,7 @@ const LandingPage = ({ onLogin }) => {
           FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={() => { onLogin(); }} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
             onMouseLeave={e => e.currentTarget.style.transform = "none"}
           >Try the Live Demo</button>
@@ -2296,7 +2458,7 @@ const LandingPage = ({ onLogin }) => {
                 ))}
               </div>
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => { onLogin(); }} style={{
+                <button onClick={() => setAuthModal("signup")} style={{
                   flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 8, border: `1px solid #23232a`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                   background: "transparent", color: "#9ca3b0",
                 }}>Try Demo</button>
@@ -2364,7 +2526,7 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
             <span style={{ fontSize: 14, color: "#6b7280" }}>/mo · Save 15%</span>
           </div>
-          <button onClick={() => { onLogin(); }} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
         </div>
       </div>
 
@@ -2400,6 +2562,10 @@ const LandingPage = ({ onLogin }) => {
           <span>Built with care in New Hampshire</span>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      {/* Auth Modal */}
+      {authModal && <AuthModal mode={authModal} onAuth={handleAuth} onClose={() => setAuthModal(null)} />}
 
       {/* Privacy Pipeline — Cookie Consent */}
       <CookieConsent />
@@ -2555,6 +2721,21 @@ export default function FinanceOS() {
           * { color: #000 !important; background: #fff !important; box-shadow: none !important; }
         }
         html { scroll-behavior: smooth; }
+        /* Responsive — Landing Page */
+        @media (max-width: 768px) {
+          .landing-grid-3 { grid-template-columns: 1fr !important; }
+          .landing-grid-4 { grid-template-columns: 1fr 1fr !important; }
+          .landing-hero h1 { font-size: 36px !important; }
+          .landing-nav-links { display: none !important; }
+          .landing-pricing { grid-template-columns: 1fr !important; }
+          .landing-footer-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+          .landing-comparison { overflow-x: auto; }
+          .landing-comparison table { min-width: 600px; }
+        }
+        @media (max-width: 480px) {
+          .landing-grid-4 { grid-template-columns: 1fr !important; }
+          .landing-footer-grid { grid-template-columns: 1fr !important; }
+        }
         .view-fade { animation: fadeIn 0.25s ease-out; }
         .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }
       `}</style>
