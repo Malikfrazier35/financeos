@@ -2529,7 +2529,7 @@ const PLAN_OPTIONS = [
     monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
 ];
 
-const PlanPicker = ({ userName, onSkip, onSelect }) => {
+const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
   const [billing, setBilling] = useState("annual");
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
@@ -2565,7 +2565,11 @@ const PlanPicker = ({ userName, onSkip, onSelect }) => {
           ))}
         </div>
         <div style={{ textAlign: "center" }}>
-          <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" }}>Continue with free demo — choose a plan later</button>
+          {isDemo ? (
+            <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" }}>Continue with demo — explore with sample data</button>
+          ) : (
+            <div style={{ fontSize: 11, color: "#44495a", marginTop: 4 }}>14-day money-back guarantee · Cancel anytime · No long-term commitment</div>
+          )}
         </div>
       </div>
     </div>
@@ -2668,8 +2672,8 @@ const LandingPage = ({ onLogin }) => {
   const [emailStatus, setEmailStatus] = useState(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Direct entry to dashboard — captures email if provided
-  const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "" }); };
+  // Demo entry — enters dashboard with sample data, plan picker has skip option
+  const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "", plan: "demo" }); };
 
   // Inline email signup → Supabase waitlist → enter demo
   const handleHeroSignup = async () => {
@@ -2679,10 +2683,10 @@ const LandingPage = ({ onLogin }) => {
       await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: "hero" }, { onConflict: "email" });
       setEmailStatus("saved");
     } catch { setEmailStatus("error"); }
-    onLogin({ name: heroEmail.split("@")[0], email: heroEmail });
+    onLogin({ name: heroEmail.split("@")[0], email: heroEmail, plan: "demo" });
   };
 
-  // Auth modal callback — passes captured form data
+  // Auth modal callback — authenticated users must pick a plan (no skip)
   const handleAuth = (data) => {
     onLogin({ name: data?.name || data?.email?.split("@")[0] || "Guest", email: data?.email || "", method: data?.method });
   };
@@ -3209,6 +3213,8 @@ export default function FinanceOS() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") && session?.user) {
         handleSession(session);
+        // Show plan picker only on fresh sign-in (not session restore)
+        if (event === "SIGNED_IN" && mounted) setShowPlanPicker(true);
       } else if (event === "SIGNED_OUT") {
         if (mounted) { setLoggedIn(false); setUser({ name: "Guest", email: "" }); setView("dashboard"); }
       }
@@ -3668,7 +3674,7 @@ export default function FinanceOS() {
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
       {/* Plan Picker — shows after signup */}
-      {showPlanPicker && <PlanPicker userName={user.name} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); }} />}
+      {showPlanPicker && <PlanPicker userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); }} />}
     </div>
   );
 }
