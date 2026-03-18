@@ -2250,25 +2250,15 @@ const MicrosoftIcon = () => (
 
 const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const [authMode, setAuthMode] = useState(initialMode || "login");
-  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      onAuth({ email, name, company, role, method: "email" });
-    }, 1200);
-  };
-  const handleSSO = (provider) => {
-    setLoading(true);
-    setTimeout(() => {
-      onAuth({ method: provider });
-    }, 800);
+  // Direct auth — no setTimeout, no form submission, no async gaps
+  const doAuth = (method) => {
+    onAuth({ email, name, company, role, method });
   };
 
   const inputStyle = {
@@ -2301,11 +2291,11 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           {/* SSO Buttons */}
           {(authMode === "login" || authMode === "signup") && (<>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-              <button onClick={() => handleSSO("Google")} disabled={loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+              <button onClick={() => doAuth("Google")} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
               ><GoogleIcon /> {authMode === "login" ? "Sign in" : "Sign up"} with Google</button>
-              <button onClick={() => handleSSO("Microsoft")} disabled={loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+              <button onClick={() => doAuth("Microsoft")} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
               ><MicrosoftIcon /> {authMode === "login" ? "Sign in" : "Sign up"} with Microsoft</button>
@@ -2319,19 +2309,20 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           </>)}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* Fields — no <form> tag to prevent native submission conflicts */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {(authMode === "signup" || authMode === "demo") && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <div>
                   <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Full Name</label>
-                  <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Chen" required style={inputStyle}
+                  <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Chen" style={inputStyle}
                     onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
                     onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Company</label>
-                  <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp" required style={inputStyle}
+                  <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp" style={inputStyle}
                     onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
                     onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
                   />
@@ -2340,7 +2331,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             )}
             <div>
               <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>{authMode === "demo" ? "Work Email" : "Email"}</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="sarah@company.com" required style={inputStyle}
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="sarah@company.com" style={inputStyle}
                 onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
                 onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
               />
@@ -2348,7 +2339,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             {authMode !== "demo" && (
               <div>
                 <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 5, display: "block" }}>Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create a password" : "Enter your password"} required style={inputStyle}
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create a password" : "Enter your password"} style={inputStyle}
                   onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
                   onBlur={e => { e.target.style.borderColor = "#23232a"; e.target.style.boxShadow = "none"; }}
                 />
@@ -2368,15 +2359,14 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
                 </select>
               </div>
             )}
-            <button type="submit" disabled={loading} style={{
-              width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
+            <button onClick={() => doAuth("email")} style={{
+              width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer",
               background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 4,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading ? 0.7 : 1, transition: "all 0.2s",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "all 0.2s",
             }}>
-              {loading && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />}
               {authMode === "login" ? "Sign In" : authMode === "signup" ? "Start Free Trial" : "Request Demo"}
             </button>
-          </form>
+          </div>
 
           {/* Footer links */}
           <div style={{ textAlign: "center", marginTop: 14, fontSize: 12, color: "#44495a" }}>
