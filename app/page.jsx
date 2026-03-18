@@ -2347,20 +2347,30 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
     if (!email.trim() || !password.trim()) { setError("Email and password required"); return; }
     setLoading("email");
     setError(null);
-    if (authMode === "signup") {
-      const { error: err } = await supabase.auth.signUp({
-        email: email.trim(), password: password.trim(),
-        options: { data: { full_name: name, company, role } },
-      });
-      if (err) { setError(err.message); setLoading(null); return; }
-      // Also add to waitlist
-      try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }, { onConflict: "email" }); } catch {}
-    } else {
-      const { error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password: password.trim() });
-      if (err) { setError(err.message); setLoading(null); return; }
+    try {
+      if (authMode === "signup") {
+        const { data, error: err } = await supabase.auth.signUp({
+          email: email.trim(), password: password.trim(),
+          options: { data: { full_name: name, company, role } },
+        });
+        if (err) { setError(err.message); setLoading(null); return; }
+        // Also add to waitlist
+        try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }, { onConflict: "email" }); } catch {}
+        // If auto-confirmed, trigger login immediately
+        if (data?.session) { onAuth({ method: "email" }); return; }
+        setError("Check your email for a confirmation link");
+        setLoading(null);
+      } else {
+        const { data, error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password: password.trim() });
+        if (err) { setError(err.message); setLoading(null); return; }
+        // Explicitly trigger login — don't rely solely on onAuthStateChange
+        if (data?.session) { onAuth({ method: "email" }); return; }
+        setLoading(null);
+      }
+    } catch (e) {
+      setError(e?.message || "Authentication failed");
+      setLoading(null);
     }
-    // onAuthStateChange in parent will handle the login
-    setLoading(null);
   };
 
   // Demo request — just saves to waitlist
@@ -3154,25 +3164,26 @@ export default function FinanceOS() {
 
   // Listen for Supabase auth state changes (handles OAuth redirects)
   useEffect(() => {
-    // Check for existing session on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser({ name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "User", email: session.user.email || "" });
+    let mounted = true;
+    const handleSession = (session) => {
+      if (!mounted || !session?.user) return;
+      try {
+        const u = session.user;
+        setUser({ name: u.user_metadata?.full_name || u.email?.split("@")[0] || "User", email: u.email || "" });
         setLoggedIn(true);
-      }
-    });
-    // Listen for auth changes (login, logout, token refresh)
+      } catch {}
+    };
+    // Check for existing session on mount (handles OAuth redirect with hash tokens)
+    supabase.auth.getSession().then(({ data: { session } }) => handleSession(session)).catch(() => {});
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        setUser({ name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "User", email: session.user.email || "" });
-        setLoggedIn(true);
+      if ((event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") && session?.user) {
+        handleSession(session);
       } else if (event === "SIGNED_OUT") {
-        setLoggedIn(false);
-        setUser({ name: "Guest", email: "" });
-        setView("dashboard");
+        if (mounted) { setLoggedIn(false); setUser({ name: "Guest", email: "" }); setView("dashboard"); }
       }
     });
-    return () => subscription.unsubscribe();
+    return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
   // Sunset-aware auto theme: dark after 6:30pm, light after 6:30am, respects OS preference
