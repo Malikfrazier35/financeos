@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { useState, useEffect, useRef, useCallback, Component } from "react";
+import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════
@@ -47,6 +47,43 @@ const THEME = {
     sidebarBg: "linear-gradient(180deg, #eef0f4 0%, #e4e6eb 100%)",
   },
 };
+
+// ── SECTION BOUNDARY (Tier 2 Error Recovery) ────────────────
+// Wraps chart panels and data tables so one crash doesn't kill the dashboard
+class SectionBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false, retries: 0 }; }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      const canRetry = this.state.retries < 3;
+      return (
+        <div style={{
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          padding: 32, minHeight: 120, borderRadius: 14, textAlign: "center",
+          background: this.props.bg || "transparent", border: `1px dashed ${this.props.borderColor || "#23232a"}`,
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: this.props.textColor || "#6b7280", marginBottom: 6 }}>
+            {this.props.name || "This section"} could not load
+          </div>
+          <div style={{ fontSize: 11, color: this.props.dimColor || "#44495a", marginBottom: 12 }}>
+            Other panels are unaffected. {canRetry ? "Try refreshing this section." : "Please refresh the page."}
+          </div>
+          {canRetry ? (
+            <button onClick={() => this.setState(prev => ({ hasError: false, retries: prev.retries + 1 }))}
+              style={{ fontSize: 11, padding: "7px 16px", borderRadius: 6, background: this.props.accentColor || "#38bdf8", color: "#fff", fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer" }}>
+              Retry
+            </button>
+          ) : (
+            <a href="/" style={{ fontSize: 11, padding: "7px 16px", borderRadius: 6, background: this.props.accentColor || "#38bdf8", color: "#fff", fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
+              Refresh Page
+            </a>
+          )}
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // ── TOAST SYSTEM ──────────────────────────────────────────────
 const useToast = () => {
@@ -1330,6 +1367,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
+          <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
           <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
           <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(56,189,248,0.25)" }}>Start Free Trial</button>
@@ -1429,18 +1467,93 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Footer */}
-      <div style={{ borderTop: "1px solid #1b1b20", padding: "32px 48px", maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 24, height: 24, borderRadius: 7, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 900, color: "#fff" }}>F</div>
-          <span style={{ fontSize: 13, fontWeight: 700 }}>FinanceOS</span>
-          <span style={{ fontSize: 11, color: "#44495a", marginLeft: 8 }}>© 2026</span>
+      {/* Security & Trust */}
+      <div id="security" style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Enterprise-grade security</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>Your financial data deserves bank-level protection. We build security into every layer.</p>
         </div>
-        <div style={{ display: "flex", gap: 24, fontSize: 12, color: "#6b7280" }}>
-          <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Privacy</a>
-          <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Terms</a>
-          <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Security</a>
-          <a href="mailto:hello@financeos.com" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          {[
+            { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging and role-based controls.", badge: "COMPLIANT" },
+            { title: "AES-256 Encryption", sub: "Data encrypted at rest and in transit. Zero plaintext storage of credentials.", badge: "AT REST + TRANSIT" },
+            { title: "Row-Level Security", sub: "Every database query is scoped to your organization. Zero cross-tenant data leakage.", badge: "SUPABASE RLS" },
+            { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, X-Frame-Options DENY, and 5 additional security headers.", badge: "VERCEL" },
+          ].map(s => (
+            <div key={s.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 22, textAlign: "center" }}>
+              <div style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 4, background: "rgba(52,211,153,0.08)", color: "#34d399", display: "inline-block", marginBottom: 12, letterSpacing: "0.06em" }}>{s.badge}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{s.title}</div>
+              <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.6 }}>{s.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Ecosystem — Vaultline Suite */}
+      <div style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Part of the Vaultline Suite</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 560, margin: "0 auto" }}>FinanceOS works standalone or as part of a unified finance ecosystem. Bundle all three and save 15%.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
+          {[
+            { name: "Vaultline", desc: "Cloud-native treasury management. Real-time cash position, AI forecasting, multi-currency FX, and bank connectivity.", color: "#22d3ee", market: "Mid-market Treasury", price: "$499-$2,499/mo" },
+            { name: "FinanceOS", desc: "AI-powered FP&A platform. Variance detection, scenario modeling, consolidation, and natural language querying.", color: "#60a5fa", market: "FP&A / Planning", price: "$599-$4,799/mo", current: true },
+            { name: "Parallax", desc: "Aerospace supplier compliance OS. ITAR/EAR tracking, audit trails, supplier risk scoring, and regulatory mapping.", color: "#fbbf24", market: "Aerospace Compliance", price: "$799-$3,999/mo" },
+          ].map(p => (
+            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.current ? p.color + "40" : "#23232a"}`, borderRadius: 14, padding: 24, position: "relative" }}>
+              {p.current && <div style={{ position: "absolute", top: -8, right: 16, padding: "3px 10px", borderRadius: 4, background: p.color, fontSize: 9, fontWeight: 700, color: "#000" }}>CURRENT PRODUCT</div>}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 3, background: p.color }} />
+                <span style={{ fontSize: 16, fontWeight: 800 }}>{p.name}</span>
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: p.color, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>{p.market}</div>
+              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6, marginBottom: 12 }}>{p.desc}</div>
+              <div style={{ fontSize: 12, color: "#9ca3b0", fontWeight: 600 }}>{p.price}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", padding: 28, background: "linear-gradient(135deg, rgba(56,189,248,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(56,189,248,0.15)", borderRadius: 14 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Vaultline Suite Bundle</div>
+          <div style={{ fontSize: 14, color: "#9ca3b0", marginBottom: 12 }}>Treasury + FP&A + Compliance — the only unified mid-market finance stack.</div>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6, marginBottom: 16 }}>
+            <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
+            <span style={{ fontSize: 14, color: "#6b7280" }}>/mo · Save 15%</span>
+          </div>
+          <button onClick={onLogin} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(56,189,248,0.25)" }}>Start Suite Trial</button>
+        </div>
+      </div>
+
+      {/* Footer — expanded per blueprint */}
+      <div style={{ borderTop: "1px solid #1b1b20", padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: "#fff" }}>F</div>
+              <span style={{ fontSize: 15, fontWeight: 800 }}>FinanceOS</span>
+            </div>
+            <p style={{ fontSize: 12, color: "#44495a", lineHeight: 1.7, maxWidth: 240 }}>AI-powered financial planning for modern finance teams. Part of the Vaultline Suite.</p>
+          </div>
+          {[
+            { title: "Product", links: ["Dashboard", "AI Copilot", "Forecasting", "Consolidation", "Integrations"] },
+            { title: "Suite", links: ["Vaultline (Treasury)", "Parallax (Compliance)", "Bundle Pricing", "Suite Overview"] },
+            { title: "Resources", links: ["Documentation", "API Reference", "Changelog", "Status Page"] },
+            { title: "Legal", links: ["Privacy Policy", "Terms of Service", "Security", "DPA"] },
+          ].map(col => (
+            <div key={col.title}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>{col.title}</div>
+              {col.links.map(link => (
+                <div key={link} style={{ fontSize: 12, color: "#44495a", marginBottom: 8, cursor: "pointer" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "#9ca3b0"}
+                  onMouseLeave={e => e.currentTarget.style.color = "#44495a"}
+                >{link}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1b1b20", fontSize: 11, color: "#33384a" }}>
+          <span>Vaultline, Inc. · All rights reserved</span>
+          <span>Built with care in New Hampshire</span>
         </div>
       </div>
     </div>
