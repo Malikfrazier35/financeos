@@ -1134,8 +1134,19 @@ const CopilotView = ({ c, toast }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* View Header */}
+      <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4, display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 7, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}><Sparkles size={13} color={c.purple} /></div>
+            AI Copilot
+          </div>
+          <div style={{ fontSize: 12, color: c.textDim }}>Ask anything about your financials · Visible reasoning · Cited sources</div>
+        </div>
+        <div style={{ fontSize: 10, padding: "5px 10px", borderRadius: 6, background: c.greenDim, color: c.green, fontWeight: 700, border: `1px solid ${c.green}20` }}>● Online</div>
+      </div>
       {/* Prompt suggestions */}
-      <div style={{ padding: "12px 20px 0", display: "flex", gap: 6, flexWrap: "wrap" }}>
+      <div style={{ padding: "12px 24px 0", display: "flex", gap: 6, flexWrap: "wrap" }}>
         {COPILOT_PROMPTS.map(p => (
           <button key={p} onClick={() => { setInput(p); }} style={{
             fontSize: 10, padding: "5px 10px", borderRadius: 6, border: `1px solid ${c.border}`,
@@ -1242,7 +1253,12 @@ const PnlView = ({ c, onNav, toast }) => {
 
   return (
     <div style={{ padding: 32, overflow: "auto" }}>
-      <ExportBar c={c} title="P&L Statement — FY2025 YTD"
+      {/* View Header */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>P&L Statement</div>
+        <div style={{ fontSize: 12, color: c.textDim, marginBottom: 16 }}>FY2025 YTD · Click any variance to ask AI Copilot for root cause analysis</div>
+      </div>
+      <ExportBar c={c} title=""
         onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
@@ -1373,6 +1389,17 @@ const ForecastView = ({ c }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      {/* View Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Forecast Optimizer</div>
+          <div style={{ fontSize: 12, color: c.textDim }}>ML ensemble with live sensitivity sliders · MAPE {retrained ? "2.9%" : "3.2%"} · 14 drivers</div>
+        </div>
+        <button onClick={handleRetrain} disabled={retraining} style={{
+          fontSize: 11, fontWeight: 700, padding: "8px 16px", borderRadius: 8, border: "none", cursor: retraining ? "wait" : "pointer", fontFamily: "inherit",
+          background: retraining ? c.amber : retrained ? c.green : c.purple, color: "#fff", transition: "all 0.2s",
+        }}>{retraining ? "Training..." : retrained ? "✓ Retrained — MAPE 2.9%" : "Retrain Model"}</button>
+      </div>
       {/* Model info badges */}
       <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
         {["ML: ETS + XGBoost + Linear ensemble", "MAPE: 3.2%", "14 drivers + 3 external signals", "Last trained 6h ago"].map(b => (
@@ -1501,6 +1528,14 @@ const ConsolidationView = ({ c, onNav, toast }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      {/* View Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Multi-Entity Consolidation</div>
+          <div style={{ fontSize: 12, color: c.textDim }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
+        </div>
+        <button onClick={() => { ENTITIES.forEach(e => { if ((entityStatus[e.name] || e.status) !== "Closed") approve(e.name); }); }} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Close All Pending</button>
+      </div>
       {/* Entity cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 20 }}>
         {ENTITIES.map(e => {
@@ -1596,14 +1631,30 @@ const CloseView = ({ c, toast }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      {/* View Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Month-End Close</div>
+          <div style={{ fontSize: 12, color: c.textDim }}>February close · {tasks.length - doneCount} tasks remaining · Est. {Math.max(0, (tasks.length - doneCount) * 0.5).toFixed(1)}h to complete</div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {Object.entries(statusLabel).map(([key, label]) => {
+            const count = tasks.filter(t => t.status === key).length;
+            return count > 0 ? (
+              <div key={key} style={{ fontSize: 10, fontWeight: 700, padding: "6px 12px", borderRadius: 6, background: `${statusColor[key]}15`, color: statusColor[key], border: `1px solid ${statusColor[key]}25` }}>{count} {label}</div>
+            ) : null;
+          })}
+        </div>
+      </div>
+
       {/* Progress bar */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 24, boxShadow: c.cardGlow }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 20, boxShadow: c.cardGlow }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <span style={{ fontSize: 15, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
+          <span style={{ fontSize: 14, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
           <span style={{ fontSize: 11, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{doneCount}/{tasks.length} tasks</span>
         </div>
-        <div style={{ height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden", boxShadow: `inset 0 1px 3px ${c.bg}` }}>
-          <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${c.accent}, ${c.green})`, borderRadius: 5, transition: "width 0.5s ease", boxShadow: `0 0 12px ${c.accent}40` }} />
+        <div style={{ height: 8, background: c.bg2, borderRadius: 4, overflow: "hidden", position: "relative" }}>
+          <div style={{ width: `${pct}%`, height: "100%", background: pct === 100 ? c.green : `linear-gradient(90deg, ${c.accent}, ${c.green})`, borderRadius: 4, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", boxShadow: `0 0 12px ${c.accent}40` }} />
         </div>
       </div>
 
@@ -1770,10 +1821,17 @@ const SCENARIOS_LIST = [
 // ══════════════════════════════════════════════════════════════
 const InvestorView = ({ c, toast }) => (
   <div style={{ padding: 32 }}>
-    <ExportBar c={c} title="Investor Dashboard — Series A Readiness"
-      onCSV={() => { downloadCSV("financeos-investor-metrics.csv", ["Metric","Value","Benchmark","Notes"], [["ARR","$48.6M","+24% YoY",""],["NDR","118%",">110%","Best-in-class"],["Rule of 40","52.1","Growth 47.8% + Margin 4.3%",""],["Burn Multiple","0.8x","<1.0x","Efficient"],["Gross Margin","84.7%","70-80%","SaaS benchmark"],["CAC Payback","14 mo","<18 months",""],["LTV/CAC","4.2x",">3.0x","Healthy"],["Cash Runway","34 mo","$12.8M cash",""]]); toast("Investor metrics exported as CSV", "success"); }}
-      onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
-    />
+    {/* View Header */}
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+      <div>
+        <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Investor Metrics</div>
+        <div style={{ fontSize: 12, color: c.textDim }}>Series A readiness scorecard · 8 SaaS benchmarks · Board-ready exports</div>
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button onClick={() => { downloadCSV("financeos-investor-metrics.csv", ["Metric","Value","Benchmark","Notes"], [["ARR","$48.6M","+24% YoY",""],["NDR","118%",">110%","Best-in-class"],["Rule of 40","52.1","Growth 47.8% + Margin 4.3%",""],["Burn Multiple","0.8x","<1.0x","Efficient"],["Gross Margin","84.7%","70-80%","SaaS benchmark"],["CAC Payback","14 mo","<18 months",""],["LTV/CAC","4.2x",">3.0x","Healthy"],["Cash Runway","34 mo","$12.8M cash",""]]); toast("Investor metrics exported as CSV", "success"); }} style={{ fontSize: 11, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Export CSV</button>
+        <button onClick={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }} style={{ fontSize: 11, padding: "8px 14px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Export PDF</button>
+      </div>
+    </div>
 
     {/* Fundraising KPIs */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
