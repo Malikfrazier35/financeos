@@ -2838,45 +2838,112 @@ const OnboardingWizard = ({ c, userName, onComplete }) => {
 
 const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
   const [billing, setBilling] = useState("annual");
+  const [hoveredPlan, setHoveredPlan] = useState(null);
+  const annualSavings = { Starter: 1200, Growth: 3600, Business: 9600 };
+
+  const features = [
+    { name: "Entities", values: ["3", "10", "Unlimited"] },
+    { name: "Users", values: ["5", "25", "Unlimited"] },
+    { name: "AI Copilot", values: [false, true, true] },
+    { name: "Consolidation", values: [false, true, true] },
+    { name: "Scenario Modeling", values: ["2 scenarios", "10 scenarios", "Unlimited"] },
+    { name: "Integrations", values: ["5", "15", "30+"] },
+    { name: "Custom ML Models", values: [false, false, true] },
+    { name: "SSO + RBAC", values: [false, false, true] },
+    { name: "Dedicated CSM", values: [false, false, true] },
+    { name: "SLA", values: ["99.9%", "99.95%", "99.99%"] },
+  ];
+
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div style={{ width: 720, maxHeight: "90vh", overflow: "auto", background: "#111114", border: "1px solid #23232a", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>
-            Welcome{userName && userName !== "Guest" ? `, ${userName}` : ""}! Choose your plan
+      <div style={{ width: 800, maxHeight: "94vh", overflow: "auto", background: "#111114", border: "1px solid #23232a", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+        {/* Header */}
+        <div style={{ padding: "32px 40px 0", textAlign: "center" }}>
+          <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.15)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 12, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
+          <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>
+            {userName && userName !== "Guest" ? `Welcome, ${userName.split(" ")[0]}!` : "Choose your plan"}
           </div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>Start with a 14-day free trial. Cancel anytime. 30-day money-back guarantee.</div>
-          <div style={{ display: "inline-flex", background: "#0c0c0f", borderRadius: 8, padding: 3, border: "1px solid #23232a", marginTop: 14 }}>
-            <button onClick={() => setBilling("monthly")} style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, border: "none", background: billing === "monthly" ? "#23232a" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Monthly</button>
-            <button onClick={() => setBilling("annual")} style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Annual (save 17%)</button>
+          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 16 }}>All plans include a 14-day free trial. Upgrade, downgrade, or cancel anytime.</div>
+          {/* Billing toggle */}
+          <div style={{ display: "inline-flex", background: "#0c0c0f", borderRadius: 10, padding: 3, border: "1px solid #23232a" }}>
+            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? "#23232a" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
+            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", position: "relative" }}>
+              Annual
+              <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: "rgba(52,211,153,0.12)", color: "#34d399" }}>SAVE 17%</span>
+            </button>
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
-          {PLAN_OPTIONS.map(p => (
-            <div key={p.name} style={{ background: "#0c0c0f", border: p.popular ? "1px solid #60a5fa" : "1px solid #1b1b20", borderRadius: 14, padding: "20px 18px", position: "relative", transition: "all 0.2s" }}>
-              {p.popular && <div style={{ position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)", padding: "3px 10px", borderRadius: 6, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 700, color: "#fff" }}>RECOMMENDED</div>}
-              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
-                <span style={{ fontSize: 28, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{billing === "annual" ? p.annual : p.price}</span>
-                <span style={{ fontSize: 12, color: "#6b7280" }}>/mo</span>
+
+        {/* Plan cards */}
+        <div style={{ padding: "24px 40px 0" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+            {PLAN_OPTIONS.map((p, idx) => {
+              const isHovered = hoveredPlan === idx;
+              return (
+              <div key={p.name} onMouseEnter={() => setHoveredPlan(idx)} onMouseLeave={() => setHoveredPlan(null)} style={{
+                background: p.popular ? "linear-gradient(180deg, rgba(96,165,250,0.06) 0%, #0c0c0f 100%)" : "#0c0c0f",
+                border: `1px solid ${p.popular ? "#60a5fa" : isHovered ? "#33384a" : "#1b1b20"}`,
+                borderRadius: 16, padding: "24px 20px", position: "relative", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+                transform: isHovered ? "translateY(-4px)" : "none",
+                boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : isHovered ? "0 12px 40px rgba(0,0,0,0.3)" : "none",
+              }}>
+                {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
+                <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: "#f0f2f5" }}>{p.name}</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
+                  <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: "#f0f2f5" }}>{billing === "annual" ? p.annual : p.price}</span>
+                  <span style={{ fontSize: 13, color: "#6b7280" }}>/mo</span>
+                </div>
+                {billing === "annual" && (
+                  <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 10 }}>Save ${annualSavings[p.name]?.toLocaleString()}/year</div>
+                )}
+                {billing === "monthly" && <div style={{ height: 18 }} />}
+                <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
+                <button onClick={() => {
+                  onSelect(p.name);
+                  try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
+                }} style={{
+                  width: "100%", padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
+                  background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : isHovered ? "#33384a" : "#23232a", color: "#fff",
+                  transition: "all 0.2s", boxShadow: p.popular ? "0 4px 16px rgba(96,165,250,0.2)" : "none",
+                }}
+                onMouseEnter={e => { if (!p.popular) e.currentTarget.style.background = "#33384a"; }}
+                onMouseLeave={e => { if (!p.popular) e.currentTarget.style.background = "#23232a"; }}
+                >Start {p.name} Trial</button>
               </div>
-              <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.5, marginBottom: 14, minHeight: 32 }}>{p.desc}</div>
-              <button onClick={() => {
-                onSelect(p.name);
-                try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
-              }} style={{
-                width: "100%", padding: "10px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700,
-                background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
-              }}>Start {p.name} Trial</button>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
-        <div style={{ textAlign: "center" }}>
+
+        {/* Feature comparison */}
+        <div style={{ padding: "24px 40px 0" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Feature Comparison</div>
+          <div style={{ background: "#0c0c0f", border: "1px solid #1b1b20", borderRadius: 12, overflow: "hidden" }}>
+            {features.map((f, i) => (
+              <div key={f.name} style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr 1fr", borderBottom: i < features.length - 1 ? "1px solid #1b1b20" : "none", fontSize: 11 }}>
+                <div style={{ padding: "8px 14px", color: "#9ca3b0", fontWeight: 500 }}>{f.name}</div>
+                {f.values.map((v, j) => (
+                  <div key={j} style={{ padding: "8px 14px", textAlign: "center", color: v === true ? "#34d399" : v === false ? "#33384a" : "#f0f2f5", fontWeight: v === true || v === false ? 400 : 600, fontFamily: typeof v === "string" ? "'JetBrains Mono', monospace" : "inherit" }}>
+                    {v === true ? "✓" : v === false ? "—" : v}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
           {isDemo ? (
-            <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" }}>Continue with demo — explore with sample data</button>
+            <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
           ) : (
-            <div style={{ fontSize: 11, color: "#44495a", marginTop: 4 }}>14-day money-back guarantee · Cancel anytime · No long-term commitment</div>
+            <div style={{ fontSize: 11, color: "#44495a", marginBottom: 12 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
           )}
+          <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
+            {["2,400+ demo users", "NPS 72", "$840K pipeline"].map(s => (
+              <div key={s} style={{ fontSize: 10, color: "#44495a", fontWeight: 600 }}>{s}</div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
