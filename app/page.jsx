@@ -3730,10 +3730,12 @@ export default function FinanceOS() {
                   background: active ? c.accentMid : "transparent",
                   boxShadow: active ? `0 0 0 1px ${c.accent}20, inset 0 1px 0 ${c.accent}10` : "none",
                   transition: "all 0.15s cubic-bezier(0.22,1,0.36,1)",
+                  position: "relative", overflow: "hidden",
                 }}
                 onMouseEnter={e => { if (!active) { e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = `${c.accent}06`; }}}
                 onMouseLeave={e => { if (!active) { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}}
                 >
+                  {active && !sidebarCollapsed && <div style={{ position: "absolute", left: 0, top: "15%", bottom: "15%", width: 3, borderRadius: "0 2px 2px 0", background: c.accent, boxShadow: `0 0 8px ${c.accent}60` }} />}
                   <Icon size={16} strokeWidth={active ? 2.5 : 1.5} />
                   {!sidebarCollapsed && item.label}
                   {!sidebarCollapsed && item.id === "copilot" && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto" }} />}
