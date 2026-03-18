@@ -15,7 +15,7 @@ const THEME = {
     bg: "#09090b", bg2: "#0c0c0f", surface: "#131316", surfaceAlt: "#1a1a1f",
     border: "#23232a", borderSub: "#1b1b20", borderBright: "#33333a",
     text: "#f0f2f5", textSec: "#9ca3b0", textDim: "#6b7280", textFaint: "#44495a",
-    accent: "#38bdf8", accentDim: "rgba(56,189,248,0.08)", accentMid: "rgba(56,189,248,0.15)",
+    accent: "#60a5fa", accentDim: "rgba(96,165,250,0.08)", accentMid: "rgba(96,165,250,0.15)",
     green: "#34d399", greenDim: "rgba(52,211,153,0.08)",
     red: "#f87171", redDim: "rgba(248,113,113,0.08)",
     amber: "#fbbf24", amberDim: "rgba(251,191,36,0.08)",
@@ -26,7 +26,7 @@ const THEME = {
     shadow2: "0 4px 12px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.15)",
     shadow3: "0 8px 30px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)",
     cardGlow: "0 0 0 1px rgba(56,189,248,0.06), 0 4px 16px rgba(0,0,0,0.2)",
-    cardHoverGlow: "0 0 0 1px rgba(56,189,248,0.15), 0 8px 30px rgba(56,189,248,0.08), 0 4px 12px rgba(0,0,0,0.25)",
+    cardHoverGlow: "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08), 0 4px 12px rgba(0,0,0,0.25)",
     sidebarBg: "linear-gradient(180deg, #0c0c0f 0%, #08080a 100%)",
   },
   light: {
@@ -70,11 +70,11 @@ class SectionBoundary extends Component {
           </div>
           {canRetry ? (
             <button onClick={() => this.setState(prev => ({ hasError: false, retries: prev.retries + 1 }))}
-              style={{ fontSize: 11, padding: "7px 16px", borderRadius: 6, background: this.props.accentColor || "#38bdf8", color: "#fff", fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer" }}>
+              style={{ fontSize: 11, padding: "7px 16px", borderRadius: 6, background: this.props.accentColor || "#60a5fa", color: "#fff", fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer" }}>
               Retry
             </button>
           ) : (
-            <a href="/" style={{ fontSize: 11, padding: "7px 16px", borderRadius: 6, background: this.props.accentColor || "#38bdf8", color: "#fff", fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
+            <a href="/" style={{ fontSize: 11, padding: "7px 16px", borderRadius: 6, background: this.props.accentColor || "#60a5fa", color: "#fff", fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
               Refresh Page
             </a>
           )}
@@ -487,7 +487,12 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
             </div>
             <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Revenue — Actual vs Budget vs Forecast</span>
           </div>
-          <span style={{ fontSize: 10, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>$K</span>
+          {/* Chart period mini-selector (Blueprint Section 6: 3+ options) */}
+          <div style={{ display: "flex", gap: 2 }}>
+            {["QTD", "YTD", "12M"].map((p, i) => (
+              <span key={p} style={{ fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 4, background: i === 1 ? c.accentMid : "transparent", color: i === 1 ? c.accent : c.textFaint, cursor: "pointer" }}>{p}</span>
+            ))}
+          </div>
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <ComposedChart data={REVENUE_DATA} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
@@ -499,19 +504,35 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `${v / 1000}M`} />
             <Tooltip content={<ChartTooltip c={c} />} />
+            {/* Blueprint Section 6: Reference line (AVG) */}
+            <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="6 4" strokeWidth={1} label={{ value: "AVG", fill: c.amber, fontSize: 9, fontWeight: 700, position: "right" }} />
             <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 3, fill: c.accent }} connectNulls={false} />
             <Line type="monotone" dataKey="budget" stroke={c.textDim} strokeWidth={1} strokeDasharray="4 4" name="Budget" dot={false} />
             <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="6 3" name="Forecast" dot={{ r: 3, fill: c.green }} connectNulls={false} />
-            {/* Today marker */}
-            <Line type="monotone" dataKey={() => null} stroke="none" />
           </ComposedChart>
         </ResponsiveContainer>
-        {/* Chart legend with today indicator */}
+        {/* Interactive legend + Today marker */}
         <div style={{ display: "flex", gap: 16, marginTop: 10, fontSize: 10, color: c.textDim, alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 2.5, background: c.accent, borderRadius: 1, display: "inline-block" }} /> Actual</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 1, background: c.textDim, borderRadius: 1, display: "inline-block", borderTop: "1px dashed " + c.textDim }} /> Budget</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 2, background: c.green, borderRadius: 1, display: "inline-block", opacity: 0.7 }} /> Forecast</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}><span style={{ width: 16, height: 2.5, background: c.accent, borderRadius: 1, display: "inline-block" }} /> Actual</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}><span style={{ width: 16, height: 1, background: c.textDim, borderRadius: 1, display: "inline-block", borderTop: "1px dashed " + c.textDim }} /> Budget</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}><span style={{ width: 16, height: 2, background: c.green, borderRadius: 1, display: "inline-block", opacity: 0.7 }} /> Forecast</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 1, background: c.amber, borderRadius: 1, display: "inline-block", borderTop: "1px dashed " + c.amber }} /> AVG</span>
           <span style={{ marginLeft: "auto", fontWeight: 600, color: c.accent }}>Today: Jun 2025</span>
+        </div>
+        {/* Terminal status bar — Blueprint required */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, padding: "6px 10px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> LIVE</span>
+          <span>12 data points</span>
+          <span>Period: FY2025 YTD</span>
+          <span>Mode: Actual + Forecast</span>
+        </div>
+        {/* Terminal status bar (Blueprint Section 6: Required) */}
+        <div style={{ display: "flex", gap: 12, marginTop: 10, padding: "8px 12px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint, alignItems: "center" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} /> LIVE</span>
+          <span>12 data points</span>
+          <span>Period: FY2025 YTD</span>
+          <span>Mode: Actual + Forecast</span>
+          <span style={{ marginLeft: "auto", fontFamily: "'JetBrains Mono', monospace" }}>H: $9.8M  L: $6.8M  AVG: $7.8M</span>
         </div>
       </div>
 
@@ -594,6 +615,34 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
           <div style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: c.purpleDim, color: c.purple, border: `1px solid ${c.purple}20` }}>4 active</div>
         </div>
         {INSIGHTS.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
+      </div>
+    </div>
+
+    {/* Cross-sell banner — Blueprint required */}
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
+      {/* Referral */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ width: 40, height: 40, borderRadius: 10, background: c.greenDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Users size={18} color={c.green} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Refer a finance team</div>
+          <div style={{ fontSize: 11, color: c.textDim }}>They get 20% off first month. You get $100 credit.</div>
+        </div>
+        <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, border: `1px solid ${c.border}`, color: c.textSec, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}
+          onClick={() => toast("Referral link copied to clipboard", "success")}
+        >Copy Link</div>
+      </div>
+      {/* Ecosystem */}
+      <div style={{ background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}06)`, border: `1px solid ${c.accent}20`, borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ width: 40, height: 40, borderRadius: 10, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Layers size={18} color={c.purple} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Vaultline Suite</div>
+          <div style={{ fontSize: 11, color: c.textDim }}>Add Treasury or Compliance. Save 15% with the bundle.</div>
+        </div>
+        <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>Explore</div>
       </div>
     </div>
   </div>
@@ -1362,7 +1411,7 @@ const LandingPage = ({ onLogin }) => {
       {/* Nav */}
       <nav style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 48px", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>F</div>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>F</div>
           <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>FinanceOS</span>
         </div>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
@@ -1370,13 +1419,13 @@ const LandingPage = ({ onLogin }) => {
           <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
           <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(56,189,248,0.25)" }}>Start Free Trial</button>
+          <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
       </nav>
 
       {/* Hero */}
       <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(56,189,248,0.08)", border: "1px solid rgba(56,189,248,0.15)", fontSize: 11, fontWeight: 600, color: "#38bdf8", marginBottom: 24, letterSpacing: "0.03em" }}>AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY</div>
+        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)", fontSize: 11, fontWeight: 600, color: "#60a5fa", marginBottom: 24, letterSpacing: "0.03em" }}>AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY</div>
         <h1 style={{ fontSize: 56, fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.035em", marginBottom: 20 }}>
           Financial planning<br />that thinks before<br />it answers
         </h1>
@@ -1384,7 +1433,7 @@ const LandingPage = ({ onLogin }) => {
           FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={onLogin} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(56,189,248,0.25)", transition: "transform 0.15s" }}
+          <button onClick={onLogin} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
             onMouseLeave={e => e.currentTarget.style.transform = "none"}
           >Try the Live Demo →</button>
@@ -1412,14 +1461,14 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
           {[
             { title: "AI Copilot", desc: "Ask questions in plain English. Get data-backed answers with visible reasoning — not a black box.", Icon: Brain, color: "#a78bfa" },
-            { title: "Forecast Optimizer", desc: "ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.", Icon: TrendingUp, color: "#38bdf8" },
+            { title: "Forecast Optimizer", desc: "ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.", Icon: TrendingUp, color: "#60a5fa" },
             { title: "Multi-Entity Consolidation", desc: "Automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.", Icon: Layers, color: "#34d399" },
             { title: "Variance Detective", desc: "AI scans every line for favorable/unfavorable variances and explains the drivers automatically.", Icon: Eye, color: "#fbbf24" },
             { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", Icon: Cpu, color: "#f87171" },
             { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
           ].map(f => (
             <div key={f.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24, transition: "border-color 0.15s" }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = "#38bdf8"}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "#60a5fa"}
               onMouseLeave={e => e.currentTarget.style.borderColor = "#23232a"}
             >
               <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
@@ -1444,8 +1493,8 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
           {plans.map(p => (
-            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#38bdf8" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(56,189,248,0.15), 0 8px 30px rgba(56,189,248,0.08)" : "none" }}>
-              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 12px", borderRadius: 6, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", fontSize: 10, fontWeight: 700, color: "#fff" }}>MOST POPULAR</div>}
+            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none" }}>
+              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 12px", borderRadius: 6, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 10, fontWeight: 700, color: "#fff" }}>MOST POPULAR</div>}
               <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 16 }}>
                 <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>${billing === "annual" ? p.annual : p.monthly}</span>
@@ -1460,7 +1509,7 @@ const LandingPage = ({ onLogin }) => {
               </div>
               <button onClick={onLogin} style={{
                 width: "100%", fontSize: 13, padding: "11px 0", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
-                background: p.popular ? "linear-gradient(135deg, #38bdf8, #a78bfa)" : "#23232a", color: "#fff",
+                background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
               }}>Get Started</button>
             </div>
           ))}
@@ -1513,14 +1562,14 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ textAlign: "center", padding: 28, background: "linear-gradient(135deg, rgba(56,189,248,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(56,189,248,0.15)", borderRadius: 14 }}>
+        <div style={{ textAlign: "center", padding: 28, background: "linear-gradient(135deg, rgba(56,189,248,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 14 }}>
           <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Vaultline Suite Bundle</div>
           <div style={{ fontSize: 14, color: "#9ca3b0", marginBottom: 12 }}>Treasury + FP&A + Compliance — the only unified mid-market finance stack.</div>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6, marginBottom: 16 }}>
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
             <span style={{ fontSize: 14, color: "#6b7280" }}>/mo · Save 15%</span>
           </div>
-          <button onClick={onLogin} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(56,189,248,0.25)" }}>Start Suite Trial</button>
+          <button onClick={onLogin} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
         </div>
       </div>
 
@@ -1529,7 +1578,7 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: "linear-gradient(135deg, #38bdf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: "#fff" }}>F</div>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: "#fff" }}>F</div>
               <span style={{ fontSize: 15, fontWeight: 800 }}>FinanceOS</span>
             </div>
             <p style={{ fontSize: 12, color: "#44495a", lineHeight: 1.7, maxWidth: 240 }}>AI-powered financial planning for modern finance teams. Part of the Vaultline Suite.</p>
@@ -1752,6 +1801,27 @@ export default function FinanceOS() {
               </div>
             );
           })}
+        </div>
+
+        {/* Suite Cross-Sell */}
+        <div style={{ padding: "8px 14px", borderTop: `1px solid ${c.borderSub}` }}>
+          <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "8px 4px 6px" }}>Vaultline Suite</div>
+          {[
+            { name: "Vaultline", sub: "Treasury", color: "#22d3ee" },
+            { name: "Parallax", sub: "Compliance", color: "#fbbf24" },
+          ].map(p => (
+            <div key={p.name} style={{
+              display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", margin: "1px 0", borderRadius: 6,
+              cursor: "pointer", fontSize: 12, color: c.textDim, transition: "all 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = p.color; e.currentTarget.style.background = `${p.color}08`; }}
+            onMouseLeave={e => { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}
+            >
+              <div style={{ width: 6, height: 6, borderRadius: 2, background: p.color, flexShrink: 0 }} />
+              <span style={{ fontWeight: 500 }}>{p.name}</span>
+              <span style={{ fontSize: 9, color: c.textFaint, marginLeft: "auto" }}>{p.sub}</span>
+            </div>
+          ))}
         </div>
 
         {/* Theme + User */}
