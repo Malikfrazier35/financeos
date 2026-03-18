@@ -374,7 +374,7 @@ const LoadingSkeleton = ({ c }) => (
   <div style={{ padding: 32 }}>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {[0,1,2,3,4,5].map(i => (
-        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22 }}>
+        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px" }}>
           <Skeleton c={c} width={80} height={10} />
           <div style={{ height: 12 }} />
           <Skeleton c={c} width={120} height={28} />
@@ -1081,7 +1081,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     {/* Cross-sell banner — Blueprint required */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
       {/* Referral */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16 }}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: c.greenDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Users size={18} color={c.green} />
         </div>
@@ -1619,25 +1619,30 @@ const ConsolidationView = ({ c, onNav, toast }) => {
           const st = entityStatus[e.name] || e.status;
           const closing = st === "closing";
           const displayStatus = closing ? "Closing..." : st;
+          const statusColor = statusColors[displayStatus] || c.textDim;
           return (
-            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 20, boxShadow: c.cardGlow }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.2s" }}
+              onMouseEnter={e2 => { e2.currentTarget.style.borderColor = statusColor + "40"; e2.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e2 => { e2.currentTarget.style.borderColor = c.border; e2.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${statusColor}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>{e.name}</span>
-                <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${(statusColors[displayStatus] || c.textDim)}18`, color: statusColors[displayStatus] || c.textDim }}>{displayStatus}</span>
+                <span style={{ fontSize: 9, fontWeight: 800, padding: "3px 10px", borderRadius: 6, background: `${statusColor}12`, color: statusColor, border: `1px solid ${statusColor}18`, letterSpacing: "0.03em" }}>{displayStatus}</span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: c.text, marginBottom: 4 }}>{fmt(e.revenue)}</div>
-              <div style={{ fontSize: 10, color: c.textDim, marginBottom: 10 }}>Revenue · {((e.revenue / 51190) * 100).toFixed(1)}% of consolidated</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, fontSize: 10, marginBottom: 10 }}>
-                <div><span style={{ color: c.textDim }}>EBITDA</span><br /><span style={{ color: c.green, fontWeight: 700 }}>{fmt(e.ebitda)}</span></div>
-                <div><span style={{ color: c.textDim }}>Headcount</span><br /><span style={{ color: c.text, fontWeight: 700 }}>{e.hc}</span></div>
-                <div><span style={{ color: c.textDim }}>Currency</span><br /><span style={{ color: c.text, fontWeight: 700 }}>{e.currency}</span></div>
-                <div><span style={{ color: c.textDim }}>{e.fx !== null ? "FX Impact" : "IC Elims"}</span><br /><span style={{ color: e.fx !== null ? (e.fx >= 0 ? c.green : c.red) : c.amber, fontWeight: 700 }}>{e.fx !== null ? `${e.fx >= 0 ? "+" : ""}$${Math.abs(e.fx)}K` : `${fmt(e.ic)}`}</span></div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: c.text, marginBottom: 2, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(e.revenue)}</div>
+              <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>Revenue · {((e.revenue / 51190) * 100).toFixed(1)}% consolidated</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 10, marginBottom: 14, padding: "10px 12px", background: c.surfaceAlt, borderRadius: 10 }}>
+                <div><span style={{ color: c.textFaint, fontSize: 9, fontWeight: 600 }}>EBITDA</span><br /><span style={{ color: c.green, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(e.ebitda)}</span></div>
+                <div><span style={{ color: c.textFaint, fontSize: 9, fontWeight: 600 }}>Headcount</span><br /><span style={{ color: c.text, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{e.hc}</span></div>
+                <div><span style={{ color: c.textFaint, fontSize: 9, fontWeight: 600 }}>Currency</span><br /><span style={{ color: c.text, fontWeight: 700 }}>{e.currency}</span></div>
+                <div><span style={{ color: c.textFaint, fontSize: 9, fontWeight: 600 }}>{e.fx !== null ? "FX Impact" : "IC Elims"}</span><br /><span style={{ color: e.fx !== null ? (e.fx >= 0 ? c.green : c.red) : c.amber, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{e.fx !== null ? `${e.fx >= 0 ? "+" : ""}$${Math.abs(e.fx)}K` : `${fmt(e.ic)}`}</span></div>
               </div>
               <div style={{ display: "flex", gap: 6 }}>
                 {(st !== "Closed" && !closing) && (
-                  <button onClick={() => approve(e.name)} style={{ flex: 1, fontSize: 10, padding: "7px 0", borderRadius: 6, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Approve & Close</button>
+                  <button onClick={() => approve(e.name)} style={{ flex: 1, fontSize: 10, padding: "8px 0", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${c.green}, ${c.green}cc)`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Approve & Close</button>
                 )}
-                <button onClick={() => onNav("pnl")} style={{ flex: 1, fontSize: 10, padding: "7px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Drill →</button>
+                <button onClick={() => onNav("pnl")} style={{ flex: 1, fontSize: 10, padding: "8px 0", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Drill →</button>
               </div>
             </div>
           );
@@ -2040,9 +2045,13 @@ const InvestorView = ({ c, toast }) => (
         { label: "LTV/CAC", value: "4.2x", sub: "Healthy: >3.0x", color: c.green },
         { label: "Cash Runway", value: "34 mo", sub: "$12.8M cash on hand", color: c.accent },
       ].map(k => (
-        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: c.cardGlow }}>
-          <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 6 }}>{k.label}</div>
-          <div style={{ fontSize: 24, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.value}</div>
+        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.2s" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = k.color + "30"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+        >
+          <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint, marginBottom: 8 }}>{k.label}</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>{k.value}</div>
           <div style={{ fontSize: 10, color: k.color, fontWeight: 600 }}>{k.sub}</div>
         </div>
       ))}
@@ -2050,7 +2059,7 @@ const InvestorView = ({ c, toast }) => (
 
     {/* Cohort & Unit Economics */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue Cohort Analysis</div>
         {[
           { cohort: "Q1 2023", initial: "$2.1M", current: "$3.8M", retention: "181%", color: c.green },
@@ -2071,7 +2080,7 @@ const InvestorView = ({ c, toast }) => (
         ))}
       </div>
 
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Competitive Positioning</div>
         {[
           { metric: "ARR Growth Rate", us: "47.8%", benchmark: "30-40%", verdict: "Above" },
@@ -2092,7 +2101,7 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Fundraising Readiness */}
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Series A Readiness Checklist</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {[
@@ -2193,11 +2202,15 @@ const AdminView = ({ c, toast, onNav }) => {
         {/* Admin KPIs */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
           {adminKpis.map(k => (
-            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: c.cardGlow }}>
-              <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 8 }}>{k.label}</div>
+            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = k.color + "30"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ position: "absolute", top: 0, left: "20%", right: "20%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint, marginBottom: 10 }}>{k.label}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                <span style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</span>
-                <span style={{ fontSize: 10, fontWeight: 700, color: k.up ? c.green : c.red, background: k.up ? c.greenDim : c.redDim, padding: "2px 6px", borderRadius: 4 }}>{k.delta}</span>
+                <span style={{ fontSize: 24, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: k.up ? c.green : c.red, background: k.up ? c.greenDim : c.redDim, padding: "3px 8px", borderRadius: 6, border: `1px solid ${k.up ? c.green : c.red}15` }}>{k.delta}</span>
               </div>
             </div>
           ))}
@@ -2205,7 +2218,7 @@ const AdminView = ({ c, toast, onNav }) => {
 
         {/* Activity Feed */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Activity Log</div>
             {events.map((e, i) => (
               <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start" }}>
@@ -2218,7 +2231,7 @@ const AdminView = ({ c, toast, onNav }) => {
             ))}
           </div>
           {/* Quick Admin Actions */}
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Admin Actions</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {[
@@ -2306,7 +2319,7 @@ const AdminView = ({ c, toast, onNav }) => {
               </div>
             ))}
           </div>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue by Plan</div>
             {[
               { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13 },
@@ -2332,7 +2345,7 @@ const AdminView = ({ c, toast, onNav }) => {
         <div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {/* Service Status */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Service Status</div>
               {[
                 { name: "API Gateway", status: "operational", latency: "42ms" },
@@ -2352,7 +2365,7 @@ const AdminView = ({ c, toast, onNav }) => {
               ))}
             </div>
             {/* Security Headers */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security Posture</div>
               {[
                 { name: "HSTS Preload", grade: "A+", status: "active" },
@@ -2456,7 +2469,7 @@ const ScenariosView = ({ c, toast }) => {
         {showCompare ? compare.map(idx => {
           const s = scenarios[idx];
           return (
-            <div key={idx} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+            <div key={idx} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
               {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%`, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
                 <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -2496,7 +2509,7 @@ const ScenariosView = ({ c, toast }) => {
             </div>
 
             {/* Sensitivity sliders */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
               {[
                 { key: "ndr", label: "Net Dollar Retention", value: drivers.ndr, min: 80, max: 150, unit: "%", color: c.accent },
@@ -2562,7 +2575,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       </div>
 
       {activeTab === "org" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
           {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -2574,7 +2587,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       )}
 
       {activeTab === "billing" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Billing & Subscription</div>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
             <div style={{ flex: 1, padding: 14, borderRadius: 10, background: c.accentDim, border: `1px solid ${c.accent}20` }}>
@@ -2606,7 +2619,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       )}
 
       {activeTab === "security" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security & Access</div>
           {[{ label: "Two-Factor Authentication", value: "Enabled (TOTP)", status: "green" }, { label: "Last Password Change", value: "42 days ago", status: "amber" }, { label: "Active Sessions", value: "2 devices", status: "accent" }, { label: "API Keys", value: "1 active (created Mar 2)", status: "accent" }, { label: "Audit Log", value: "312 events this month", status: "accent" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -2622,7 +2635,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
 
       {activeTab === "session" && (<>
         {/* Sign Out */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, marginBottom: 16 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 6 }}>Active Session</div>
           <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>sarah.chen@acme.io</span> · VP Finance</div>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -2638,7 +2651,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
           </button>
         </div>
         {/* Delete Account */}
-        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 16, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account</div>
           <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This action is irreversible and takes effect within 24 hours.</div>
           {!deleteConfirm ? (
