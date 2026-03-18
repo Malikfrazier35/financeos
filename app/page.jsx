@@ -25,7 +25,7 @@ const THEME = {
     shadow1: "0 1px 2px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.15)",
     shadow2: "0 4px 12px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.15)",
     shadow3: "0 8px 30px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)",
-    cardGlow: "0 0 0 1px rgba(56,189,248,0.06), 0 4px 16px rgba(0,0,0,0.2)",
+    cardGlow: "0 0 0 1px rgba(96,165,250,0.06), 0 4px 16px rgba(0,0,0,0.2)",
     cardHoverGlow: "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08), 0 4px 12px rgba(0,0,0,0.25)",
     sidebarBg: "linear-gradient(180deg, #0c0c0f 0%, #08080a 100%)",
   },
@@ -1476,19 +1476,70 @@ const SettingsView = ({ c, onLogout, toast }) => {
 // ══════════════════════════════════════════════════════════════
 // MARKETING LANDING PAGE
 // ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// PIPELINE 2: PRIVACY — Cookie Consent + GDPR/CCPA
+// ══════════════════════════════════════════════════════════════
+const CookieConsent = ({ c }) => {
+  const [visible, setVisible] = useState(true);
+  const [prefs, setPrefs] = useState(false);
+  if (!visible) return null;
+  return (
+    <div style={{
+      position: "fixed", bottom: 20, left: 20, right: 20, maxWidth: 520, zIndex: 9999,
+      background: `${c?.surface || "#131316"}f5`, border: `1px solid ${c?.border || "#23232a"}`,
+      borderRadius: 16, padding: "20px 24px", boxShadow: "0 12px 40px rgba(0,0,0,0.4)",
+      backdropFilter: "blur(16px)", fontFamily: "'DM Sans', system-ui, sans-serif",
+      animation: "fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1)",
+    }}>
+      <div style={{ fontSize: 14, fontWeight: 700, color: c?.text || "#f0f2f5", marginBottom: 8 }}>Privacy Preferences</div>
+      <div style={{ fontSize: 12, color: c?.textDim || "#6b7280", lineHeight: 1.7, marginBottom: 14 }}>
+        FinanceOS uses essential cookies for authentication and security. We do not use advertising cookies or sell your data. Analytics cookies help us improve the product.
+      </div>
+      {prefs && (
+        <div style={{ marginBottom: 14, padding: 12, background: c?.bg2 || "#0c0c0f", borderRadius: 8, fontSize: 11 }}>
+          {[
+            { name: "Essential", desc: "Authentication, security, session management", required: true, on: true },
+            { name: "Analytics", desc: "Usage patterns to improve the product", required: false, on: true },
+            { name: "Marketing", desc: "Not used — we do not run ads", required: false, on: false },
+          ].map(cookie => (
+            <div key={cookie.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: `1px solid ${c?.borderSub || "#1b1b20"}` }}>
+              <div>
+                <span style={{ color: c?.text || "#f0f2f5", fontWeight: 600 }}>{cookie.name}</span>
+                <span style={{ color: c?.textFaint || "#44495a", marginLeft: 8 }}>{cookie.desc}</span>
+              </div>
+              <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: cookie.on ? (c?.greenDim || "rgba(52,211,153,0.08)") : (c?.redDim || "rgba(248,113,113,0.08)"), color: cookie.on ? (c?.green || "#34d399") : (c?.red || "#f87171") }}>
+                {cookie.required ? "REQUIRED" : cookie.on ? "ON" : "OFF"}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <button onClick={() => setVisible(false)} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Accept All</button>
+        <button onClick={() => { setVisible(false); }} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c?.border || "#23232a"}`, background: "transparent", color: c?.textSec || "#9ca3b0", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Essential Only</button>
+        <button onClick={() => setPrefs(!prefs)} style={{ fontSize: 11, padding: "9px 12px", borderRadius: 8, border: "none", background: "transparent", color: c?.textDim || "#6b7280", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{prefs ? "Hide" : "Manage"}</button>
+        <a href="#" style={{ marginLeft: "auto", fontSize: 10, color: c?.textFaint || "#44495a" }}>Privacy Policy</a>
+      </div>
+    </div>
+  );
+};
+
 const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const plans = [
-    { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"], link: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o" },
-    { name: "Growth", monthly: 1799, annual: 1499, features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Priority support"], popular: true, link: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q" },
-    { name: "Business", monthly: 4799, annual: 3999, features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee"], link: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s" },
+    { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"],
+      linkMonthly: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", linkAnnual: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
+    { name: "Growth", monthly: 1799, annual: 1499, features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Priority support"], popular: true,
+      linkMonthly: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", linkAnnual: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
+    { name: "Business", monthly: 4799, annual: 3999, features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee"],
+      linkMonthly: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", linkAnnual: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
   ];
 
   return (
     <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", overflow: "auto" }}>
       {/* Ambient */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: "-30%", right: "-15%", width: "70%", height: "70%", borderRadius: "50%", background: "radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 65%)", filter: "blur(100px)" }} />
+        <div style={{ position: "absolute", top: "-30%", right: "-15%", width: "70%", height: "70%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.07) 0%, transparent 65%)", filter: "blur(100px)" }} />
         <div style={{ position: "absolute", bottom: "-20%", left: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 65%)", filter: "blur(100px)" }} />
       </div>
 
@@ -1636,10 +1687,17 @@ const LandingPage = ({ onLogin }) => {
                   </div>
                 ))}
               </div>
-              <button onClick={onLogin} style={{
-                width: "100%", fontSize: 13, padding: "11px 0", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
-                background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
-              }}>Get Started</button>
+              <div style={{ display: "flex", gap: 6 }}>
+                <button onClick={onLogin} style={{
+                  flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 8, border: `1px solid #23232a`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                  background: "transparent", color: "#9ca3b0",
+                }}>Try Demo</button>
+                <button onClick={() => window.open(billing === "annual" ? p.linkAnnual : p.linkMonthly, "_blank")} style={{
+                  flex: 2, fontSize: 12, padding: "11px 0", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                  background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
+                }}>Subscribe</button>
+              </div>
+              <div style={{ textAlign: "center", marginTop: 8, fontSize: 10, color: "#44495a" }}>30-day money-back guarantee</div>
             </div>
           ))}
         </div>
@@ -1691,7 +1749,7 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ textAlign: "center", padding: 28, background: "linear-gradient(135deg, rgba(56,189,248,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 14 }}>
+        <div style={{ textAlign: "center", padding: 28, background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 14 }}>
           <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Vaultline Suite Bundle</div>
           <div style={{ fontSize: 14, color: "#9ca3b0", marginBottom: 12 }}>Treasury + FP&A + Compliance — the only unified mid-market finance stack.</div>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6, marginBottom: 16 }}>
@@ -1730,10 +1788,13 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1b1b20", fontSize: 11, color: "#33384a" }}>
-          <span>Vaultline, Inc. · All rights reserved</span>
+          <span>© 2026 Vaultline, Inc. · All rights reserved</span>
           <span>Built with care in New Hampshire</span>
         </div>
       </div>
+
+      {/* Privacy Pipeline — Cookie Consent */}
+      <CookieConsent />
     </div>
   );
 };
@@ -1800,15 +1861,23 @@ export default function FinanceOS() {
     setNavHistory(["dashboard"]);
   }, []);
 
+  // View loading state — shows skeleton on view switch
+  const [viewLoading, setViewLoading] = useState(false);
+
   // Show marketing page when not logged in
   if (!loggedIn) {
     return <LandingPage onLogin={() => setLoggedIn(true)} />;
   }
 
-  // Navigation with history tracking
+  // Navigation with history tracking + loading transition
   const navigate = useCallback((v) => {
+    if (v === view) return;
     setPrevView(view);
-    setView(v);
+    setViewLoading(true);
+    setTimeout(() => {
+      setView(v);
+      setViewLoading(false);
+    }, 280);
     setNavHistory(prev => {
       const next = [...prev];
       const idx = next.indexOf(v);
@@ -2090,7 +2159,8 @@ export default function FinanceOS() {
         </div>
 
         {/* Content */}
-        <div key={view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
+        <div key={viewLoading ? "loading" : view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
+          {viewLoading ? <LoadingSkeleton c={c} /> : (<>
           {view === "dashboard" && <DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} />}
           {view === "copilot" && <CopilotView c={c} toast={toast} />}
           {view === "pnl" && <PnlView c={c} onNav={navigate} toast={toast} />}
@@ -2100,6 +2170,7 @@ export default function FinanceOS() {
           {view === "close" && <CloseView c={c} toast={toast} />}
           {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
           {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} />}
+          </>)}
         </div>
       </div>
 
