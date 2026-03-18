@@ -391,6 +391,16 @@ const EmptyState = ({ c, icon: Icon, title, sub, cta, onAction }) => (
 );
 
 // ── EXPORT BAR ──────────────────────────────────────────────
+// ── CSV/PDF Export Helper ─────────────────────────────────────
+const downloadCSV = (filename, headers, rows) => {
+  const csv = [headers.join(","), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+};
+
 const ExportBar = ({ c, title, onCSV, onPDF }) => (
   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
     <span style={{ fontSize: 16, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{title}</span>
@@ -1227,8 +1237,8 @@ const PnlView = ({ c, onNav, toast }) => {
   return (
     <div style={{ padding: 32, overflow: "auto" }}>
       <ExportBar c={c} title="P&L Statement — FY2025 YTD"
-        onCSV={() => toast("P&L exported as CSV", "success")}
-        onPDF={() => toast("P&L exported as PDF", "success")}
+        onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
+        onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
@@ -1727,8 +1737,8 @@ const SCENARIOS_LIST = [
 const InvestorView = ({ c, toast }) => (
   <div style={{ padding: 32 }}>
     <ExportBar c={c} title="Investor Dashboard — Series A Readiness"
-      onCSV={() => toast("Investor metrics exported as CSV", "success")}
-      onPDF={() => toast("Investor deck data exported as PDF", "success")}
+      onCSV={() => { downloadCSV("financeos-investor-metrics.csv", ["Metric","Value","Benchmark","Notes"], [["ARR","$48.6M","+24% YoY",""],["NDR","118%",">110%","Best-in-class"],["Rule of 40","52.1","Growth 47.8% + Margin 4.3%",""],["Burn Multiple","0.8x","<1.0x","Efficient"],["Gross Margin","84.7%","70-80%","SaaS benchmark"],["CAC Payback","14 mo","<18 months",""],["LTV/CAC","4.2x",">3.0x","Healthy"],["Cash Runway","34 mo","$12.8M cash",""]]); toast("Investor metrics exported as CSV", "success"); }}
+      onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
     />
 
     {/* Fundraising KPIs */}
@@ -2167,12 +2177,16 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
           </div>
           <div style={{ fontSize: 12, color: c.textDim, marginBottom: 14 }}>Payment: Visa ending 4242 · Billing contact: finance@acme.io</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {["Manage Subscription", "View Invoices", "Update Payment Method"].map(label => (
-              <button key={label} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            {[
+              { label: "Manage Subscription", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
+              { label: "View Invoices", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
+              { label: "Update Payment Method", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
+            ].map(b => (
+              <button key={b.label} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
-                onClick={() => toast(`${label} — opens Stripe portal`, "success")}
-              >{label}</button>
+                onClick={() => { try { window.open(b.url, "_blank"); } catch {} toast(`Opening ${b.label}...`, "success"); }}
+              >{b.label}</button>
             ))}
           </div>
         </div>
