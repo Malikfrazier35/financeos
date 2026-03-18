@@ -2422,6 +2422,94 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   );
 };
 
+// ── PRODUCT DEMO (Jira-inspired tabbed showcase) ─────────────
+const DEMO_TABS = [
+  { id: "planning", label: "FP&A Planning",
+    title: "Plan with confidence", sub: "Connect actuals to forecasts in real-time. Drag sliders to model scenarios, compare budget vs actual, and surface variances before they become problems.",
+    kpis: [{ l: "Models", v: "4 active" }, { l: "MAPE", v: "3.2%" }, { l: "Drivers", v: "14" }] },
+  { id: "copilot", label: "AI Copilot",
+    title: "Ask, don't search", sub: "Natural language queries across your entire financial model. Ask 'Why did COGS spike in February?' and get a sourced, reasoned answer — not a chart dump.",
+    kpis: [{ l: "Reasoning", v: "Visible" }, { l: "Sources", v: "Cited" }, { l: "Latency", v: "<2s" }] },
+  { id: "consolidation", label: "Consolidation",
+    title: "Close in hours, not weeks", sub: "Multi-entity consolidation with automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.",
+    kpis: [{ l: "Entities", v: "Unlimited" }, { l: "IC Elim", v: "Auto" }, { l: "Currencies", v: "40+" }] },
+  { id: "integrations", label: "Integrations",
+    title: "Your stack, connected", sub: "30+ native integrations — NetSuite, Salesforce, Stripe, Snowflake, Rippling. Bi-directional sync with real-time data freshness indicators.",
+    kpis: [{ l: "Connectors", v: "30+" }, { l: "Sync", v: "Real-time" }, { l: "Setup", v: "< 5 min" }] },
+];
+
+const ProductDemo = ({ enterDemo }) => {
+  const [tab, setTab] = useState("planning");
+  const active = DEMO_TABS.find(d => d.id === tab) || DEMO_TABS[0];
+  return (
+    <div style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
+        <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.08em", textTransform: "uppercase" }}>Product Tour</div>
+        <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>See it in action</h2>
+        <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 480, margin: "0 auto" }}>Explore the platform by use case. Click a tab to see how each module works.</p>
+      </div>
+      {/* Tabs */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32 }}>
+        {DEMO_TABS.map(d => (
+          <button key={d.id} onClick={() => setTab(d.id)} style={{
+            fontSize: 13, padding: "10px 20px", borderRadius: 10, border: tab === d.id ? "1px solid #60a5fa" : "1px solid #23232a",
+            background: tab === d.id ? "rgba(96,165,250,0.08)" : "transparent",
+            color: tab === d.id ? "#60a5fa" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s",
+          }}>{d.label}</button>
+        ))}
+      </div>
+      {/* Content + Mockup */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "center" }}>
+        <div>
+          <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12 }}>{active.title}</h3>
+          <p style={{ fontSize: 15, color: "#6b7280", lineHeight: 1.7, marginBottom: 24 }}>{active.sub}</p>
+          <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+            {active.kpis.map(k => (
+              <div key={k.l} style={{ padding: "10px 16px", borderRadius: 10, background: "#131316", border: "1px solid #1b1b20" }}>
+                <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.v}</div>
+                <div style={{ fontSize: 10, color: "#44495a", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.l}</div>
+              </div>
+            ))}
+          </div>
+          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Try This Feature</button>
+        </div>
+        {/* Browser mockup */}
+        <div style={{ background: "#0c0c0f", border: "1px solid #23232a", borderRadius: 16, padding: 4, boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
+          <div style={{ background: "#111114", borderRadius: 13, overflow: "hidden" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0c0c0f", borderBottom: "1px solid #1b1b20" }}>
+              <div style={{ display: "flex", gap: 5 }}>{["#ef4444","#fbbf24","#22c55e"].map(cl => <div key={cl} style={{ width: 8, height: 8, borderRadius: "50%", background: cl }} />)}</div>
+              <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: "#0a0a0d", border: "1px solid #1b1b20", fontSize: 10, color: "#44495a" }}>app.financeos.com/{active.id}</div>
+            </div>
+            <div style={{ padding: 20, minHeight: 280 }}>
+              <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ width: 40, background: "#1b1b20", borderRadius: 8, minHeight: 240 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: "#f0f2f5" }}>{active.title}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+                    {active.kpis.map((k, i) => (
+                      <div key={k.l} style={{ background: "#131316", border: "1px solid #1b1b20", borderRadius: 8, padding: "10px 12px" }}>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: ["#60a5fa","#34d399","#a78bfa"][i], fontFamily: "'JetBrains Mono', monospace" }}>{k.v}</div>
+                        <div style={{ fontSize: 8, color: "#44495a", marginTop: 2 }}>{k.l}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ height: 120, background: "linear-gradient(180deg, rgba(96,165,250,0.05), transparent)", borderRadius: 8, border: "1px solid #1b1b20", overflow: "hidden" }}>
+                    <svg width="100%" height="100%" viewBox="0 0 400 120" preserveAspectRatio="none">
+                      <defs><linearGradient id={`dg-${active.id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity="0.2"/><stop offset="100%" stopColor="#60a5fa" stopOpacity="0"/></linearGradient></defs>
+                      <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15 L400,120 L0,120 Z" fill={`url(#dg-${active.id})`}/>
+                      <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15" fill="none" stroke="#60a5fa" strokeWidth="2"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const [authModal, setAuthModal] = useState(null);
@@ -2523,6 +2611,35 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{f.desc}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ═══ PRODUCT DEMO — Jira-inspired tabbed showcase ═══ */}
+      <ProductDemo enterDemo={enterDemo} />
+
+      {/* ═══ HOW IT WORKS — Numbered step flow (Jira pattern) ═══ */}
+      <div style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Up and running in 4 steps</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 480, margin: "0 auto" }}>No 6-month implementation. No consultants. Connect your data and start planning in days.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          {[
+            { step: 1, title: "Connect your data", desc: "Link your ERP, CRM, and billing in under 5 minutes. NetSuite, Salesforce, Stripe, QuickBooks — all pre-built.", color: "#60a5fa" },
+            { step: 2, title: "AI builds your model", desc: "FinanceOS auto-maps your chart of accounts, detects revenue drivers, and creates a baseline forecast.", color: "#a78bfa" },
+            { step: 3, title: "Plan & scenario model", desc: "Run what-if scenarios, adjust assumptions with live sliders, and compare 4 models side-by-side.", color: "#34d399" },
+            { step: 4, title: "Close & report", desc: "Multi-entity consolidation, variance commentary, and board-ready exports — all from one platform.", color: "#fbbf24" },
+          ].map(s => (
+            <div key={s.step} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24, position: "relative" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 14 }}>{s.step}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{s.title}</div>
+              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Start Your Free Trial</button>
+          <div style={{ marginTop: 10, fontSize: 12, color: "#44495a" }}>No credit card required · 30-day money-back guarantee</div>
         </div>
       </div>
 
