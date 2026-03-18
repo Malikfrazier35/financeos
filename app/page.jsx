@@ -394,6 +394,159 @@ const ExportBar = ({ c, title, onCSV, onPDF }) => (
   </div>
 );
 
+// ══════════════════════════════════════════════════════════════
+// ENV 1: DYNAMIC BUTTON PIPELINE
+// ══════════════════════════════════════════════════════════════
+const BTN_VARIANTS = {
+  primary: (c) => ({ bg: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", border: "none", shadow: `0 4px 14px ${c.accent}30`, hoverShadow: `0 6px 20px ${c.accent}40` }),
+  secondary: (c) => ({ bg: "transparent", color: c.textSec, border: `1px solid ${c.border}`, shadow: "none", hoverShadow: c.shadow1 }),
+  ghost: (c) => ({ bg: "transparent", color: c.textDim, border: "none", shadow: "none", hoverShadow: "none" }),
+  danger: (c) => ({ bg: c.redDim, color: c.red, border: `1px solid ${c.red}30`, shadow: "none", hoverShadow: `0 4px 14px ${c.red}20` }),
+  success: (c) => ({ bg: c.green, color: "#fff", border: "none", shadow: `0 4px 14px ${c.green}30`, hoverShadow: `0 6px 20px ${c.green}40` }),
+};
+
+const Btn = ({ children, variant = "primary", size = "md", loading, disabled, onClick, c, style = {}, icon: Icon }) => {
+  const [ripple, setRipple] = useState(null);
+  const v = BTN_VARIANTS[variant]?.(c) || BTN_VARIANTS.primary(c);
+  const sizes = { sm: { fontSize: 11, padding: "6px 14px", borderRadius: 6 }, md: { fontSize: 12, padding: "9px 18px", borderRadius: 8 }, lg: { fontSize: 14, padding: "12px 24px", borderRadius: 10 } };
+  const s = sizes[size];
+  const isDisabled = disabled || loading;
+
+  const handleClick = (e) => {
+    if (isDisabled) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setRipple({ x, y, id: Date.now() });
+    setTimeout(() => setRipple(null), 500);
+    onClick?.(e);
+  };
+
+  return (
+    <button onClick={handleClick} disabled={isDisabled} style={{
+      ...s, fontFamily: "inherit", fontWeight: 700, cursor: isDisabled ? "not-allowed" : "pointer",
+      background: v.bg, color: v.color, border: v.border, boxShadow: v.shadow,
+      display: "inline-flex", alignItems: "center", gap: 6, position: "relative", overflow: "hidden",
+      opacity: isDisabled ? 0.5 : 1, transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
+      ...style,
+    }}
+    onMouseEnter={e => { if (!isDisabled) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = v.hoverShadow; }}}
+    onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = v.shadow; }}
+    onFocus={e => { e.currentTarget.style.outline = `2px solid ${c.accent}`; e.currentTarget.style.outlineOffset = "2px"; }}
+    onBlur={e => { e.currentTarget.style.outline = "none"; }}
+    >
+      {ripple && <span style={{ position: "absolute", left: ripple.x - 20, top: ripple.y - 20, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.25)", animation: "rippleOut 0.5s ease-out forwards", pointerEvents: "none" }} />}
+      {loading && <span style={{ width: 14, height: 14, border: `2px solid ${v.color}40`, borderTopColor: v.color, borderRadius: "50%", animation: "spin 0.6s linear infinite", flexShrink: 0 }} />}
+      {!loading && Icon && <Icon size={s.fontSize} strokeWidth={2} />}
+      {children}
+    </button>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════
+// ENV 2: AI DIGITAL-INTELLIGENCE PIPELINE
+// ══════════════════════════════════════════════════════════════
+const AI_SYSTEM_PROMPT = `You are FinanceOS AI Copilot for Acme SaaS Corp. You have complete access to their financials.
+
+KEY METRICS (FY2025 YTD):
+- Revenue: $51.19M (+4.3% vs $49.1M plan)
+- Gross Margin: 84.7% | EBITDA: $3.78M (7.4% margin)
+- ARR: $48.6M | NDR: 118% | Rule of 40: 52.1
+- Headcount: 312 (128 Eng, 84 S&M, 52 G&A, 48 CS)
+- Burn Multiple: 0.8x | Cash Runway: 34 months
+
+SEGMENT PERFORMANCE:
+- Enterprise (>$100K ACV): +$3.3M above plan (+16.9%), ACV $142K->$182K (+28%)
+- Mid-market ($25K-$100K): -$800K below plan (-4.2%), win rate declining vs Runway
+- SMB (<$25K): -$400K below plan (-3.8%)
+- AI module attach rate: 34% (vs 12% planned)
+
+EXPENSE VARIANCES:
+- S&M: $730K over (3 AEs hired early $420K + SaaStr $180K + SDR tools $130K)
+- R&D: $280K under (14 heads behind plan, 8 ML reqs open)
+- Cloud: $640K over (GPU costs for AI training)
+- G&A: On plan
+
+COMPETITIVE INTEL:
+- Pigment: ~$80M ARR, $65K+ entry, we win 42% H2H (improving from 35%)
+- Runway: a16z backed, $30-100K, wins 58% mid-market H2H
+- Anaplan: $200K+ enterprise, 3-6mo implementation
+- Our moats: visible AI reasoning, published pricing, self-serve onboarding
+
+BOARD CONTEXT:
+- Next board meeting: Q3 review
+- Current guidance: $49.1M (should raise to $52-54M)
+- Key ask: Competitive SWAT team budget ($200K)
+- Risk: Mid-market Runway threat, R&D hiring delay
+
+RESPONSE FORMAT:
+- Use **bold** for section headers
+- Use bullet points starting with bullet character
+- Include specific numbers — never round without stating you rounded
+- Keep responses under 300 words unless asked for a deep dive
+- End complex answers with a **Recommendation:** section`;
+
+const INSIGHT_SEVERITY = { high: { color: "red", label: "HIGH" }, medium: { color: "amber", label: "MED" }, low: { color: "green", label: "LOW" } };
+
+const AI_INSIGHTS_ENRICHED = [
+  { text: "Revenue beat $2.09M — Enterprise ACV up 28%. AI module 34% attach.", source: "Variance Detective", time: "2 min", color: "#34d399", severity: "low", action: "Review enterprise pipeline" },
+  { text: "S&M $730K over — Hiring $420K, events $180K. Pipeline ROI 7.2x.", source: "Variance Detective", time: "12 min", color: "#f87171", severity: "high", action: "Approve or defer Q3 hiring" },
+  { text: "Mid-market win rate declining — Runway wins 58% H2H. Cycles 42 to 58d.", source: "Competitive Intel", time: "1 hr", color: "#fbbf24", severity: "high", action: "Deploy competitive SWAT" },
+  { text: "R&D 14 heads behind — 8 ML reqs open. AI v2 at risk if delayed.", source: "Workforce Agent", time: "3 hr", color: "#a78bfa", severity: "medium", action: "Escalate to VP Eng" },
+];
+
+// ══════════════════════════════════════════════════════════════
+// ENV 3: CORPORATE WORKFLOW AUTOMATION PIPELINE
+// ══════════════════════════════════════════════════════════════
+const WORKFLOW_STATES = ["pending", "in_review", "approved", "closed"];
+const WORKFLOW_COLORS = { pending: "amber", in_review: "accent", approved: "green", closed: "textDim" };
+
+const useWorkflow = (initialTasks) => {
+  const [tasks, setTasks] = useState(initialTasks);
+  const [auditLog, setAuditLog] = useState([]);
+
+  const transition = useCallback((taskId, newStatus, actor = "Sarah Chen") => {
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t));
+    setAuditLog(prev => [...prev, { taskId, newStatus, actor, timestamp: new Date().toISOString(), id: Date.now() }]);
+  }, []);
+
+  const stats = {
+    total: tasks.length,
+    done: tasks.filter(t => t.status === "done" || t.status === "closed" || t.status === "approved").length,
+    pending: tasks.filter(t => t.status === "pending" || t.status === "notstarted").length,
+    inProgress: tasks.filter(t => t.status === "progress" || t.status === "in_review").length,
+  };
+  stats.pct = Math.round((stats.done / stats.total) * 100);
+
+  return { tasks, setTasks, transition, auditLog, stats };
+};
+
+const NotificationBadge = ({ count, c, color = "red" }) => {
+  if (!count) return null;
+  return (
+    <span style={{
+      fontSize: 9, fontWeight: 800, minWidth: 16, height: 16, padding: "0 4px",
+      borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center",
+      background: c[color], color: "#fff", boxShadow: `0 2px 6px ${c[color]}40`,
+      animation: count > 0 ? "pulse 2s infinite" : "none",
+    }}>{count > 99 ? "99+" : count}</span>
+  );
+};
+
+const AuditEntry = ({ entry, c }) => (
+  <div style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 11, alignItems: "flex-start" }}>
+    <div style={{ width: 6, height: 6, borderRadius: "50%", background: c[WORKFLOW_COLORS[entry.newStatus]] || c.textDim, marginTop: 5, flexShrink: 0 }} />
+    <div style={{ flex: 1 }}>
+      <span style={{ color: c.text, fontWeight: 600 }}>{entry.actor}</span>
+      <span style={{ color: c.textDim }}> changed task #{entry.taskId} to </span>
+      <span style={{ color: c[WORKFLOW_COLORS[entry.newStatus]] || c.accent, fontWeight: 600 }}>{entry.newStatus.replace("_", " ")}</span>
+    </div>
+    <span style={{ fontSize: 9, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>
+      {new Date(entry.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+    </span>
+  </div>
+);
+
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = (n) => {
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
@@ -487,28 +640,33 @@ const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
 };
 
 // ── INSIGHT ROW ──────────────────────────────────────────────
-const InsightRow = ({ item, c, onClick }) => (
-  <div onClick={onClick} style={{
-    display: "flex", gap: 12, alignItems: "flex-start", padding: "11px 14px",
-    background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 10,
-    cursor: "pointer", transition: "all 0.15s", marginBottom: 8,
-    borderLeft: `3px solid ${item.color}`, boxShadow: c.shadow1,
-    position: "relative",
-  }}
-  onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = c.shadow2; e.currentTarget.style.transform = "translateX(2px)"; }}
-  onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.boxShadow = c.shadow1; e.currentTarget.style.transform = "none"; }}
-  >
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.55, fontWeight: 500 }}>{item.text}</div>
-      <div style={{ fontSize: 10, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontWeight: 600 }}>{item.source}</span>
-        <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint, display: "inline-block" }} />
-        <span>{item.time} ago</span>
+const InsightRow = ({ item, c, onClick }) => {
+  const sev = INSIGHT_SEVERITY[item.severity] || {};
+  return (
+    <div onClick={onClick} style={{
+      display: "flex", gap: 12, alignItems: "flex-start", padding: "11px 14px",
+      background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 10,
+      cursor: "pointer", transition: "all 0.15s", marginBottom: 8,
+      borderLeft: `3px solid ${item.color}`, boxShadow: c.shadow1,
+      position: "relative",
+    }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = c.shadow2; e.currentTarget.style.transform = "translateX(2px)"; }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.boxShadow = c.shadow1; e.currentTarget.style.transform = "none"; }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.55, fontWeight: 500 }}>{item.text}</div>
+        <div style={{ fontSize: 10, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <span style={{ fontWeight: 600 }}>{item.source}</span>
+          <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint, display: "inline-block" }} />
+          <span>{item.time} ago</span>
+          {item.severity && <span style={{ fontSize: 8, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: `${c[sev.color]}15`, color: c[sev.color], letterSpacing: "0.04em" }}>{sev.label}</span>}
+          {item.action && <span style={{ fontSize: 9, color: c.accent, fontWeight: 600 }}>{item.action}</span>}
+        </div>
       </div>
+      <ChevronRight size={14} color={c.textFaint} style={{ flexShrink: 0, marginTop: 2 }} />
     </div>
-    <ChevronRight size={14} color={c.textFaint} style={{ flexShrink: 0, marginTop: 2 }} />
-  </div>
-);
+  );
+};
 
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
@@ -685,7 +843,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => {
           </div>
           <div style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: c.purpleDim, color: c.purple, border: `1px solid ${c.purple}20` }}>4 active</div>
         </div>
-        {INSIGHTS.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
+        {AI_INSIGHTS_ENRICHED.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
       </div>
     </div>
 
@@ -755,7 +913,7 @@ const CopilotView = ({ c, toast }) => {
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
-          system: "You are the FinanceOS AI Copilot for Acme SaaS Corp. You have access to their full financials: Revenue $51.19M YTD (+4.3% vs $49.1M plan), Gross Margin 84.7%, EBITDA $3.78M (7.4% margin), ARR $48.6M, NDR 118%, Rule of 40: 52.1, Headcount 312. Enterprise ACV up 28% ($142K→$182K), AI module 34% attach rate. S&M $730K over budget (3 AEs hired early + SaaStr $180K). R&D 14 heads behind plan. Mid-market win rate declining vs Runway (they win 58% H2H). Competitors: Pigment (~$80M ARR, $100K+ pricing), Runway (a16z backed, $30-100K), Anaplan ($200K+ enterprise). Be specific with numbers. Format with **bold headers** and bullet points starting with •. Keep answers concise but data-rich.",
+          system: AI_SYSTEM_PROMPT,
           messages: [{ role: "user", content: userMsg }],
         }),
       });
@@ -1931,6 +2089,18 @@ export default function FinanceOS() {
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         @keyframes themeSwitch { 0% { opacity: 0.92; } 100% { opacity: 1; } }
+        @keyframes rippleOut { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* ENV 4: Accessibility + Theme Refinement */
+        :focus-visible { outline: 2px solid ${c.accent}; outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+        @media print {
+          .noise-overlay, nav, [data-sidebar] { display: none !important; }
+          * { color: #000 !important; background: #fff !important; box-shadow: none !important; }
+        }
+        html { scroll-behavior: smooth; }
         .view-fade { animation: fadeIn 0.25s ease-out; }
         .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }
       `}</style>
@@ -1938,7 +2108,7 @@ export default function FinanceOS() {
       <div className="noise-overlay" />
 
       {/* ── SIDEBAR ── */}
-      <div className="theme-transition" style={{
+      <div data-sidebar className="theme-transition" style={{
         width: 230, minHeight: "100vh", background: c.sidebarBg,
         borderRight: `1px solid ${c.border}`, display: "flex", flexDirection: "column", flexShrink: 0,
         boxShadow: mode === "dark" ? "4px 0 20px rgba(0,0,0,0.15)" : "4px 0 20px rgba(0,0,0,0.04)",
