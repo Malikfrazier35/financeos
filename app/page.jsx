@@ -633,6 +633,20 @@ const FeatureTooltip = ({ text, c, children }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 8: AUTOSAVE/PREFERENCE AUTOMATION
 // ══════════════════════════════════════════════════════════════
+// ── RESPONSIVE HOOK ──────────────────────────────────────────
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia(query);
+    setMatches(mq.matches);
+    const handler = (e) => setMatches(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [query]);
+  return matches;
+};
+
 const usePreferences = (key, defaultVal) => {
   const [value, setValue] = useState(defaultVal);
   const [hydrated, setHydrated] = useState(false);
@@ -2308,7 +2322,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
     const providerMap = { Google: "google", Microsoft: "azure", Apple: "apple" };
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider: providerMap[provider],
-      options: { redirectTo: typeof window !== "undefined" ? window.location.origin : "https://financeos-rho.vercel.app" },
+      options: { redirectTo: typeof window !== "undefined" ? window.location.origin : "https://finance-os.app" },
     });
     if (err) { setError(err.message); setLoading(null); }
     // On success, browser redirects — no need to call onAuth
@@ -2620,7 +2634,8 @@ const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const [authModal, setAuthModal] = useState(null);
   const [heroEmail, setHeroEmail] = useState("");
-  const [emailStatus, setEmailStatus] = useState(null); // null | "saving" | "saved" | "error"
+  const [emailStatus, setEmailStatus] = useState(null);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Direct entry to dashboard — captures email if provided
   const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "" }); };
@@ -2675,9 +2690,9 @@ const LandingPage = ({ onLogin }) => {
       </nav>
 
       {/* Hero */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "48px 20px 40px" : "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
         <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)", fontSize: 11, fontWeight: 600, color: "#60a5fa", marginBottom: 24, letterSpacing: "0.03em" }}>AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY</div>
-        <h1 style={{ fontSize: 56, fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.035em", marginBottom: 20 }}>
+        <h1 style={{ fontSize: isMobile ? 36 : 56, fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.035em", marginBottom: 20 }}>
           Financial planning<br />that thinks before<br />it answers
         </h1>
         <p style={{ fontSize: 18, color: "#6b7280", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400 }}>
@@ -3110,6 +3125,8 @@ export default function FinanceOS() {
   const [periodOpen, setPeriodOpen] = useState(false);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isTablet = useMediaQuery("(max-width: 1024px)");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { toasts, toast } = useToast();
 
@@ -3280,18 +3297,12 @@ export default function FinanceOS() {
         html { scroll-behavior: smooth; }
         /* Responsive — Landing Page */
         @media (max-width: 768px) {
-          .landing-grid-3 { grid-template-columns: 1fr !important; }
-          .landing-grid-4 { grid-template-columns: 1fr 1fr !important; }
-          .landing-hero h1 { font-size: 36px !important; }
-          .landing-nav-links { display: none !important; }
-          .landing-pricing { grid-template-columns: 1fr !important; }
-          .landing-footer-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
-          .landing-comparison { overflow-x: auto; }
-          .landing-comparison table { min-width: 600px; }
+          [data-sidebar] { display: none !important; }
+          [data-topbar] { padding: 8px 16px !important; }
+          [data-main-content] { padding: 16px !important; }
         }
         @media (max-width: 480px) {
-          .landing-grid-4 { grid-template-columns: 1fr !important; }
-          .landing-footer-grid { grid-template-columns: 1fr !important; }
+          [data-topbar] { flex-wrap: wrap; gap: 8px !important; }
         }
         .view-fade { animation: fadeIn 0.25s ease-out; }
         .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }

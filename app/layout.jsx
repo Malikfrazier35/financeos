@@ -4,11 +4,11 @@ export const metadata = {
   keywords: ["FP&A", "financial planning", "AI copilot", "variance detection", "scenario modeling", "SaaS finance"],
   authors: [{ name: "FinanceOS" }],
   creator: "FinanceOS",
-  metadataBase: new URL("https://financeos-rho.vercel.app"),
+  metadataBase: new URL("https://finance-os.app"),
   openGraph: {
     title: "FinanceOS — AI-Powered FP&A Platform",
     description: "Financial planning that thinks before it answers. Connect your ERP, CRM, and billing data into a unified model with AI-powered insights.",
-    url: "https://financeos-rho.vercel.app",
+    url: "https://finance-os.app",
     siteName: "FinanceOS",
     type: "website",
     locale: "en_US",
