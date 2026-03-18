@@ -1470,58 +1470,77 @@ const ForecastView = ({ c }) => {
       </div>
 
       {/* Chart */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
-          Revenue Forecast — 12-Month with Scenarios ($K)
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, marginBottom: 16, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}40, ${c.accent}20, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}10)`, border: `1px solid ${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <TrendingUp size={14} color={c.green} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Revenue Forecast</div>
+              <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>12-month · Base + Bull/Bear scenarios ($K)</div>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: retrained ? c.greenDim : c.surfaceAlt, color: retrained ? c.green : c.textDim, border: `1px solid ${retrained ? c.green : c.borderSub}15`, fontFamily: "'JetBrains Mono', monospace" }}>MAPE {retrained ? "2.9%" : "3.2%"}</div>
+          </div>
         </div>
-        <ResponsiveContainer width="100%" height={240}>
-          <ComposedChart data={FORECAST_DATA} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
+        <ResponsiveContainer width="100%" height={250}>
+          <ComposedChart data={FORECAST_DATA} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
             <defs>
-              <linearGradient id="gBull" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.08} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gBull" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.12} /><stop offset="50%" stopColor={c.green} stopOpacity={0.04} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gActFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.18} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
             </defs>
-            <CartesianGrid stroke={c.borderSub} strokeDasharray="3 3" />
-            <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `${(v/1000).toFixed(0)}M`} />
-            <Tooltip content={<ChartTooltip c={c} />} />
-            <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBull)" name="Bull Case" />
-            <Line type="monotone" dataKey="actual" stroke={c.accent} strokeWidth={2.5} name="Actual" dot={{ r: 3, fill: c.accent }} connectNulls={false} />
-            <Line type="monotone" dataKey="base" stroke={c.green} strokeWidth={2} strokeDasharray="6 3" name="Base Forecast" dot={{ r: 3, fill: c.green }} connectNulls={false} />
-            <Line type="monotone" dataKey="bull" stroke={c.green} strokeWidth={1} strokeDasharray="3 3" name="Bull" dot={false} connectNulls={false} opacity={0.5} />
-            <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.5} />
+            <CartesianGrid stroke={c.chartGrid || c.borderSub} strokeDasharray="3 6" vertical={false} />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis || c.textDim, fontWeight: 600 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: c.chartAxis || c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}M`} />
+            <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
+            <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBull)" name="Bull Range" />
+            <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gActFc)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: c.accent, stroke: c.surface, strokeWidth: 2 }} connectNulls={false} />
+            <Line type="monotone" dataKey="base" stroke={c.green} strokeWidth={2} strokeDasharray="8 4" name="Base Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} connectNulls={false} />
+            <Line type="monotone" dataKey="bull" stroke={c.green} strokeWidth={1} strokeDasharray="3 3" name="Bull" dot={false} connectNulls={false} opacity={0.4} />
+            <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.4} />
           </ComposedChart>
         </ResponsiveContainer>
-        {/* Terminal status bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, padding: "6px 10px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> LIVE</span>
-          <span>12 data points</span>
-          <span>Model: ETS + XGBoost + Linear</span>
-          <span>Mode: Base + Bull/Bear</span>
-          <span style={{ marginLeft: "auto" }}>MAPE: 3.2%</span>
+        {/* Legend */}
+        <div style={{ display: "flex", gap: 14, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, alignItems: "center" }}>
+          {[
+            { label: "Actual", color: c.accent }, { label: "Base Forecast", color: c.green },
+            { label: "Bull", color: c.green, opacity: 0.4 }, { label: "Bear", color: c.red, opacity: 0.4 },
+          ].map(s => (
+            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 600, opacity: s.opacity || 1 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 3, background: `${s.color}25`, border: `2px solid ${s.color}`, display: "inline-block" }} />
+              {s.label}
+            </span>
+          ))}
+          <span style={{ marginLeft: "auto", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>FY: ${adjusted.toFixed(1)}M</span>
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 12 }}>
-            Top Drivers (SHAP Importance)
-          </div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Top Drivers</div>
+          <div style={{ fontSize: 10, color: c.textDim, marginBottom: 14 }}>SHAP feature importance</div>
           {DRIVERS.map((d, i) => (
             <div key={d.name} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <span style={{ fontSize: 11, color: i < 5 ? c.text : c.textDim, flex: 1 }}>{i + 1}. {d.name}</span>
-              <div style={{ width: 80, height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ width: `${d.shap}%`, height: "100%", background: i < 3 ? c.accent : i < 5 ? c.cyan : c.textFaint, borderRadius: 3 }} />
+              <span style={{ fontSize: 9, fontWeight: 800, color: i < 3 ? c.accent : c.textFaint, width: 14, textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{i + 1}</span>
+              <span style={{ fontSize: 11, color: i < 5 ? c.text : c.textDim, flex: 1, fontWeight: i < 3 ? 600 : 400 }}>{d.name}</span>
+              <div style={{ width: 80, height: 5, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
+                <div style={{ width: `${d.shap}%`, height: "100%", background: `linear-gradient(90deg, ${i < 3 ? c.accent : i < 5 ? c.cyan : c.textFaint}, ${i < 3 ? c.accent : i < 5 ? c.cyan : c.textFaint}80)`, borderRadius: 3 }} />
               </div>
-              <span style={{ fontSize: 10, fontWeight: 700, color: i < 5 ? c.accent : c.textDim, fontFamily: "'JetBrains Mono', monospace", width: 40, textAlign: "right" }}>{d.shap}%</span>
+              <span style={{ fontSize: 10, fontWeight: 800, color: i < 3 ? c.accent : i < 5 ? c.cyan : c.textDim, fontFamily: "'JetBrains Mono', monospace", width: 36, textAlign: "right" }}>{d.shap}%</span>
             </div>
           ))}
         </div>
 
         {/* Assumption sliders */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 12 }}>
-            Adjust Key Assumptions
-          </div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Key Assumptions</div>
+          <div style={{ fontSize: 10, color: c.textDim, marginBottom: 14 }}>Drag to adjust forecast inputs</div>
           {[
             { label: "NDR Rate", value: ndr, set: setNdr, min: 95, max: 140, unit: "%", color: c.accent },
             { label: "Pipeline Conversion", value: pipeline, set: setPipeline, min: 15, max: 65, unit: "%", color: c.cyan },
@@ -2413,17 +2432,21 @@ const ScenariosView = ({ c, toast }) => {
       </div>
 
       {/* Horizontal bar comparison */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 16, boxShadow: c.cardGlow }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: c.textDim, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 14 }}>Revenue Comparison</div>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", marginBottom: 16, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: c.text }}>Revenue Comparison</div>
+          <div style={{ fontSize: 9, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>EBITDA →</div>
+        </div>
         {scenarios.map((s, i) => (
-          <div key={s.name} onClick={() => setSelected(i)} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, cursor: "pointer", opacity: selected === i ? 1 : 0.6, transition: "opacity 0.15s" }}>
+          <div key={s.name} onClick={() => setSelected(i)} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, cursor: "pointer", opacity: selected === i ? 1 : 0.55, transition: "all 0.2s", transform: selected === i ? "translateX(2px)" : "none" }}>
             <div style={{ width: 120, fontSize: 11, fontWeight: selected === i ? 700 : 500, color: selected === i ? c.text : c.textDim, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
-            <div style={{ flex: 1, height: 24, background: c.surfaceAlt, borderRadius: 6, overflow: "hidden", position: "relative" }}>
-              <div style={{ height: "100%", width: `${(s.revenue / barMax) * 100}%`, background: s.status === "Active" ? `linear-gradient(90deg, ${c.accent}, ${c.accentMid || c.accent}80)` : c.borderBright, borderRadius: 6, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8 }}>
-                <span style={{ fontSize: 10, fontWeight: 800, color: s.status === "Active" ? "#fff" : c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>${s.revenue}M</span>
+            <div style={{ flex: 1, height: 28, background: c.surfaceAlt, borderRadius: 8, overflow: "hidden", position: "relative" }}>
+              <div style={{ height: "100%", width: `${(s.revenue / barMax) * 100}%`, background: s.status === "Active" ? `linear-gradient(90deg, ${c.accent}, ${c.accent}90)` : `linear-gradient(90deg, ${c.borderBright}, ${c.borderBright}80)`, borderRadius: 8, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 10, boxShadow: selected === i && s.status === "Active" ? `0 0 12px ${c.accent}20` : "none" }}>
+                <span style={{ fontSize: 11, fontWeight: 800, color: s.status === "Active" ? "#fff" : c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>${s.revenue}M</span>
               </div>
             </div>
-            <div style={{ width: 60, fontSize: 10, fontWeight: 600, color: s.ebitda > 5 ? c.green : s.ebitda > 0 ? c.amber : c.red, textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%</div>
+            <div style={{ width: 52, fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, textAlign: "center", fontFamily: "'JetBrains Mono', monospace", background: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.greenDim : (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 0 ? c.amberDim : c.redDim, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 0 ? c.amber : c.red }}>{typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%</div>
           </div>
         ))}
       </div>
