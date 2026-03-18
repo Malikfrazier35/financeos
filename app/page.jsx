@@ -319,9 +319,11 @@ const COPILOT_PROMPTS = [
   "What drove the revenue beat?",
   "Compare us vs Pigment",
   "Should we raise guidance?",
-  "Show benchmark scorecard",
+  "Rule of 40 breakdown",
+  "NDR by segment",
   "Top H2 risks",
   "Write a board summary",
+  "Burn multiple trend",
 ];
 
 const NAV_ITEMS = [
@@ -335,6 +337,62 @@ const NAV_ITEMS = [
   { id: "integrations", label: "Integrations", icon: Plug, section: "Platform" },
   { id: "settings", label: "Settings", icon: Settings, section: "Platform" },
 ];
+
+// ── LOADING SKELETON ────────────────────────────────────────
+const Skeleton = ({ c, width = "100%", height = 12, radius = 6 }) => (
+  <div style={{
+    width, height, borderRadius: radius, background: `linear-gradient(90deg, ${c.surfaceAlt} 25%, ${c.bg2} 50%, ${c.surfaceAlt} 75%)`,
+    backgroundSize: "200% 100%", animation: "shimmer 1.5s ease-in-out infinite",
+  }} />
+);
+
+const LoadingSkeleton = ({ c }) => (
+  <div style={{ padding: 32 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
+      {[0,1,2,3,4,5].map(i => (
+        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22 }}>
+          <Skeleton c={c} width={80} height={10} />
+          <div style={{ height: 12 }} />
+          <Skeleton c={c} width={120} height={28} />
+          <div style={{ height: 8 }} />
+          <Skeleton c={c} width={60} height={14} />
+        </div>
+      ))}
+    </div>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 24 }}>
+      <Skeleton c={c} width={200} height={12} />
+      <div style={{ height: 16 }} />
+      <Skeleton c={c} height={200} radius={8} />
+    </div>
+  </div>
+);
+
+// ── EMPTY STATE ─────────────────────────────────────────────
+const EmptyState = ({ c, icon: Icon, title, sub, cta, onAction }) => (
+  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 40px", textAlign: "center" }}>
+    <div style={{ width: 56, height: 56, borderRadius: 16, background: c.accentDim, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+      <Icon size={24} color={c.accent} strokeWidth={1.5} />
+    </div>
+    <div style={{ fontSize: 16, fontWeight: 700, color: c.text, marginBottom: 6 }}>{title}</div>
+    <div style={{ fontSize: 13, color: c.textDim, maxWidth: 360, lineHeight: 1.6, marginBottom: 20 }}>{sub}</div>
+    {cta && <button onClick={onAction} style={{ fontSize: 12, padding: "10px 20px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 12px ${c.accent}30` }}>{cta}</button>}
+  </div>
+);
+
+// ── EXPORT BAR ──────────────────────────────────────────────
+const ExportBar = ({ c, title, onCSV, onPDF }) => (
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+    <span style={{ fontSize: 16, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{title}</span>
+    <div style={{ display: "flex", gap: 6 }}>
+      {[{ label: "Export CSV", fn: onCSV }, { label: "Export PDF", fn: onPDF }].map(b => (
+        <button key={b.label} onClick={b.fn} style={{ fontSize: 10, padding: "6px 12px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+        >{b.label}</button>
+      ))}
+    </div>
+  </div>
+);
 
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = (n) => {
@@ -810,7 +868,7 @@ const CopilotView = ({ c, toast }) => {
 // ══════════════════════════════════════════════════════════════
 // P&L VIEW
 // ══════════════════════════════════════════════════════════════
-const PnlView = ({ c, onNav }) => {
+const PnlView = ({ c, onNav, toast }) => {
   const [collapsed, setCollapsed] = useState({});
   const toggle = (section) => setCollapsed(prev => ({ ...prev, [section]: !prev[section] }));
 
@@ -831,6 +889,10 @@ const PnlView = ({ c, onNav }) => {
 
   return (
     <div style={{ padding: 32, overflow: "auto" }}>
+      <ExportBar c={c} title="P&L Statement — FY2025 YTD"
+        onCSV={() => toast("P&L exported as CSV", "success")}
+        onPDF={() => toast("P&L exported as PDF", "success")}
+      />
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
@@ -1503,6 +1565,51 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
+      {/* Competitive Comparison — SWOT: position vs Pigment, Anaplan, Runway */}
+      <div style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>How FinanceOS compares</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>Enterprise capability at mid-market pricing. No 6-month implementation.</p>
+        </div>
+        <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid #23232a" }}>
+                {["Capability", "FinanceOS", "Anaplan", "Pigment", "Runway"].map((h, i) => (
+                  <th key={h} style={{ padding: "14px 16px", textAlign: i === 0 ? "left" : "center", fontSize: 11, fontWeight: 700, color: i === 1 ? "#60a5fa" : "#6b7280", textTransform: "uppercase", letterSpacing: "0.04em" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { cap: "AI Copilot with visible reasoning", us: true, an: false, pi: false, ru: true },
+                { cap: "Self-serve onboarding (days, not months)", us: true, an: false, pi: false, ru: true },
+                { cap: "Published transparent pricing", us: true, an: false, pi: false, ru: false },
+                { cap: "Multi-entity consolidation", us: true, an: true, pi: true, ru: false },
+                { cap: "Scenario modeling (4+ side-by-side)", us: true, an: true, pi: true, ru: true },
+                { cap: "Real-time variance detection", us: true, an: false, pi: true, ru: false },
+                { cap: "30+ native integrations", us: true, an: true, pi: true, ru: true },
+                { cap: "Implementation time", us: "Days", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
+                { cap: "Starting price", us: "$599/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
+              ].map(row => (
+                <tr key={row.cap} style={{ borderBottom: "1px solid #1b1b20" }}>
+                  <td style={{ padding: "12px 16px", color: "#9ca3b0", fontWeight: 500 }}>{row.cap}</td>
+                  {[row.us, row.an, row.pi, row.ru].map((v, i) => (
+                    <td key={i} style={{ padding: "12px 16px", textAlign: "center" }}>
+                      {typeof v === "boolean" ? (
+                        v ? <Check size={16} color="#34d399" strokeWidth={2.5} /> : <X size={14} color="#44495a" strokeWidth={2} />
+                      ) : (
+                        <span style={{ fontWeight: 700, color: i === 0 ? "#60a5fa" : "#6b7280", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{v}</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Pricing */}
       <div id="pricing" style={{ padding: "60px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
@@ -1753,6 +1860,7 @@ export default function FinanceOS() {
         @keyframes cmdIn { from { opacity: 0; transform: scale(0.96) translateY(-8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         @keyframes themeSwitch { 0% { opacity: 0.92; } 100% { opacity: 1; } }
         .view-fade { animation: fadeIn 0.25s ease-out; }
         .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }
@@ -1985,7 +2093,7 @@ export default function FinanceOS() {
         <div key={view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
           {view === "dashboard" && <DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} />}
           {view === "copilot" && <CopilotView c={c} toast={toast} />}
-          {view === "pnl" && <PnlView c={c} onNav={navigate} />}
+          {view === "pnl" && <PnlView c={c} onNav={navigate} toast={toast} />}
           {view === "forecast" && <ForecastView c={c} />}
           {view === "consolidation" && <ConsolidationView c={c} onNav={navigate} toast={toast} />}
           {view === "models" && <ScenariosView c={c} />}
