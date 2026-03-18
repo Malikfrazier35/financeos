@@ -781,20 +781,23 @@ const ChartTooltip = ({ active, payload, label, c }) => {
 // ── SPARKLINE ────────────────────────────────────────────────
 const Spark = ({ data, color, width = 64, height = 24 }) => {
   const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
-  const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 2) - 1}`).join(" ");
+  const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 4) - 2}`).join(" ");
   const areaPoints = `0,${height} ${points} ${width},${height}`;
   const id = `sp${Math.random().toString(36).slice(2, 6)}`;
+  const lastY = parseFloat(points.split(" ").pop().split(",")[1]);
   return (
     <svg width={width} height={height} style={{ display: "block" }}>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity={0.2} />
+          <stop offset="0%" stopColor={color} stopOpacity={0.25} />
+          <stop offset="50%" stopColor={color} stopOpacity={0.08} />
           <stop offset="100%" stopColor={color} stopOpacity={0} />
         </linearGradient>
       </defs>
       <polygon points={areaPoints} fill={`url(#${id})`} />
-      <polyline points={points} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={width} cy={parseFloat(points.split(" ").pop().split(",")[1])} r={2} fill={color} />
+      <polyline points={points} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={width} cy={lastY} r={3} fill={color} opacity={0.3} />
+      <circle cx={width} cy={lastY} r={2} fill={color} />
     </svg>
   );
 };
@@ -803,35 +806,40 @@ const Spark = ({ data, color, width = 64, height = 24 }) => {
 const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
   const Icon = kpi.icon;
   const [hovered, setHovered] = useState(false);
+  const accentColor = c[kpi.accent] || c.accent;
   return (
     <div onClick={onClick} style={{
-      background: c.surface, border: `1px solid ${hovered ? c[kpi.accent] + "50" : c.border}`, borderRadius: 14, padding: "20px 22px",
-      cursor: "pointer", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+      background: c.surface, border: `1px solid ${hovered ? accentColor + "40" : c.border}`, borderRadius: 16, padding: "22px 24px",
+      cursor: "pointer", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
       position: "relative", overflow: "hidden",
-      boxShadow: hovered ? `0 8px 28px ${c[kpi.accent]}15, 0 0 0 1px ${c[kpi.accent]}20` : c.cardGlow,
-      transform: hovered ? "translateY(-3px)" : "none",
+      boxShadow: hovered ? `0 12px 36px ${accentColor}12, 0 0 0 1px ${accentColor}18` : c.cardGlow,
+      transform: hovered ? "translateY(-4px)" : "none",
       animation: `fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) ${index * 0.06}s both`,
     }}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
     >
-      {/* Subtle top accent line — brightens on hover */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c[kpi.accent]}00, ${c[kpi.accent]}${hovered ? "80" : "40"}, ${c[kpi.accent]}00)`, transition: "all 0.3s" }} />
+      {/* Gradient accent top edge */}
+      <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${accentColor}${hovered ? "90" : "35"}, transparent)`, transition: "all 0.3s", borderRadius: "0 0 2px 2px" }} />
       {/* Ambient corner glow on hover */}
-      {hovered && <div style={{ position: "absolute", top: -30, right: -30, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, ${c[kpi.accent]}12 0%, transparent 70%)`, pointerEvents: "none" }} />}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-        <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: hovered ? c.textSec : c.textFaint, transition: "color 0.2s" }}>{kpi.label}</div>
-        <div style={{ width: 30, height: 30, borderRadius: 8, background: `${c[kpi.accent]}${hovered ? "22" : "15"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}>
-          <Icon size={14} color={c[kpi.accent]} strokeWidth={2} />
+      {hovered && <div style={{ position: "absolute", top: -40, right: -40, width: 100, height: 100, borderRadius: "50%", background: `radial-gradient(circle, ${accentColor}10 0%, transparent 70%)`, pointerEvents: "none" }} />}
+      {/* Subtle background sparkline watermark */}
+      <div style={{ position: "absolute", bottom: 0, right: 0, opacity: hovered ? 0.08 : 0.04, transition: "opacity 0.3s", pointerEvents: "none" }}>
+        <Spark data={kpi.spark} color={accentColor} width={120} height={50} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: hovered ? c.textSec : c.textFaint, transition: "color 0.2s" }}>{kpi.label}</div>
+        <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${accentColor}${hovered ? "22" : "12"}, ${accentColor}08)`, border: `1px solid ${accentColor}${hovered ? "20" : "08"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.25s" }}>
+          <Icon size={15} color={accentColor} strokeWidth={2} />
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", position: "relative", zIndex: 1 }}>
         <div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
+          <div style={{ fontSize: 30, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
           <div style={{
-            fontSize: 11, fontWeight: 700, marginTop: 6, padding: "3px 8px", borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 3,
+            fontSize: 11, fontWeight: 700, marginTop: 8, padding: "3px 10px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 3,
             color: kpi.up ? c.green : c.red, background: kpi.up ? c.greenDim : c.redDim,
-            border: `1px solid ${kpi.up ? c.green : c.red}20`,
+            border: `1px solid ${kpi.up ? c.green : c.red}15`,
           }}>
             {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
           </div>
@@ -4249,10 +4257,11 @@ export default function FinanceOS() {
 
       {/* ── MAIN ── */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
-        {/* Ambient gradient orbs — stronger in dark, softer in light */}
+        {/* Ambient gradient orbs — atmospheric depth */}
         <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0, transition: "opacity 0.6s ease" }}>
-          <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}${mode === "dark" ? "08" : "04"} 0%, transparent 70%)`, filter: "blur(80px)", transition: "background 0.6s ease" }} />
-          <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "50%", height: "50%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}${mode === "dark" ? "06" : "03"} 0%, transparent 70%)`, filter: "blur(80px)", transition: "background 0.6s ease" }} />
+          <div style={{ position: "absolute", top: "-25%", right: "-12%", width: "65%", height: "65%", borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}${mode === "dark" ? "06" : "03"} 0%, transparent 60%)`, filter: "blur(100px)", transition: "background 0.8s ease" }} />
+          <div style={{ position: "absolute", bottom: "-20%", left: "-8%", width: "55%", height: "55%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}${mode === "dark" ? "05" : "02"} 0%, transparent 60%)`, filter: "blur(100px)", transition: "background 0.8s ease" }} />
+          <div style={{ position: "absolute", top: "30%", left: "40%", width: "30%", height: "30%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}${mode === "dark" ? "03" : "01"} 0%, transparent 60%)`, filter: "blur(120px)", transition: "background 0.8s ease" }} />
         </div>
 
         {/* Demo data banner — ENV 7 */}
