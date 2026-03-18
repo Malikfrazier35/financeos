@@ -627,14 +627,21 @@ const FeatureTooltip = ({ text, c, children }) => {
 // ENV 8: AUTOSAVE/PREFERENCE AUTOMATION
 // ══════════════════════════════════════════════════════════════
 const usePreferences = (key, defaultVal) => {
-  const [value, setValue] = useState(() => {
-    if (typeof window === "undefined") return defaultVal;
-    try { const stored = localStorage.getItem(`fos_${key}`); return stored ? JSON.parse(stored) : defaultVal; }
-    catch { return defaultVal; }
-  });
+  const [value, setValue] = useState(defaultVal);
+  const [hydrated, setHydrated] = useState(false);
+  // Read from localStorage AFTER hydration to prevent SSR mismatch
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem(`fos_${key}`);
+      if (stored !== null) setValue(JSON.parse(stored));
+    } catch {}
+    setHydrated(true);
+  }, [key]);
+  // Persist changes (but not the initial hydration read)
+  useEffect(() => {
+    if (!hydrated) return;
     try { localStorage.setItem(`fos_${key}`, JSON.stringify(value)); } catch {}
-  }, [key, value]);
+  }, [key, value, hydrated]);
   return [value, setValue];
 };
 
@@ -2750,6 +2757,26 @@ export default function FinanceOS() {
   // View loading state — shows skeleton on view switch
   const [viewLoading, setViewLoading] = useState(false);
   const loadingTimer = useRef(null);
+
+  // Wait for localStorage hydration before rendering to prevent flash
+  const [appReady, setAppReady] = useState(false);
+  useEffect(() => {
+    // Small delay to let usePreferences read localStorage
+    const t = setTimeout(() => setAppReady(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Show branded loading while hydrating preferences
+  if (!appReady) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b", flexDirection: "column", gap: 16 }}>
+        <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 900, color: "#fff" }}>F</div>
+        <div style={{ width: 120, height: 3, borderRadius: 2, background: "#131316", overflow: "hidden" }}>
+          <div style={{ width: "40%", height: "100%", background: "linear-gradient(90deg, #60a5fa, #a78bfa)", borderRadius: 2, animation: "shimmer 1.5s ease-in-out infinite" }} />
+        </div>
+      </div>
+    );
+  }
 
   // Show marketing page when not logged in
   if (!loggedIn) {
