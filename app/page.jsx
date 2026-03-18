@@ -188,6 +188,7 @@ const CMD_ITEMS = [
   { id: "consolidation", label: "Multi-Entity Consolidation", section: "Navigate", icon: Layers },
   { id: "close", label: "Close Tasks", section: "Navigate", icon: CheckSquare },
   { id: "integrations", label: "Integrations", section: "Navigate", icon: Plug },
+  { id: "admin", label: "Admin Console", section: "Navigate", icon: Shield },
   { id: "ask-revenue", label: "Ask: What drove the revenue beat?", section: "AI Copilot", icon: Sparkles },
   { id: "ask-benchmark", label: "Ask: Show benchmark scorecard", section: "AI Copilot", icon: Sparkles },
   { id: "ask-risk", label: "Ask: Top H2 risks", section: "AI Copilot", icon: Sparkles },
@@ -335,6 +336,7 @@ const NAV_ITEMS = [
   { id: "models", label: "Scenarios", icon: GitBranch, section: "Planning" },
   { id: "close", label: "Close Tasks", icon: CheckSquare, section: "Planning" },
   { id: "integrations", label: "Integrations", icon: Plug, section: "Platform" },
+  { id: "admin", label: "Admin", icon: Shield, section: "Platform" },
   { id: "settings", label: "Settings", icon: Settings, section: "Platform" },
 ];
 
@@ -592,7 +594,7 @@ const PWAInstallPrompt = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 7: LIVE DEMO PIPELINE
 // ══════════════════════════════════════════════════════════════
-const DemoBanner = ({ c }) => (
+const DemoBanner = ({ c, onNav }) => (
   <div style={{
     display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "7px 16px",
     background: `linear-gradient(90deg, ${c.accent}15, ${c.purple}10)`, borderBottom: `1px solid ${c.accent}20`,
@@ -600,7 +602,7 @@ const DemoBanner = ({ c }) => (
   }}>
     <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.06em" }}>DEMO</span>
     <span>You are viewing sample data for <strong style={{ color: c.text }}>Acme SaaS Corp</strong>. Connect your own data to get started.</span>
-    <span style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect ERP</span>
+    <span onClick={() => onNav("integrations")} style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect ERP</span>
   </div>
 );
 
@@ -976,9 +978,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => {
           <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Refer a finance team</div>
           <div style={{ fontSize: 11, color: c.textDim }}>They get 20% off first month. You get $100 credit.</div>
         </div>
-        <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, border: `1px solid ${c.border}`, color: c.textSec, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}
-          onClick={() => toast("Referral link copied to clipboard", "success")}
-        >Copy Link</div>
+        <button onClick={() => toast("Referral link copied to clipboard", "success")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit" }}>Copy Link</button>
       </div>
       {/* Ecosystem */}
       <div style={{ background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}06)`, border: `1px solid ${c.accent}20`, borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
@@ -989,7 +989,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => {
           <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Vaultline Suite</div>
           <div style={{ fontSize: 11, color: c.textDim }}>Add Treasury or Compliance. Save 15% with the bundle.</div>
         </div>
-        <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>Explore</div>
+        <button onClick={() => toast("Vaultline Suite — explore at vaultline.com", "success")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", border: "none", fontFamily: "inherit" }}>Explore</button>
       </div>
     </div>
   </div>
@@ -1655,6 +1655,253 @@ const SCENARIOS_LIST = [
   { name: "Mid-Market Recovery", revenue: 66.1, opex: 40.8, ebitda: 9.5, status: "Draft", updated: "Mar 5" },
 ];
 
+// ══════════════════════════════════════════════════════════════
+// SUPER-ADMIN DASHBOARD
+// ══════════════════════════════════════════════════════════════
+const AdminView = ({ c, toast, onNav }) => {
+  const [tab, setTab] = useState("overview");
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "users", label: "Users & Roles" },
+    { id: "billing", label: "Revenue" },
+    { id: "system", label: "System Health" },
+  ];
+
+  const adminKpis = [
+    { label: "Total MRR", value: "$147.2K", delta: "+12.4%", up: true, color: c.accent },
+    { label: "Active Orgs", value: "84", delta: "+6", up: true, color: c.green },
+    { label: "API Calls (24h)", value: "2.4M", delta: "+18%", up: true, color: c.purple },
+    { label: "Error Rate", value: "0.03%", delta: "-0.01%", up: true, color: c.green },
+    { label: "Avg Response", value: "142ms", delta: "-8ms", up: true, color: c.cyan },
+    { label: "Active Users", value: "312", delta: "+24", up: true, color: c.accent },
+  ];
+
+  const users = [
+    { name: "Sarah Chen", email: "sarah@acme.io", role: "Admin", status: "active", lastActive: "2 min ago", sessions: 3 },
+    { name: "James Park", email: "james@acme.io", role: "Manager", status: "active", lastActive: "14 min ago", sessions: 1 },
+    { name: "Maria Lopez", email: "maria@acme.io", role: "Budget Owner", status: "active", lastActive: "1 hr ago", sessions: 1 },
+    { name: "David Kim", email: "david@acme.io", role: "Viewer", status: "inactive", lastActive: "3 days ago", sessions: 0 },
+    { name: "Rachel Green", email: "rachel@acme.io", role: "Manager", status: "active", lastActive: "28 min ago", sessions: 2 },
+    { name: "Tom Wilson", email: "tom@acme.io", role: "Budget Owner", status: "invited", lastActive: "Never", sessions: 0 },
+  ];
+
+  const events = [
+    { action: "User sign-in", actor: "Sarah Chen", time: "2 min ago", type: "auth" },
+    { action: "P&L exported as PDF", actor: "James Park", time: "14 min ago", type: "data" },
+    { action: "Scenario created: Bull Case Q3", actor: "Maria Lopez", time: "1 hr ago", type: "action" },
+    { action: "API key regenerated", actor: "Sarah Chen", time: "2 hr ago", type: "security" },
+    { action: "Integration connected: NetSuite", actor: "James Park", time: "4 hr ago", type: "integration" },
+    { action: "Role changed: David Kim → Viewer", actor: "Sarah Chen", time: "1 day ago", type: "admin" },
+    { action: "Invoice paid: $1,799.00", actor: "System", time: "3 days ago", type: "billing" },
+    { action: "User invited: tom@acme.io", actor: "Sarah Chen", time: "5 days ago", type: "admin" },
+  ];
+
+  const eventColors = { auth: c.green, data: c.accent, action: c.purple, security: c.amber, integration: c.cyan, admin: c.textSec, billing: c.green };
+
+  return (
+    <div style={{ padding: 32 }}>
+      {/* Tab bar */}
+      <div style={{ display: "flex", gap: 4, marginBottom: 24, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 480 }}>
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{
+            flex: 1, fontSize: 11, padding: "8px 0", borderRadius: 7, border: "none",
+            background: tab === t.id ? c.surface : "transparent",
+            color: tab === t.id ? c.text : c.textDim,
+            fontWeight: tab === t.id ? 700 : 500, cursor: "pointer", fontFamily: "inherit",
+            boxShadow: tab === t.id ? c.shadow1 : "none", transition: "all 0.15s",
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {tab === "overview" && (<>
+        {/* Admin KPIs */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
+          {adminKpis.map(k => (
+            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 8 }}>{k.label}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                <span style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: k.up ? c.green : c.red, background: k.up ? c.greenDim : c.redDim, padding: "2px 6px", borderRadius: 4 }}>{k.delta}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Activity Feed */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Activity Log</div>
+            {events.map((e, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start" }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: eventColors[e.type] || c.textDim, marginTop: 5, flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{e.action}</div>
+                  <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{e.actor} · {e.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Quick Admin Actions */}
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Admin Actions</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                { label: "Invite User", desc: "Send invite to new team member", action: () => toast("Invite sent — check user's email", "success") },
+                { label: "Export Audit Log", desc: "Download full activity history as CSV", action: () => toast("Audit log exported — 312 events", "success") },
+                { label: "Rotate API Keys", desc: "Regenerate all active API keys", action: () => toast("API keys rotated — update integrations", "warning") },
+                { label: "Force Sync All", desc: "Trigger sync on all connected integrations", action: () => { toast("Syncing 4 integrations...", "success"); } },
+                { label: "Generate SOC 2 Report", desc: "Export compliance evidence package", action: () => toast("SOC 2 evidence package generated", "success") },
+                { label: "Purge Demo Data", desc: "Remove all sample data from organization", action: () => toast("Demo data purge requires confirmation — check Settings", "warning") },
+              ].map(a => (
+                <button key={a.label} onClick={a.action} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderRadius: 8,
+                  border: `1px solid ${c.border}`, background: "transparent", cursor: "pointer", fontFamily: "inherit", textAlign: "left",
+                  transition: "all 0.15s", color: c.text,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.background = c.accentDim; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = "transparent"; }}
+                >
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{a.label}</div>
+                    <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{a.desc}</div>
+                  </div>
+                  <ChevronRight size={14} color={c.textFaint} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>)}
+
+      {tab === "users" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", boxShadow: c.cardGlow }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
+                {["User", "Role", "Status", "Last Active", "Sessions", "Actions"].map(h => (
+                  <th key={h} style={{ padding: "10px 14px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, textAlign: "left", background: c.bg2 }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u, i) => (
+                <tr key={u.email} style={{ borderBottom: `1px solid ${c.borderSub}`, background: i % 2 === 0 ? "transparent" : c.surfaceAlt }}>
+                  <td style={{ padding: "12px 14px" }}>
+                    <div style={{ fontWeight: 600, color: c.text }}>{u.name}</div>
+                    <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{u.email}</div>
+                  </td>
+                  <td style={{ padding: "12px 14px" }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: u.role === "Admin" ? c.accentDim : c.surfaceAlt, color: u.role === "Admin" ? c.accent : c.textSec }}>{u.role}</span>
+                  </td>
+                  <td style={{ padding: "12px 14px" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: u.status === "active" ? c.green : u.status === "invited" ? c.amber : c.textFaint }} />
+                      <span style={{ fontSize: 11, color: c.textSec, textTransform: "capitalize" }}>{u.status}</span>
+                    </span>
+                  </td>
+                  <td style={{ padding: "12px 14px", fontSize: 11, color: c.textDim }}>{u.lastActive}</td>
+                  <td style={{ padding: "12px 14px", fontSize: 11, color: c.textSec, fontFamily: "'JetBrains Mono', monospace" }}>{u.sessions}</td>
+                  <td style={{ padding: "12px 14px" }}>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <button onClick={() => toast(`Editing ${u.name}`, "success")} style={{ fontSize: 10, padding: "4px 10px", borderRadius: 4, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Edit</button>
+                      {u.status === "invited" && <button onClick={() => toast(`Resent invite to ${u.email}`, "success")} style={{ fontSize: 10, padding: "4px 10px", borderRadius: 4, border: `1px solid ${c.amber}40`, background: c.amberDim, color: c.amber, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Resend</button>}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tab === "billing" && (
+        <div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
+            {[
+              { label: "MRR", value: "$147.2K", sub: "84 active subscriptions" },
+              { label: "ARR", value: "$1.77M", sub: "Projected from current MRR" },
+              { label: "Avg Contract Value", value: "$1,752", sub: "Across all tiers" },
+              { label: "Churn Rate", value: "2.1%", sub: "Last 30 days" },
+            ].map(k => (
+              <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: c.cardGlow }}>
+                <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 6 }}>{k.label}</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.value}</div>
+                <div style={{ fontSize: 10, color: c.textDim }}>{k.sub}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue by Plan</div>
+            {[
+              { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13 },
+              { plan: "Growth ($1,799/mo)", orgs: 38, mrr: "$68.4K", pct: 46 },
+              { plan: "Business ($4,799/mo)", orgs: 14, mrr: "$67.2K", pct: 41 },
+            ].map(p => (
+              <div key={p.plan} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{p.plan}</div>
+                  <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{p.orgs} organizations</div>
+                </div>
+                <div style={{ width: 200, height: 8, background: c.bg2, borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ width: `${p.pct}%`, height: "100%", background: c.accent, borderRadius: 4, transition: "width 0.3s" }} />
+                </div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", minWidth: 70, textAlign: "right" }}>{p.mrr}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === "system" && (
+        <div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {/* Service Status */}
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Service Status</div>
+              {[
+                { name: "API Gateway", status: "operational", latency: "42ms" },
+                { name: "Supabase (us-east-1)", status: "operational", latency: "18ms" },
+                { name: "Claude AI (Copilot)", status: "operational", latency: "890ms" },
+                { name: "Stripe Billing", status: "operational", latency: "156ms" },
+                { name: "Vercel Edge", status: "operational", latency: "12ms" },
+                { name: "Google Fonts CDN", status: "operational", latency: "8ms" },
+              ].map(s => (
+                <div key={s.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.status === "operational" ? c.green : c.red }} />
+                    <span style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{s.name}</span>
+                  </div>
+                  <span style={{ fontSize: 10, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{s.latency}</span>
+                </div>
+              ))}
+            </div>
+            {/* Security Headers */}
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security Posture</div>
+              {[
+                { name: "HSTS Preload", grade: "A+", status: "active" },
+                { name: "Content Security Policy", grade: "A", status: "active" },
+                { name: "Cross-Origin Policies", grade: "A+", status: "active" },
+                { name: "Row-Level Security", grade: "A+", status: "0 advisories" },
+                { name: "MFA Enforcement", grade: "B", status: "optional" },
+                { name: "SOC 2 Type II", grade: "—", status: "audit pending" },
+              ].map(s => (
+                <div key={s.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <span style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{s.name}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 10, color: c.textDim }}>{s.status}</span>
+                    <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: s.grade.includes("A") ? c.greenDim : s.grade === "B" ? c.amberDim : c.surfaceAlt, color: s.grade.includes("A") ? c.green : s.grade === "B" ? c.amber : c.textDim }}>{s.grade}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ScenariosView = ({ c, toast }) => {
   const [selected, setSelected] = useState(null);
 
@@ -2266,7 +2513,7 @@ export default function FinanceOS() {
     else { navigate(item.id); }
   };
 
-  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", settings: "Settings" };
+  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", settings: "Settings" };
 
   let currentSection = "";
 
@@ -2472,7 +2719,7 @@ export default function FinanceOS() {
         </div>
 
         {/* Demo data banner — ENV 7 */}
-        <DemoBanner c={c} />
+        <DemoBanner c={c} onNav={navigate} />
 
         {/* Topbar — frosted glass */}
         <div className="theme-transition" style={{
@@ -2549,6 +2796,7 @@ export default function FinanceOS() {
           {view === "models" && <ScenariosView c={c} toast={toast} />}
           {view === "close" && <CloseView c={c} toast={toast} />}
           {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
+          {view === "admin" && <AdminView c={c} toast={toast} onNav={navigate} />}
           {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} />}
           </>)}
         </div>
