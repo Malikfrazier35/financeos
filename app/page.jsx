@@ -2005,43 +2005,87 @@ const CloseView = ({ c, toast }) => {
         </div>
       </div>
 
-      {/* Task list */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
-        {tasks.map((t, i) => {
-          const priorityColors = { high: c.red, med: c.amber, low: c.textFaint };
+      {/* Task list — grouped by category */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {["Accounting", "Consolidation", "Compliance", "Reporting", "Review"].filter(cat => tasks.some(t => t.cat === cat)).map(cat => {
+          const catTasks = tasks.filter(t => t.cat === cat);
+          const catDone = catTasks.filter(t => t.status === "done").length;
+          const catPct = Math.round((catDone / catTasks.length) * 100);
           return (
-          <div key={t.id} style={{
-            display: "flex", alignItems: "center", gap: 12, padding: "14px 18px",
-            borderBottom: i < tasks.length - 1 ? `1px solid ${c.borderSub}` : "none",
-            opacity: t.status === "done" ? 0.5 : 1, cursor: t.status !== "done" ? "pointer" : "default",
-            transition: "all 0.2s", borderLeft: `3px solid ${t.status === "done" ? c.green : priorityColors[t.priority] || c.accent}`,
-          }}
-          onClick={() => t.status !== "done" && complete(t.id)}
-          onMouseEnter={e => { if (t.status !== "done") { e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "translateX(2px)"; }}}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
-          >
-            <div style={{
-              width: 22, height: 22, borderRadius: 7, border: `2px solid ${t.status === "done" ? c.green : c.border}`,
-              background: t.status === "done" ? `linear-gradient(135deg, ${c.green}, ${c.green}cc)` : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-              boxShadow: t.status === "done" ? `0 0 8px ${c.green}30` : "none",
-            }}>
-              {t.status === "done" && <Check size={12} color="#fff" strokeWidth={3} />}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none", marginBottom: 3 }}>{t.task}</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 10, color: c.textDim }}>
-                <span>{t.owner}</span>
-                <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
-                <span>Due {t.due}</span>
-                <span style={{ padding: "1px 6px", borderRadius: 3, background: `${priorityColors[t.priority]}12`, color: priorityColors[t.priority], fontWeight: 700, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>{t.priority}</span>
-                <span style={{ padding: "1px 6px", borderRadius: 3, background: c.surfaceAlt, color: c.textFaint, fontWeight: 600, fontSize: 8 }}>{t.cat}</span>
+            <div key={cat} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", boxShadow: c.cardGlow }}>
+              {/* Category header */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: c.surfaceAlt, borderBottom: `1px solid ${c.borderSub}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: c.textSec, textTransform: "uppercase", letterSpacing: "0.08em" }}>{cat}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3, background: catPct === 100 ? c.greenDim : c.accentDim, color: catPct === 100 ? c.green : c.accent }}>{catDone}/{catTasks.length}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{ width: 60, height: 3, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${catPct}%`, height: "100%", background: catPct === 100 ? c.green : c.accent, borderRadius: 2, transition: "width 0.4s" }} />
+                  </div>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: catPct === 100 ? c.green : c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>{catPct}%</span>
+                </div>
               </div>
+              {/* Tasks */}
+              {catTasks.map((t, i) => {
+                const priorityColors = { high: c.red, med: c.amber, low: c.textFaint };
+                return (
+                <div key={t.id} style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 18px",
+                  borderBottom: i < catTasks.length - 1 ? `1px solid ${c.borderSub}` : "none",
+                  opacity: t.status === "done" ? 0.5 : 1, cursor: t.status !== "done" ? "pointer" : "default",
+                  transition: "all 0.2s", borderLeft: `3px solid ${t.status === "done" ? c.green : priorityColors[t.priority] || c.accent}`,
+                }}
+                onClick={() => t.status !== "done" && complete(t.id)}
+                onMouseEnter={e => { if (t.status !== "done") { e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "translateX(2px)"; }}}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
+                >
+                  <div style={{
+                    width: 22, height: 22, borderRadius: 7, border: `2px solid ${t.status === "done" ? c.green : c.border}`,
+                    background: t.status === "done" ? `linear-gradient(135deg, ${c.green}, ${c.green}cc)` : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+                    boxShadow: t.status === "done" ? `0 0 8px ${c.green}30` : "none",
+                  }}>
+                    {t.status === "done" && <Check size={12} color="#fff" strokeWidth={3} />}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none", marginBottom: 3 }}>{t.task}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 10, color: c.textDim }}>
+                      <span>{t.owner}</span>
+                      <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
+                      <span>Due {t.due}</span>
+                      <span style={{ padding: "1px 6px", borderRadius: 3, background: `${priorityColors[t.priority]}12`, color: priorityColors[t.priority], fontWeight: 700, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>{t.priority}</span>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: `${statusColor[t.status]}15`, color: statusColor[t.status], border: `1px solid ${statusColor[t.status]}20` }}>{statusLabel[t.status]}</span>
+                </div>
+                );
+              })}
             </div>
-            <span style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: `${statusColor[t.status]}15`, color: statusColor[t.status], border: `1px solid ${statusColor[t.status]}20` }}>{statusLabel[t.status]}</span>
-          </div>
           );
         })}
+      </div>
+
+      {/* Close timeline */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "18px 22px", marginTop: 16, boxShadow: c.cardGlow }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: c.textSec, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.06em" }}>Close Timeline</div>
+        <div style={{ display: "flex", gap: 0, position: "relative" }}>
+          {["Mar 3", "Mar 4", "Mar 5", "Mar 6", "Mar 7", "Mar 8"].map((day, i) => {
+            const dayTasks = tasks.filter(t => t.due === day);
+            const allDone = dayTasks.every(t => t.status === "done");
+            const hasPending = dayTasks.some(t => t.status !== "done");
+            return (
+              <div key={day} style={{ flex: 1, textAlign: "center", position: "relative" }}>
+                {i < 5 && <div style={{ position: "absolute", top: 10, left: "50%", width: "100%", height: 2, background: allDone && !hasPending ? c.green : c.borderSub, zIndex: 0 }} />}
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: allDone && dayTasks.length > 0 ? c.green : hasPending ? c.accent : c.bg2, display: "inline-flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1, border: `2px solid ${allDone && dayTasks.length > 0 ? c.green : c.borderSub}` }}>
+                  {allDone && dayTasks.length > 0 && <Check size={10} color="#fff" strokeWidth={3} />}
+                  {!allDone && dayTasks.length > 0 && <span style={{ fontSize: 8, fontWeight: 800, color: "#fff" }}>{dayTasks.length}</span>}
+                </div>
+                <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>{day}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -3466,32 +3510,59 @@ const PLAN_OPTIONS = [
 ];
 
 // ── ONBOARDING WIZARD ────────────────────────────────────────
-const OnboardingWizard = ({ c, userName, onComplete }) => {
+const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
   const [step, setStep] = useState(0);
   const [org, setOrg] = useState({ name: "", industry: "", fy: "December", currency: "USD", erp: "" });
   const steps = [
-    { title: "Set up your organization", sub: "Basic details to customize your experience" },
-    { title: "Connect your data", sub: "Link your ERP, CRM, or billing system" },
-    { title: "You're all set", sub: "Your workspace is ready" },
+    { title: "Set up your organization", sub: "Basic details to customize your experience", time: "~30 sec" },
+    { title: "Connect your data", sub: "Link your ERP, CRM, or billing system", time: "~1 min" },
+    { title: "You're all set", sub: "Your workspace is ready", time: "" },
   ];
   const erps = ["NetSuite", "QuickBooks", "Xero", "SAP", "Sage Intacct", "Workday", "Other", "Skip for now"];
   const inputStyle = { width: "100%", fontSize: 13, padding: "11px 14px", borderRadius: 10, border: `1px solid ${c?.border || "#23232a"}`, background: c?.surfaceAlt || "#0c0c0f", color: c?.text || "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" };
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10001, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div style={{ width: 500, background: c?.surface || "#131316", border: `1px solid ${c?.border || "#23232a"}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
-        {/* Progress dots */}
-        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 24 }}>
-          {steps.map((_, i) => (
-            <div key={i} style={{ width: i === step ? 24 : 8, height: 8, borderRadius: 4, background: i <= step ? (c?.accent || "#60a5fa") : (c?.borderBright || "#33384a"), transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }} />
+      <div style={{ width: 520, background: c?.surface || "#131316", border: `1px solid ${c?.border || "#23232a"}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+        {/* Step progress bar with labels */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, position: "relative" }}>
+          {/* Connecting line */}
+          <div style={{ position: "absolute", top: 14, left: "16.5%", right: "16.5%", height: 2, background: c?.borderSub || "#1e2230", zIndex: 0 }} />
+          <div style={{ position: "absolute", top: 14, left: "16.5%", height: 2, background: `linear-gradient(90deg, ${c?.accent || "#60a5fa"}, ${c?.green || "#34d399"})`, zIndex: 1, transition: "width 0.4s cubic-bezier(0.22,1,0.36,1)", width: step === 0 ? "0%" : step === 1 ? "50%" : "67%" }} />
+          {steps.map((s, i) => (
+            <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, zIndex: 2, flex: 1 }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 11, fontWeight: 800, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+                background: i < step ? `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})` : i === step ? (c?.accent || "#60a5fa") : (c?.bg2 || "#1e2230"),
+                color: i <= step ? "#fff" : (c?.textFaint || "#44495a"),
+                border: `2px solid ${i <= step ? "transparent" : (c?.borderSub || "#23232a")}`,
+                boxShadow: i === step ? `0 0 12px ${(c?.accent || "#60a5fa")}30` : "none",
+              }}>
+                {i < step ? <Check size={14} strokeWidth={3} /> : i + 1}
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: i <= step ? (c?.text || "#f0f2f5") : (c?.textFaint || "#44495a"), textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>
+                {i === 0 ? "Setup" : i === 1 ? "Connect" : "Ready"}
+              </div>
+            </div>
           ))}
         </div>
 
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: c?.text || "#f0f2f5", marginBottom: 6 }}>
+        {/* Pending plan indicator */}
+        {planStatus?.startsWith("pending:") && (
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16, padding: "8px 14px", borderRadius: 8, background: `${c?.accent || "#60a5fa"}08`, border: `1px solid ${c?.accent || "#60a5fa"}15`, fontSize: 10 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: c?.green || "#34d399", animation: "pulse 2s infinite" }} />
+            <span style={{ color: c?.textDim || "#6b7280" }}>Plan:</span>
+            <span style={{ fontWeight: 700, color: c?.accent || "#60a5fa" }}>{planStatus.replace("pending:", "")} — activating</span>
+          </div>
+        )}
+
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.03em", color: c?.text || "#f0f2f5", marginBottom: 6 }}>
             {step === 2 ? `Welcome aboard${userName && userName !== "Guest" ? `, ${userName.split(" ")[0]}` : ""}!` : steps[step].title}
           </div>
           <div style={{ fontSize: 13, color: c?.textDim || "#6b7280" }}>{steps[step].sub}</div>
+          {steps[step].time && <div style={{ fontSize: 10, color: c?.textFaint || "#44495a", marginTop: 4 }}>{steps[step].time}</div>}
         </div>
 
         {step === 0 && (
@@ -3527,27 +3598,30 @@ const OnboardingWizard = ({ c, userName, onComplete }) => {
         )}
 
         {step === 2 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center", padding: "8px 0" }}>
-            <div style={{ width: 56, height: 56, borderRadius: 16, background: `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "center", padding: "8px 0" }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4, boxShadow: `0 8px 24px ${(c?.green || "#34d399")}25` }}>
               <Check size={28} color="#fff" strokeWidth={3} />
             </div>
-            <div style={{ fontSize: 12, color: c?.textDim || "#6b7280", textAlign: "center", lineHeight: 1.7 }}>
-              {org.name && <span>Organization: <strong style={{ color: c?.text || "#f0f2f5" }}>{org.name}</strong><br /></span>}
-              {org.erp && org.erp !== "Skip for now" && <span>Data source: <strong style={{ color: c?.text || "#f0f2f5" }}>{org.erp}</strong><br /></span>}
-              Your dashboard is loaded with sample data. Connect live data anytime from Integrations.
+            <div style={{ background: c?.surfaceAlt || "#0c0c0f", borderRadius: 10, padding: "14px 20px", fontSize: 12, color: c?.textDim || "#6b7280", textAlign: "center", lineHeight: 1.7, width: "100%" }}>
+              {org.name && <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Organization</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.name}</strong></div>}
+              {org.industry && <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Industry</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.industry}</strong></div>}
+              {org.erp && org.erp !== "Skip for now" && <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Data source</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.erp}</strong></div>}
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>FY End</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.fy}</strong></div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Currency</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.currency}</strong></div>
             </div>
+            <div style={{ fontSize: 10, color: c?.textFaint || "#44495a", textAlign: "center" }}>Dashboard loaded with sample data. Connect live data anytime from Integrations.</div>
           </div>
         )}
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 }}>
           {step > 0 ? (
-            <button onClick={() => setStep(s => s - 1)} style={{ fontSize: 12, color: c?.textDim || "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}>Back</button>
+            <button onClick={() => setStep(s => s - 1)} style={{ fontSize: 12, color: c?.textDim || "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>← Back</button>
           ) : <div />}
           <button onClick={() => { if (step < 2) setStep(s => s + 1); else onComplete(org); }} style={{
             fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
             background: step === 2 ? `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})` : (c?.accent || "#60a5fa"), color: "#fff",
             boxShadow: `0 4px 16px ${(c?.accent || "#60a5fa")}25`,
-          }}>{step === 2 ? "Go to Dashboard" : "Continue"}</button>
+          }}>{step === 2 ? "Go to Dashboard →" : "Continue →"}</button>
         </div>
       </div>
     </div>
