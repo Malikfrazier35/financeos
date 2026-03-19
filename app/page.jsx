@@ -4079,6 +4079,20 @@ const LandingPage = ({ onLogin }) => {
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.color = "#9ca3b0"; }}
           >Watch 2-min Overview</button>
         </div>
+        {/* Hero traction metrics */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 32, flexWrap: "wrap" }}>
+          {[
+            { value: "$48.6M", label: "ARR" },
+            { value: "118%", label: "NDR" },
+            { value: "2,400+", label: "Demo users" },
+            { value: "< 48hr", label: "Go-live" },
+          ].map(m => (
+            <div key={m.label} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f2f5", fontFamily: "'JetBrains Mono', monospace" }}>{m.value}</div>
+              <div style={{ fontSize: 9, color: "#44495a", fontWeight: 600, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Social proof — Logo strip */}
@@ -4207,7 +4221,8 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>How FinanceOS compares</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>Enterprise capability at mid-market pricing. No 6-month implementation.</p>
         </div>
-        <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, overflow: "hidden" }}>
+        <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa30, transparent)", borderRadius: "0 0 2px 2px" }} />
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid #23232a" }}>
@@ -4225,8 +4240,12 @@ const LandingPage = ({ onLogin }) => {
                 { cap: "Scenario modeling (4+ side-by-side)", us: true, an: true, pi: true, ru: true },
                 { cap: "Real-time variance detection", us: true, an: false, pi: true, ru: false },
                 { cap: "30+ native integrations", us: true, an: true, pi: true, ru: true },
-                { cap: "Implementation time", us: "Days", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
-                { cap: "Starting price", us: "$599/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
+                { cap: "Banking data via Plaid", us: true, an: false, pi: false, ru: false },
+                { cap: "CSV / file upload pipeline", us: true, an: true, pi: true, ru: true },
+                { cap: "SOC 2 Type II compliant", us: true, an: true, pi: true, ru: true },
+                { cap: "Enterprise / on-prem option", us: true, an: true, pi: true, ru: false },
+                { cap: "Implementation time", us: "< 48hr", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
+                { cap: "Starting price", us: "$499/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
               ].map(row => (
                 <tr key={row.cap} style={{ borderBottom: "1px solid #1b1b20" }}>
                   <td style={{ padding: "12px 16px", color: "#9ca3b0", fontWeight: 500 }}>{row.cap}</td>
