@@ -3786,53 +3786,62 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Pricing */}
-      <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "60px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Pricing</div>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Simple, transparent pricing</h2>
-          <p style={{ fontSize: 15, color: "#6b7280", marginBottom: 20 }}>No hidden fees. No implementation charges. Cancel anytime.</p>
-          <div style={{ display: "inline-flex", background: "#131316", borderRadius: 8, padding: 3, border: "1px solid #23232a" }}>
-            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "7px 16px", borderRadius: 6, border: "none", background: billing === "monthly" ? "#23232a" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Monthly</button>
-            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "7px 16px", borderRadius: 6, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Annual (save 17%)</button>
+          <p style={{ fontSize: 15, color: "#8b92a5", marginBottom: 24 }}>No hidden fees. No implementation charges. Cancel anytime.</p>
+          <div style={{ display: "inline-flex", background: "#111318", borderRadius: 10, padding: 3, border: "1px solid #1e2230" }}>
+            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "monthly" ? "#1e2230" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
+            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "annual" ? "#1e2230" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Annual <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: "rgba(52,211,153,0.10)", color: "#34d399", marginLeft: 4 }}>-17%</span></button>
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {plans.map(p => (
-            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 16, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 16px 48px rgba(96,165,250,0.15)" : "0 12px 40px rgba(0,0,0,0.3)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#33384a"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#23232a"; }}
+            <div key={p.name} style={{ background: p.popular ? "linear-gradient(180deg, rgba(96,165,250,0.04) 0%, #111318 100%)" : "#111318", border: `1px solid ${p.popular ? "#60a5fa50" : "#1e2230"}`, borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.12), 0 12px 40px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 20px 60px rgba(96,165,250,0.12)" : "0 12px 40px rgba(0,0,0,0.25)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#3d4558"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.12), 0 12px 40px rgba(96,165,250,0.08)" : "none"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa50" : "#1e2230"; }}
             >
-              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 12px", borderRadius: 6, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 10, fontWeight: 700, color: "#fff" }}>MOST POPULAR</div>}
-              <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 16 }}>
-                <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>${billing === "annual" ? p.annual : p.monthly}</span>
-                <span style={{ fontSize: 13, color: "#6b7280" }}>/mo</span>
+              {p.popular && <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa50, transparent)", borderRadius: "0 0 2px 2px" }} />}
+              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
+              <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>{p.name}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
+                <span style={{ fontSize: 40, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em" }}>${billing === "annual" ? p.annual : p.monthly}</span>
+                <span style={{ fontSize: 13, color: "#8b92a5" }}>/mo</span>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+              {billing === "annual" && <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 14 }}>Save ${((p.monthly - p.annual) * 12).toLocaleString()}/year</div>}
+              {billing === "monthly" && <div style={{ height: 20 }} />}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
                 {p.features.map(f => (
-                  <div key={f} style={{ fontSize: 13, color: "#9ca3b0", display: "flex", alignItems: "center", gap: 8 }}>
+                  <div key={f} style={{ fontSize: 13, color: "#9ea5b8", display: "flex", alignItems: "center", gap: 8 }}>
                     <Check size={14} color="#34d399" strokeWidth={2.5} /> {f}
                   </div>
                 ))}
               </div>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={enterDemo} style={{
-                  flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 8, border: `1px solid #23232a`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
-                  background: "transparent", color: "#9ca3b0",
-                }}>Try Demo</button>
+                  flex: 1, fontSize: 12, padding: "12px 0", borderRadius: 10, border: "1px solid #1e2230", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                  background: "transparent", color: "#8b92a5", transition: "all 0.15s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#8b92a5"; }}
+                >Try Demo</button>
                 <button onClick={() => { try { window.open(billing === "annual" ? p.linkAnnual : p.linkMonthly, "_blank"); } catch {} }} style={{
-                  flex: 2, fontSize: 12, padding: "11px 0", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
-                  background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
+                  flex: 2, fontSize: 12, padding: "12px 0", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                  background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#1e2230", color: "#fff", transition: "all 0.15s",
+                  boxShadow: p.popular ? "0 4px 16px rgba(96,165,250,0.2)" : "none",
                 }}>Subscribe</button>
               </div>
-              <div style={{ textAlign: "center", marginTop: 8, fontSize: 10, color: "#44495a" }}>30-day money-back guarantee</div>
+              <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558" }}>30-day money-back guarantee</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* FAQ */}
-      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 800, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.12)", fontSize: 10, fontWeight: 700, color: "#a78bfa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>FAQ</div>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Frequently asked questions</h2>
         </div>
         {[
@@ -3844,33 +3853,41 @@ const LandingPage = ({ onLogin }) => {
           { q: "What happens after the free trial?", a: "After 14 days, choose a plan that fits your team. All data is preserved. If you cancel, you get a 30-day money-back guarantee — no questions asked." },
           { q: "Do you offer custom pricing for large teams?", a: "Yes. Teams with 50+ users or special compliance requirements can contact us for custom enterprise pricing with dedicated SLA, CSM, and on-premises deployment options." },
         ].map((faq, i) => (
-          <details key={i} style={{ borderBottom: "1px solid #1b1b20", cursor: "pointer" }}>
-            <summary style={{ padding: "18px 0", fontSize: 15, fontWeight: 600, color: "#f0f2f5", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <details key={i} style={{ borderBottom: "1px solid #1e2230", cursor: "pointer" }}>
+            <summary style={{ padding: "20px 0", fontSize: 15, fontWeight: 600, color: "#f0f2f5", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               {faq.q}
-              <ChevronDown size={16} color="#6b7280" style={{ flexShrink: 0, transition: "transform 0.2s" }} />
+              <ChevronDown size={16} color="#8b92a5" style={{ flexShrink: 0, transition: "transform 0.2s" }} />
             </summary>
-            <div style={{ padding: "0 0 18px", fontSize: 13, color: "#9ca3b0", lineHeight: 1.7 }}>{faq.a}</div>
+            <div style={{ padding: "0 0 20px", fontSize: 13, color: "#9ea5b8", lineHeight: 1.75 }}>{faq.a}</div>
           </details>
         ))}
       </div>
 
       {/* Security & Trust */}
-      <div id="security" style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div id="security" style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Security</div>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Enterprise-grade security</h2>
-          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>Your financial data deserves bank-level protection. We build security into every layer.</p>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>Your financial data deserves bank-level protection. We build security into every layer.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {[
-            { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging and role-based controls.", badge: "COMPLIANT" },
-            { title: "AES-256 Encryption", sub: "Data encrypted at rest and in transit. Zero plaintext storage of credentials.", badge: "AT REST + TRANSIT" },
-            { title: "Row-Level Security", sub: "Every database query is scoped to your organization. Zero cross-tenant data leakage.", badge: "SUPABASE RLS" },
-            { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, X-Frame-Options DENY, and 5 additional security headers.", badge: "VERCEL" },
+            { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging and role-based controls.", badge: "COMPLIANT", icon: Shield, color: "#34d399" },
+            { title: "AES-256 Encryption", sub: "Data encrypted at rest and in transit. Zero plaintext storage of credentials.", badge: "AT REST + TRANSIT", icon: Zap, color: "#60a5fa" },
+            { title: "Row-Level Security", sub: "Every database query is scoped to your organization. Zero cross-tenant data leakage.", badge: "SUPABASE RLS", icon: Layers, color: "#a78bfa" },
+            { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, and 5 additional security headers.", badge: "VERCEL", icon: Globe, color: "#22d3ee" },
           ].map(s => (
-            <div key={s.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 22, textAlign: "center" }}>
-              <div style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 4, background: "rgba(52,211,153,0.08)", color: "#34d399", display: "inline-block", marginBottom: 12, letterSpacing: "0.06em" }}>{s.badge}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{s.title}</div>
-              <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.6 }}>{s.sub}</div>
+            <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "24px 20px", textAlign: "center", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; e.currentTarget.style.transform = "translateY(-3px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${s.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${s.color}15, ${s.color}06)`, border: `1px solid ${s.color}12`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+                <s.icon size={18} color={s.color} strokeWidth={1.8} />
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 800, padding: "4px 10px", borderRadius: 4, background: `${s.color}08`, color: s.color, display: "inline-block", marginBottom: 10, letterSpacing: "0.06em" }}>{s.badge}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 6 }}>{s.title}</div>
+              <div style={{ fontSize: 12, color: "#8b92a5", lineHeight: 1.6 }}>{s.sub}</div>
             </div>
           ))}
         </div>
