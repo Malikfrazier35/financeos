@@ -1739,16 +1739,22 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       </div>
 
       {/* Consolidated P&L */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
-        <div style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${c.borderSub}` }}>
-          <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Consolidated P&L — Eliminations Applied</span>
-          <span style={{ fontSize: 9, color: c.purple, fontWeight: 700 }}>Auto-eliminated $1.2M IC transactions</span>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px", zIndex: 2 }} />
+        <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `2px solid ${c.borderBright}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 7, background: `linear-gradient(135deg, ${c.accent}15, ${c.cyan}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Layers size={12} color={c.accent} />
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textDim }}>Consolidated P&L — Eliminations Applied</span>
+          </div>
+          <span style={{ fontSize: 9, color: c.purple, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: c.purpleDim, border: `1px solid ${c.purple}10` }}>IC: -$1.2M auto-eliminated</span>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
           <thead>
-            <tr style={{ borderBottom: `1px solid ${c.borderSub}` }}>
+            <tr style={{ borderBottom: `1px solid ${c.borderSub}`, background: c.surfaceAlt }}>
               {["Line", "Acme US", "Acme EU", "Acme APAC", "Eliminations", "Consolidated"].map((h, i) => (
-                <th key={h} style={{ padding: "8px 12px", fontSize: 10, fontWeight: 700, color: i === 4 ? c.red : i === 5 ? c.accent : c.textDim, textAlign: i === 0 ? "left" : "right" }}>{h}</th>
+                <th key={h} style={{ padding: "10px 12px", fontSize: 9, fontWeight: 800, letterSpacing: "0.06em", color: i === 4 ? c.red : i === 5 ? c.accent : c.textFaint, textAlign: i === 0 ? "left" : "right", textTransform: "uppercase" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -1853,8 +1859,9 @@ const CloseView = ({ c, toast }) => {
           >
             <div style={{
               width: 22, height: 22, borderRadius: 7, border: `2px solid ${t.status === "done" ? c.green : c.border}`,
-              background: t.status === "done" ? c.green : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+              background: t.status === "done" ? `linear-gradient(135deg, ${c.green}, ${c.green}cc)` : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+              boxShadow: t.status === "done" ? `0 0 8px ${c.green}30` : "none",
             }}>
               {t.status === "done" && <Check size={12} color="#fff" strokeWidth={3} />}
             </div>
@@ -2675,26 +2682,33 @@ const ScenariosView = ({ c, toast }) => {
             </div>
 
             {/* Sensitivity sliders */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
               {[
                 { key: "ndr", label: "Net Dollar Retention", value: drivers.ndr, min: 80, max: 150, unit: "%", color: c.accent },
                 { key: "pipeline", label: "Pipeline ($M)", value: drivers.pipeline, min: 10, max: 80, unit: "M", color: c.green },
                 { key: "churn", label: "Gross Churn Rate", value: drivers.churn, min: 0.5, max: 8, unit: "%", color: c.red, step: 0.1 },
                 { key: "headcount", label: "Headcount", value: drivers.headcount, min: 80, max: 200, unit: "", color: c.amber },
-              ].map(d => (
-                <div key={d.key} style={{ marginBottom: 16 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 6 }}>
+              ].map(d => {
+                const pct = ((d.value - d.min) / (d.max - d.min)) * 100;
+                return (
+                <div key={d.key} style={{ marginBottom: 18 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 8 }}>
                     <span style={{ color: c.textDim, fontWeight: 600 }}>{d.label}</span>
-                    <span style={{ color: d.color, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}{d.unit}</span>
+                    <span style={{ color: d.color, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: "2px 8px", borderRadius: 5, background: `${d.color}10`, border: `1px solid ${d.color}10` }}>{d.value}{d.unit}</span>
+                  </div>
+                  <div style={{ position: "relative", height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ position: "absolute", top: 0, left: 0, height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${d.color}, ${d.color}bb)`, borderRadius: 3, transition: "width 0.1s" }} />
                   </div>
                   <input type="range" min={d.min} max={d.max} step={d.step || 1} value={d.value}
                     onChange={e => setDrivers(prev => ({ ...prev, [d.key]: parseFloat(e.target.value) }))}
-                    style={{ width: "100%", height: 4, appearance: "none", background: c.surfaceAlt, borderRadius: 4, outline: "none", accentColor: d.color }}
+                    style={{ width: "100%", height: 20, appearance: "none", background: "transparent", marginTop: -13, position: "relative", zIndex: 1, cursor: "pointer", outline: "none" }}
                   />
                 </div>
-              ))}
-              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 8, lineHeight: 1.5 }}>Drivers apply to Base Case. Drag sliders to model impact on revenue and margin.</div>
+                );
+              })}
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4, lineHeight: 1.5, padding: "8px 10px", background: c.surfaceAlt, borderRadius: 8 }}>Drivers apply to Base Case · Drag sliders to model impact on revenue and margin</div>
             </div>
           </>
         )}
@@ -2791,14 +2805,15 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       )}
 
       {activeTab === "security" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security & Access</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>Security & Access</div>
           {[{ label: "Two-Factor Authentication", value: "Enabled (TOTP)", status: "green" }, { label: "Last Password Change", value: "42 days ago", status: "amber" }, { label: "Active Sessions", value: "2 devices", status: "accent" }, { label: "API Keys", value: "1 active (created Mar 2)", status: "accent" }, { label: "Audit Log", value: "312 events this month", status: "accent" }].map(f => (
-            <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
-              <span style={{ color: c.textDim }}>{f.label}</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: c[f.status] }} />
-                <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
+            <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
+              <span style={{ color: c.textSec, fontWeight: 500 }}>{f.label}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 11, color: c.text, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace" }}>{f.value}</span>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: c[f.status], boxShadow: `0 0 6px ${c[f.status]}40` }} />
               </div>
             </div>
           ))}
