@@ -952,26 +952,34 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     <QuickActions c={c} onNav={onNav} toast={toast} />
 
     {/* Data Pipeline Status */}
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, padding: "10px 16px", background: c.surfaceAlt, borderRadius: 10, border: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, flexWrap: "wrap" }}>
+    <div onClick={() => onNav("integrations")} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, padding: "10px 16px", background: c.surfaceAlt, borderRadius: 10, border: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, flexWrap: "wrap", cursor: "pointer", transition: "all 0.15s" }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent + "30"; e.currentTarget.style.background = c.accentDim; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.background = c.surfaceAlt; }}
+    >
       <span style={{ fontWeight: 700, color: c.textSec, display: "flex", alignItems: "center", gap: 5 }}>
         <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
         Pipeline Health
       </span>
       <span style={{ width: 1, height: 14, background: c.borderSub }} />
       {[
-        { name: "NetSuite", fresh: "2m ago", ok: true },
-        { name: "Salesforce", fresh: "45s ago", ok: true },
-        { name: "Stripe", fresh: "1m ago", ok: true },
-        { name: "Rippling", fresh: "4m ago", ok: true },
-        { name: "Snowflake", fresh: "3m ago", ok: true },
+        { name: "NetSuite", fresh: "2m", ok: true },
+        { name: "Salesforce", fresh: "45s", ok: true },
+        { name: "Stripe", fresh: "1m", ok: true },
+        { name: "Rippling", fresh: "4m", ok: true },
+        { name: "Snowflake", fresh: "3m", ok: true },
+        { name: "HubSpot", fresh: "2m", ok: true },
+        { name: "Ramp", fresh: "5m", ok: true },
       ].map(p => (
-        <span key={p.name} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <span key={p.name} style={{ display: "flex", alignItems: "center", gap: 3 }}>
           <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.ok ? c.green : c.red }} />
           <span style={{ fontWeight: 600 }}>{p.name}</span>
-          <span style={{ color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 9 }}>{p.fresh}</span>
+          <span style={{ color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>{p.fresh}</span>
         </span>
       ))}
-      <span style={{ marginLeft: "auto", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>7/7 synced</span>
+      <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>7/7</span>
+        <span style={{ fontSize: 9, color: c.textFaint }}>View all →</span>
+      </span>
     </div>
 
     {/* KPI Grid — ENV 10: Premium hover glow */}
@@ -1544,6 +1552,22 @@ const PnlView = ({ c, onNav, toast }) => {
         onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
+      {/* Financial Summary KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 16 }}>
+        {[
+          { label: "Total Revenue", value: fmt(PNL_DATA[0]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[0]?.total?.actual || 0, PNL_DATA[0]?.total?.budget || 1)), fav: true, color: c.green },
+          { label: "Gross Profit", value: fmt((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0)), delta: `${(((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0)) / (PNL_DATA[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.accent },
+          { label: "Total OpEx", value: fmt(PNL_DATA[2]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[2]?.total?.actual || 0, PNL_DATA[2]?.total?.budget || 1)), fav: (PNL_DATA[2]?.total?.actual || 0) <= (PNL_DATA[2]?.total?.budget || 0), color: c.amber },
+          { label: "EBITDA", value: fmt((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0) - (PNL_DATA[2]?.total?.actual || 0) + (PNL_DATA[3]?.total?.actual || 0)), delta: `${(((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0) - (PNL_DATA[2]?.total?.actual || 0) + (PNL_DATA[3]?.total?.actual || 0)) / (PNL_DATA[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.green },
+        ].map(k => (
+          <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "14px 16px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+            <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{k.label}</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em", marginBottom: 4 }}>{k.value}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: k.fav ? c.green : c.red }}>{k.delta}</div>
+          </div>
+        ))}
+      </div>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px", zIndex: 3 }} />
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
@@ -2986,12 +3010,13 @@ const ScenariosView = ({ c, toast }) => {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: showCompare ? "1fr 1fr" : "1fr 280px", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: showCompare ? "1fr auto 1fr" : "1fr 280px", gap: showCompare ? 8 : 16 }}>
         {/* Scenario cards or comparison */}
-        {showCompare ? compare.map(idx => {
-          const s = scenarios[idx];
-          return (
-            <div key={idx} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+        {showCompare ? (() => {
+          const s1 = scenarios[compare[0]];
+          const s2 = scenarios[compare[1]];
+          const renderCard = (s) => (
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
               {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%`, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
                 <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -3001,7 +3026,27 @@ const ScenariosView = ({ c, toast }) => {
               ))}
             </div>
           );
-        }) : (
+          const deltas = [
+            { l: "Revenue", d: s2.revenue - s1.revenue, fmt: (d) => `${d >= 0 ? "+" : ""}$${d.toFixed(1)}M` },
+            { l: "OpEx", d: s2.opex - s1.opex, fmt: (d) => `${d >= 0 ? "+" : ""}$${d.toFixed(1)}M`, inv: true },
+            { l: "EBITDA", d: (typeof s2.ebitda === 'number' ? s2.ebitda : parseFloat(s2.ebitda)) - (typeof s1.ebitda === 'number' ? s1.ebitda : parseFloat(s1.ebitda)), fmt: (d) => `${d >= 0 ? "+" : ""}${d.toFixed(1)}pp` },
+          ];
+          return (<>
+            {renderCard(s1)}
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 4, padding: "40px 8px 0" }}>
+              <div style={{ fontSize: 8, fontWeight: 800, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Delta</div>
+              {deltas.map(d => {
+                const fav = d.inv ? d.d <= 0 : d.d >= 0;
+                return (
+                  <div key={d.l} style={{ fontSize: 10, fontWeight: 800, color: fav ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace", padding: "6px 10px", borderRadius: 6, background: fav ? c.greenDim : c.redDim, border: `1px solid ${fav ? c.green : c.red}12`, textAlign: "center", minWidth: 70, marginBottom: 6 }}>
+                    {d.fmt(d.d)}
+                  </div>
+                );
+              })}
+            </div>
+            {renderCard(s2)}
+          </>);
+        })() : (
           <>
             {/* Scenario cards */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
