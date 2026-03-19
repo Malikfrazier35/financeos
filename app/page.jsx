@@ -951,6 +951,29 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     {/* Quick Actions — ENV 9 */}
     <QuickActions c={c} onNav={onNav} toast={toast} />
 
+    {/* Data Pipeline Status */}
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, padding: "10px 16px", background: c.surfaceAlt, borderRadius: 10, border: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, flexWrap: "wrap" }}>
+      <span style={{ fontWeight: 700, color: c.textSec, display: "flex", alignItems: "center", gap: 5 }}>
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
+        Pipeline Health
+      </span>
+      <span style={{ width: 1, height: 14, background: c.borderSub }} />
+      {[
+        { name: "NetSuite", fresh: "2m ago", ok: true },
+        { name: "Salesforce", fresh: "45s ago", ok: true },
+        { name: "Stripe", fresh: "1m ago", ok: true },
+        { name: "Rippling", fresh: "4m ago", ok: true },
+        { name: "Snowflake", fresh: "3m ago", ok: true },
+      ].map(p => (
+        <span key={p.name} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.ok ? c.green : c.red }} />
+          <span style={{ fontWeight: 600 }}>{p.name}</span>
+          <span style={{ color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 9 }}>{p.fresh}</span>
+        </span>
+      ))}
+      <span style={{ marginLeft: "auto", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>7/7 synced</span>
+    </div>
+
     {/* KPI Grid — ENV 10: Premium hover glow */}
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 16, marginBottom: 24 }}>
       {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
@@ -1133,6 +1156,119 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
           <div style={{ fontSize: 9, fontWeight: 800, padding: "4px 12px", borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}15, ${c.accent}08)`, color: c.purple, border: `1px solid ${c.purple}18`, letterSpacing: "0.04em" }}>4 ACTIVE</div>
         </div>
         {AI_INSIGHTS_ENRICHED.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
+      </div>
+    </div>
+
+    {/* Financial Pipeline Row — Cash Flow + ARR Bridge + Pipeline */}
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 16, marginTop: 24 }}>
+
+      {/* Cash Flow Waterfall */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}08)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <DollarSign size={14} color={c.green} />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Cash Flow</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Waterfall · FY2025 YTD ($K)</div>
+          </div>
+        </div>
+        {[
+          { label: "Opening Cash", value: 12800, total: true },
+          { label: "Operating CF", value: 4200, positive: true },
+          { label: "CapEx", value: -1850, positive: false },
+          { label: "Debt Service", value: -380, positive: false },
+          { label: "AR Change", value: -620, positive: false },
+          { label: "Tax Payments", value: -1150, positive: false },
+          { label: "Closing Cash", value: 13000, total: true },
+        ].map((item, i) => {
+          const max = 13000;
+          const pct = Math.abs(item.value) / max * 100;
+          return (
+            <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontSize: 10, color: item.total ? c.text : c.textDim, fontWeight: item.total ? 700 : 500, width: 80, flexShrink: 0 }}>{item.label}</span>
+              <div style={{ flex: 1, height: 14, background: c.bg2, borderRadius: 4, overflow: "hidden", position: "relative" }}>
+                <div style={{ width: `${Math.min(pct, 100)}%`, height: "100%", borderRadius: 4, background: item.total ? `linear-gradient(90deg, ${c.accent}, ${c.accent}bb)` : item.positive ? `linear-gradient(90deg, ${c.green}, ${c.green}bb)` : `linear-gradient(90deg, ${c.red}cc, ${c.red}88)` }} />
+              </div>
+              <span style={{ fontSize: 10, fontWeight: 800, color: item.total ? c.accent : item.positive ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace", width: 55, textAlign: "right", flexShrink: 0 }}>{item.value >= 0 ? "" : ""}{fmt(item.value)}</span>
+            </div>
+          );
+        })}
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textFaint }}>
+          <span>Net change: <span style={{ color: c.green, fontWeight: 700 }}>+$200K</span></span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>Runway: 34 mo</span>
+        </div>
+      </div>
+
+      {/* ARR Bridge */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <TrendingUp size={14} color={c.accent} />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>ARR Bridge</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Movement · Q2 FY2025</div>
+          </div>
+        </div>
+        {[
+          { label: "Beginning ARR", value: 36900, color: c.accent, weight: 800 },
+          { label: "New Business", value: 6200, color: c.green, prefix: "+" },
+          { label: "Expansion", value: 4200, color: c.green, prefix: "+" },
+          { label: "Contraction", value: -820, color: c.amber, prefix: "" },
+          { label: "Churn", value: -1880, color: c.red, prefix: "" },
+          { label: "Ending ARR", value: 44600, color: c.accent, weight: 800 },
+        ].map(item => (
+          <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 3, background: `${item.color}30`, border: `2px solid ${item.color}`, flexShrink: 0 }} />
+              <span style={{ fontSize: 11, color: item.weight ? c.text : c.textSec, fontWeight: item.weight || 500 }}>{item.label}</span>
+            </div>
+            <span style={{ fontSize: 12, fontWeight: item.weight || 700, color: item.color, fontFamily: "'JetBrains Mono', monospace" }}>{item.prefix || ""}{fmt(item.value)}</span>
+          </div>
+        ))}
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textFaint }}>
+          <span>Net new ARR: <span style={{ color: c.green, fontWeight: 700 }}>+$7.7M</span></span>
+          <span>NDR: <span style={{ color: c.green, fontWeight: 700 }}>118%</span></span>
+        </div>
+      </div>
+
+      {/* Pipeline Funnel */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.green}08)`, border: `1px solid ${c.purple}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Target size={14} color={c.purple} />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Pipeline Funnel</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Active pipeline · Weighted $38M</div>
+          </div>
+        </div>
+        {[
+          { stage: "Qualified", deals: 142, value: 68.4, pct: 100, color: c.accent },
+          { stage: "Discovery", deals: 89, value: 42.1, pct: 62, color: c.cyan },
+          { stage: "Proposal", deals: 52, value: 28.6, pct: 42, color: c.purple },
+          { stage: "Negotiation", deals: 28, value: 18.2, pct: 27, color: c.amber },
+          { stage: "Closing", deals: 14, value: 12.4, pct: 18, color: c.green },
+        ].map((s, i) => (
+          <div key={s.stage} style={{ marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 4 }}>
+              <span style={{ color: c.textSec, fontWeight: 600 }}>{s.stage} <span style={{ color: c.textFaint }}>({s.deals})</span></span>
+              <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>${s.value}M</span>
+            </div>
+            <div style={{ height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden" }}>
+              <div style={{ width: `${s.pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}88)`, borderRadius: 5, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)" }} />
+            </div>
+          </div>
+        ))}
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textFaint }}>
+          <span>Win rate: <span style={{ color: c.green, fontWeight: 700 }}>32%</span></span>
+          <span>Avg cycle: <span style={{ fontWeight: 700, color: c.text }}>42 days</span></span>
+          <span>Weighted: <span style={{ fontWeight: 700, color: c.accent }}>$38M</span></span>
+        </div>
       </div>
     </div>
 
