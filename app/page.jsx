@@ -2051,27 +2051,34 @@ const CloseView = ({ c, toast }) => {
 // INTEGRATIONS VIEW
 // ══════════════════════════════════════════════════════════════
 const CONNECTORS = [
-  { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA" },
-  { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0" },
-  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF" },
-  { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847" },
-  { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8" },
-  { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59" },
-  { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E" },
+  { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA", lastSync: "2 min ago", health: 100 },
+  { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0", lastSync: "45s ago", health: 100 },
+  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", lastSync: "1 min ago", health: 100 },
+  { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847", lastSync: "4 min ago", health: 98 },
+  { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8", lastSync: "3 min ago", health: 100 },
+  { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59", lastSync: "2 min ago", health: 100 },
+  { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E", lastSync: "5 min ago", health: 97 },
+  { name: "Plaid", cat: "Banking", status: "available", records: null, color: "#0A85EA", badge: "NEW" },
   { name: "QuickBooks", cat: "ERP", status: "available", records: null, color: "#2CA01C" },
   { name: "Xero", cat: "ERP", status: "available", records: null, color: "#13B5EA" },
   { name: "Workday", cat: "HRIS", status: "available", records: null, color: "#0875E1" },
   { name: "Google Sheets", cat: "Files", status: "available", records: null, color: "#34A853" },
   { name: "Slack", cat: "Notifications", status: "available", records: null, color: "#4A154B" },
+  { name: "CSV / Excel", cat: "Files", status: "available", records: null, color: "#217346", badge: "UPLOAD" },
+  { name: "REST API", cat: "Developer", status: "available", records: null, color: "#8b92a5", badge: "BETA" },
 ];
 
 const IntegrationsView = ({ c, toast }) => {
   const [conns, setConns] = useState(CONNECTORS);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [connectingName, setConnectingName] = useState(null); // shows connection setup modal
-  const [disconnectConfirm, setDisconnectConfirm] = useState(null); // shows disconnect confirmation
+  const [connectingName, setConnectingName] = useState(null);
+  const [disconnectConfirm, setDisconnectConfirm] = useState(null);
   const [syncingName, setSyncingName] = useState(null);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadStep, setUploadStep] = useState(0); // 0=select, 1=mapping, 2=importing, 3=done
+  const [uploadFile, setUploadFile] = useState(null);
+  const [plaidOpen, setPlaidOpen] = useState(false);
   const cats = ["all", ...new Set(CONNECTORS.map(co => co.cat))];
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
@@ -2079,6 +2086,8 @@ const IntegrationsView = ({ c, toast }) => {
   const startConnect = (name) => {
     const conn = conns.find(co => co.name === name);
     if (conn?.status === "connected") { setDisconnectConfirm(name); return; }
+    if (name === "CSV / Excel") { setUploadOpen(true); setUploadStep(0); setUploadFile(null); return; }
+    if (name === "Plaid") { setPlaidOpen(true); return; }
     setConnectingName(name);
   };
 
@@ -2186,11 +2195,25 @@ const IntegrationsView = ({ c, toast }) => {
                   Live
                 </div>
               )}
+              {co.badge && co.status !== "connected" && (
+                <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 7px", borderRadius: 4, background: co.badge === "NEW" ? c.greenDim : co.badge === "UPLOAD" ? c.accentDim : c.purpleDim, color: co.badge === "NEW" ? c.green : co.badge === "UPLOAD" ? c.accent : c.purple, letterSpacing: "0.04em" }}>{co.badge}</span>
+              )}
             </div>
             {co.status === "connected" && (
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 10, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
-                <span style={{ color: c.green, fontWeight: 600 }}>{co.records} records</span>
-                <span style={{ color: co.name === syncingName ? c.amber : c.textFaint }}>{co.name === syncingName ? "Syncing..." : (co.lastSync || "3 min ago")}</span>
+              <div style={{ fontSize: 10, marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
+                  <span style={{ color: c.green, fontWeight: 600 }}>{co.records} records</span>
+                  <span style={{ color: co.name === syncingName ? c.amber : c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 9 }}>{co.name === syncingName ? "Syncing..." : (co.lastSync || "3 min ago")}</span>
+                </div>
+                {co.health != null && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 2px" }}>
+                    <span style={{ fontSize: 9, color: c.textFaint, fontWeight: 600 }}>Health</span>
+                    <div style={{ flex: 1, height: 3, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                      <div style={{ width: `${co.health}%`, height: "100%", background: co.health === 100 ? c.green : c.amber, borderRadius: 2 }} />
+                    </div>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: co.health === 100 ? c.green : c.amber, fontFamily: "'JetBrains Mono', monospace" }}>{co.health}%</span>
+                  </div>
+                )}
               </div>
             )}
             {co.status === "syncing" && (
@@ -2260,12 +2283,131 @@ const IntegrationsView = ({ c, toast }) => {
           </div>
         </div>
       )}
+
+      {/* CSV / Excel Upload Modal */}
+      {uploadOpen && (
+        <div onClick={() => setUploadOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 480, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+            {/* Progress steps */}
+            <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 20 }}>
+              {["Select File", "Map Columns", "Import"].map((label, i) => (
+                <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: uploadStep >= i ? c.accent : c.bg2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: uploadStep >= i ? "#fff" : c.textFaint, transition: "all 0.3s" }}>{i + 1}</div>
+                  <span style={{ fontSize: 10, color: uploadStep >= i ? c.text : c.textFaint, fontWeight: 600 }}>{label}</span>
+                  {i < 2 && <div style={{ width: 24, height: 1, background: uploadStep > i ? c.accent : c.borderSub }} />}
+                </div>
+              ))}
+            </div>
+
+            {uploadStep === 0 && (<>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Import Data</div>
+              <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>Upload a CSV or Excel file to import financial data.</div>
+              {/* Drop zone */}
+              <div onClick={() => setUploadFile({ name: "acme-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 })} style={{
+                border: `2px dashed ${c.border}`, borderRadius: 12, padding: "40px 24px", textAlign: "center", cursor: "pointer",
+                background: c.surfaceAlt, transition: "all 0.2s", marginBottom: 16,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.background = c.accentDim; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.surfaceAlt; }}
+              >
+                {uploadFile ? (
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 4 }}>{uploadFile.name}</div>
+                    <div style={{ fontSize: 11, color: c.textDim }}>{uploadFile.size} · {uploadFile.rows} rows detected</div>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ fontSize: 24, marginBottom: 8, opacity: 0.4 }}>📄</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 4 }}>Drop your file here or click to browse</div>
+                    <div style={{ fontSize: 10, color: c.textFaint }}>Supports .csv, .xlsx, .xls · Max 50MB</div>
+                  </div>
+                )}
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={() => setUploadOpen(false)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
+                <button onClick={() => { if (uploadFile) setUploadStep(1); else { setUploadFile({ name: "acme-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 }); setUploadStep(1); }}} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Continue</button>
+              </div>
+            </>)}
+
+            {uploadStep === 1 && (<>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Map Columns</div>
+              <div style={{ fontSize: 12, color: c.textDim, marginBottom: 16 }}>We detected {uploadFile?.rows || 1247} rows. Verify the column mapping below.</div>
+              <div style={{ background: c.surfaceAlt, borderRadius: 10, padding: 14, marginBottom: 16 }}>
+                {[
+                  { source: "Date", target: "Period", match: true },
+                  { source: "Account", target: "GL Account", match: true },
+                  { source: "Amount", target: "Actual ($)", match: true },
+                  { source: "Department", target: "Cost Center", match: true },
+                  { source: "Notes", target: "Description", match: false },
+                ].map(m => (
+                  <div key={m.source} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 11 }}>
+                    <span style={{ flex: 1, color: c.textSec, fontFamily: "'JetBrains Mono', monospace" }}>{m.source}</span>
+                    <span style={{ color: m.match ? c.green : c.amber }}>→</span>
+                    <span style={{ flex: 1, color: c.text, fontWeight: 600 }}>{m.target}</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3, background: m.match ? c.greenDim : c.amberDim, color: m.match ? c.green : c.amber }}>{m.match ? "AUTO" : "REVIEW"}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={() => setUploadStep(0)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Back</button>
+                <button onClick={() => { setUploadStep(2); setTimeout(() => { if (mountedRef.current) { setUploadStep(3); setConns(prev => prev.map(co => co.name === "CSV / Excel" ? { ...co, status: "connected", records: "1,247", lastSync: "Just now", health: 100 } : co)); }}, 2000); }} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Import {uploadFile?.rows || 1247} Rows</button>
+              </div>
+            </>)}
+
+            {uploadStep === 2 && (
+              <div style={{ textAlign: "center", padding: "40px 0" }}>
+                <div style={{ width: 40, height: 40, border: `3px solid ${c.accent}30`, borderTopColor: c.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+                <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>Importing data...</div>
+                <div style={{ fontSize: 11, color: c.textDim }}>Validating schema and writing {uploadFile?.rows || 1247} rows</div>
+              </div>
+            )}
+
+            {uploadStep === 3 && (
+              <div style={{ textAlign: "center", padding: "32px 0" }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${c.green}, ${c.accent})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+                  <Check size={24} color="#fff" strokeWidth={3} />
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: c.text, marginBottom: 4 }}>Import Complete</div>
+                <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>{uploadFile?.rows || 1247} rows imported from {uploadFile?.name || "file"}</div>
+                <button onClick={() => { setUploadOpen(false); toast("Data imported successfully", "success"); }} style={{ fontSize: 13, padding: "11px 24px", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Done</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Plaid Bank Connect Modal */}
+      {plaidOpen && (
+        <div onClick={() => setPlaidOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: "linear-gradient(135deg, #0A85EA20, #0A85EA08)", border: "1px solid #0A85EA15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: "#0A85EA" }}>P</div>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: c.text }}>Connect via Plaid</div>
+                <div style={{ fontSize: 11, color: c.textDim, marginTop: 1 }}>Securely link your bank accounts</div>
+              </div>
+            </div>
+            <div style={{ background: c.surfaceAlt, borderRadius: 10, padding: 16, marginBottom: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: c.textSec, marginBottom: 10 }}>Plaid will securely connect to:</div>
+              {["Checking & savings accounts", "Transaction history (24 months)", "Balance & cash position data", "ACH routing information"].map(item => (
+                <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", fontSize: 12, color: c.text }}>
+                  <Check size={13} color={c.green} strokeWidth={2.5} /> {item}
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16, fontSize: 10, color: c.textFaint }}>
+              <Shield size={12} /> Encrypted end-to-end · Read-only access · Revocable anytime
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => setPlaidOpen(false)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
+              <button onClick={() => { setPlaidOpen(false); toast("Plaid Link would open here — sandbox mode", "info"); confirmConnect("Plaid"); }} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: "#0A85EA", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Open Plaid Link</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
-// ══════════════════════════════════════════════════════════════
-// SCENARIOS VIEW
 // ══════════════════════════════════════════════════════════════
 const SCENARIOS_LIST = [
   { name: "Base Case", revenue: 62.8, opex: 39.6, ebitda: 7.4, status: "Active", updated: "Mar 12" },
