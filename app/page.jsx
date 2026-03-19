@@ -111,6 +111,42 @@ class SectionBoundary extends Component {
   }
 }
 
+// ── APP ERROR BOUNDARY — catches unhandled errors at the top level ──
+class AppErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  componentDidCatch(error, errorInfo) {
+    // Log to console + audit (in production: send to Sentry/LogRocket)
+    console.error("[FinanceOS] Unhandled error:", error, errorInfo);
+    try {
+      // Fire-and-forget error report to Supabase audit log
+      fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL || "https://crecesswagluelvkesul.supabase.co"}/rest/v1/audit_log`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg", "Prefer": "return=minimal" },
+        body: JSON.stringify({ action: "client.error", resource_type: "app", metadata: { message: error?.message, stack: error?.stack?.slice(0, 500), component: errorInfo?.componentStack?.slice(0, 300) } }),
+      }).catch(() => {});
+    } catch {}
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b", fontFamily: "'DM Sans', sans-serif" }}>
+          <div style={{ textAlign: "center", maxWidth: 400, padding: 32 }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #f06b6b20, #f06b6b08)", border: "1px solid #f06b6b20", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16, fontSize: 24 }}>!</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#eef0f6", marginBottom: 8 }}>Something went wrong</div>
+            <div style={{ fontSize: 13, color: "#636d84", lineHeight: 1.6, marginBottom: 24 }}>
+              An unexpected error occurred. Our team has been notified. Please try refreshing the page.
+            </div>
+            <button onClick={() => window.location.reload()} style={{ fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Refresh Page</button>
+            <div style={{ marginTop: 16, fontSize: 10, color: "#3d4558" }}>Error: {this.state.error?.message || "Unknown"}</div>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // ── TOAST SYSTEM ──────────────────────────────────────────────
 const useToast = () => {
   const [toasts, setToasts] = useState([]);
@@ -3262,7 +3298,20 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
                 background: c.bg2, color: c.text, fontFamily: "'JetBrains Mono', monospace", outline: "none", marginBottom: 10,
               }} />
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <button disabled={deleteText !== "DELETE ACME SAAS CORP"} onClick={() => { setDeleteConfirm(false); setDeleteText(""); toast("Account deletion scheduled. Confirmation email sent.", "warning"); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: deleteText === "DELETE ACME SAAS CORP" ? c.red : c.textFaint, color: "#fff", cursor: deleteText === "DELETE ACME SAAS CORP" ? "pointer" : "not-allowed", fontFamily: "inherit", fontWeight: 700, opacity: deleteText === "DELETE ACME SAAS CORP" ? 1 : 0.4 }}>Permanently Delete</button>
+                <button disabled={deleteText !== "DELETE ACME SAAS CORP"} onClick={async () => {
+                  try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (user) {
+                      // Delete user profile (cascades via FK if configured, or manual)
+                      await supabase.from("users").delete().eq("id", user.id);
+                      // Sign out
+                      await supabase.auth.signOut();
+                    }
+                  } catch (err) { console.error("Delete error:", err); }
+                  setDeleteConfirm(false); setDeleteText(""); 
+                  toast("Account deleted. You have been signed out.", "warning");
+                  if (typeof onLogout === "function") onLogout();
+                }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: deleteText === "DELETE ACME SAAS CORP" ? c.red : c.textFaint, color: "#fff", cursor: deleteText === "DELETE ACME SAAS CORP" ? "pointer" : "not-allowed", fontFamily: "inherit", fontWeight: 700, opacity: deleteText === "DELETE ACME SAAS CORP" ? 1 : 0.4 }}>Permanently Delete</button>
                 <button onClick={() => { setDeleteConfirm(false); setDeleteText(""); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
               </div>
             </div>
@@ -4618,7 +4667,7 @@ const LandingPage = ({ onLogin }) => {
 // ══════════════════════════════════════════════════════════════
 // APP SHELL
 // ══════════════════════════════════════════════════════════════
-export default function FinanceOS() {
+function FinanceOSApp() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({ name: "Guest", email: "", plan: null });
   const [view, setView] = useState("dashboard");
@@ -5329,4 +5378,8 @@ export default function FinanceOS() {
       }} />}
     </div>
   );
+}
+
+export default function FinanceOS() {
+  return <AppErrorBoundary><FinanceOSApp /></AppErrorBoundary>;
 }
