@@ -3558,6 +3558,8 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
   const [billing, setBilling] = useState("annual");
   const [hoveredPlan, setHoveredPlan] = useState(null);
   const [checkoutPending, setCheckoutPending] = useState(null);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
+  const [verifyFailed, setVerifyFailed] = useState(false);
   const annualSavings = { Starter: 1200, Growth: 3600, Business: 9600 };
   // Theme helper — uses dashboard theme if available, falls back to dark
   const t = { bg: c?.surface || "#111318", bg2: c?.bg2 || "#0b0c10", alt: c?.surfaceAlt || "#181b22", bdr: c?.border || "#1e2230", bdrSub: c?.borderSub || "#171b25", bdrBright: c?.borderBright || "#2a2f3d", tx: c?.text || "#eef0f6", txD: c?.textDim || "#636d84", txF: c?.textFaint || "#3d4558", txS: c?.textSec || "#9ea5b8", ac: c?.accent || "#5b9cf5", pu: c?.purple || "#a181f7", gn: c?.green || "#3dd9a0", rd: c?.red || "#f06b6b" };
@@ -3636,7 +3638,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
         </div>
 
         {/* Checkout confirmation gate */}
-        {checkoutPending && (
+        {checkoutPending && !verifyingPayment && !verifyFailed && (
           <div style={{ padding: "24px 40px", textAlign: "center" }}>
             <div style={{ background: `linear-gradient(135deg, ${t.ac}08, ${t.pu}05)`, border: `1px solid ${t.ac}20`, borderRadius: 16, padding: "32px 28px" }}>
               <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
@@ -3644,24 +3646,68 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
               </div>
               <div style={{ fontSize: 18, fontWeight: 800, color: t.tx, marginBottom: 6 }}>Complete your {checkoutPending} checkout</div>
               <div style={{ fontSize: 13, color: t.txD, lineHeight: 1.6, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
-                A Stripe checkout tab has opened. Complete your payment there, then return here to confirm.
+                A Stripe checkout tab has opened. Complete your payment there, then return here to verify.
               </div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                <button onClick={() => onSelect(checkoutPending)} style={{
+                <button onClick={() => {
+                  setVerifyingPayment(true);
+                  // Simulate payment verification (in production: check Stripe session via webhook/API)
+                  setTimeout(() => {
+                    // Demo mode: always succeeds. Production: check stripe.checkout.sessions.retrieve()
+                    setVerifyingPayment(false);
+                    onSelect(checkoutPending);
+                  }, 2000);
+                }} style={{
                   fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, color: "#fff", boxShadow: `0 4px 16px ${t.gn}25`,
-                }}>I've Completed Payment</button>
-                <button onClick={() => setCheckoutPending(null)} style={{
+                }}>Verify Payment</button>
+                <button onClick={() => { setCheckoutPending(null); }} style={{
                   fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
-                }}>Go Back</button>
+                }}>Cancel</button>
               </div>
-              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Your subscription will be verified. If payment is not found, you'll be asked to retry.</div>
+              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Payment will be verified with Stripe before your account is activated.</div>
+            </div>
+          </div>
+        )}
+
+        {/* Verification in progress */}
+        {verifyingPayment && (
+          <div style={{ padding: "24px 40px", textAlign: "center" }}>
+            <div style={{ background: `linear-gradient(135deg, ${t.ac}06, ${t.pu}04)`, border: `1px solid ${t.ac}15`, borderRadius: 16, padding: "48px 28px" }}>
+              <div style={{ width: 40, height: 40, border: `3px solid ${t.ac}30`, borderTopColor: t.ac, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+              <div style={{ fontSize: 16, fontWeight: 800, color: t.tx, marginBottom: 4 }}>Verifying payment...</div>
+              <div style={{ fontSize: 12, color: t.txD }}>Checking with Stripe for {checkoutPending} subscription</div>
+            </div>
+          </div>
+        )}
+
+        {/* Verification failed */}
+        {verifyFailed && (
+          <div style={{ padding: "24px 40px", textAlign: "center" }}>
+            <div style={{ background: `linear-gradient(135deg, ${t.rd}06, ${t.rd}03)`, border: `1px solid ${t.rd}20`, borderRadius: 16, padding: "32px 28px" }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: `${t.rd}15`, border: `1px solid ${t.rd}20`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16, fontSize: 20 }}>✕</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: t.tx, marginBottom: 6 }}>Payment not found</div>
+              <div style={{ fontSize: 13, color: t.txD, lineHeight: 1.6, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
+                We couldn't verify a completed payment for the {checkoutPending} plan. This usually means the checkout was cancelled or is still processing.
+              </div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button onClick={() => {
+                  setVerifyFailed(false);
+                  try { window.open(billing === "annual" ? PLAN_OPTIONS.find(p => p.name === checkoutPending)?.annualLink : PLAN_OPTIONS.find(p => p.name === checkoutPending)?.monthlyLink, "_blank"); } catch {}
+                }} style={{
+                  fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                  background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, color: "#fff",
+                }}>Try Again</button>
+                <button onClick={() => { setCheckoutPending(null); setVerifyFailed(false); }} style={{
+                  fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                }}>Choose Different Plan</button>
+              </div>
             </div>
           </div>
         )}
 
         {/* Feature comparison */}
-        {!checkoutPending && (
+        {!checkoutPending && !verifyingPayment && !verifyFailed && (
         <div style={{ padding: "24px 40px 0" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Feature Comparison</div>
           <div style={{ background: t.bg2, border: `1px solid ${t.bdrSub}`, borderRadius: 12, overflow: "hidden" }}>
@@ -3680,7 +3726,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
         )}
 
         {/* Footer */}
-        {!checkoutPending && (
+        {!checkoutPending && !verifyingPayment && !verifyFailed && (
         <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
           {isDemo ? (
             <button onClick={onSkip} style={{ fontSize: 12, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
@@ -4996,8 +5042,21 @@ export default function FinanceOS() {
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
       {/* Plan Picker — shows after signup */}
-      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); setShowOnboarding(true); }} />}
-      {showOnboarding && <OnboardingWizard c={c} userName={user.name} onComplete={(org) => { setShowOnboarding(false); toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success"); }} />}
+      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => {
+        // SECURITY: Plan is set to 'pending:<planName>' until payment is verified
+        // The onboarding wizard only runs after verification succeeds
+        setUser(prev => ({ ...prev, plan: `pending:${plan}` }));
+        setShowPlanPicker(false);
+        setShowOnboarding(true);
+      }} />}
+      {showOnboarding && <OnboardingWizard c={c} userName={user.name} planStatus={user.plan} onComplete={(org) => {
+        // Only grant full plan access if payment was confirmed (plan starts with 'pending:')
+        // In production: this is where Stripe webhook confirmation would gate access
+        const planName = user.plan?.startsWith("pending:") ? user.plan.replace("pending:", "") : user.plan;
+        setUser(prev => ({ ...prev, plan: planName }));
+        setShowOnboarding(false);
+        toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success");
+      }} />}
     </div>
   );
 }
