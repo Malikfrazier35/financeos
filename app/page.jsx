@@ -3554,19 +3554,29 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Nav */}
-      <nav style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "16px 20px" : "20px 48px", maxWidth: 1200, margin: "0 auto" }}>
+      <nav style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "14px 20px" : "16px 48px", maxWidth: 1200, margin: "0 auto", background: "rgba(9,9,11,0.8)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(30,34,48,0.5)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <FosLogo size={32} />
           <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
         </div>
         {!isMobile ? (
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
-          <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
-          <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
+        <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
+          {[{ label: "Features", href: "#features" }, { label: "Security", href: "#security" }, { label: "Pricing", href: "#pricing" }].map(link => (
+            <a key={link.label} href={link.href} style={{ fontSize: 13, color: "#8b92a5", textDecoration: "none", fontWeight: 500, transition: "color 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.color = "#f0f2f5"}
+              onMouseLeave={e => e.currentTarget.style.color = "#8b92a5"}
+            >{link.label}</a>
+          ))}
           <a href="#invest" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>Investors</a>
-          <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
+          <div style={{ width: 1, height: 20, background: "#1e2230" }} />
+          <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = "#3d4558"}
+            onMouseLeave={e => e.currentTarget.style.borderColor = "#1e2230"}
+          >Sign In</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)", transition: "all 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = "0 6px 24px rgba(96,165,250,0.3)"}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(96,165,250,0.2)"}
+          >Start Free Trial</button>
         </div>
         ) : (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -3578,12 +3588,15 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Hero */}
       <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)", fontSize: 11, fontWeight: 600, color: "#60a5fa", marginBottom: 24, letterSpacing: "0.03em" }}>AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY</div>
-        <h1 style={{ fontSize: isMobile ? 36 : 56, fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.035em", marginBottom: 20 }}>
-          Financial planning<br />that thinks before<br />it answers
+        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 11, fontWeight: 700, color: "#60a5fa", marginBottom: 28, letterSpacing: "0.04em", animation: "fadeSlideUp 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
+          <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#34d399", marginRight: 8, animation: "pulse 2s infinite" }} />
+          AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY
+        </div>
+        <h1 style={{ fontSize: isMobile ? 38 : 60, fontWeight: 800, lineHeight: 1.06, letterSpacing: "-0.04em", marginBottom: 22, animation: "fadeSlideUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
+          Financial planning<br />that <span style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>thinks before</span><br />it answers
         </h1>
-        <p style={{ fontSize: 18, color: "#6b7280", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400 }}>
-          FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
+        <p style={{ fontSize: isMobile ? 16 : 18, color: "#8b92a5", lineHeight: 1.65, maxWidth: 540, margin: "0 auto 40px", fontWeight: 400, animation: "fadeSlideUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.2s both" }}>
+          Connect your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
         <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto", flexDirection: isMobile ? "column" : "row" }}>
           <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
@@ -3645,15 +3658,16 @@ const LandingPage = ({ onLogin }) => {
             { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", Icon: Cpu, color: "#f87171" },
             { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
           ].map(f => (
-            <div key={f.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 24, transition: "border-color 0.15s" }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = "#60a5fa"}
-              onMouseLeave={e => e.currentTarget.style.borderColor = "#23232a"}
+            <div key={f.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "26px 24px", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${f.color}40`; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${f.color}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
             >
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${f.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${f.color}15, ${f.color}06)`, border: `1px solid ${f.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <f.Icon size={20} color={f.color} strokeWidth={1.8} />
               </div>
-              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{f.title}</div>
-              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{f.desc}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8, letterSpacing: "-0.01em" }}>{f.title}</div>
+              <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.65 }}>{f.desc}</div>
             </div>
           ))}
         </div>
@@ -3668,17 +3682,22 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Up and running in 4 steps</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 480, margin: "0 auto" }}>No 6-month implementation. No consultants. Connect your data and start planning in days.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16, position: "relative" }}>
+          {/* Connecting line (desktop only) */}
+          {!isMobile && <div style={{ position: "absolute", top: 18, left: "12.5%", right: "12.5%", height: 2, background: "linear-gradient(90deg, #60a5fa30, #a78bfa30, #34d39930, #fbbf2430)", zIndex: 0 }} />}
           {[
             { step: 1, title: "Connect your data", desc: "Link your ERP, CRM, and billing in under 5 minutes. NetSuite, Salesforce, Stripe, QuickBooks — all pre-built.", color: "#60a5fa" },
             { step: 2, title: "AI builds your model", desc: "FinanceOS auto-maps your chart of accounts, detects revenue drivers, and creates a baseline forecast.", color: "#a78bfa" },
             { step: 3, title: "Plan & scenario model", desc: "Run what-if scenarios, adjust assumptions with live sliders, and compare 4 models side-by-side.", color: "#34d399" },
             { step: 4, title: "Close & report", desc: "Multi-entity consolidation, variance commentary, and board-ready exports — all from one platform.", color: "#fbbf24" },
           ].map(s => (
-            <div key={s.step} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: 24, position: "relative" }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 14 }}>{s.step}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{s.title}</div>
-              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{s.desc}</div>
+            <div key={s.step} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "26px 24px", position: "relative", zIndex: 1, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; e.currentTarget.style.transform = "translateY(-3px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${s.color}18, ${s.color}06)`, border: `1px solid ${s.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 16 }}>{s.step}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 8 }}>{s.title}</div>
+              <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.65 }}>{s.desc}</div>
             </div>
           ))}
         </div>
@@ -3689,10 +3708,11 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Testimonials */}
-      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Customer Stories</div>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Trusted by finance leaders</h2>
-          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>See why modern FP&A teams choose FinanceOS over legacy platforms.</p>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>See why modern FP&A teams choose FinanceOS over legacy platforms.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
@@ -3700,17 +3720,21 @@ const LandingPage = ({ onLogin }) => {
             { quote: "The scenario modeling paid for itself in one board meeting. We modeled three M&A paths in 20 minutes instead of two weeks.", name: "James Park", title: "CFO, TechFlow", metric: "10x faster scenario analysis" },
             { quote: "Switched from Pigment. The transparent AI reasoning was the deciding factor — we can actually trust the outputs.", name: "Maria Lopez", title: "FP&A Director, Nexus AI", metric: "From Pigment in 3 weeks" },
           ].map(t => (
-            <div key={t.name} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: "28px 24px", position: "relative" }}>
-              <div style={{ fontSize: 28, color: "#60a5fa", fontWeight: 800, lineHeight: 1, marginBottom: 14, opacity: 0.4 }}>"</div>
-              <div style={{ fontSize: 13, color: "#d1d5db", lineHeight: 1.7, marginBottom: 20, minHeight: 80 }}>{t.quote}</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa20, #a78bfa20)", border: "1px solid #23232a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#60a5fa" }}>{t.name.split(" ").map(w => w[0]).join("")}</div>
+            <div key={t.name} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.transform = "translateY(-3px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa25, transparent)", borderRadius: "0 0 2px 2px" }} />
+              <div style={{ fontSize: 11, color: "#f5b731", marginBottom: 14, letterSpacing: 2 }}>★★★★★</div>
+              <div style={{ fontSize: 13, color: "#d1d5db", lineHeight: 1.75, marginBottom: 20, minHeight: 80, fontStyle: "italic" }}>"{t.quote}"</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa15, #a78bfa15)", border: "1px solid #1e2230", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#60a5fa" }}>{t.name.split(" ").map(w => w[0]).join("")}</div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: "#f0f2f5" }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: "#6b7280" }}>{t.title}</div>
+                  <div style={{ fontSize: 11, color: "#8b92a5" }}>{t.title}</div>
                 </div>
               </div>
-              <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 10px", borderRadius: 6, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", color: "#34d399", display: "inline-block" }}>{t.metric}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.10)", color: "#34d399", display: "inline-block" }}>{t.metric}</div>
             </div>
           ))}
         </div>
