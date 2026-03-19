@@ -3557,13 +3557,22 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
 };
 
 // ── PLAN PICKER — shows Stripe checkout links after signup ───
-const PLAN_OPTIONS = [
-  { name: "Starter", price: "$599", annual: "$499", desc: "3 entities · 5 users · P&L + Forecast",
+const PRICING_PLANS = [
+  { name: "Starter", monthly: 599, annual: 499, seats: 5, entities: 3,
+    desc: "3 entities · 5 users · P&L + Forecast",
+    features: ["3 entities", "5 users", "P&L + Forecast", "5 connectors", "Email support"],
     monthlyLink: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", annualLink: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
-  { name: "Growth", price: "$1,799", annual: "$1,499", desc: "10 entities · 25 users · AI Copilot · Consolidation", popular: true,
+  { name: "Growth", monthly: 1799, annual: 1499, seats: 25, entities: 10, popular: true,
+    desc: "10 entities · 25 users · AI Copilot · Consolidation",
+    features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Unlimited connectors", "Priority support"],
     monthlyLink: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", annualLink: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
-  { name: "Business", price: "$4,799", annual: "$3,999", desc: "Unlimited · Custom ML · SSO + RBAC · Dedicated CSM",
+  { name: "Business", monthly: 4799, annual: 3999, seats: 999, entities: 999,
+    desc: "Unlimited · Custom ML · SSO + RBAC · Dedicated CSM",
+    features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee", "API access"],
     monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
+  { name: "Enterprise", monthly: null, annual: null, seats: 999, entities: 999, enterprise: true,
+    desc: "Custom deployment · SOX compliance · On-prem option",
+    features: ["Everything in Business", "SOX-compliant audit trails", "On-premises deployment", "Custom integrations", "Dedicated success team", "Volume discounts", "White-glove onboarding"] },
 ];
 
 // ── ONBOARDING WIZARD ────────────────────────────────────────
@@ -3730,8 +3739,10 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
         {/* Plan cards */}
         <div style={{ padding: "24px 40px 0" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
-            {PLAN_OPTIONS.map((p, idx) => {
+            {PRICING_PLANS.map((p, idx) => {
               const isHovered = hoveredPlan === idx;
+              const priceDisplay = p.enterprise ? "Custom" : `$${billing === "annual" ? p.annual?.toLocaleString() : p.monthly?.toLocaleString()}`;
+              const savings = p.monthly && p.annual ? (p.monthly - p.annual) * 12 : 0;
               return (
               <div key={p.name} onMouseEnter={() => setHoveredPlan(idx)} onMouseLeave={() => setHoveredPlan(null)} style={{
                 background: p.popular ? `linear-gradient(180deg, ${t.ac}08 0%, ${t.bg2} 100%)` : t.bg2,
@@ -3743,25 +3754,27 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
                 {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
                 <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: t.tx }}>{p.name}</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                  <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: t.tx }}>{billing === "annual" ? p.annual : p.price}</span>
-                  <span style={{ fontSize: 13, color: t.txD }}>/mo</span>
+                  <span style={{ fontSize: p.enterprise ? 28 : 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: t.tx }}>{priceDisplay}</span>
+                  {!p.enterprise && <span style={{ fontSize: 13, color: t.txD }}>/mo</span>}
                 </div>
-                {billing === "annual" && (
-                  <div style={{ fontSize: 11, color: t.gn, fontWeight: 600, marginBottom: 10 }}>Save ${annualSavings[p.name]?.toLocaleString()}/year</div>
+                {!p.enterprise && billing === "annual" && savings > 0 && (
+                  <div style={{ fontSize: 11, color: t.gn, fontWeight: 600, marginBottom: 10 }}>Save ${savings.toLocaleString()}/year</div>
                 )}
-                {billing === "monthly" && <div style={{ height: 18 }} />}
+                {!p.enterprise && billing === "monthly" && <div style={{ height: 18 }} />}
+                {p.enterprise && <div style={{ fontSize: 11, color: t.txD, marginBottom: 10 }}>Tailored to your requirements</div>}
                 <div style={{ fontSize: 11, color: t.txD, lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
                 <button onClick={() => {
+                  if (p.enterprise) { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); return; }
                   setCheckoutPending(p.name);
                   try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
                 }} style={{
-                  width: "100%", padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
-                  background: p.popular ? `linear-gradient(135deg, ${t.ac}, ${t.pu})` : isHovered ? t.bdrBright : t.bdr, color: "#fff",
+                  width: "100%", padding: "12px", borderRadius: 10, border: p.enterprise ? `1px solid ${t.bdr}` : "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
+                  background: p.popular ? `linear-gradient(135deg, ${t.ac}, ${t.pu})` : p.enterprise ? "transparent" : isHovered ? t.bdrBright : t.bdr, color: p.enterprise ? t.txS : "#fff",
                   transition: "all 0.2s", boxShadow: p.popular ? `0 4px 16px ${t.ac}25` : "none",
                 }}
                 onMouseEnter={e => { if (!p.popular) e.currentTarget.style.background = t.bdrBright; }}
                 onMouseLeave={e => { if (!p.popular) e.currentTarget.style.background = t.bdr; }}
-                >Start {p.name} Trial</button>
+                >{p.enterprise ? "Contact Sales" : `Start ${p.name} Trial`}</button>
               </div>
               );
             })}
@@ -3824,7 +3837,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                 <button onClick={() => {
                   setVerifyFailed(false);
-                  try { window.open(billing === "annual" ? PLAN_OPTIONS.find(p => p.name === checkoutPending)?.annualLink : PLAN_OPTIONS.find(p => p.name === checkoutPending)?.monthlyLink, "_blank"); } catch {}
+                  try { window.open(billing === "annual" ? PRICING_PLANS.find(p => p.name === checkoutPending)?.annualLink : PRICING_PLANS.find(p => p.name === checkoutPending)?.monthlyLink, "_blank"); } catch {}
                 }} style={{
                   fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, color: "#fff",
@@ -3991,14 +4004,7 @@ const LandingPage = ({ onLogin }) => {
     onLogin({ name: data?.name || data?.email?.split("@")[0] || "Guest", email: data?.email || "", method: data?.method });
   };
 
-  const plans = [
-    { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"],
-      linkMonthly: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", linkAnnual: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
-    { name: "Growth", monthly: 1799, annual: 1499, features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Priority support"], popular: true,
-      linkMonthly: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", linkAnnual: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
-    { name: "Business", monthly: 4799, annual: 3999, features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee"],
-      linkMonthly: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", linkAnnual: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
-  ];
+  const plans = PRICING_PLANS;
 
   return (
     <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", overflow: "auto" }}>
@@ -4251,7 +4257,7 @@ const LandingPage = ({ onLogin }) => {
             <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "annual" ? "#1e2230" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Annual <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: "rgba(52,211,153,0.10)", color: "#34d399", marginLeft: 4 }}>-17%</span></button>
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {plans.map(p => (
             <div key={p.name} style={{ background: p.popular ? "linear-gradient(180deg, rgba(96,165,250,0.04) 0%, #111318 100%)" : "#111318", border: `1px solid ${p.popular ? "#60a5fa50" : "#1e2230"}`, borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.12), 0 12px 40px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 20px 60px rgba(96,165,250,0.12)" : "0 12px 40px rgba(0,0,0,0.25)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#3d4558"; }}
@@ -4261,11 +4267,16 @@ const LandingPage = ({ onLogin }) => {
               {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
               <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>{p.name}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                <span style={{ fontSize: 40, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em" }}>${billing === "annual" ? p.annual : p.monthly}</span>
-                <span style={{ fontSize: 13, color: "#8b92a5" }}>/mo</span>
+                {p.enterprise ? (
+                  <span style={{ fontSize: 28, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>Custom</span>
+                ) : (
+                  <><span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em" }}>${billing === "annual" ? p.annual?.toLocaleString() : p.monthly?.toLocaleString()}</span>
+                  <span style={{ fontSize: 13, color: "#8b92a5" }}>/mo</span></>
+                )}
               </div>
-              {billing === "annual" && <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 14 }}>Save ${((p.monthly - p.annual) * 12).toLocaleString()}/year</div>}
-              {billing === "monthly" && <div style={{ height: 20 }} />}
+              {!p.enterprise && billing === "annual" && p.monthly && p.annual && <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 14 }}>Save ${((p.monthly - p.annual) * 12).toLocaleString()}/year</div>}
+              {!p.enterprise && billing === "monthly" && <div style={{ height: 20 }} />}
+              {p.enterprise && <div style={{ fontSize: 11, color: "#8b92a5", marginBottom: 14 }}>Tailored to your requirements</div>}
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
                 {p.features.map(f => (
                   <div key={f} style={{ fontSize: 13, color: "#9ea5b8", display: "flex", alignItems: "center", gap: 8 }}>
@@ -4273,6 +4284,15 @@ const LandingPage = ({ onLogin }) => {
                   </div>
                 ))}
               </div>
+              {p.enterprise ? (
+                <button onClick={() => { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); }} style={{
+                  width: "100%", fontSize: 12, padding: "12px 0", borderRadius: 10, border: "1px solid #1e2230", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                  background: "transparent", color: "#9ea5b8", transition: "all 0.15s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
+                >Contact Sales</button>
+              ) : (
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={enterDemo} style={{
                   flex: 1, fontSize: 12, padding: "12px 0", borderRadius: 10, border: "1px solid #1e2230", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
@@ -4281,19 +4301,33 @@ const LandingPage = ({ onLogin }) => {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#8b92a5"; }}
                 >Try Demo</button>
-                <button onClick={() => { try { window.open(billing === "annual" ? p.linkAnnual : p.linkMonthly, "_blank"); } catch {} }} style={{
+                <button onClick={() => { try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {} }} style={{
                   flex: 2, fontSize: 12, padding: "12px 0", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#1e2230", color: "#fff", transition: "all 0.15s",
                   boxShadow: p.popular ? "0 4px 16px rgba(96,165,250,0.2)" : "none",
                 }}>Subscribe</button>
               </div>
-              <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558" }}>30-day money-back guarantee</div>
+              )}
+              <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558" }}>{p.enterprise ? "Custom SLA + deployment" : "30-day money-back guarantee"}</div>
             </div>
           ))}
         </div>
+        {/* Social proof + ROI below pricing */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 32, marginTop: 32, flexWrap: "wrap" }}>
+          {[
+            { value: "8 days", label: "Avg close time reduction" },
+            { value: "10x", label: "Faster scenario analysis" },
+            { value: "84%", label: "Average gross margin" },
+            { value: "< 48hr", label: "Implementation time" },
+          ].map(s => (
+            <div key={s.label} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#f0f2f5", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em" }}>{s.value}</div>
+              <div style={{ fontSize: 10, color: "#8b92a5", fontWeight: 500, marginTop: 2 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#3d4558" }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
       </div>
-
-      {/* FAQ */}
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 800, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.12)", fontSize: 10, fontWeight: 700, color: "#a78bfa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>FAQ</div>
