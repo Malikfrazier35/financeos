@@ -3627,6 +3627,15 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
               <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => window.open("https://finance-os.app/privacy", "_blank")}>Privacy Policy</span>
             </div>
           )}
+          {/* Trust signals */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
+            {[{ label: "SOC 2", icon: "🛡️" }, { label: "AES-256", icon: "🔒" }, { label: "99.99% SLA", icon: "⚡" }].map(t => (
+              <span key={t.label} style={{ fontSize: 9, color: "#3d4558", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ fontSize: 11 }}>{t.icon}</span> {t.label}
+              </span>
+            ))}
+          </div>
+          <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "#3d4558" }}>Trusted by 2,400+ finance teams · No credit card required</div>
         </div>
       </div>
     </div>

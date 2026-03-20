@@ -15,7 +15,7 @@ export default function NotFound() {
         </svg>
       </div>
       <h2 style={{ fontSize: 48, fontWeight: 800, letterSpacing: "-0.03em", opacity: 0.2, margin: 0 }}>404</h2>
-      <p style={{ fontSize: 14, color: "#6b7280", textAlign: "center" }}>
+      <p style={{ fontSize: 14, color: "#8b92a5", textAlign: "center" }}>
         This page doesn't exist. Let's get you back to your dashboard.
       </p>
       <a href="/" style={{
