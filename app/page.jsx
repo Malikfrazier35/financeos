@@ -3599,7 +3599,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
                   border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
                   cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== p.key ? 0.4 : 1,
                 }}
-                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#111318"; }}}
+                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.background = "#111318"; }}}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.background = "#0b0c10"; }}
                 >{p.icon} {loading === p.key ? "..." : p.name}</button>
               ))}
@@ -3689,7 +3689,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             ))}
           </div>
           {authMode === "signup" && (
-            <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#33384a", lineHeight: 1.6 }}>
+            <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558", lineHeight: 1.6 }}>
               By creating an account you agree to our{" "}
               <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => window.open("https://finance-os.app/terms", "_blank")}>Terms of Service</span>{" "}and{" "}
               <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => window.open("https://finance-os.app/privacy", "_blank")}>Privacy Policy</span>
@@ -4238,11 +4238,11 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ fontSize: 11, color: "#3d4558", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · No credit card required</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
           <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.color = "#f0f2f5"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Try the Live Demo</button>
           <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.color = "#f0f2f5"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Watch 2-min Overview</button>
         </div>
@@ -4762,9 +4762,21 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1e2230", fontSize: 11, color: "#33384a" }}>
-          <span>© {new Date().getFullYear()} Vaultline, Inc. · All rights reserved</span>
-          <span>Built with care in New Hampshire</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1e2230", fontSize: 11, color: "#3d4558" }}>
+          <span>© {new Date().getFullYear()} Financial Holding LLC · All rights reserved</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <span>Built with care in New Hampshire</span>
+            {[
+              { label: "LinkedIn", url: "https://linkedin.com/company/finance-os" },
+              { label: "X", url: "https://x.com/financeos_app" },
+              { label: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
+            ].map(s => (
+              <span key={s.label} onClick={() => window.open(s.url, "_blank")} style={{ cursor: "pointer", color: "#3d4558", transition: "color 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.color = "#9ea5b8"}
+                onMouseLeave={e => e.currentTarget.style.color = "#3d4558"}
+              >{s.label}</span>
+            ))}
+          </div>
         </div>
       </div>
 
