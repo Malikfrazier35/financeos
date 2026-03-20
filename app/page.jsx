@@ -1674,6 +1674,9 @@ const PnlView = ({ c, onNav, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Financial Summary <div style={{ width: 40, height: 1, background: c.borderSub }} />
       </div>
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Financial Summary <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 16 }}>
         {[
           { label: "Total Revenue", value: fmt(PNL_DATA[0]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[0]?.total?.actual || 0, PNL_DATA[0]?.total?.budget || 1)), fav: true, color: c.green },
@@ -2021,6 +2024,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.cyan}15`, color: c.cyan, letterSpacing: "0.06em" }}>AUTO IC</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>FX rates as of {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · IC eliminations auto-applied</div>
           </div>
         </div>
         <button onClick={() => { ENTITIES.forEach(e => { if ((entityStatus[e.name] || e.status) !== "Closed") approve(e.name); }); }} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Close All Pending</button>
@@ -2070,6 +2074,9 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       </div>
 
       {/* Consolidated P&L */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Consolidated Financials <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Consolidated Financials <div style={{ width: 40, height: 1, background: c.borderSub }} />
       </div>
@@ -2158,6 +2165,7 @@ const CloseView = ({ c, toast }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: pct === 100 ? `${c.green}15` : `${c.amber}15`, color: pct === 100 ? c.green : c.amber, letterSpacing: "0.06em" }}>{pct}%</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>February close · {tasks.length - doneCount} tasks remaining · Est. {Math.max(0, (tasks.length - doneCount) * 0.5).toFixed(1)}h to complete</div>
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Last updated {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · Deadline: Mar 7</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -2403,6 +2411,9 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
 
       {/* Health overview bar */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Pipeline Health <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 20 }}>
         {[
           { label: "Connected", value: connected.length, icon: "●", color: c.green },
@@ -2436,6 +2447,9 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
 
       {/* Connector grid */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Available Connectors <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
         {filtered.map(co => (
           <div key={co.name} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 20px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
@@ -2903,6 +2917,7 @@ const AdminView = ({ c, toast, onNav }) => {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.accent}15`, color: c.accent, letterSpacing: "0.06em" }}>ADMIN</span></div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · Audit log: real-time</div>
           </div>
         </div>
         <button onClick={() => setInviteOpen(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
