@@ -79,6 +79,11 @@ const THEME = {
 class SectionBoundary extends Component {
   constructor(props) { super(props); this.state = { hasError: false, retries: 0 }; }
   static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error) {
+    if (typeof window !== "undefined") {
+      try { console.warn(`[FinanceOS] ${this.props.name || "Section"} error:`, error?.message); } catch {}
+    }
+  }
   render() {
     if (this.state.hasError) {
       const canRetry = this.state.retries < 3;
@@ -104,6 +109,39 @@ class SectionBoundary extends Component {
               Refresh Page
             </a>
           )}
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// ── CHART PANEL — per-chart error boundary + premium glass container ──
+// Wraps each chart card so a single chart crash doesn't kill the whole view
+class ChartPanel extends Component {
+  constructor(props) { super(props); this.state = { hasError: false }; }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error) {
+    if (typeof window !== "undefined") {
+      try { console.warn(`[FinanceOS] Chart "${this.props.title}" error:`, error?.message); } catch {}
+    }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          background: this.props.glass || "rgba(255,255,255,0.02)", borderRadius: 16, padding: "28px 24px",
+          border: `1px dashed ${this.props.borderColor || "#1e2230"}`, minHeight: 200,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center",
+        }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: this.props.textColor || "#8b92a5", marginBottom: 4 }}>
+            {this.props.title || "Chart"} failed to render
+          </div>
+          <div style={{ fontSize: 10, color: "#3d4558", marginBottom: 10 }}>Other charts are unaffected.</div>
+          <button onClick={() => this.setState({ hasError: false })}
+            style={{ fontSize: 10, padding: "5px 14px", borderRadius: 6, background: this.props.accentColor || "#60a5fa", color: "#fff", fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer" }}>
+            Retry
+          </button>
         </div>
       );
     }
@@ -879,13 +917,14 @@ const FosLogoFull = memo(({ size = 32, c }) => (
 
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = (n) => {
+  if (n == null || !Number.isFinite(n)) return "$0";
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
   if (Math.abs(n) >= 1e3) return `$${Math.round(n / 1e3).toLocaleString()}K`;
   return `$${n}`;
 };
-const fmtPct = (n) => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
-const variance = (actual, budget) => actual - budget;
-const variancePct = (actual, budget) => ((actual - budget) / budget) * 100;
+const fmtPct = (n) => `${n >= 0 ? "+" : ""}${Number.isFinite(n) ? n.toFixed(1) : "0.0"}%`;
+const variance = (actual, budget) => (actual || 0) - (budget || 0);
+const variancePct = (actual, budget) => budget ? ((actual - budget) / budget) * 100 : 0;
 const isFavorable = (actual, budget, isRevenue = false) => isRevenue ? actual >= budget : actual <= budget;
 
 // ── CUSTOM TOOLTIP ───────────────────────────────────────────
@@ -1200,6 +1239,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
+      <ChartPanel title="Revenue Performance" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         {/* Gradient accent top edge */}
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}50, ${c.purple}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
@@ -1269,8 +1309,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           </span>
         </div>
       </div>
+      </ChartPanel>
 
       {/* Segment Donut */}
+      <ChartPanel title="Revenue by Segment" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
@@ -1326,11 +1368,13 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           })}
         </div>
       </div>
+      </ChartPanel>
     </div>
 
     {/* Revenue Composition + Cash Runway */}
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Waterfall — New Biz / Expansion / Services / Churn */}
+      <ChartPanel title="Revenue Composition" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
@@ -1372,8 +1416,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           ))}
         </div>
       </div>
+      </ChartPanel>
 
       {/* Cash Runway */}
+      <ChartPanel title="Cash & Runway" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
@@ -1416,11 +1462,13 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           ))}
         </div>
       </div>
+      </ChartPanel>
     </div>
 
     {/* Expense Bars + Insights */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16 }}>
       {/* Expense Breakdown */}
+      <ChartPanel title="OpEx Breakdown" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
@@ -1475,6 +1523,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           </div>
         </div>
       </div>
+      </ChartPanel>
+      <ChartPanel title="AI Insights" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
@@ -1491,6 +1541,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
         </div>
         {AI_INSIGHTS_ENRICHED.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
       </div>
+      </ChartPanel>
     </div>
 
     {/* Financial Pipeline Row — Cash Flow + ARR Bridge + Pipeline */}
@@ -1918,9 +1969,6 @@ const PnlView = ({ c, onNav, toast }) => {
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
       {/* Financial Summary KPIs */}
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Financial Summary <div style={{ width: 40, height: 1, background: c.borderSub }} />
-      </div>
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Financial Summary <div style={{ width: 40, height: 1, background: c.borderSub }} />
       </div>
@@ -6125,17 +6173,17 @@ function FinanceOSApp() {
           <div style={{ position: "fixed", bottom: "15%", right: "10%", width: "35%", height: "35%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
           <div style={{ position: "fixed", top: "50%", right: "35%", width: "25%", height: "25%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}04 0%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} /></SectionBoundary>}
-          {view === "copilot" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CopilotView c={c} toast={toast} /></SectionBoundary>}
-          {view === "pnl" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
-          {view === "forecast" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ForecastView c={c} toast={toast} /></SectionBoundary>}
-          {view === "consolidation" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
-          {view === "models" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
-          {view === "close" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CloseView c={c} toast={toast} /></SectionBoundary>}
-          {view === "integrations" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
-          {view === "admin" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
-          {view === "investor" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><InvestorView c={c} toast={toast} /></SectionBoundary>}
-          {view === "settings" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} /></SectionBoundary>}
+          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} /></SectionBoundary>}
+          {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} /></SectionBoundary>}
+          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
+          {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} /></SectionBoundary>}
+          {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
+          {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
+          {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} /></SectionBoundary>}
+          {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
+          {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
+          {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} /></SectionBoundary>}
+          {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} /></SectionBoundary>}
           </>)}
         </div>
       </div>
