@@ -1222,26 +1222,27 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
             ))}
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={230}>
+        <ResponsiveContainer width="100%" height={260}>
           <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
             <defs>
-              <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.2} /><stop offset="60%" stopColor={c.accent} stopOpacity={0.05} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
-              <linearGradient id="gFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.15} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
-              <linearGradient id="gBand" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.06} /><stop offset="100%" stopColor={c.green} stopOpacity={0.02} /></linearGradient>
+              <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.25} /><stop offset="40%" stopColor={c.accent} stopOpacity={0.08} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.2} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gBand" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.08} /><stop offset="100%" stopColor={c.green} stopOpacity={0.02} /></linearGradient>
+              <filter id="glowAct"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
             </defs>
-            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} horizontalPoints={[]} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}M`} />
-            <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
-            <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="8 4" strokeWidth={1} strokeOpacity={0.5} label={{ value: "AVG", fill: c.amber, fontSize: 8, fontWeight: 800, position: "right" }} />
+            <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}M`} domain={["auto", "auto"]} />
+            <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "4 4", strokeOpacity: 0.4 }} />
+            <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="8 4" strokeWidth={1} strokeOpacity={0.4} label={{ value: "AVG", fill: c.amber, fontSize: 8, fontWeight: 800, position: "right" }} />
             {/* Bear/Bull confidence band */}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBand)" name="Bull" connectNulls={false} />}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBand)" name="Bear" connectNulls={false} />}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBand)" name="Bull" connectNulls={false} animationDuration={1200} animationEasing="ease-out" />}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBand)" name="Bear" connectNulls={false} animationDuration={1200} animationEasing="ease-out" />}
             {/* YoY comparison (prior year) */}
-            <Line type="monotone" dataKey="yoy" stroke={c.textFaint} strokeWidth={1} strokeDasharray="2 4" name="Prior Year" dot={false} strokeOpacity={0.4} />
-            {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: c.accent, stroke: c.surface, strokeWidth: 2 }} connectNulls={false} />}
-            {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textFaint} strokeWidth={1.5} strokeDasharray="5 5" name="Budget" dot={false} />}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="8 4" name="Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} connectNulls={false} />}
+            <Line type="monotone" dataKey="yoy" stroke={c.textFaint} strokeWidth={1} strokeDasharray="2 4" name="Prior Year" dot={false} strokeOpacity={0.3} animationDuration={1400} animationEasing="ease-out" />
+            {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 7, fill: c.accent, stroke: c.surface, strokeWidth: 3, style: { filter: `drop-shadow(0 0 6px ${c.accent})` } }} connectNulls={false} animationDuration={1000} animationEasing="ease-out" />}
+            {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textFaint} strokeWidth={1.5} strokeDasharray="5 5" name="Budget" dot={false} animationDuration={1200} animationEasing="ease-out" />}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="8 4" name="Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} activeDot={{ r: 6, fill: c.green, stroke: c.surface, strokeWidth: 2, style: { filter: `drop-shadow(0 0 6px ${c.green})` } }} connectNulls={false} animationDuration={1400} animationEasing="ease-out" />}
           </ComposedChart>
         </ResponsiveContainer>
         {/* Legend row */}
@@ -1352,9 +1353,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
-            <Bar dataKey="expansion" fill="url(#gExpan)" stackId="rev" radius={[0, 0, 0, 0]} name="Expansion" barSize={28} />
-            <Bar dataKey="newBiz" fill="url(#gNewBiz)" stackId="rev" radius={[0, 0, 0, 0]} name="New Business" />
-            <Bar dataKey="services" fill="url(#gSvc)" stackId="rev" radius={[4, 4, 0, 0]} name="Services" />
+            <Bar dataKey="expansion" fill="url(#gExpan)" stackId="rev" radius={[0, 0, 0, 0]} name="Expansion" barSize={28} animationDuration={800} animationEasing="ease-out" />
+            <Bar dataKey="newBiz" fill="url(#gNewBiz)" stackId="rev" radius={[0, 0, 0, 0]} name="New Business" animationDuration={1000} animationEasing="ease-out" />
+            <Bar dataKey="services" fill="url(#gSvc)" stackId="rev" radius={[4, 4, 0, 0]} name="Services" animationDuration={1200} animationEasing="ease-out" />
           </BarChart>
         </ResponsiveContainer>
         <div style={{ display: "flex", gap: 14, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 10 }}>
@@ -1399,8 +1400,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.green, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
-            <Area type="monotone" dataKey="balance" stroke={c.green} fill="url(#gCash)" strokeWidth={2.5} name="Cash Balance" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} />
-            <Bar dataKey="inflow" fill={`${c.accent}40`} radius={[3, 3, 0, 0]} barSize={14} name="Inflow" />
+            <Area type="monotone" dataKey="balance" stroke={c.green} fill="url(#gCash)" strokeWidth={2.5} name="Cash Balance" animationDuration={1200} animationEasing="ease-out" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} />
+            <Bar dataKey="inflow" fill={`${c.accent}40`} radius={[3, 3, 0, 0]} barSize={14} name="Inflow" animationDuration={800} animationEasing="ease-out" />
           </ComposedChart>
         </ResponsiveContainer>
         <div style={{ display: "flex", gap: 14, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 10 }}>
@@ -1441,8 +1442,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
             <XAxis type="number" tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
             <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: c.textSec, fontWeight: 600 }} axisLine={false} tickLine={false} width={40} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
-            <Bar dataKey="actual" fill="url(#gExpAct)" radius={[0, 6, 6, 0]} barSize={16} name="Actual" />
-            <Bar dataKey="budget" fill="url(#gExpBud)" radius={[0, 6, 6, 0]} barSize={16} name="Budget" />
+            <Bar dataKey="actual" fill="url(#gExpAct)" radius={[0, 6, 6, 0]} barSize={16} name="Actual" animationDuration={800} animationEasing="ease-out" />
+            <Bar dataKey="budget" fill="url(#gExpBud)" radius={[0, 6, 6, 0]} barSize={16} name="Budget" animationDuration={1000} animationEasing="ease-out" />
           </BarChart>
         </ResponsiveContainer>
         {/* Variance summary */}
@@ -2134,12 +2135,12 @@ const ForecastView = ({ c, toast }) => {
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis || c.textDim, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: c.chartAxis || c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}M`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
-            <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBull)" name="Bull Range" />
-            <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBear)" name="Bear Range" />
-            <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gActFc)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: c.accent, stroke: c.surface, strokeWidth: 2 }} connectNulls={false} />
-            <Line type="monotone" dataKey="base" stroke={c.green} strokeWidth={2} strokeDasharray="8 4" name="Base Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} connectNulls={false} />
-            <Line type="monotone" dataKey="bull" stroke={c.green} strokeWidth={1} strokeDasharray="3 3" name="Bull" dot={false} connectNulls={false} opacity={0.35} />
-            <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.35} />
+            <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBull)" name="Bull Range" animationDuration={1200} animationEasing="ease-out" />
+            <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBear)" name="Bear Range" animationDuration={1200} animationEasing="ease-out" />
+            <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gActFc)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 7, fill: c.accent, stroke: c.surface, strokeWidth: 3, style: { filter: `drop-shadow(0 0 6px ${c.accent})` } }} connectNulls={false} animationDuration={1000} animationEasing="ease-out" />
+            <Line type="monotone" dataKey="base" stroke={c.green} strokeWidth={2} strokeDasharray="8 4" name="Base Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} activeDot={{ r: 6, fill: c.green, stroke: c.surface, strokeWidth: 2, style: { filter: `drop-shadow(0 0 6px ${c.green})` } }} connectNulls={false} animationDuration={1200} animationEasing="ease-out" />
+            <Line type="monotone" dataKey="bull" stroke={c.green} strokeWidth={1} strokeDasharray="3 3" name="Bull" dot={false} connectNulls={false} opacity={0.35} animationDuration={1400} />
+            <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.35} animationDuration={1400} />
           </ComposedChart>
         </ResponsiveContainer>
         {/* Legend */}
@@ -5661,6 +5662,21 @@ function FinanceOSApp() {
         @keyframes rippleOut { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes shrink { from { width: 100%; } to { width: 0%; } }
+        @keyframes chartPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(91,156,245,0.4); } 50% { box-shadow: 0 0 0 8px rgba(91,156,245,0); } }
+        @keyframes dotGlow { 0%,100% { filter: drop-shadow(0 0 2px currentColor); } 50% { filter: drop-shadow(0 0 8px currentColor); } }
+        @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes chartReveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+        @keyframes barGrow { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
+        .recharts-area-area { animation: chartReveal 1.2s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .recharts-line-curve { animation: chartReveal 1s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .recharts-bar-rectangle { animation: barGrow 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .recharts-pie-sector { animation: fadeSlideUp 0.5s cubic-bezier(0.22,1,0.36,1) backwards; }
+        .recharts-pie-sector:nth-child(1) { animation-delay: 0.05s; }
+        .recharts-pie-sector:nth-child(2) { animation-delay: 0.15s; }
+        .recharts-pie-sector:nth-child(3) { animation-delay: 0.25s; }
+        .recharts-pie-sector:nth-child(4) { animation-delay: 0.35s; }
+        .recharts-dot circle { transition: r 0.2s cubic-bezier(0.22,1,0.36,1), opacity 0.2s; }
+        .recharts-active-dot circle { animation: dotGlow 1.5s ease-in-out infinite; }
         /* GPU acceleration for animated elements */
         [style*="animation"], [style*="transition"] { will-change: transform, opacity; }
         /* Layout containment for sidebar + content area */
