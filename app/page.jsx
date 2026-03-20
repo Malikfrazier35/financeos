@@ -2963,7 +2963,7 @@ const IntegrationsView = ({ c, toast }) => {
           { label: "Connected", value: connected.length, icon: "●", color: c.green },
           { label: "Available", value: conns.filter(co => co.status === "available").length, icon: "○", color: c.textDim },
           { label: "Total Records", value: recsStr, icon: "◆", color: c.accent },
-          { label: "Avg Freshness", value: avgStr, icon: "⚡", color: avgFresh < 300 ? c.green : c.amber },
+          { label: "Avg Freshness", value: avgStr, icon: "~", color: avgFresh < 300 ? c.green : c.amber },
           ];
         })().map(s => (
           <div key={s.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
@@ -3903,6 +3903,11 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
   const [deleteText, setDeleteText] = useState("");
   const [activeTab, setActiveTab] = useState("org");
   const [sessionExpanded, setSessionExpanded] = useState(false);
+  const [region, setRegion] = useState(() => { try { return localStorage.getItem("fos_region") || "US"; } catch { return "US"; } });
+  const [lang, setLang] = useState(() => { try { return localStorage.getItem("fos_lang") || "en"; } catch { return "en"; } });
+  const [currency, setCurrency] = useState(() => { try { return localStorage.getItem("fos_currency") || "USD"; } catch { return "USD"; } });
+  const [dateFormat, setDateFormat] = useState(() => { try { return localStorage.getItem("fos_dateformat") || "MM/DD/YYYY"; } catch { return "MM/DD/YYYY"; } });
+  const saveRegional = (key, val, setter) => { setter(val); try { localStorage.setItem(key, val); } catch {} toast("Preference updated", "success"); };
   const tabs = [
     { id: "org", label: "Organization" },
     { id: "billing", label: "Billing" },
@@ -3979,6 +3984,46 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         ))}
       </div>
 
+      {/* Regional & Currency */}
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", marginTop: 16 }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 4 }}>Regional & Currency</div>
+        <div style={{ fontSize: 11, color: c.textDim, marginBottom: 16 }}>Controls how numbers, dates, and currencies display across all reports and exports.</div>
+        {[
+          { label: "Region", key: "fos_region", value: region, setter: setRegion, options: [
+            { v: "US", l: "United States" }, { v: "GB", l: "United Kingdom" }, { v: "CA", l: "Canada" }, { v: "AU", l: "Australia" },
+            { v: "DE", l: "Germany" }, { v: "FR", l: "France" }, { v: "JP", l: "Japan" }, { v: "SG", l: "Singapore" },
+            { v: "HK", l: "Hong Kong SAR" }, { v: "IT", l: "Italy" }, { v: "BR", l: "Brazil" }, { v: "IN", l: "India" },
+            { v: "NL", l: "Netherlands" }, { v: "SE", l: "Sweden" }, { v: "CH", l: "Switzerland" }, { v: "AE", l: "United Arab Emirates" },
+          ]},
+          { label: "Language", key: "fos_lang", value: lang, setter: setLang, options: [
+            { v: "en", l: "English" }, { v: "en-GB", l: "English (UK)" }, { v: "es", l: "Espanol" }, { v: "fr", l: "Francais" },
+            { v: "de", l: "Deutsch" }, { v: "ja", l: "Japanese" }, { v: "zh", l: "Chinese (Simplified)" }, { v: "pt", l: "Portugues" },
+          ]},
+          { label: "Currency", key: "fos_currency", value: currency, setter: setCurrency, options: [
+            { v: "USD", l: "$ USD" }, { v: "EUR", l: "EUR" }, { v: "GBP", l: "GBP" }, { v: "CAD", l: "$ CAD" },
+            { v: "AUD", l: "$ AUD" }, { v: "JPY", l: "JPY" }, { v: "CHF", l: "CHF" }, { v: "SGD", l: "$ SGD" },
+            { v: "HKD", l: "$ HKD" }, { v: "INR", l: "INR" }, { v: "BRL", l: "R$ BRL" }, { v: "SEK", l: "kr SEK" },
+          ]},
+          { label: "Date Format", key: "fos_dateformat", value: dateFormat, setter: setDateFormat, options: [
+            { v: "MM/DD/YYYY", l: "MM/DD/YYYY" }, { v: "DD/MM/YYYY", l: "DD/MM/YYYY" }, { v: "YYYY-MM-DD", l: "YYYY-MM-DD (ISO)" }, { v: "DD.MM.YYYY", l: "DD.MM.YYYY" },
+          ]},
+        ].map(f => (
+          <div key={f.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{f.label}</div>
+            <select value={f.value} onChange={e => saveRegional(f.key, e.target.value, f.setter)} style={{
+              fontSize: 12, padding: "6px 28px 6px 10px", borderRadius: 6, border: `1px solid ${c.border}`,
+              background: c.surfaceAlt, color: c.text, fontFamily: "inherit", fontWeight: 600, cursor: "pointer",
+              appearance: "none", WebkitAppearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "no-repeat", backgroundPosition: "right 8px center",
+            }}>
+              {f.options.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+            </select>
+          </div>
+        ))}
+        <div style={{ fontSize: 9, color: c.textFaint, marginTop: 10 }}>Changes apply to dashboard, reports, and exports. Multi-entity consolidation uses entity-level currency settings.</div>
+      </div>
+
       {activeTab === "billing" && (
         <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
@@ -3995,7 +4040,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
               <div style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>January 15, 2026</div>
             </div>
           </div>
-          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>💳 Visa ····4242 · Billing: finance@acme.io</div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>Visa ····4242 · Billing: finance@acme.io</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {[
               { label: "Manage Subscription", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
@@ -4452,9 +4497,9 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           )}
           {/* Trust signals */}
           <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
-            {[{ label: "SOC 2", icon: "🛡️" }, { label: "AES-256", icon: "🔒" }, { label: "Custom SLA", icon: "⚡" }].map(t => (
+            {[{ label: "SOC 2", Icon: Shield }, { label: "AES-256", Icon: Zap }, { label: "Custom SLA", Icon: Activity }].map(t => (
               <span key={t.label} style={{ fontSize: 9, color: "#3d4558", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
-                <span style={{ fontSize: 11 }}>{t.icon}</span> {t.label}
+                <t.Icon size={11} strokeWidth={2} /> {t.label}
               </span>
             ))}
           </div>
@@ -4475,8 +4520,7 @@ const PRICING_PLANS = [
       { label: "Connector syncs", included: 500, overage: "$0.02/sync" },
       { label: "Report exports", included: 50, overage: "$0.25/export" },
       { label: "Scenario runs", included: 10, overage: "$1.00/run" },
-    ],
-    monthlyLink: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", annualLink: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
+    ] },
   { name: "Growth", monthly: 1799, annual: 1499, seats: 25, entities: 10, popular: true,
     desc: "Full-stack FP&A with AI + consolidation",
     features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Unlimited connectors", "Priority support"],
@@ -4486,8 +4530,7 @@ const PRICING_PLANS = [
       { label: "Report exports", included: 500, overage: "$0.15/export" },
       { label: "Scenario runs", included: 100, overage: "$0.75/run" },
       { label: "API calls", included: 5000, overage: "$0.01/call" },
-    ],
-    monthlyLink: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", annualLink: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
+    ] },
   { name: "Business", monthly: 4799, annual: 3999, seats: Infinity, entities: Infinity,
     desc: "Enterprise FP&A · unlimited scale",
     features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee", "API access"],
@@ -4497,8 +4540,7 @@ const PRICING_PLANS = [
       { label: "Report exports", included: -1, overage: "Unlimited" },
       { label: "Scenario runs", included: 1000, overage: "$0.50/run" },
       { label: "API calls", included: -1, overage: "Unlimited" },
-    ],
-    monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
+    ] },
   { name: "Enterprise", monthly: null, annual: null, seats: Infinity, entities: Infinity, enterprise: true,
     desc: "Custom deployment · SOX compliance · On-prem",
     features: ["No seat or entity limits", "SOX-compliant audit trails", "On-premises or private cloud", "Custom integrations & API", "Dedicated success team + TAM", "Multi-year & volume pricing", "White-glove onboarding", "Custom SLA (up to 99.99%)"],
@@ -4517,9 +4559,9 @@ const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
   const [setupProgress, setSetupProgress] = useState(0);
 
   const steps = [
-    { title: "Set up your organization", sub: "Basic details to customize your workspace", icon: "🏢" },
-    { title: "Connect your data", sub: "Link your ERP, billing, or banking systems", icon: "🔗" },
-    { title: "You're all set", sub: "Your workspace is ready", icon: "🚀" },
+    { title: "Set up your organization", sub: "Basic details to customize your workspace", icon: "org" },
+    { title: "Connect your data", sub: "Link your ERP, billing, or banking systems", icon: "link" },
+    { title: "You're all set", sub: "Your workspace is ready", icon: "done" },
   ];
 
   const connectors = [
@@ -4528,8 +4570,8 @@ const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
     { id: "xero", name: "Xero", cat: "ERP", color: "#13B5EA", icon: "X", desc: "Multi-currency, bank feeds" },
     { id: "salesforce", name: "Salesforce", cat: "CRM", color: "#00A1E0", icon: "S", desc: "Pipeline, ARR, forecasts" },
     { id: "stripe", name: "Stripe", cat: "Billing", color: "#635BFF", icon: "$", desc: "MRR, churn, subscriptions" },
-    { id: "plaid", name: "Plaid", cat: "Banking", color: "#000000", icon: "⬡", desc: "Bank accounts, transactions" },
-    { id: "snowflake", name: "Snowflake", cat: "Data", color: "#29B5E8", icon: "❄", desc: "Custom SQL, data warehouse" },
+    { id: "plaid", name: "Plaid", cat: "Banking", color: "#000000", icon: "P", desc: "Bank accounts, transactions" },
+    { id: "snowflake", name: "Snowflake", cat: "Data", color: "#29B5E8", icon: "S", desc: "Custom SQL, data warehouse" },
     { id: "csv", name: "CSV Upload", cat: "File", color: "#8b92a5", icon: "↑", desc: "Upload spreadsheets directly" },
   ];
 
@@ -4640,7 +4682,7 @@ const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
                 style={{ width: "100%", fontSize: 14, padding: "13px 16px 13px 42px", borderRadius: 12, border: `1px solid ${bdrC}`, background: bgC, color: txtC, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s", fontWeight: 600 }}
                 onFocus={e => e.target.style.borderColor = accentC} onBlur={e => e.target.style.borderColor = bdrC}
               />
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🏢</span>
+              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center" }}><LayoutDashboard size={14} color={accentC} /></span>
             </div>
             {/* Live preview card */}
             {org.name && (
@@ -4762,9 +4804,9 @@ const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
                 </div>
                 {/* Org summary */}
                 <div style={{ width: "100%", fontSize: 11, color: dimC, display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", animation: "fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.3s both" }}>
-                  {org.name && <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}` }}>🏢 {org.name}</span>}
+                  {org.name && <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}`, display: "inline-flex", alignItems: "center", gap: 4 }}><LayoutDashboard size={11} /> {org.name}</span>}
                   {org.industry && <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}` }}>{org.industry}</span>}
-                  {connected.length > 0 && <span style={{ padding: "4px 10px", borderRadius: 6, background: `${greenC}06`, border: `1px solid ${greenC}15`, color: greenC }}>🔗 {connected.length} connected</span>}
+                  {connected.length > 0 && <span style={{ padding: "4px 10px", borderRadius: 6, background: `${greenC}06`, border: `1px solid ${greenC}15`, color: greenC, display: "inline-flex", alignItems: "center", gap: 4 }}><Plug size={11} /> {connected.length} connected</span>}
                   <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}` }}>{org.currency} · FY {org.fy}</span>
                 </div>
               </>
@@ -4846,7 +4888,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = t.bdrBright; e.currentTarget.style.color = t.tx; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = t.bdr; e.currentTarget.style.color = t.txD; }}
-          >←</button> : <div style={{ position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10, background: `${t.ac}08`, border: `1px solid ${t.ac}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🔒</div>}
+          >←</button> : <div style={{ position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10, background: `${t.ac}08`, border: `1px solid ${t.ac}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: t.ac }}><Shield size={14} /></div>}
           <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 12 }}>
             <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
             <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.ac}10`, border: `1px solid ${t.ac}18`, fontSize: 10, fontWeight: 700, color: t.ac, letterSpacing: "0.04em" }}>LAUNCHING SOON</div>
@@ -5019,7 +5061,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                 <button onClick={() => {
                   setVerifyFailed(false);
-                  try { window.open(billing === "annual" ? PRICING_PLANS.find(p => p.name === checkoutPending)?.annualLink : PRICING_PLANS.find(p => p.name === checkoutPending)?.monthlyLink, "_blank"); } catch {}
+                  try { window.open("mailto:sales@finance-os.app?subject=Checkout%20Issue%20—%20" + encodeURIComponent(checkoutPending + " plan"), "_blank"); } catch {}
                 }} style={{
                   fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, color: "#fff",
@@ -5061,7 +5103,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
             </button>
           ) : (
             <div style={{ fontSize: 10, color: t.txF, padding: "8px 16px", borderRadius: 8, background: `${t.ac}06`, border: `1px solid ${t.ac}10`, display: "inline-block", marginBottom: 8 }}>
-              🔒 Select a plan to join the waitlist
+              Select a plan to join the waitlist
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
@@ -5424,16 +5466,18 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
-            { icon: "⚡", outcome: "Accelerate your month-end close", detail: "AI copilot auto-generates variance commentary and flags accrual errors before your auditors see them.", metric: "Faster close cycles", color: "#60a5fa" },
-            { icon: "◈", outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "Scenario modeling in minutes", color: "#a78bfa" },
-            { icon: "◆", outcome: "See AI reasoning you can actually verify", detail: "Unlike black-box copilots, FinanceOS shows every data source, assumption, and calculation chain.", metric: "Full transparency", color: "#34d399" },
+            { Icon: CheckSquare, outcome: "Accelerate your month-end close", detail: "AI copilot auto-generates variance commentary and flags accrual errors before your auditors see them.", metric: "Faster close cycles", color: "#60a5fa" },
+            { Icon: GitBranch, outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "Scenario modeling in minutes", color: "#a78bfa" },
+            { Icon: Eye, outcome: "See AI reasoning you can actually verify", detail: "Unlike black-box copilots, FinanceOS shows every data source, assumption, and calculation chain.", metric: "Full transparency", color: "#34d399" },
           ].map(t => (
             <div key={t.outcome} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${t.color}40`; e.currentTarget.style.transform = "translateY(-3px)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
             >
               <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${t.color}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
-              <div style={{ fontSize: 24, marginBottom: 14 }}>{t.icon}</div>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.color}08`, border: `1px solid ${t.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+                <t.Icon size={18} color={t.color} strokeWidth={1.8} />
+              </div>
               <div style={{ fontSize: 15, fontWeight: 800, color: "#f0f2f5", lineHeight: 1.3, marginBottom: 10 }}>{t.outcome}</div>
               <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.65, marginBottom: 16 }}>{t.detail}</div>
               <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: `${t.color}08`, border: `1px solid ${t.color}12`, color: t.color, display: "inline-block" }}>{t.metric}</div>
@@ -5582,7 +5626,10 @@ const LandingPage = ({ onLogin }) => {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#8b92a5"; }}
                 >Try Demo</button>
-                <button onClick={() => { try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {} }} style={{
+                <button onClick={async () => {
+                  try { await supabase.from("waitlist").upsert({ email: "subscriber", interest_type: p.name.toLowerCase(), source: "landing_pricing" }, { onConflict: "email" }); } catch {}
+                  enterDemo();
+                }} style={{
                   flex: 2, fontSize: 12, padding: "12px 0", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#1e2230", color: "#fff", transition: "all 0.15s",
                   boxShadow: p.popular ? "0 4px 16px rgba(96,165,250,0.2)" : "none",
@@ -5619,19 +5666,21 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: 16 }}>
           {[
-            { icon: "💰", title: "TCO drops 60-80%", detail: "$499-$3,999/mo vs $65K-$200K+/yr at legacy vendors. No implementation consultants, no 6-month timelines, no hidden professional services fees. Your finance team self-serves from day one.", tag: "Cost" },
-            { icon: "⚡", title: "Live in 48 hours, not 6 months", detail: "Connect your ERP, map your chart of accounts, and run your first report the same day. No consultants required. No project management overhead. No migration risk.", tag: "Speed" },
-            { icon: "🔍", title: "AI reasoning you can audit", detail: "Our copilot shows every data source, assumption, and calculation chain. Your auditors and board can verify every insight. No black-box answers.", tag: "Transparency" },
-            { icon: "📊", title: "One platform, not five tools", detail: "FP&A + Treasury + Compliance + ESG in a single suite. One login, one vendor, one contract. Eliminate the integration tax between point solutions.", tag: "Consolidation" },
-            { icon: "🔐", title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs. Your security team signs off faster because we built it in, not bolted it on.", tag: "Security" },
-            { icon: "📈", title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. You pay for what you use. Enterprise agreements include committed spend discounts with no caps.", tag: "Pricing" },
+            { Icon: DollarSign, title: "TCO drops 60-80%", detail: "$499-$3,999/mo vs $65K-$200K+/yr at legacy vendors. No implementation consultants, no 6-month timelines, no hidden professional services fees. Your finance team self-serves from day one.", tag: "Cost" },
+            { Icon: Zap, title: "Live in 48 hours, not 6 months", detail: "Connect your ERP, map your chart of accounts, and run your first report the same day. No consultants required. No project management overhead. No migration risk.", tag: "Speed" },
+            { Icon: Eye, title: "AI reasoning you can audit", detail: "Our copilot shows every data source, assumption, and calculation chain. Your auditors and board can verify every insight. No black-box answers.", tag: "Transparency" },
+            { Icon: Layers, title: "One platform, not five tools", detail: "FP&A + Treasury + Compliance + ESG in a single suite. One login, one vendor, one contract. Eliminate the integration tax between point solutions.", tag: "Consolidation" },
+            { Icon: Shield, title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs. Your security team signs off faster because we built it in, not bolted it on.", tag: "Security" },
+            { Icon: TrendingUp, title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. You pay for what you use. Enterprise agreements include committed spend discounts with no caps.", tag: "Pricing" },
           ].map(s => (
             <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "24px 22px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <span style={{ fontSize: 18 }}>{s.icon}</span>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.10)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <s.Icon size={16} color="#60a5fa" strokeWidth={1.8} />
+                </div>
                 <span style={{ fontSize: 14, fontWeight: 800, color: "#f0f2f5" }}>{s.title}</span>
                 <span style={{ marginLeft: "auto", fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.06)", color: "#60a5fa", letterSpacing: "0.04em" }}>{s.tag}</span>
               </div>
@@ -5846,7 +5895,7 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa40, transparent)" }} />
             {!demoSuccess ? (<>
             <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa15, #a78bfa08)", border: "1px solid #60a5fa12", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 12, fontSize: 20 }}>📞</div>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa15, #a78bfa08)", border: "1px solid #60a5fa12", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}><MessageSquare size={22} color="#60a5fa" strokeWidth={1.8} /></div>
               <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em" }}>Request a Demo</div>
               <div style={{ fontSize: 12, color: "#8b92a5", marginTop: 4 }}>See how FinanceOS can work for your team. We'll reach out within 24 hours.</div>
             </div>
@@ -5910,7 +5959,7 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558" }}>We'll reach out within 24 hours · No commitment required</div>
             </>) : (
             <div style={{ textAlign: "center", padding: "24px 0" }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+              <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #34d39920, #34d39908)", border: "1px solid #34d39915", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}><Check size={28} color="#34d399" strokeWidth={3} /></div>
               <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Demo request received</div>
               <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.6, marginBottom: 20 }}>We'll reach out to {demoForm.email} within 24 hours to schedule your personalized demo.</div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
