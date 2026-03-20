@@ -4297,7 +4297,7 @@ const PRICING_PLANS = [
       { label: "API calls", included: 5000, overage: "$0.01/call" },
     ],
     monthlyLink: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", annualLink: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
-  { name: "Business", monthly: 4799, annual: 3999, seats: 999, entities: 999,
+  { name: "Business", monthly: 4799, annual: 3999, seats: Infinity, entities: Infinity,
     desc: "Enterprise FP&A · unlimited scale",
     features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee", "API access"],
     usage: [
@@ -4308,9 +4308,9 @@ const PRICING_PLANS = [
       { label: "API calls", included: -1, overage: "Unlimited" },
     ],
     monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
-  { name: "Enterprise", monthly: null, annual: null, seats: 999, entities: 999, enterprise: true,
+  { name: "Enterprise", monthly: null, annual: null, seats: Infinity, entities: Infinity, enterprise: true,
     desc: "Custom deployment · SOX compliance · On-prem",
-    features: ["Everything in Business", "SOX-compliant audit trails", "On-premises deployment", "Custom integrations", "Dedicated success team", "Volume discounts", "White-glove onboarding"],
+    features: ["No seat or entity limits", "SOX-compliant audit trails", "On-premises or private cloud", "Custom integrations & API", "Dedicated success team + TAM", "Multi-year & volume pricing", "White-glove onboarding", "Custom SLA (99.99% available)"],
     usage: [
       { label: "All meters", included: -1, overage: "Unlimited" },
       { label: "Committed spend discounts", included: -1, overage: "Custom" },
@@ -4700,7 +4700,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                   <div style={{ fontSize: 11, color: t.gn, fontWeight: 600, marginBottom: 10 }}>Save ${savings.toLocaleString()}/year</div>
                 )}
                 {!p.enterprise && billing === "monthly" && <div style={{ height: 18 }} />}
-                {p.enterprise && <div style={{ fontSize: 11, color: t.txD, marginBottom: 10 }}>Tailored to your requirements</div>}
+                {p.enterprise && <div style={{ fontSize: 11, color: t.txD, marginBottom: 10, lineHeight: 1.5 }}>No seat, entity, or usage limits.<br />Multi-year & volume pricing available.</div>}
                 <div style={{ fontSize: 11, color: t.txD, lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
                 <button onClick={async () => {
                   if (p.enterprise) { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); return; }
@@ -5216,6 +5216,7 @@ const LandingPage = ({ onLogin }) => {
                 { cap: "AI Copilot with visible reasoning", us: true, an: false, pi: false, ru: true },
                 { cap: "Self-serve onboarding (days, not months)", us: true, an: false, pi: false, ru: true },
                 { cap: "Published transparent pricing", us: true, an: false, pi: false, ru: false },
+                { cap: "No seat or usage caps (Enterprise)", us: true, an: true, pi: true, ru: false },
                 { cap: "Multi-entity consolidation", us: true, an: true, pi: true, ru: false },
                 { cap: "Scenario modeling (4+ side-by-side)", us: true, an: true, pi: true, ru: true },
                 { cap: "Real-time variance detection", us: true, an: false, pi: true, ru: false },
@@ -5378,7 +5379,7 @@ const LandingPage = ({ onLogin }) => {
           { q: "Can I migrate from Pigment, Anaplan, or Adaptive?", a: "Yes. We provide a guided migration path with a dedicated onboarding specialist. Most migrations complete in 2-3 weeks with full historical data preservation." },
           { q: "What makes FinanceOS different from Runway?", a: "Runway is strong for early-stage startups. FinanceOS serves mid-market teams that need multi-entity consolidation, intercompany elimination, and board-ready reporting. We also have published transparent pricing — Runway does not." },
           { q: "Do you offer a money-back guarantee?", a: "Yes — all plans include a 30-day money-back guarantee. Subscribe, connect your data, and if you're not satisfied within 30 days, contact us for a full refund. No questions asked." },
-          { q: "Do you offer custom pricing for large teams?", a: "Yes. Teams with 50+ users or special compliance requirements can contact us for custom enterprise pricing with dedicated SLA, CSM, and on-premises deployment options." },
+          { q: "Do you offer custom pricing for large teams?", a: "Yes. Enterprise agreements have no seat limits, no entity caps, and no usage ceilings. We offer multi-year committed spend discounts, custom SLAs, dedicated TAMs, on-premises deployment, and SOX-compliant audit trails. Contact sales for a proposal." },
         ].map((faq, i) => (
           <details key={i} style={{ borderBottom: "1px solid #1e2230", cursor: "pointer" }}>
             <summary style={{ padding: "20px 0", fontSize: 15, fontWeight: 600, color: "#f0f2f5", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
