@@ -3869,6 +3869,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   // Password strength
   const pwStrength = password.length === 0 ? 0 : password.length < 6 ? 1 : password.length < 8 ? 2 : (password.match(/[A-Z]/) && password.match(/[0-9]/) && password.length >= 10) ? 4 : 3;
@@ -3904,7 +3905,8 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
         try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }, { onConflict: "email" }); } catch {}
         // If auto-confirmed, trigger login immediately
         if (data?.session) { onAuth({ method: "email" }); return; }
-        setError("Check your email for a confirmation link");
+        // Email confirmation required — show interstitial
+        setEmailSent(true);
         setLoading(null);
       } else {
         const { data, error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password: password.trim() });
@@ -3981,6 +3983,16 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             </div>
             {error && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", fontSize: 12, color: "#ef4444", marginBottom: 8, textAlign: "center" }}>{error}</div>}
             {resetSent && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)", fontSize: 12, color: "#34d399", marginBottom: 8, textAlign: "center" }}>Password reset link sent to {email}</div>}
+            {emailSent && (
+              <div style={{ padding: "20px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.03))", border: "1px solid rgba(96,165,250,0.15)", marginBottom: 12, textAlign: "center" }}>
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10, fontSize: 18 }}>✉</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f2f5", marginBottom: 4 }}>Check your email</div>
+                <div style={{ fontSize: 12, color: "#8b92a5", lineHeight: 1.5, marginBottom: 10 }}>
+                  We sent a confirmation link to <strong style={{ color: "#f0f2f5" }}>{email}</strong>. Click the link to activate your account.
+                </div>
+                <div style={{ fontSize: 10, color: "#3d4558" }}>Didn't receive it? Check spam, or <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => { setEmailSent(false); setAuthMode("signup"); }}>try again</span></div>
+              </div>
+            )}
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 14px" }}>
               <div style={{ flex: 1, height: 1, background: "#1e2230" }} />
               <span style={{ fontSize: 10, color: "#3d4558", textTransform: "uppercase", letterSpacing: "0.08em" }}>or email</span>
@@ -5322,6 +5334,9 @@ const LandingPage = ({ onLogin }) => {
               <span style={{ fontSize: 15, fontWeight: 800 }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
             </div>
             <p style={{ fontSize: 12, color: "#3d4558", lineHeight: 1.7, maxWidth: 240 }}>AI-powered financial planning for modern finance teams. Part of the Vaultline Suite.</p>
+            <div style={{ marginTop: 8, fontSize: 11 }}>
+              <a href="mailto:support@finance-os.app" style={{ color: "#636d84", textDecoration: "none" }}>support@finance-os.app</a>
+            </div>
           </div>
           {[
             { title: "Product", links: ["Dashboard", "AI Copilot", "Forecasting", "Consolidation", "Integrations"] },
@@ -5331,12 +5346,16 @@ const LandingPage = ({ onLogin }) => {
           ].map(col => (
             <div key={col.title}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>{col.title}</div>
-              {col.links.map(link => (
-                <div key={link} style={{ fontSize: 12, color: "#3d4558", marginBottom: 8, cursor: "pointer" }}
+              {col.links.map(link => {
+                const linkMap = { "Privacy Policy": "/privacy", "Terms of Service": "/terms" };
+                const href = linkMap[link];
+                return (
+                <div key={link} onClick={() => { if (href) window.location.href = href; }} style={{ fontSize: 12, color: "#3d4558", marginBottom: 8, cursor: "pointer" }}
                   onMouseEnter={e => e.currentTarget.style.color = "#9ea5b8"}
                   onMouseLeave={e => e.currentTarget.style.color = "#3d4558"}
                 >{link}</div>
-              ))}
+                );
+              })}
             </div>
           ))}
         </div>

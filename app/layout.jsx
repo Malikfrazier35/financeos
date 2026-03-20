@@ -27,8 +27,12 @@ export const metadata = {
   },
   robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   icons: {
-    icon: "/favicon.svg",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
   },
   category: "technology",
 };
