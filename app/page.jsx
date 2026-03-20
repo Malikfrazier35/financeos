@@ -2093,9 +2093,9 @@ const ConsolidationView = ({ c, onNav, toast }) => {
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
           <thead>
-            <tr style={{ borderBottom: `1px solid ${c.borderSub}`, background: c.surfaceAlt }}>
+            <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
               {["Line", "Acme US", "Acme EU", "Acme APAC", "Eliminations", "Consolidated"].map((h, i) => (
-                <th key={h} style={{ padding: "10px 12px", fontSize: 9, fontWeight: 800, letterSpacing: "0.06em", color: i === 4 ? c.red : i === 5 ? c.accent : c.textFaint, textAlign: i === 0 ? "left" : "right", textTransform: "uppercase" }}>{h}</th>
+                <th key={h} style={{ padding: "12px 12px", fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: i === 4 ? c.red : i === 5 ? c.accent : c.textFaint, textAlign: i === 0 ? "left" : "right", textTransform: "uppercase", background: c.surfaceAlt, position: "sticky", top: 0, zIndex: 2 }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -2103,10 +2103,17 @@ const ConsolidationView = ({ c, onNav, toast }) => {
             {CONS_PNL.map((r, i) => {
               const isTotal = r.line === "EBITDA";
               return (
-                <tr key={r.line} style={{ borderBottom: `1px solid ${c.borderSub}`, ...(isTotal ? { borderTop: `2px solid ${c.borderBright}` } : {}) }}>
-                  <td style={{ padding: "7px 12px", fontWeight: isTotal ? 800 : 600, color: c.text }}>{r.line}</td>
+                <tr key={r.line} style={{
+                  borderBottom: `1px solid ${c.borderSub}`,
+                  ...(isTotal ? { borderTop: `2px solid ${c.borderBright}`, background: `linear-gradient(90deg, ${c.green}06, transparent)` } : {}),
+                  transition: "background 0.12s",
+                }}
+                onMouseEnter={e => { if (!isTotal) e.currentTarget.style.background = c.accentDim || `${c.accent}06`; }}
+                onMouseLeave={e => { if (!isTotal) e.currentTarget.style.background = "transparent"; }}
+                >
+                  <td style={{ padding: "9px 12px", fontWeight: isTotal ? 800 : 600, color: isTotal ? c.green : c.text }}>{r.line}</td>
                   {[r.us, r.eu, r.apac, r.elim, r.cons].map((v, j) => (
-                    <td key={j} style={{ textAlign: "right", padding: "7px 12px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: j === 4 || isTotal ? 700 : 400, color: j === 3 ? c.red : j === 4 ? c.accent : isTotal ? c.green : c.textSec }}>
+                    <td key={j} style={{ textAlign: "right", padding: "9px 12px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: j === 4 || isTotal ? 700 : 400, color: j === 3 ? c.red : j === 4 ? c.accent : isTotal ? c.green : c.textSec }}>
                       {v === null ? "—" : v === 0 && j === 3 ? "$0" : `${v < 0 ? "-" : ""}$${Math.abs(v).toLocaleString()}K`}
                     </td>
                   ))}
