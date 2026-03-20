@@ -4196,36 +4196,44 @@ const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
   );
 };
 
-const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
+const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) => {
   const [billing, setBilling] = useState("annual");
   const [hoveredPlan, setHoveredPlan] = useState(null);
   const [checkoutPending, setCheckoutPending] = useState(null);
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [verifyFailed, setVerifyFailed] = useState(false);
-  const annualSavings = { Starter: 1200, Growth: 3600, Business: 9600 };
+  const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const canSkip = isDemo || !isAuthenticated;
   // Theme helper — uses dashboard theme if available, falls back to dark
   const t = { bg: c?.surface || "#111318", bg2: c?.bg2 || "#0b0c10", alt: c?.surfaceAlt || "#181b22", bdr: c?.border || "#1e2230", bdrSub: c?.borderSub || "#171b25", bdrBright: c?.borderBright || "#2a2f3d", tx: c?.text || "#eef0f6", txD: c?.textDim || "#636d84", txF: c?.textFaint || "#3d4558", txS: c?.textSec || "#9ea5b8", ac: c?.accent || "#5b9cf5", pu: c?.purple || "#a181f7", gn: c?.green || "#3dd9a0", rd: c?.red || "#f06b6b" };
 
   const features = [
     { name: "Entities", values: ["3", "10", "Unlimited"] },
     { name: "Users", values: ["5", "25", "Unlimited"] },
-    { name: "AI Copilot", values: [false, true, true] },
-    { name: "Consolidation", values: [false, true, true] },
-    { name: "Scenario Modeling", values: ["2 scenarios", "10 scenarios", "Unlimited"] },
+    { name: "AI Copilot (Claude)", values: [false, true, true] },
+    { name: "Multi-Entity Consolidation", values: [false, true, true] },
+    { name: "Scenario Modeling", values: ["2", "10", "Unlimited"] },
     { name: "Integrations", values: ["5", "15", "30+"] },
+    { name: "Variance Detective", values: [true, true, true] },
+    { name: "Forecast Optimizer", values: ["Basic", "ML-Powered", "Custom ML"] },
+    { name: "Board Reporting", values: [false, true, true] },
     { name: "Custom ML Models", values: [false, false, true] },
-    { name: "SSO + RBAC", values: [false, false, true] },
+    { name: "SSO / SAML / RBAC", values: [false, false, true] },
     { name: "Dedicated CSM", values: [false, false, true] },
-    { name: "SLA", values: ["99.9%", "99.95%", "99.99%"] },
+    { name: "SLA Guarantee", values: ["99.9%", "99.95%", "99.99%"] },
+    { name: "API Access", values: [false, "REST", "REST + GQL"] },
+    { name: "Support", values: ["Email", "Priority", "Dedicated"] },
   ];
 
   return (
-    <div onClick={onSkip} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: "95vw", maxWidth: 800, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+    <div onClick={canSkip ? onSkip : undefined} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: "95vw", maxWidth: 860, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
         {/* Header */}
         <div style={{ padding: "32px 40px 0", textAlign: "center", position: "relative" }}>
-          {/* Back / Close button */}
-          <button onClick={onSkip} aria-label="Go back" style={{
+          {/* Accent edge */}
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${t.ac}40, ${t.gn}20, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          {/* Close — only if canSkip */}
+          {canSkip ? <button onClick={onSkip} aria-label="Go back" style={{
             position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10,
             border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s",
@@ -4233,12 +4241,14 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = t.bdrBright; e.currentTarget.style.color = t.tx; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = t.bdr; e.currentTarget.style.color = t.txD; }}
-          >←</button>
+          >←</button> : <div style={{ position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10, background: `${t.ac}08`, border: `1px solid ${t.ac}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🔒</div>}
           <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, marginBottom: 12, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
           <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, color: t.tx }}>
-            {userName && userName !== "Guest" ? `Welcome, ${userName.split(" ")[0]}!` : "Choose your plan"}
+            {userName && userName !== "Guest" ? `${userName.split(" ")[0]}, choose your plan` : "Choose your plan"}
           </div>
-          <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>All plans include a 30-day money-back guarantee. Upgrade, downgrade, or cancel anytime.</div>
+          <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>
+            {!canSkip ? "Select a plan to activate your workspace. 30-day money-back guarantee." : "All plans include a 30-day money-back guarantee. Upgrade, downgrade, or cancel anytime."}
+          </div>
           <div style={{ display: "inline-flex", background: t.bg2, borderRadius: 10, padding: 3, border: `1px solid ${t.bdr}` }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? t.bdr : "transparent", color: billing === "monthly" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
             <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "annual" ? t.bdr : "transparent", color: billing === "annual" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", position: "relative" }}>
@@ -4275,18 +4285,35 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
                 {!p.enterprise && billing === "monthly" && <div style={{ height: 18 }} />}
                 {p.enterprise && <div style={{ fontSize: 11, color: t.txD, marginBottom: 10 }}>Tailored to your requirements</div>}
                 <div style={{ fontSize: 11, color: t.txD, lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
-                <button onClick={() => {
+                <button onClick={async () => {
                   if (p.enterprise) { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); return; }
-                  setCheckoutPending(p.name);
-                  try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
-                }} style={{
-                  width: "100%", padding: "12px", borderRadius: 10, border: p.enterprise ? `1px solid ${t.bdr}` : "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
-                  background: p.popular ? `linear-gradient(135deg, ${t.ac}, ${t.pu})` : p.enterprise ? "transparent" : isHovered ? t.bdrBright : t.bdr, color: p.enterprise ? t.txS : "#fff",
-                  transition: "all 0.2s", boxShadow: p.popular ? `0 4px 16px ${t.ac}25` : "none",
+                  setCheckoutLoading(p.name);
+                  try {
+                    const { data: { session: authSession } } = await supabase.auth.getSession();
+                    if (authSession?.access_token) {
+                      const res = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${authSession.access_token}`, "apikey": SUPABASE_KEY },
+                        body: JSON.stringify({ plan: p.name.toLowerCase(), interval: billing }),
+                      });
+                      const data = await res.json();
+                      if (data?.url) { window.location.href = data.url; setCheckoutLoading(null); return; }
+                    }
+                    window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank");
+                    setCheckoutPending(p.name);
+                  } catch {
+                    window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank");
+                    setCheckoutPending(p.name);
+                  }
+                  setCheckoutLoading(null);
+                }} disabled={checkoutLoading === p.name} style={{
+                  width: "100%", padding: "12px", borderRadius: 10, border: p.enterprise ? `1px solid ${t.bdr}` : "none", cursor: checkoutLoading === p.name ? "wait" : "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
+                  background: checkoutLoading === p.name ? t.bdr : p.popular ? `linear-gradient(135deg, ${t.ac}, ${t.pu})` : p.enterprise ? "transparent" : isHovered ? t.bdrBright : t.bdr, color: p.enterprise ? t.txS : "#fff",
+                  transition: "all 0.2s", boxShadow: p.popular ? `0 4px 16px ${t.ac}25` : "none", opacity: checkoutLoading === p.name ? 0.6 : 1,
                 }}
-                onMouseEnter={e => { if (!p.popular) e.currentTarget.style.background = t.bdrBright; }}
-                onMouseLeave={e => { if (!p.popular) e.currentTarget.style.background = t.bdr; }}
-                >{p.enterprise ? "Contact Sales" : `Start ${p.name} Trial`}</button>
+                onMouseEnter={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdrBright; }}
+                onMouseLeave={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdr; }}
+                >{checkoutLoading === p.name ? "Redirecting..." : p.enterprise ? "Contact Sales" : `Get Started — ${p.name}`}</button>
               </div>
               );
             })}
@@ -4305,23 +4332,11 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
                 A Stripe checkout tab has opened. Complete your payment there, then return here to verify.
               </div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                <button onClick={() => {
-                  setVerifyingPayment(true);
-                  // Simulate payment verification (in production: check Stripe session via webhook/API)
-                  setTimeout(() => {
-                    // Demo mode: always succeeds. Production: check stripe.checkout.sessions.retrieve()
-                    setVerifyingPayment(false);
-                    onSelect(checkoutPending);
-                  }, 2000);
-                }} style={{
-                  fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
-                  background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, color: "#fff", boxShadow: `0 4px 16px ${t.gn}25`,
-                }}>Verify Payment</button>
                 <button onClick={() => { setCheckoutPending(null); }} style={{
                   fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
-                }}>Cancel</button>
+                }}>Choose Different Plan</button>
               </div>
-              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Payment will be verified with Stripe before your account is activated.</div>
+              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Your plan activates automatically when Stripe confirms payment via webhook.</div>
             </div>
           </div>
         )}
@@ -4384,12 +4399,14 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
         {/* Footer */}
         {!checkoutPending && !verifyingPayment && !verifyFailed && (
         <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
-          {isDemo ? (
-            <button onClick={onSkip} style={{ fontSize: 12, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
+          <div style={{ fontSize: 11, color: t.txF, marginBottom: 10 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · 30-day MBG</div>
+          {canSkip ? (
+            <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>
+              {isDemo ? "Continue with demo data →" : "Skip for now →"}
+            </button>
           ) : (
-            <div>
-              <div style={{ fontSize: 11, color: t.txF, marginBottom: 8 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
-              <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 6 }}>Skip for now →</button>
+            <div style={{ fontSize: 10, color: t.txF, padding: "8px 16px", borderRadius: 8, background: `${t.ac}06`, border: `1px solid ${t.ac}10`, display: "inline-block", marginBottom: 8 }}>
+              🔒 Select a plan to activate your workspace
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
@@ -5898,7 +5915,7 @@ function FinanceOSApp() {
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
       {/* Plan Picker — shows after signup */}
-      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => {
+      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo"} isAuthenticated={!!user.email && user.plan !== "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => {
         // SECURITY: Plan is set to 'pending:<planName>' until payment is verified
         // The onboarding wizard only runs after verification succeeds
         setUser(prev => ({ ...prev, plan: `pending:${plan}` }));
