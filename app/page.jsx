@@ -4835,13 +4835,17 @@ function FinanceOSApp() {
           window.history.replaceState(null, "", window.location.pathname);
         }
         // Call verify-session to ensure user+org exist in public tables
-        // This auto-provisions for users who signed up before onboarding write-through
+        // CRITICAL: Get a fresh session — the one from onAuthStateChange may be stale
+        // (token rotation can happen between the callback firing and this fetch executing)
         try {
+          const { data: { session: freshSession } } = await supabase.auth.getSession();
+          const token = freshSession?.access_token;
+          if (!token) { console.warn("verify-session: no fresh token"); return; }
           const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-session`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${session.access_token}`,
+              "Authorization": `Bearer ${token}`,
               "apikey": SUPABASE_KEY,
             },
           });
@@ -4853,6 +4857,8 @@ function FinanceOSApp() {
             if (data.org?.name) {
               setUser(prev => ({ ...prev, orgName: data.org.name }));
             }
+          } else {
+            console.warn("verify-session returned", res.status);
           }
         } catch (e) { console.warn("verify-session:", e); }
       } catch {}
