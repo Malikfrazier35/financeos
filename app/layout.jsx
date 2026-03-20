@@ -1,3 +1,5 @@
+import PlausibleAnalytics from "./PlausibleAnalytics";
+
 export const metadata = {
   title: "FinanceOS — AI-Powered FP&A Platform",
   description: "The financial planning platform that thinks before it answers. AI-native variance detection, scenario modeling, and natural language querying for modern finance teams.",
@@ -53,7 +55,6 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://api.stripe.com" />
         <link rel="dns-prefetch" href="https://plausible.io" />
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <script defer data-domain="finance-os.app" src="https://plausible.io/js/script.outbound-links.file-downloads.js"></script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
@@ -106,6 +107,7 @@ export default function RootLayout({ children }) {
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
         {children}
+        <PlausibleAnalytics />
       </body>
     </html>
   );
