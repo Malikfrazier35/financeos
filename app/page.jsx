@@ -1729,7 +1729,7 @@ const DRIVERS = [
   { name: "Seasonal pattern", shap: 1.3 },
 ];
 
-const ForecastView = ({ c }) => {
+const ForecastView = ({ c, toast }) => {
   const [ndr, setNdr] = useState(118);
   const [pipeline, setPipeline] = useState(40);
   const [churn, setChurn] = useState(82);
@@ -1752,6 +1752,10 @@ const ForecastView = ({ c }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      <ExportBar c={c} title="Forecast"
+        onCSV={() => { downloadCSV("financeos-forecast.csv", ["Month","Actual ($K)","Budget ($K)","Forecast ($K)","Bull ($K)","Bear ($K)"], FORECAST_DATA.map(d => [d.month, d.actual || "", d.budget, d.forecast, d.bull, d.bear])); toast("Forecast exported as CSV", "success"); }}
+        onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
+      />
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
@@ -1924,6 +1928,10 @@ const ConsolidationView = ({ c, onNav, toast }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      <ExportBar c={c} title="Consolidation"
+        onCSV={() => { downloadCSV("financeos-consolidation.csv", ["Entity","Revenue ($K)","OpEx ($K)","EBITDA %","Status","Currency"], ENTITIES.map(e => [e.name, e.revenue, e.opex, e.ebitda + "%", entityStatus[e.name] || e.status, e.currency])); toast("Consolidation exported as CSV", "success"); }}
+        onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
+      />
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
@@ -2048,6 +2056,10 @@ const CloseView = ({ c, toast }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      <ExportBar c={c} title="Month-End Close"
+        onCSV={() => { downloadCSV("financeos-close-tasks.csv", ["Task","Category","Owner","Status","Priority"], tasks.map(t => [t.task, t.cat, t.owner, t.status, t.priority || ""])); toast("Close tasks exported as CSV", "success"); }}
+        onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
+      />
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
@@ -3054,6 +3066,10 @@ const ScenariosView = ({ c, toast }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      <ExportBar c={c} title="Scenarios"
+        onCSV={() => { downloadCSV("financeos-scenarios.csv", ["Scenario","Revenue ($M)","OpEx ($M)","EBITDA %","Probability"], scenarios.map(s => [s.name, s.revenue, s.opex, s.ebitda + "%", s.probability])); toast("Scenarios exported as CSV", "success"); }}
+        onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
+      />
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
@@ -5394,7 +5410,7 @@ function FinanceOSApp() {
           {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CopilotView c={c} toast={toast} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
-          {view === "forecast" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ForecastView c={c} /></SectionBoundary>}
+          {view === "forecast" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ForecastView c={c} toast={toast} /></SectionBoundary>}
           {view === "consolidation" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
           {view === "models" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
           {view === "close" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CloseView c={c} toast={toast} /></SectionBoundary>}
