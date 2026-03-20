@@ -4965,6 +4965,7 @@ function FinanceOSApp() {
   const [view, setView] = useState("dashboard");
   const [showPlanPicker, setShowPlanPicker] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [clock, setClock] = useState(() => new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }));
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
@@ -5118,6 +5119,12 @@ function FinanceOSApp() {
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, [view]);
+
+  // Live clock
+  useEffect(() => {
+    const t = setInterval(() => setClock(new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })), 30000);
+    return () => clearInterval(t);
+  }, []);
 
   const toggleMode = useCallback(() => {
     setAutoTheme(false);
@@ -5568,14 +5575,15 @@ function FinanceOSApp() {
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {!isMobile && <span style={{ fontSize: 10, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontWeight: 500, letterSpacing: "0.02em", padding: "4px 8px", background: c.surfaceAlt, borderRadius: 5, border: `1px solid ${c.borderSub}` }}>{clock}</span>}
             <div onClick={() => setCmdOpen(true)} aria-label="Search — press Command K" role="button" tabIndex={0} onKeyDown={e => e.key === "Enter" && setCmdOpen(true)} style={{
               display: "flex", alignItems: "center", gap: 6, background: c.surfaceAlt, border: `1px solid ${c.border}`,
-              borderRadius: 8, padding: "6px 12px", fontSize: 12, color: c.textDim, width: 200, cursor: "pointer", transition: "border-color 0.15s",
+              borderRadius: 8, padding: "6px 12px", fontSize: 12, color: c.textDim, width: isMobile ? 44 : 200, cursor: "pointer", transition: "border-color 0.15s",
             }}
             onMouseEnter={e => e.currentTarget.style.borderColor = c.accent}
             onMouseLeave={e => e.currentTarget.style.borderColor = c.border}
             >
-              <Search size={13} /> Search... <kbd style={{ marginLeft: "auto", fontSize: 9, padding: "1px 5px", borderRadius: 3, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>⌘K</kbd>
+              <Search size={13} /> {!isMobile && <>Search... <kbd style={{ marginLeft: "auto", fontSize: 9, padding: "1px 5px", borderRadius: 3, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>⌘K</kbd></>}
             </div>
             <div style={{ position: "relative" }}>
               {(() => {
