@@ -360,12 +360,12 @@ const SEGMENT_DATA = [
 ];
 
 const KPIS = [
-  { label: "ARR", value: "$48.6M", delta: "+24.1%", up: true, icon: DollarSign, spark: [32,35,33,38,41,44,46,48.6], accent: "accent" },
-  { label: "NDR", value: "118%", delta: "+4pp", up: true, icon: TrendingUp, spark: [108,110,112,114,115,116,117,118], accent: "green" },
-  { label: "Gross Margin", value: "84.7%", delta: "+2.1pp", up: true, icon: Target, spark: [80,81,82,82.5,83,83.5,84,84.7], accent: "cyan" },
-  { label: "Rule of 40", value: "52.1", delta: "+8.3", up: true, icon: Zap, spark: [38,40,42,44,46,48,50,52.1], accent: "purple" },
-  { label: "Burn Multiple", value: "0.8x", delta: "-0.3x", up: true, icon: Activity, spark: [1.4,1.3,1.2,1.1,1.0,0.9,0.85,0.8], accent: "amber" },
-  { label: "Headcount", value: "312", delta: "+28", up: true, icon: Users, spark: [260,270,278,284,290,298,305,312], accent: "accent" },
+  { label: "ARR", value: "$48.6M", delta: "+24.1%", up: true, icon: DollarSign, spark: [32,35,33,38,41,44,46,48.6], accent: "accent", bench: "Target: $52M" },
+  { label: "NDR", value: "118%", delta: "+4pp", up: true, icon: TrendingUp, spark: [108,110,112,114,115,116,117,118], accent: "green", bench: "Best-in-class >115%" },
+  { label: "Gross Margin", value: "84.7%", delta: "+2.1pp", up: true, icon: Target, spark: [80,81,82,82.5,83,83.5,84,84.7], accent: "cyan", bench: "Benchmark: 70-80%" },
+  { label: "Rule of 40", value: "52.1", delta: "+8.3", up: true, icon: Zap, spark: [38,40,42,44,46,48,50,52.1], accent: "purple", bench: "Top quartile SaaS" },
+  { label: "Burn Multiple", value: "0.8x", delta: "-0.3x", up: true, icon: Activity, spark: [1.4,1.3,1.2,1.1,1.0,0.9,0.85,0.8], accent: "amber", bench: "Efficient: <1.0x" },
+  { label: "Headcount", value: "312", delta: "+28", up: true, icon: Users, spark: [260,270,278,284,290,298,305,312], accent: "accent", bench: "Plan: 342 FY" },
 ];
 
 const INSIGHTS = [
@@ -907,12 +907,15 @@ const KpiCard = memo(({ kpi, c, onClick, index = 0 }) => {
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", position: "relative", zIndex: 1 }}>
         <div>
           <div style={{ fontSize: 30, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
-          <div style={{
-            fontSize: 11, fontWeight: 700, marginTop: 8, padding: "3px 10px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 3,
-            color: kpi.up ? c.green : c.red, background: kpi.up ? c.greenDim : c.redDim,
-            border: `1px solid ${kpi.up ? c.green : c.red}15`,
-          }}>
-            {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+            <div style={{
+              fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 3,
+              color: kpi.up ? c.green : c.red, background: kpi.up ? c.greenDim : c.redDim,
+              border: `1px solid ${kpi.up ? c.green : c.red}15`,
+            }}>
+              {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
+            </div>
+            {kpi.bench && <span style={{ fontSize: 8, color: c.textFaint, fontWeight: 500, letterSpacing: "0.02em" }}>{kpi.bench}</span>}
           </div>
         </div>
         <Spark data={kpi.spark} color={kpi.up ? c.green : c.red} />
@@ -1003,6 +1006,16 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     <QuickActions c={c} onNav={onNav} toast={toast} />
 
     {/* Data Pipeline Status */}
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, padding: "8px 14px", background: c.surfaceAlt, borderRadius: 8, border: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textFaint }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, boxShadow: `0 0 6px ${c.green}40` }} />All systems operational</span>
+        <span>Data as of {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
+        <span>5/5 connectors synced</span>
+      </div>
+      <span style={{ fontWeight: 600, color: c.textDim, cursor: "pointer" }} onClick={() => onNav("integrations")}>View pipeline →</span>
+    </div>
+
+    {/* ═══ KPI Grid ═══ */}
     <div onClick={() => onNav("integrations")} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, padding: "10px 16px", background: c.surfaceAlt, borderRadius: 10, border: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, flexWrap: "wrap", cursor: "pointer", transition: "all 0.15s" }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent + "30"; e.currentTarget.style.background = c.accentDim; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.background = c.surfaceAlt; }}
@@ -1034,11 +1047,24 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     </div>
 
     {/* KPI Grid — ENV 10: Premium hover glow */}
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, display: "flex", alignItems: "center", gap: 8 }}>
+        Key Metrics <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 8, background: `${c.green}08`, border: `1px solid ${c.green}15` }}>
+        <span style={{ fontSize: 8, fontWeight: 800, color: c.green, letterSpacing: "0.06em" }}>SERIES A READINESS</span>
+        <span style={{ fontSize: 13, fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>92</span>
+        <span style={{ fontSize: 8, color: c.textFaint }}>/100</span>
+      </div>
+    </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 16, marginBottom: 24 }}>
       {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
     </div>
 
     {/* Charts Row */}
+    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      Performance Analytics <div style={{ width: 40, height: 1, background: c.borderSub }} />
+    </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
@@ -1050,7 +1076,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
               <TrendingUp size={14} color={c.accent} />
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, letterSpacing: "-0.01em" }}>Revenue Performance</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: c.text, letterSpacing: "-0.01em" }}>Revenue Performance</div>
+                <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 4, height: 4, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />LIVE</span>
+              </div>
               <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Actual vs Budget vs Forecast ($K)</div>
             </div>
           </div>
@@ -1218,6 +1247,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     </div>
 
     {/* Financial Pipeline Row — Cash Flow + ARR Bridge + Pipeline */}
+    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 24, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      Financial Pipeline <div style={{ width: 40, height: 1, background: c.borderSub }} />
+    </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 16, marginTop: 24 }}>
 
       {/* Cash Flow Waterfall */}
