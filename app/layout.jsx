@@ -1,4 +1,5 @@
 import PlausibleAnalytics from "./PlausibleAnalytics";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
   title: "FinanceOS — AI-Powered FP&A Platform",
@@ -108,6 +109,7 @@ export default function RootLayout({ children }) {
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
         {children}
+        <Analytics />
         <PlausibleAnalytics />
       </body>
     </html>
