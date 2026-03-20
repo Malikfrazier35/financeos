@@ -1581,7 +1581,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
             <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
               <span style={{ fontSize: 10, color: item.total ? c.text : c.textDim, fontWeight: item.total ? 700 : 500, width: 80, flexShrink: 0 }}>{item.label}</span>
               <div style={{ flex: 1, height: 14, background: c.bg2, borderRadius: 4, overflow: "hidden", position: "relative" }}>
-                <div style={{ width: `${Math.min(pct, 100)}%`, height: "100%", borderRadius: 4, background: item.total ? `linear-gradient(90deg, ${c.accent}, ${c.accent}bb)` : item.positive ? `linear-gradient(90deg, ${c.green}, ${c.green}bb)` : `linear-gradient(90deg, ${c.red}cc, ${c.red}88)` }} />
+                <div style={{ width: `${Math.min(pct, 100)}%`, height: "100%", borderRadius: 4, background: item.total ? `linear-gradient(90deg, ${c.accent}, ${c.accent}bb)` : item.positive ? `linear-gradient(90deg, ${c.green}, ${c.green}bb)` : `linear-gradient(90deg, ${c.red}cc, ${c.red}88)`, transition: "width 0.8s cubic-bezier(0.22,1,0.36,1)", animation: `barGrow 0.6s cubic-bezier(0.22,1,0.36,1) ${i * 0.08}s both` }} />
               </div>
               <span style={{ fontSize: 10, fontWeight: 800, color: item.total ? c.accent : item.positive ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace", width: 55, textAlign: "right", flexShrink: 0 }}>{item.value >= 0 ? "" : ""}{fmt(item.value)}</span>
             </div>
@@ -1617,8 +1617,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           { label: "Contraction", value: -820, color: c.amber, prefix: "" },
           { label: "Churn", value: -1880, color: c.red, prefix: "" },
           { label: "Ending ARR", value: 44600, color: c.accent, weight: 800 },
-        ].map(item => (
-          <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+        ].map((item, i) => (
+          <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${c.borderSub}`, animation: `fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1) ${i * 0.06}s both` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 8, height: 8, borderRadius: 3, background: `${item.color}30`, border: `2px solid ${item.color}`, flexShrink: 0 }} />
               <span style={{ fontSize: 11, color: item.weight ? c.text : c.textSec, fontWeight: item.weight || 500 }}>{item.label}</span>
@@ -1662,7 +1662,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
               <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>${s.value}M</span>
             </div>
             <div style={{ height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden" }}>
-              <div style={{ width: `${s.pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}88)`, borderRadius: 5, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)" }} />
+              <div style={{ width: `${s.pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}88)`, borderRadius: 5, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", animation: `barGrow 0.7s cubic-bezier(0.22,1,0.36,1) ${i * 0.1}s both` }} />
             </div>
           </div>
         ))}
@@ -1674,6 +1674,71 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
       </div>
       </ChartPanel>
     </div>
+
+    {/* Cohort Retention Heatmap */}
+    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 24, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      Retention & Cohorts <div style={{ width: 40, height: 1, background: c.borderSub }} />
+    </div>
+    <ChartPanel title="Cohort Retention" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
+    <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}>
+      <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Activity size={14} color={c.cyan} />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Revenue Retention by Cohort</div>
+            <div style={{ fontSize: 10, color: c.textDim }}>Net dollar retention (%) over time</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: c.greenDim, color: c.green, border: `1px solid ${c.green}12` }}>NDR 118%</div>
+      </div>
+      {/* Heatmap grid */}
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 3, fontSize: 10 }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: "left", padding: "6px 8px", fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em" }}>Cohort</th>
+              {["M0", "M3", "M6", "M9", "M12"].map(h => (
+                <th key={h} style={{ textAlign: "center", padding: "6px 8px", fontSize: 9, fontWeight: 700, color: c.textFaint, letterSpacing: "0.06em" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {COHORT_DATA.map((row, ri) => (
+              <tr key={row.cohort}>
+                <td style={{ padding: "6px 8px", fontWeight: 600, color: c.textSec, whiteSpace: "nowrap" }}>{row.cohort}</td>
+                {[row.m0, row.m3, row.m6, row.m9, row.m12].map((val, ci) => {
+                  if (val == null) return <td key={ci} style={{ padding: "6px 8px", textAlign: "center", borderRadius: 6 }}><span style={{ color: c.textFaint, fontSize: 9 }}>—</span></td>;
+                  const intensity = val >= 95 ? 1 : val >= 90 ? 0.75 : val >= 85 ? 0.5 : 0.3;
+                  const heatColor = val >= 95 ? c.green : val >= 90 ? c.cyan : val >= 85 ? c.amber : c.red;
+                  return (
+                    <td key={ci} style={{
+                      padding: "6px 8px", textAlign: "center", borderRadius: 6,
+                      background: `${heatColor}${Math.round(intensity * 18).toString(16).padStart(2, "0")}`,
+                      fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                      color: val >= 95 ? c.green : val >= 90 ? c.cyan : val >= 85 ? c.amber : c.red,
+                      transition: "all 0.3s",
+                      animation: `fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1) ${(ri * 5 + ci) * 0.04}s both`,
+                    }}>{val}%</td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {/* Legend */}
+      <div style={{ display: "flex", gap: 16, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textDim, alignItems: "center" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: `${c.green}25`, border: `1px solid ${c.green}40` }} />95%+</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: `${c.cyan}20`, border: `1px solid ${c.cyan}30` }} />90-95%</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: `${c.amber}15`, border: `1px solid ${c.amber}25` }} />85-90%</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: `${c.red}12`, border: `1px solid ${c.red}20` }} />&lt;85%</span>
+        <span style={{ marginLeft: "auto", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>Best: Q3 '24 (98% → 95%)</span>
+      </div>
+    </div>
+    </ChartPanel>
 
     {/* Cross-sell banner */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
