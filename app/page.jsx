@@ -1382,6 +1382,16 @@ const COPILOT_RESPONSES = {
   "default": "I have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n• Burn multiple: 0.8x (efficient)\n• Cash runway: 34 months ($12.8M)\n\nI can help with variance analysis, scenario modeling, competitive benchmarks, forecasting, churn analysis, or expense deep-dives. What would you like to explore?",
 };
 
+// Inline markdown: **bold** and `code`
+const renderInline = (text, c) => {
+  const parts = text.split(/(\*\*.*?\*\*|`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) return <span key={i} style={{ fontWeight: 700, color: c.text }}>{part.slice(2, -2)}</span>;
+    if (part.startsWith("`") && part.endsWith("`")) return <code key={i} style={{ fontSize: 11, padding: "1px 5px", borderRadius: 4, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, color: c.accent, fontFamily: "'JetBrains Mono', monospace" }}>{part.slice(1, -1)}</code>;
+    return <span key={i}>{part}</span>;
+  });
+};
+
 const CopilotView = ({ c, toast }) => {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Welcome to FinanceOS AI Copilot.\n\nI have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. Ask me anything and I'll show my reasoning before answering.\n\n**6 active variances** — Revenue +$2.09M, S&M and Cloud over. Rule of 40 at 52.1 (top quartile)." },
@@ -1518,8 +1528,8 @@ const CopilotView = ({ c, toast }) => {
               {m.content.split("\n").map((line, j) => {
                 if (line.startsWith("**") && line.endsWith("**")) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2, fontSize: 13.5 }}>{line.replace(/\*\*/g, "")}</div>;
                 if (line.match(/^\*\*.*\*\*$/)) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2 }}>{line.replace(/\*\*/g, "")}</div>;
-                if (line.startsWith("• ")) return <div key={j} style={{ paddingLeft: 14, color: c.textSec, position: "relative", marginBottom: 2 }}><span style={{ position: "absolute", left: 0, color: c.accent }}>•</span>{line.slice(2)}</div>;
-                return <div key={j}>{line || <br />}</div>;
+                if (line.startsWith("• ")) return <div key={j} style={{ paddingLeft: 14, color: c.textSec, position: "relative", marginBottom: 2 }}><span style={{ position: "absolute", left: 0, color: c.accent }}>•</span>{renderInline(line.slice(2), c)}</div>;
+                return <div key={j}>{line ? renderInline(line, c) : <br />}</div>;
               })}
             </div>
           </div>
@@ -2830,7 +2840,7 @@ const AdminView = ({ c, toast, onNav }) => {
 
       {tab === "overview" && (<>
         {/* Admin KPIs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
           {adminKpis.map(k => (
             <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${k.color}08, ${c.cardGlow}`; }}
@@ -3553,16 +3563,16 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
 
   const inputStyle = {
     width: "100%", fontSize: 14, padding: "12px 14px", borderRadius: 10,
-    border: "1px solid #23232a", background: "#0b0c10", color: "#f0f2f5",
+    border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5",
     fontFamily: "'DM Sans', system-ui, sans-serif", outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
   };
 
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: 420, maxHeight: "90vh", overflow: "auto", background: "#111114", border: "1px solid #23232a", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: 420, maxHeight: "90vh", overflow: "auto", background: "#111318", border: "1px solid #1e2230", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
         {/* Header */}
         <div style={{ padding: "28px 32px 0", textAlign: "center", position: "relative" }}>
-          <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#8b92a5", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+          <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#8b92a5", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
             <X size={14} />
           </button>
           <FosLogo size={36} />
@@ -3586,7 +3596,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
               ].map(p => (
                 <button key={p.key} onClick={() => handleOAuth(p.name === "Apple" ? "Apple" : p.name)} disabled={!!loading} style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "11px 0", borderRadius: 10,
-                  border: "1px solid #23232a", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
+                  border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
                   cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== p.key ? 0.4 : 1,
                 }}
                 onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#111318"; }}}
@@ -3671,7 +3681,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           </div>
 
           {/* Trust signals */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1b1b20" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
             {[{ icon: Shield, label: "SOC 2" }, { icon: Zap, label: "AES-256" }, { icon: Globe, label: "99.99% SLA" }].map(t => (
               <div key={t.label} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, color: "#3d4558", fontWeight: 600 }}>
                 <t.icon size={10} color="#3d4558" /> {t.label}
@@ -3863,7 +3873,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
 
   return (
     <div onClick={onSkip} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: 800, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: "95vw", maxWidth: 800, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
         {/* Header */}
         <div style={{ padding: "32px 40px 0", textAlign: "center", position: "relative" }}>
           {/* Back / Close button */}
@@ -4077,7 +4087,7 @@ const ProductDemo = ({ enterDemo }) => {
       <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32 }}>
         {DEMO_TABS.map(d => (
           <button key={d.id} onClick={() => setTab(d.id)} style={{
-            fontSize: 13, padding: "10px 20px", borderRadius: 10, border: tab === d.id ? "1px solid #60a5fa" : "1px solid #23232a",
+            fontSize: 13, padding: "10px 20px", borderRadius: 10, border: tab === d.id ? "1px solid #60a5fa" : "1px solid #1e2230",
             background: tab === d.id ? "rgba(96,165,250,0.08)" : "transparent",
             color: tab === d.id ? "#60a5fa" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s",
           }}>{d.label}</button>
@@ -4090,7 +4100,7 @@ const ProductDemo = ({ enterDemo }) => {
           <p style={{ fontSize: 15, color: "#8b92a5", lineHeight: 1.7, marginBottom: 24 }}>{active.sub}</p>
           <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
             {active.kpis.map(k => (
-              <div key={k.l} style={{ padding: "10px 16px", borderRadius: 10, background: "#111318", border: "1px solid #1b1b20" }}>
+              <div key={k.l} style={{ padding: "10px 16px", borderRadius: 10, background: "#111318", border: "1px solid #1e2230" }}>
                 <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.v}</div>
                 <div style={{ fontSize: 10, color: "#3d4558", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.l}</div>
               </div>
@@ -4099,11 +4109,11 @@ const ProductDemo = ({ enterDemo }) => {
           <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Try This Feature</button>
         </div>
         {/* Browser mockup */}
-        <div style={{ background: "#0b0c10", border: "1px solid #23232a", borderRadius: 16, padding: 4, boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
-          <div style={{ background: "#111114", borderRadius: 13, overflow: "hidden" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0b0c10", borderBottom: "1px solid #1b1b20" }}>
+        <div style={{ background: "#0b0c10", border: "1px solid #1e2230", borderRadius: 16, padding: 4, boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
+          <div style={{ background: "#111318", borderRadius: 13, overflow: "hidden" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0b0c10", borderBottom: "1px solid #1e2230" }}>
               <div style={{ display: "flex", gap: 5 }}>{["#ef4444","#fbbf24","#22c55e"].map(cl => <div key={cl} style={{ width: 8, height: 8, borderRadius: "50%", background: cl }} />)}</div>
-              <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: "#0a0a0d", border: "1px solid #1b1b20", fontSize: 10, color: "#3d4558" }}>app.finance-os.app/{active.id}</div>
+              <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: "#0a0a0d", border: "1px solid #1e2230", fontSize: 10, color: "#3d4558" }}>app.finance-os.app/{active.id}</div>
             </div>
             <div style={{ padding: 20, minHeight: 280 }}>
               <div style={{ display: "flex", gap: 12 }}>
@@ -4112,13 +4122,13 @@ const ProductDemo = ({ enterDemo }) => {
                   <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: "#f0f2f5" }}>{active.title}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
                     {active.kpis.map((k, i) => (
-                      <div key={k.l} style={{ background: "#111318", border: "1px solid #1b1b20", borderRadius: 8, padding: "10px 12px" }}>
+                      <div key={k.l} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 8, padding: "10px 12px" }}>
                         <div style={{ fontSize: 14, fontWeight: 800, color: ["#60a5fa","#34d399","#a78bfa"][i], fontFamily: "'JetBrains Mono', monospace" }}>{k.v}</div>
                         <div style={{ fontSize: 8, color: "#3d4558", marginTop: 2 }}>{k.l}</div>
                       </div>
                     ))}
                   </div>
-                  <div style={{ height: 120, background: "linear-gradient(180deg, rgba(96,165,250,0.05), transparent)", borderRadius: 8, border: "1px solid #1b1b20", overflow: "hidden" }}>
+                  <div style={{ height: 120, background: "linear-gradient(180deg, rgba(96,165,250,0.05), transparent)", borderRadius: 8, border: "1px solid #1e2230", overflow: "hidden" }}>
                     <svg width="100%" height="100%" viewBox="0 0 400 120" preserveAspectRatio="none">
                       <defs><linearGradient id={`dg-${active.id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity="0.2"/><stop offset="100%" stopColor="#60a5fa" stopOpacity="0"/></linearGradient></defs>
                       <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15 L400,120 L0,120 Z" fill={`url(#dg-${active.id})`}/>
@@ -4198,7 +4208,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         ) : (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+          <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
           <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try Free</button>
         </div>
         )}
@@ -4219,7 +4229,7 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto", flexDirection: isMobile ? "column" : "row" }}>
           <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
             placeholder="Work email" type="email"
-            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: isMobile ? 10 : "10px 0 0 10px", border: "1px solid #23232a", borderRight: isMobile ? "1px solid #23232a" : "none", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
+            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: isMobile ? 10 : "10px 0 0 10px", border: "1px solid #1e2230", borderRight: isMobile ? "1px solid #1e2230" : "none", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
             onFocus={e => e.target.style.borderColor = "#60a5fa"}
             onBlur={e => e.target.style.borderColor = "#1e2230"}
           />
@@ -4227,11 +4237,11 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ fontSize: 11, color: "#3d4558", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · No credit card required</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
-          <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+          <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Try the Live Demo</button>
-          <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+          <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Watch 2-min Overview</button>
@@ -4382,7 +4392,7 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa30, transparent)", borderRadius: "0 0 2px 2px" }} />
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #23232a" }}>
+              <tr style={{ borderBottom: "1px solid #1e2230" }}>
                 {["Capability", "FinanceOS", "Anaplan", "Pigment", "Runway"].map((h, i) => (
                   <th key={h} style={{ padding: "14px 16px", textAlign: i === 0 ? "left" : "center", fontSize: 11, fontWeight: 700, color: i === 1 ? "#60a5fa" : "#8b92a5", textTransform: "uppercase", letterSpacing: "0.04em" }}>{h}</th>
                 ))}
@@ -4404,7 +4414,7 @@ const LandingPage = ({ onLogin }) => {
                 { cap: "Implementation time", us: "< 48hr", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
                 { cap: "Starting price", us: "$499/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
               ].map(row => (
-                <tr key={row.cap} style={{ borderBottom: "1px solid #1b1b20" }}>
+                <tr key={row.cap} style={{ borderBottom: "1px solid #1e2230" }}>
                   <td style={{ padding: "12px 16px", color: "#9ea5b8", fontWeight: 500 }}>{row.cap}</td>
                   {[row.us, row.an, row.pi, row.ru].map((v, i) => (
                     <td key={i} style={{ padding: "12px 16px", textAlign: "center" }}>
@@ -4649,7 +4659,7 @@ const LandingPage = ({ onLogin }) => {
                 { label: "Minimum Check", value: "$25K", sub: "Accredited investors" },
                 { label: "Target Close", value: "Q3 2026", sub: "Rolling close" },
               ].map(t => (
-                <div key={t.label} style={{ background: "#0b0c10", border: "1px solid #1b1b20", borderRadius: 12, padding: "16px 18px" }}>
+                <div key={t.label} style={{ background: "#0b0c10", border: "1px solid #1e2230", borderRadius: 12, padding: "16px 18px" }}>
                   <div style={{ fontSize: 10, fontWeight: 600, color: "#3d4558", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{t.label}</div>
                   <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{t.value}</div>
                   <div style={{ fontSize: 10, color: "#8b92a5" }}>{t.sub}</div>
@@ -4659,7 +4669,7 @@ const LandingPage = ({ onLogin }) => {
 
             <div style={{ display: "flex", gap: 12 }}>
               <button onClick={() => window.open("mailto:investors@finance-os.app?subject=FinanceOS%20Seed%20Round%20Interest", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Request Investor Deck</button>
-              <button onClick={() => window.open("mailto:investors@finance-os.app?subject=FinanceOS%20Meeting%20Request", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
+              <button onClick={() => window.open("mailto:investors@finance-os.app?subject=FinanceOS%20Meeting%20Request", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
             </div>
           </div>
         </div>
@@ -4681,7 +4691,7 @@ const LandingPage = ({ onLogin }) => {
             { label: "Waitlist", value: "1,200+", delta: "Finance teams" },
             { label: "NPS Score", value: "72", delta: "Top quartile" },
           ].map(k => (
-            <div key={k.label} style={{ background: "#111318", border: "1px solid #23232a", borderRadius: 16, padding: "20px 18px", textAlign: "center" }}>
+            <div key={k.label} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "20px 18px", textAlign: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>{k.value}</div>
               <div style={{ fontSize: 11, fontWeight: 600, color: "#8b92a5", marginBottom: 2 }}>{k.label}</div>
               <div style={{ fontSize: 10, color: "#34d399", fontWeight: 600 }}>{k.delta}</div>
@@ -4691,7 +4701,7 @@ const LandingPage = ({ onLogin }) => {
 
         {/* Market + Differentiators */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: "#111318", border: "1px solid #23232a", borderRadius: 16, padding: 24 }}>
+          <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: 24 }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Market Opportunity</div>
             {[
               { metric: "Total Addressable Market", value: "$50B", note: "EPM/CPM global market" },
@@ -4699,7 +4709,7 @@ const LandingPage = ({ onLogin }) => {
               { metric: "Target Segment", value: "$2.1B", note: "5-500 employee companies" },
               { metric: "Growth Rate", value: "14.2%", note: "CAGR 2024-2030" },
             ].map(m => (
-              <div key={m.metric} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #1b1b20" }}>
+              <div key={m.metric} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #1e2230" }}>
                 <span style={{ flex: 1, fontSize: 12, color: "#9ea5b8" }}>{m.metric}</span>
                 <span style={{ fontSize: 13, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: "#f0f2f5", marginRight: 10 }}>{m.value}</span>
                 <span style={{ fontSize: 10, color: "#3d4558", width: 140 }}>{m.note}</span>
@@ -4707,7 +4717,7 @@ const LandingPage = ({ onLogin }) => {
             ))}
           </div>
 
-          <div style={{ background: "#111318", border: "1px solid #23232a", borderRadius: 16, padding: 24 }}>
+          <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: 24 }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Why FinanceOS Wins</div>
             {[
               { point: "AI-native architecture", detail: "Built on Claude — not bolted on. Visible reasoning, not black box." },
@@ -4726,7 +4736,7 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Footer — expanded per blueprint */}
-      <div style={{ borderTop: "1px solid #1b1b20", padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ borderTop: "1px solid #1e2230", padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -4752,7 +4762,7 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1b1b20", fontSize: 11, color: "#33384a" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1e2230", fontSize: 11, color: "#33384a" }}>
           <span>© {new Date().getFullYear()} Vaultline, Inc. · All rights reserved</span>
           <span>Built with care in New Hampshire</span>
         </div>
@@ -5092,7 +5102,7 @@ function FinanceOSApp() {
           [data-demo-tabs] { flex-wrap: wrap !important; }
           [data-fund-grid] { grid-template-columns: 1fr !important; }
           [data-hero-email] { flex-direction: column !important; max-width: 100% !important; }
-          [data-hero-email] input { border-radius: 10px !important; border-right: 1px solid #23232a !important; }
+          [data-hero-email] input { border-radius: 10px !important; border-right: 1px solid #1e2230 !important; }
           [data-hero-email] button { border-radius: 10px !important; }
         }
         @media (max-width: 480px) {

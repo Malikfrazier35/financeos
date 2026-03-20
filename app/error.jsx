@@ -29,7 +29,7 @@ export default function Error({ error, reset }) {
         }}>Try Again</button>
         <button onClick={clearAndReload} style={{
           fontSize: 14, padding: "12px 24px", borderRadius: 10, cursor: "pointer",
-          border: "1px solid #23232a", background: "transparent", color: "#9ea5b8", fontWeight: 600,
+          border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", fontWeight: 600,
           fontFamily: "inherit",
         }}>Clear Cache &amp; Reload</button>
       </div>
