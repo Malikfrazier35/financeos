@@ -5217,6 +5217,10 @@ const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const [authModal, setAuthModal] = useState(null);
   const [heroEmail, setHeroEmail] = useState("");
+  const [demoModal, setDemoModal] = useState(false);
+  const [demoForm, setDemoForm] = useState({ full_name: "", email: "", company: "", title: "", company_size: "", use_case: "", current_tools: "" });
+  const [demoSubmitting, setDemoSubmitting] = useState(false);
+  const [demoSuccess, setDemoSuccess] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -5309,6 +5313,10 @@ const LandingPage = ({ onLogin }) => {
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Try the Live Demo</button>
+          <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #60a5fa30", background: "rgba(96,165,250,0.06)", color: "#60a5fa", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#60a5fa60"; e.currentTarget.style.background = "rgba(96,165,250,0.10)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#60a5fa30"; e.currentTarget.style.background = "rgba(96,165,250,0.06)"; }}
+          >Request a Demo Call</button>
         </div>
         {/* Product value props — not vanity metrics */}
         <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 32, flexWrap: "wrap" }}>
@@ -5599,7 +5607,42 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#3d4558" }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
+        <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#3d4558" }}>All plans include: SOC 2 architecture · AES-256 encryption · 24/7 monitoring · Email support</div>
+      </div>
+
+      {/* ═══ Enterprise Sales Enablement — Why Teams Switch ═══ */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>For Enterprise Buyers</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Why finance teams switch</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 520, margin: "0 auto" }}>The conversation your CFO is having with procurement right now.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: 16 }}>
+          {[
+            { icon: "💰", title: "TCO drops 60-80%", detail: "$499-$3,999/mo vs $65K-$200K+/yr at legacy vendors. No implementation consultants, no 6-month timelines, no hidden professional services fees. Your finance team self-serves from day one.", tag: "Cost" },
+            { icon: "⚡", title: "Live in 48 hours, not 6 months", detail: "Connect your ERP, map your chart of accounts, and run your first report the same day. No consultants required. No project management overhead. No migration risk.", tag: "Speed" },
+            { icon: "🔍", title: "AI reasoning you can audit", detail: "Our copilot shows every data source, assumption, and calculation chain. Your auditors and board can verify every insight. No black-box answers.", tag: "Transparency" },
+            { icon: "📊", title: "One platform, not five tools", detail: "FP&A + Treasury + Compliance + ESG in a single suite. One login, one vendor, one contract. Eliminate the integration tax between point solutions.", tag: "Consolidation" },
+            { icon: "🔐", title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs. Your security team signs off faster because we built it in, not bolted it on.", tag: "Security" },
+            { icon: "📈", title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. You pay for what you use. Enterprise agreements include committed spend discounts with no caps.", tag: "Pricing" },
+          ].map(s => (
+            <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "24px 22px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <span style={{ fontSize: 18 }}>{s.icon}</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: "#f0f2f5" }}>{s.title}</span>
+                <span style={{ marginLeft: "auto", fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.06)", color: "#60a5fa", letterSpacing: "0.04em" }}>{s.tag}</span>
+              </div>
+              <div style={{ fontSize: 12, color: "#8b92a5", lineHeight: 1.65 }}>{s.detail}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 32, display: "flex", gap: 12, justifyContent: "center" }}>
+          <button onClick={() => setDemoModal(true)} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Schedule a Demo Call</button>
+          <button onClick={() => window.open("mailto:sales@finance-os.app?subject=Enterprise%20Inquiry", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Talk to Sales</button>
+        </div>
       </div>
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 800, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -5795,6 +5838,90 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Auth Modal */}
       {authModal && <AuthModal mode={authModal} onAuth={handleAuth} onClose={() => setAuthModal(null)} />}
+
+      {/* Demo Request Modal */}
+      {demoModal && (
+        <div onClick={() => !demoSubmitting && setDemoModal(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 480, maxHeight: "90vh", overflow: "auto", background: "#111318", border: "1px solid #1e2230", borderRadius: 20, padding: "36px 32px", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}>
+            <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa40, transparent)" }} />
+            {!demoSuccess ? (<>
+            <div style={{ textAlign: "center", marginBottom: 24 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa15, #a78bfa08)", border: "1px solid #60a5fa12", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 12, fontSize: 20 }}>📞</div>
+              <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em" }}>Request a Demo</div>
+              <div style={{ fontSize: 12, color: "#8b92a5", marginTop: 4 }}>See how FinanceOS can work for your team. We'll reach out within 24 hours.</div>
+            </div>
+            {[
+              { key: "full_name", label: "Full Name", type: "text", placeholder: "Jane Smith", required: true },
+              { key: "email", label: "Work Email", type: "email", placeholder: "jane@company.com", required: true },
+              { key: "company", label: "Company", type: "text", placeholder: "Company name" },
+              { key: "title", label: "Title / Role", type: "text", placeholder: "VP Finance, FP&A Director, CFO..." },
+            ].map(f => (
+              <div key={f.key} style={{ marginBottom: 12 }}>
+                <label style={{ fontSize: 10, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>{f.label}{f.required && <span style={{ color: "#ef4444" }}> *</span>}</label>
+                <input value={demoForm[f.key]} onChange={e => setDemoForm(prev => ({ ...prev, [f.key]: e.target.value }))} type={f.type} placeholder={f.placeholder}
+                  style={{ width: "100%", fontSize: 13, padding: "10px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", outline: "none" }}
+                  onFocus={e => e.target.style.borderColor = "#60a5fa"} onBlur={e => e.target.style.borderColor = "#1e2230"}
+                />
+              </div>
+            ))}
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ fontSize: 10, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>Company Size</label>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {["1-10", "11-50", "51-200", "201-500", "500+"].map(s => (
+                  <button key={s} onClick={() => setDemoForm(prev => ({ ...prev, company_size: s }))} style={{
+                    fontSize: 11, padding: "6px 12px", borderRadius: 6, border: `1px solid ${demoForm.company_size === s ? "#60a5fa" : "#1e2230"}`,
+                    background: demoForm.company_size === s ? "rgba(96,165,250,0.08)" : "transparent",
+                    color: demoForm.company_size === s ? "#60a5fa" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                  }}>{s}</button>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 10, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>What are you looking to solve?</label>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {["Replace spreadsheets", "Outgrowing current FP&A", "Multi-entity consolidation", "AI-powered forecasting", "Board reporting", "Other"].map(u => (
+                  <button key={u} onClick={() => setDemoForm(prev => ({ ...prev, use_case: u }))} style={{
+                    fontSize: 10, padding: "5px 10px", borderRadius: 5, border: `1px solid ${demoForm.use_case === u ? "#a78bfa" : "#1e2230"}`,
+                    background: demoForm.use_case === u ? "rgba(167,139,250,0.08)" : "transparent",
+                    color: demoForm.use_case === u ? "#a78bfa" : "#636d84", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                  }}>{u}</button>
+                ))}
+              </div>
+            </div>
+            <button onClick={async () => {
+              if (!demoForm.full_name || !demoForm.email?.includes("@")) return;
+              setDemoSubmitting(true);
+              try {
+                await fetch(`${SUPABASE_URL}/functions/v1/request-demo`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+                  body: JSON.stringify(demoForm),
+                });
+              } catch {}
+              setDemoSubmitting(false);
+              setDemoSuccess(true);
+            }} disabled={demoSubmitting || !demoForm.full_name || !demoForm.email?.includes("@")} style={{
+              width: "100%", fontSize: 14, padding: "13px", borderRadius: 10, border: "none",
+              background: demoSubmitting ? "#1e2230" : "linear-gradient(135deg, #60a5fa, #a78bfa)",
+              color: "#fff", cursor: demoSubmitting ? "wait" : "pointer", fontFamily: "inherit", fontWeight: 700,
+              opacity: (!demoForm.full_name || !demoForm.email?.includes("@")) ? 0.5 : 1,
+              boxShadow: "0 6px 24px rgba(96,165,250,0.25)", transition: "all 0.2s",
+            }}>{demoSubmitting ? "Submitting..." : "Request Demo Call"}</button>
+            <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558" }}>We'll reach out within 24 hours · No commitment required</div>
+            </>) : (
+            <div style={{ textAlign: "center", padding: "24px 0" }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+              <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Demo request received</div>
+              <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.6, marginBottom: 20 }}>We'll reach out to {demoForm.email} within 24 hours to schedule your personalized demo.</div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button onClick={() => { setDemoModal(false); setDemoSuccess(false); setDemoForm({ full_name: "", email: "", company: "", title: "", company_size: "", use_case: "", current_tools: "" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Close</button>
+                <button onClick={() => { setDemoModal(false); setDemoSuccess(false); enterDemo(); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Explore the Demo Now →</button>
+              </div>
+            </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Privacy Pipeline — Cookie Consent */}
       <CookieConsent />
