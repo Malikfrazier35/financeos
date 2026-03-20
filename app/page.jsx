@@ -1551,7 +1551,11 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 16, marginTop: 24 }}>
 
       {/* Cash Flow Waterfall */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <ChartPanel title="Cash Flow" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
+      >
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}08)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1588,9 +1592,14 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>Runway: 34 mo</span>
         </div>
       </div>
+      </ChartPanel>
 
       {/* ARR Bridge */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <ChartPanel title="ARR Bridge" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
+      >
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1622,9 +1631,14 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           <span>NDR: <span style={{ color: c.green, fontWeight: 700 }}>118%</span></span>
         </div>
       </div>
+      </ChartPanel>
 
       {/* Pipeline Funnel */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <ChartPanel title="Pipeline Funnel" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
+      >
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.green}08)`, border: `1px solid ${c.purple}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1658,6 +1672,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           <span>Weighted: <span style={{ fontWeight: 700, color: c.accent }}>$38M</span></span>
         </div>
       </div>
+      </ChartPanel>
     </div>
 
     {/* Cross-sell banner */}
