@@ -3898,7 +3898,7 @@ const ScenariosView = ({ c, toast }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 11: CUSTOMER SIGN-IN / SIGN-OUT / ACCOUNT DELETION
 // ══════════════════════════════════════════════════════════════
-const SettingsView = ({ c, onLogout, toast, mode }) => {
+const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOpen }) => {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteText, setDeleteText] = useState("");
   const [activeTab, setActiveTab] = useState("org");
@@ -3949,6 +3949,35 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
           ))}
         </div>
       )}
+
+      {/* Display Preferences — always visible */}
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", marginTop: 16 }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 14 }}>Display Preferences</div>
+        {[
+          { label: "Vaultline Suite panel", desc: "Show product recommendations on the right side of the dashboard", key: "suite", on: suitePanelOpen, action: () => { if (suitePanelOpen) { /* already shown */ toast("Suite panel is currently visible", "info"); } else { onShowSuitePanel(); toast("Suite panel restored", "success"); } } },
+          { label: "Dark mode", desc: `Currently ${mode === "dark" ? "dark" : "light"} theme`, key: "theme", on: mode === "dark" },
+          { label: "Compact sidebar", desc: "Collapse sidebar to icons only", key: "sidebar", on: false },
+        ].map(p => (
+          <div key={p.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{p.label}</div>
+              <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{p.desc}</div>
+            </div>
+            <div onClick={p.action} style={{
+              width: 36, height: 20, borderRadius: 10, position: "relative", cursor: p.action ? "pointer" : "default",
+              background: p.on ? c.accent : c.surfaceAlt, border: `1px solid ${p.on ? c.accent : c.borderSub}`,
+              transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+            }}>
+              <div style={{
+                position: "absolute", top: 2, width: 14, height: 14, borderRadius: "50%",
+                left: p.on ? 18 : 2, background: p.on ? "#fff" : c.textFaint,
+                transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+              }} />
+            </div>
+          </div>
+        ))}
+      </div>
 
       {activeTab === "billing" && (
         <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
@@ -6481,17 +6510,24 @@ function FinanceOSApp() {
             </div>
             <div style={{ position: "relative" }}>
               {(() => {
-                const NOTIFS = [
-                  { id: 0, text: "Revenue variance detected: +$2.09M above budget", time: "2 min ago", nav: "copilot", color: c.green },
-                  { id: 1, text: "S&M spend $730K over — review recommended", time: "12 min ago", nav: "copilot", color: c.amber },
-                  { id: 2, text: "February close: 3 tasks still pending", time: "1 hr ago", nav: "close", color: c.accent },
-                  { id: 3, text: "Model retrained — MAPE improved to 2.9%", time: "3 hr ago", nav: "forecast", color: c.purple },
+                // Hybrid notifications: system alerts + recent activity
+                const systemNotifs = [
+                  { id: "sys-0", text: "Revenue variance detected: +$2.09M above budget", ts: Date.now() - 120000, nav: "copilot", color: c.green },
+                  { id: "sys-1", text: "S&M spend $730K over — review recommended", ts: Date.now() - 720000, nav: "copilot", color: c.amber },
                 ];
+                // Generate live notifications from close tasks state
+                const pendingClose = (closeTasks || []).filter(t => t.status !== "done").length;
+                if (pendingClose > 0) systemNotifs.push({ id: "sys-close", text: `February close: ${pendingClose} task${pendingClose !== 1 ? "s" : ""} still pending`, ts: Date.now() - 3600000, nav: "close", color: c.accent });
+                // Add recent activity items as notifications
+                const activityNotifs = (activityLog || []).filter(e => e.type === "close" || e.type === "action").slice(0, 3).map((e, i) => ({
+                  id: `act-${e.t}-${i}`, text: e.msg, ts: e.t, nav: e.type === "close" ? "close" : "copilot", color: e.type === "close" ? c.amber : c.purple,
+                }));
+                const NOTIFS = [...activityNotifs, ...systemNotifs].slice(0, 8);
                 const unread = NOTIFS.filter(n => !notifRead.has(n.id)).length;
                 return (<>
               <div style={{ cursor: "pointer", position: "relative" }} role="button" aria-label={`${unread} notifications`} tabIndex={0} onClick={() => setNotifOpen(!notifOpen)} onKeyDown={e => e.key === "Enter" && setNotifOpen(!notifOpen)}>
                 <Bell size={18} color={notifOpen ? c.accent : c.textDim} />
-                {unread > 0 && <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}` }}>{unread}</div>}
+                {unread > 0 && <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}`, animation: "pulse 2s infinite" }}>{unread > 9 ? "9+" : unread}</div>}
               </div>
               {notifOpen && (
                 <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, width: 340, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, boxShadow: "0 12px 40px rgba(0,0,0,0.3)", overflow: "hidden", zIndex: 200, animation: "cmdIn 0.15s cubic-bezier(0.22,1,0.36,1)" }}>
@@ -6499,8 +6535,11 @@ function FinanceOSApp() {
                     <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Notifications {unread > 0 && <span style={{ fontSize: 10, color: c.textDim, fontWeight: 500 }}>· {unread} new</span>}</span>
                     {unread > 0 && <span onClick={() => { setNotifRead(new Set(NOTIFS.map(n => n.id))); toast("All marked as read", "success"); }} style={{ fontSize: 10, color: c.accent, fontWeight: 600, cursor: "pointer" }}>Mark all read</span>}
                   </div>
+                  {NOTIFS.length === 0 && <div style={{ padding: "20px 16px", textAlign: "center", fontSize: 12, color: c.textFaint }}>No notifications yet</div>}
                   {NOTIFS.map(n => {
                     const isRead = notifRead.has(n.id);
+                    const s = Math.floor((Date.now() - n.ts) / 1000);
+                    const ago = s < 60 ? `${s}s ago` : s < 3600 ? `${Math.floor(s / 60)}m ago` : `${Math.floor(s / 3600)}h ago`;
                     return (
                     <div key={n.id} onClick={() => { setNotifRead(prev => new Set([...prev, n.id])); setNotifOpen(false); navigate(n.nav); }} style={{
                       display: "flex", gap: 10, padding: "12px 16px", cursor: "pointer", borderBottom: `1px solid ${c.borderSub}`, transition: "background 0.1s",
@@ -6512,7 +6551,7 @@ function FinanceOSApp() {
                       <div style={{ width: 8, height: 8, borderRadius: "50%", background: isRead ? c.textFaint : n.color, marginTop: 5, flexShrink: 0, transition: "background 0.2s" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 12, color: isRead ? c.textDim : c.text, lineHeight: 1.5 }}>{n.text}</div>
-                        <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>{n.time}</div>
+                        <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2, fontFamily: "'JetBrains Mono', monospace" }}>{ago}</div>
                       </div>
                     </div>
                     );
@@ -6544,7 +6583,7 @@ function FinanceOSApp() {
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} /></SectionBoundary>}
-          {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} /></SectionBoundary>}
+          {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
           </>)}
         </div>
 
