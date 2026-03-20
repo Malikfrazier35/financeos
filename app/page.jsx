@@ -3426,7 +3426,7 @@ const CookieConsent = ({ c }) => {
         <button onClick={() => accept("all")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${c?.accent || "#5b9cf5"}, ${c?.purple || "#a181f7"})`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Accept All</button>
         <button onClick={() => accept("essential")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c?.border || "#1e2230"}`, background: "transparent", color: c?.textSec || "#9ea5b8", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Essential Only</button>
         <button onClick={() => setPrefs(!prefs)} style={{ fontSize: 11, padding: "9px 12px", borderRadius: 8, border: "none", background: "transparent", color: c?.textDim || "#8b92a5", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{prefs ? "Hide" : "Manage"}</button>
-        <a href="#" style={{ marginLeft: "auto", fontSize: 10, color: c?.textFaint || "#3d4558" }}>Privacy Policy</a>
+        <a href="https://finance-os.app/privacy" target="_blank" rel="noopener noreferrer" style={{ marginLeft: "auto", fontSize: 10, color: c?.textFaint || "#3d4558" }}>Privacy Policy</a>
       </div>
     </div>
   );
@@ -3482,7 +3482,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
       if (authMode === "signup") {
         const { data, error: err } = await supabase.auth.signUp({
           email: email.trim(), password: password.trim(),
-          options: { data: { full_name: name, company, role } },
+          options: { data: { full_name: name } },
         });
         if (err) { setError(err.message); setLoading(null); return; }
         // Also add to waitlist
@@ -5449,35 +5449,26 @@ function FinanceOSApp() {
       }} />}
       {showOnboarding && <OnboardingWizard c={c} userName={user.name} planStatus={user.plan} onComplete={async (org) => {
         const planName = user.plan?.startsWith("pending:") ? user.plan.replace("pending:", "") : user.plan;
-        // Write org + user to Supabase
+        // Server-side org creation via Edge Function (org data never touches client Supabase)
         try {
-          const { data: { user: authUser } } = await supabase.auth.getUser();
-          if (authUser) {
-            // Create organization
-            const { data: newOrg } = await supabase.from("organizations").insert({
-              name: org.name || `${user.name}'s Org`,
-              slug: (org.name || user.name || "org").toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 30),
-              plan: planName || "trial",
-            }).select("id").single();
-            if (newOrg?.id) {
-              // Create user profile linked to org
-              await supabase.from("users").upsert({
-                id: authUser.id,
-                org_id: newOrg.id,
-                email: authUser.email || user.email,
-                full_name: user.name,
-                role: "owner",
-                auth_provider: authUser.app_metadata?.provider || "email",
-              }, { onConflict: "id" });
-              // Audit log
-              await supabase.from("audit_log").insert({
-                org_id: newOrg.id, user_id: authUser.id,
-                action: "org.created", resource_type: "organization", resource_id: newOrg.id,
-                metadata: { name: org.name, industry: org.industry, erp: org.erp, plan: planName },
-              });
-            }
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            await fetch(`${SUPABASE_URL}/functions/v1/onboard`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`,
+                "apikey": SUPABASE_KEY,
+              },
+              body: JSON.stringify({
+                orgName: org.name || "",
+                industry: org.industry || "",
+                erp: org.erp || "",
+                plan: planName || "trial",
+              }),
+            });
           }
-        } catch (err) { console.error("Onboarding write error:", err); }
+        } catch (err) { console.error("Onboarding error:", err); }
         setUser(prev => ({ ...prev, plan: planName }));
         setShowOnboarding(false);
         toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success");
