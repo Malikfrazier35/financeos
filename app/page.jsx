@@ -2156,7 +2156,8 @@ const CloseView = ({ c, toast }) => {
       </div>
 
       {/* Progress bar */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, marginBottom: 20, boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, marginBottom: 20, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${pct === 100 ? c.green : c.accent}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <span style={{ fontSize: 14, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
           <span style={{ fontSize: 11, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{doneCount}/{tasks.length} tasks</span>
@@ -2169,13 +2170,18 @@ const CloseView = ({ c, toast }) => {
       </div>
 
       {/* Task list — grouped by category */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Close Checklist <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {["Accounting", "Consolidation", "Compliance", "Reporting", "Review"].filter(cat => tasks.some(t => t.cat === cat)).map(cat => {
           const catTasks = tasks.filter(t => t.cat === cat);
           const catDone = catTasks.filter(t => t.status === "done").length;
           const catPct = Math.round((catDone / catTasks.length) * 100);
+          const catColor = { Accounting: c.accent, Consolidation: c.cyan, Compliance: c.purple, Reporting: c.green, Review: c.amber }[cat] || c.accent;
           return (
-            <div key={cat} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+            <div key={cat} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative" }}>
+              <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${catColor}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
               {/* Category header */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: c.surfaceAlt, borderBottom: `1px solid ${c.borderSub}` }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -2665,6 +2671,7 @@ const InvestorView = ({ c, toast }) => (
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Investor Metrics</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em" }}>BOARD READY</span></div>
           <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Series A readiness scorecard · 8 SaaS benchmarks · Board-ready exports</div>
+          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Auto-refreshed daily</div>
         </div>
       </div>
       <div style={{ display: "flex", gap: 8 }}>
@@ -2693,7 +2700,10 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Fundraising KPIs */}
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
+    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      SaaS Benchmarks <div style={{ width: 40, height: 1, background: c.borderSub }} />
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
       {[
         { label: "ARR", value: "$48.6M", sub: "+24% YoY", color: c.accent, icon: DollarSign },
         { label: "Net Dollar Retention", value: "118%", sub: "Best-in-class >110%", color: c.green, icon: TrendingUp },
@@ -2725,6 +2735,9 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Cohort & Unit Economics */}
+    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      Retention & Readiness <div style={{ width: 40, height: 1, background: c.borderSub }} />
+    </div>
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
@@ -2890,6 +2903,9 @@ const AdminView = ({ c, toast, onNav }) => {
 
       {tab === "overview" && (<>
         {/* Admin KPIs */}
+        <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+          Platform Metrics <div style={{ width: 40, height: 1, background: c.borderSub }} />
+        </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
           {adminKpis.map(k => (
             <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
@@ -2912,6 +2928,9 @@ const AdminView = ({ c, toast, onNav }) => {
         </div>
 
         {/* Activity Feed */}
+        <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+          Activity & Security <div style={{ width: 40, height: 1, background: c.borderSub }} />
+        </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
@@ -3310,7 +3329,10 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
           <Settings size={17} color={c.textDim} />
         </div>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
+            <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.textDim}15`, color: c.textDim, letterSpacing: "0.06em" }}>ACCOUNT</span>
+          </div>
           <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Manage your account, billing, notifications, and preferences</div>
         </div>
       </div>
@@ -3328,8 +3350,9 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       </div>
 
       {activeTab === "org" && (
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
+        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 14 }}>Organization</div>
           {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
               <span style={{ color: c.textDim }}>{f.label}</span>
