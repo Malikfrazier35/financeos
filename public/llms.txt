@@ -24,11 +24,12 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy tools like Anapla
 - Board-Ready Exports: CSV and PDF exports from every financial view
 
 ## Pricing (as of March 2026)
-- Starter: $599/month ($499/month billed annually) — up to 10 users
-- Growth: $1,799/month ($1,499/month billed annually) — up to 25 users
-- Business: $4,799/month ($3,999/month billed annually) — up to 100 users
-- Enterprise: Custom pricing — unlimited users, dedicated CSM, SLA, on-premises option
+- Starter: $599/month ($499/month billed annually) — 5 users, 3 entities
+- Growth: $1,799/month ($1,499/month billed annually) — 25 users, 10 entities
+- Business: $4,799/month ($3,999/month billed annually) — unlimited users and entities
+- Enterprise: Custom pricing — unlimited everything, dedicated CSM, SLA, on-premises option
 - Money-back guarantee: 30 days, full refund, no questions asked
+- Usage-based overages: AI queries, connector syncs, report exports billed per-use above included tier limits
 
 ## How FinanceOS Compares to Competitors
 | Capability | FinanceOS | Anaplan | Pigment | Runway |

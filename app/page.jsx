@@ -5525,6 +5525,10 @@ function FinanceOSApp() {
   });
   useEffect(() => { try { localStorage.setItem("financeos-sidebar", sidebarCollapsed ? "collapsed" : "expanded"); } catch {} }, [sidebarCollapsed]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [suitePanelOpen, setSuitePanelOpen] = useState(() => {
+    try { return localStorage.getItem("financeos-suite-dismissed") !== "true"; } catch { return true; }
+  });
+  const dismissSuitePanel = () => { setSuitePanelOpen(false); try { localStorage.setItem("financeos-suite-dismissed", "true"); } catch {} };
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTablet = useMediaQuery("(max-width: 1024px)");
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -6011,12 +6015,10 @@ function FinanceOSApp() {
           })}
         </div>
 
-        {/* Suite Cross-Sell — Premium */}
-        {!sidebarCollapsed && (
+        {/* Upgrade prompt for demo users */}
+        {!sidebarCollapsed && user.plan === "demo" && (
         <div style={{ padding: "10px 14px", borderTop: `1px solid ${c.borderSub}` }}>
-          {/* Upgrade prompt for demo users */}
-          {user.plan === "demo" && (
-            <div onClick={() => setShowPlanPicker(true)} style={{ margin: "2px 0 10px", padding: "12px 14px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}12`, cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+            <div onClick={() => setShowPlanPicker(true)} style={{ padding: "12px 14px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}12`, cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}35`; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 4px 16px ${c.accent}10`; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}12`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
             >
@@ -6024,43 +6026,6 @@ function FinanceOSApp() {
               <div style={{ fontSize: 11, fontWeight: 700, color: c.accent, marginBottom: 2 }}>Upgrade to a paid plan</div>
               <div style={{ fontSize: 9, color: c.textDim }}>Base + pay-per-use · 30-day MBG</div>
             </div>
-          )}
-          <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: c.textFaint, padding: "6px 4px 8px" }}>Vaultline Suite</div>
-          {[
-            { name: "Vaultline", sub: "Treasury Management", color: "#22d3ee", icon: "◈", url: "https://vaultline.vercel.app" },
-            { name: "Parallax", sub: "Compliance OS", color: "#E8915A", icon: "◆", url: null },
-            { name: "Emberglow", sub: "ESG Advisory", color: "#34d399", icon: "◇", url: null },
-          ].map(p => (
-            <div key={p.name} onClick={() => p.url ? window.open(p.url, "_blank") : null} style={{
-              display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", margin: "2px 0", borderRadius: 8,
-              cursor: p.url ? "pointer" : "default", fontSize: 12, color: c.textDim, transition: "all 0.15s",
-              background: "transparent",
-            }}
-            onMouseEnter={e => { if (p.url) { e.currentTarget.style.color = p.color; e.currentTarget.style.background = `${p.color}08`; e.currentTarget.style.borderColor = `${p.color}15`; } }}
-            onMouseLeave={e => { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}
-            >
-              <div style={{ width: 24, height: 24, borderRadius: 6, background: `${p.color}12`, border: `1px solid ${p.color}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: p.color, flexShrink: 0, fontWeight: 700 }}>{p.icon}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: 11, lineHeight: 1.2 }}>{p.name}</div>
-                <div style={{ fontSize: 8, color: c.textFaint, lineHeight: 1.2 }}>{p.sub}</div>
-              </div>
-              {p.url ? (
-                <span style={{ fontSize: 9, color: c.textFaint }}>→</span>
-              ) : (
-                <span style={{ fontSize: 7, padding: "1px 5px", borderRadius: 3, background: `${p.color}08`, color: `${p.color}99`, fontWeight: 700 }}>SOON</span>
-              )}
-            </div>
-          ))}
-          <div onClick={() => setShowPlanPicker(true)} style={{
-            display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", margin: "2px 0", borderRadius: 8,
-            cursor: "pointer", fontSize: 11, color: c.purple, fontWeight: 600, transition: "all 0.15s",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = `${c.purple}08`; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-          >
-            <div style={{ width: 24, height: 24, borderRadius: 6, background: `linear-gradient(135deg, ${c.accent}12, ${c.purple}12)`, border: `1px dashed ${c.purple}25`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>+</div>
-            <span>Bundle & Save 15%</span>
-          </div>
         </div>
         )}
 
@@ -6266,6 +6231,8 @@ function FinanceOSApp() {
           </div>
         </div>
 
+        {/* Content + Suite Panel Row */}
+        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* Content */}
         <div key={viewLoading ? "loading" : view} data-content-area className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
           {/* Ambient glow orbs — gives glass cards something to blur against */}
@@ -6286,6 +6253,70 @@ function FinanceOSApp() {
           {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} /></SectionBoundary>}
           </>)}
         </div>
+
+        {/* Right-side Suite Panel — dismissable */}
+        {suitePanelOpen && !isMobile && loggedIn && (
+          <div style={{
+            width: 220, flexShrink: 0, borderLeft: `1px solid ${c.borderSub}`, background: c.bg,
+            display: "flex", flexDirection: "column", overflow: "auto",
+            animation: "fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1)",
+          }}>
+            <div style={{ padding: "16px 16px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Vaultline Suite</div>
+              <div onClick={dismissSuitePanel} style={{ width: 20, height: 20, borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 12, color: c.textFaint, transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+                title="Dismiss — you can re-enable in Settings"
+              >×</div>
+            </div>
+            <div style={{ padding: "0 16px 16px", flex: 1 }}>
+              <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.5, marginBottom: 14 }}>Extend FinanceOS with treasury, compliance, and ESG — one platform, one login.</div>
+              {[
+                { name: "Vaultline", sub: "Treasury Management", desc: "Real-time cash position, forecasting, and multi-bank connectivity.", color: "#22d3ee", icon: "◈", url: "https://vaultline.vercel.app", live: true },
+                { name: "Parallax", sub: "Compliance OS", desc: "AS9100D, CMMC, and ESG framework tracking for suppliers.", color: "#E8915A", icon: "◆", url: null, live: false },
+                { name: "Emberglow", sub: "ESG Advisory", desc: "Sustainability reporting and stakeholder communications.", color: "#34d399", icon: "◇", url: null, live: false },
+              ].map(p => (
+                <div key={p.name} onClick={() => p.url ? window.open(p.url, "_blank") : null} style={{
+                  padding: "12px", marginBottom: 8, borderRadius: 10,
+                  background: c.surfaceAlt, border: `1px solid ${c.borderSub}`,
+                  cursor: p.live ? "pointer" : "default", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
+                }}
+                onMouseEnter={e => { if (p.live) { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = "translateY(-1px)"; } }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.transform = "none"; }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                    <div style={{ width: 26, height: 26, borderRadius: 7, background: `${p.color}10`, border: `1px solid ${p.color}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: p.color, fontWeight: 700 }}>{p.icon}</div>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: c.text }}>{p.name}</div>
+                      <div style={{ fontSize: 8, color: c.textFaint }}>{p.sub}</div>
+                    </div>
+                    {!p.live && <span style={{ marginLeft: "auto", fontSize: 7, padding: "1px 5px", borderRadius: 3, background: `${p.color}08`, color: `${p.color}99`, fontWeight: 700 }}>SOON</span>}
+                  </div>
+                  <div style={{ fontSize: 10, color: c.textDim, lineHeight: 1.4 }}>{p.desc}</div>
+                  {p.live && <div style={{ fontSize: 9, color: p.color, fontWeight: 600, marginTop: 6 }}>Open →</div>}
+                </div>
+              ))}
+              {/* Bundle CTA */}
+              <div onClick={() => setShowPlanPicker(true)} style={{
+                padding: "12px", borderRadius: 10, border: `1px dashed ${c.purple}25`,
+                background: `linear-gradient(135deg, ${c.accent}04, ${c.purple}04)`,
+                cursor: "pointer", transition: "all 0.15s", textAlign: "center",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}40`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.purple}25`; }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 700, color: c.purple, marginBottom: 2 }}>Bundle & Save 15%</div>
+                <div style={{ fontSize: 9, color: c.textDim }}>Add products to your plan</div>
+              </div>
+              {/* Dismiss link */}
+              <div onClick={dismissSuitePanel} style={{ textAlign: "center", marginTop: 12, fontSize: 9, color: c.textFaint, cursor: "pointer" }}
+                onMouseEnter={e => e.currentTarget.style.color = c.textDim}
+                onMouseLeave={e => e.currentTarget.style.color = c.textFaint}
+              >No thanks, hide this panel</div>
+            </div>
+          </div>
+        )}
+      </div>
       </div>
 
       {/* ── OVERLAYS ── */}
