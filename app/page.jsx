@@ -277,10 +277,12 @@ const CMD_ITEMS = [
 
 const CommandPalette = ({ c, onSelect, onClose }) => {
   const [query, setQuery] = useState("");
+  const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef(null);
   useEffect(() => { inputRef.current?.focus(); }, []);
 
   const filtered = query ? CMD_ITEMS.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : CMD_ITEMS;
+  useEffect(() => { setActiveIdx(0); }, [query]);
   let lastSection = "";
 
   return (
@@ -293,27 +295,37 @@ const CommandPalette = ({ c, onSelect, onClose }) => {
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
           <Search size={16} color={c.textDim} />
           <input ref={inputRef} value={query} onChange={e => setQuery(e.target.value)} placeholder="Search views, ask AI, run commands..."
-            onKeyDown={e => { if (e.key === "Escape") onClose(); if (e.key === "Enter" && filtered.length > 0) { onSelect(filtered[0]); onClose(); } }}
+            onKeyDown={e => {
+              if (e.key === "Escape") onClose();
+              if (e.key === "Enter" && filtered.length > 0) { onSelect(filtered[activeIdx] || filtered[0]); onClose(); }
+              if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx(prev => Math.min(prev + 1, filtered.length - 1)); }
+              if (e.key === "ArrowUp") { e.preventDefault(); setActiveIdx(prev => Math.max(prev - 1, 0)); }
+            }}
             style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: c.text, fontSize: 14, fontFamily: "inherit" }}
           />
           <kbd style={{ fontSize: 9, padding: "2px 6px", borderRadius: 4, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textDim }}>ESC</kbd>
         </div>
         <div style={{ maxHeight: 340, overflow: "auto", padding: "8px 0" }}>
-          {filtered.map(item => {
+          {filtered.map((item, idx) => {
             const showSection = item.section !== lastSection;
             lastSection = item.section;
             const Icon = item.icon;
+            const isActive = idx === activeIdx;
             return (
               <div key={item.id}>
                 {showSection && <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, padding: "8px 18px 4px" }}>{item.section}</div>}
-                <div onClick={() => { onSelect(item); onClose(); }} style={{
-                  display: "flex", alignItems: "center", gap: 10, padding: "8px 18px", cursor: "pointer", fontSize: 13, color: c.textSec, transition: "all 0.1s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = c.accentDim; e.currentTarget.style.color = c.text; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textSec; }}
+                <div onClick={() => { onSelect(item); onClose(); }}
+                  onMouseEnter={() => setActiveIdx(idx)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10, padding: "8px 18px", cursor: "pointer", fontSize: 13,
+                    color: isActive ? c.text : c.textSec, transition: "all 0.08s",
+                    background: isActive ? c.accentDim : "transparent",
+                    borderLeft: isActive ? `2px solid ${c.accent}` : "2px solid transparent",
+                  }}
                 >
-                  <Icon size={15} strokeWidth={1.5} />
-                  {item.label}
+                  <Icon size={15} strokeWidth={isActive ? 2 : 1.5} color={isActive ? c.accent : undefined} />
+                  <span style={{ flex: 1 }}>{item.label}</span>
+                  {isActive && <span style={{ fontSize: 9, color: c.textFaint }}>↵</span>}
                 </div>
               </div>
             );
@@ -4972,9 +4984,15 @@ function FinanceOSApp() {
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [notifRead, setNotifRead] = useState(new Set());
+  const [notifRead, setNotifRead] = useState(() => {
+    try { const saved = localStorage.getItem("financeos-notif-read"); return saved ? new Set(JSON.parse(saved)) : new Set(); } catch { return new Set(); }
+  });
+  useEffect(() => { try { localStorage.setItem("financeos-notif-read", JSON.stringify([...notifRead])); } catch {} }, [notifRead]);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try { return localStorage.getItem("financeos-sidebar") === "collapsed"; } catch { return false; }
+  });
+  useEffect(() => { try { localStorage.setItem("financeos-sidebar", sidebarCollapsed ? "collapsed" : "expanded"); } catch {} }, [sidebarCollapsed]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTablet = useMediaQuery("(max-width: 1024px)");
@@ -5306,6 +5324,9 @@ function FinanceOSApp() {
           [data-hero-email] { flex-direction: column !important; max-width: 100% !important; }
           [data-hero-email] input { border-radius: 10px !important; border-right: 1px solid #1e2230 !important; }
           [data-hero-email] button { border-radius: 10px !important; }
+          /* Dashboard view padding on mobile */
+          [data-content-area] > div > div > div { padding-left: 16px !important; padding-right: 16px !important; }
+          [data-content-area] table { font-size: 10px !important; }
         }
         @media (max-width: 480px) {
           [data-grid-4] { grid-template-columns: 1fr !important; }
