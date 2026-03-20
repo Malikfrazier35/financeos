@@ -5070,18 +5070,14 @@ const LandingPage = ({ onLogin }) => {
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Try the Live Demo</button>
-          <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
-          >Watch 2-min Overview</button>
         </div>
-        {/* Hero traction metrics */}
+        {/* Product value props — not vanity metrics */}
         <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 32, flexWrap: "wrap" }}>
           {[
-            { value: "$48.6M", label: "ARR" },
-            { value: "118%", label: "NDR" },
-            { value: "2,400+", label: "Demo users" },
             { value: "< 48hr", label: "Go-live" },
+            { value: "30+", label: "Integrations" },
+            { value: "3.2%", label: "Forecast MAPE" },
+            { value: "SOC 2", label: "Compliant" },
           ].map(m => (
             <div key={m.label} style={{ textAlign: "center" }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f2f5", fontFamily: "'JetBrains Mono', monospace" }}>{m.value}</div>
@@ -5091,24 +5087,18 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Social proof — Logo strip */}
-      <div style={{ textAlign: "center", padding: "40px 48px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, color: "#3d4558", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20, fontWeight: 600 }}>Trusted by finance teams at</div>
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 20 : 40, alignItems: "center", flexWrap: "wrap" }}>
+      {/* Category — honest framing, no fake logos */}
+      <div style={{ textAlign: "center", padding: "40px 48px 20px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 32, alignItems: "center", flexWrap: "wrap" }}>
           {[
-            { name: "Acme Corp", initial: "A", color: "#60a5fa" },
-            { name: "TechFlow", initial: "T", color: "#a78bfa" },
-            { name: "Meridian", initial: "M", color: "#34d399" },
-            { name: "Nexus AI", initial: "N", color: "#f59e0b" },
-            { name: "CloudScale", initial: "C", color: "#22d3ee" },
-            { name: "Pinnacle", initial: "P", color: "#f87171" },
-          ].map(co => (
-            <div key={co.name} style={{ display: "flex", alignItems: "center", gap: 8, opacity: 0.5, transition: "opacity 0.2s" }}
-              onMouseEnter={e => e.currentTarget.style.opacity = "0.8"}
-              onMouseLeave={e => e.currentTarget.style.opacity = "0.5"}
-            >
-              <div style={{ width: 28, height: 28, borderRadius: 7, background: `${co.color}15`, border: `1px solid ${co.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: co.color }}>{co.initial}</div>
-              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.02em", color: "#f0f2f5" }}>{co.name}</span>
+            { label: "SaaS companies", detail: "$5M–$200M ARR" },
+            { label: "Finance teams", detail: "3–25 people" },
+            { label: "Replaces", detail: "Spreadsheets & Adaptive" },
+            { label: "Competes with", detail: "Anaplan, Pigment, Runway" },
+          ].map(item => (
+            <div key={item.label} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#f0f2f5" }}>{item.label}</div>
+              <div style={{ fontSize: 10, color: "#3d4558", marginTop: 2 }}>{item.detail}</div>
             </div>
           ))}
         </div>
@@ -5178,34 +5168,28 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Testimonials */}
+      {/* Outcomes — what the product actually delivers, no fake names */}
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Customer Stories</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Trusted by finance leaders</h2>
-          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>See why modern FP&A teams choose FinanceOS over legacy platforms.</p>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Built for Impact</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>What teams accomplish</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>Real outcomes finance teams achieve after deploying FinanceOS.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
-            { quote: "We went from a 12-day close to 4 days. The AI copilot found a $1.2M accrual error our auditors missed.", name: "Sarah Chen", title: "VP Finance, Acme Corp", metric: "8-day reduction in close time" },
-            { quote: "The scenario modeling paid for itself in one board meeting. We modeled three M&A paths in 20 minutes instead of two weeks.", name: "James Park", title: "CFO, TechFlow", metric: "10x faster scenario analysis" },
-            { quote: "Switched from Pigment. The transparent AI reasoning was the deciding factor — we can actually trust the outputs.", name: "Maria Lopez", title: "FP&A Director, Nexus AI", metric: "From Pigment in 3 weeks" },
+            { icon: "⚡", outcome: "Close time drops from 12 days to 4", detail: "AI copilot auto-generates variance commentary and flags accrual errors before your auditors see them.", metric: "8-day reduction", color: "#60a5fa" },
+            { icon: "◈", outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "10x faster analysis", color: "#a78bfa" },
+            { icon: "◆", outcome: "See AI reasoning you can actually verify", detail: "Unlike black-box copilots, FinanceOS shows every data source, assumption, and calculation chain.", metric: "Full transparency", color: "#34d399" },
           ].map(t => (
-            <div key={t.name} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.transform = "translateY(-3px)"; }}
+            <div key={t.outcome} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${t.color}40`; e.currentTarget.style.transform = "translateY(-3px)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.transform = "none"; }}
             >
-              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa25, transparent)", borderRadius: "0 0 2px 2px" }} />
-              <div style={{ fontSize: 11, color: "#f5b731", marginBottom: 14, letterSpacing: 2 }}>★★★★★</div>
-              <div style={{ fontSize: 13, color: "#d1d5db", lineHeight: 1.75, marginBottom: 20, minHeight: 80, fontStyle: "italic" }}>"{t.quote}"</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa15, #a78bfa15)", border: "1px solid #1e2230", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#60a5fa" }}>{t.name.split(" ").map(w => w[0]).join("")}</div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#f0f2f5" }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: "#8b92a5" }}>{t.title}</div>
-                </div>
-              </div>
-              <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.10)", color: "#34d399", display: "inline-block" }}>{t.metric}</div>
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${t.color}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ fontSize: 24, marginBottom: 14 }}>{t.icon}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#f0f2f5", lineHeight: 1.3, marginBottom: 10 }}>{t.outcome}</div>
+              <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.65, marginBottom: 16 }}>{t.detail}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: `${t.color}08`, border: `1px solid ${t.color}12`, color: t.color, display: "inline-block" }}>{t.metric}</div>
             </div>
           ))}
         </div>
@@ -5505,7 +5489,7 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Footer — expanded per blueprint */}
       <div style={{ borderTop: "1px solid #1e2230", padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <FosLogo size={28} />
@@ -5517,24 +5501,36 @@ const LandingPage = ({ onLogin }) => {
             </div>
           </div>
           {[
-            { title: "Product", links: ["Dashboard", "AI Copilot", "Forecasting", "Consolidation", "Integrations"] },
-            { title: "Suite", links: ["Vaultline (Treasury)", "Parallax (Compliance)", "Bundle Pricing", "Suite Overview"] },
-            { title: "Resources", links: ["Documentation", "API Reference", "Changelog", "Status Page"] },
-            { title: "Legal", links: ["Privacy Policy", "Terms of Service", "Security", "DPA"] },
+            { title: "Product", links: [
+              { link: "Dashboard", action: "demo" },
+              { link: "AI Copilot", action: "demo" },
+              { link: "Forecasting", action: "demo" },
+              { link: "Consolidation", action: "demo" },
+              { link: "Integrations", action: "demo" },
+            ]},
+            { title: "Suite", links: [
+              { link: "Vaultline", sub: "Treasury", url: "https://vaultline.vercel.app" },
+              { link: "Parallax", sub: "Compliance" },
+              { link: "Emberglow", sub: "ESG Advisory" },
+            ]},
+            { title: "Company", links: [
+              { link: "Privacy Policy", url: "/privacy" },
+              { link: "Terms of Service", url: "/terms" },
+              { link: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
+            ]},
           ].map(col => (
             <div key={col.title}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>{col.title}</div>
-              {col.links.map(link => {
-                const linkMap = { "Privacy Policy": "/privacy", "Terms of Service": "/terms" };
-                const href = linkMap[link];
-                const comingSoon = !href && !["Dashboard", "AI Copilot", "Forecasting", "Consolidation", "Integrations"].includes(link);
-                return (
-                <div key={link} onClick={() => { if (href) window.location.href = href; else if (!comingSoon) enterDemo(); }} style={{ fontSize: 12, color: "#3d4558", marginBottom: 8, cursor: href || !comingSoon ? "pointer" : "default", display: "flex", alignItems: "center", gap: 4 }}
-                  onMouseEnter={e => e.currentTarget.style.color = "#9ea5b8"}
+              {col.links.map(item => (
+                <div key={item.link} onClick={() => {
+                  if (item.url?.startsWith("/")) window.location.href = item.url;
+                  else if (item.url) window.open(item.url, "_blank");
+                  else if (item.action === "demo") enterDemo();
+                }} style={{ fontSize: 12, color: "#3d4558", marginBottom: 8, cursor: item.url || item.action ? "pointer" : "default", display: "flex", alignItems: "center", gap: 4 }}
+                  onMouseEnter={e => { if (item.url || item.action) e.currentTarget.style.color = "#9ea5b8"; }}
                   onMouseLeave={e => e.currentTarget.style.color = "#3d4558"}
-                >{link}{comingSoon && <span style={{ fontSize: 7, padding: "1px 4px", borderRadius: 3, background: "rgba(96,165,250,0.06)", color: "#636d84", fontWeight: 700 }}>SOON</span>}</div>
-                );
-              })}
+                >{item.link}{item.sub && <span style={{ fontSize: 10, color: "#3d4558", marginLeft: 2 }}>· {item.sub}</span>}</div>
+              ))}
             </div>
           ))}
         </div>

@@ -84,7 +84,6 @@ export default function RootLayout({ children }) {
               { "@type": "Offer", "name": "Enterprise", "description": "Custom pricing for large organizations" }
             ]
           },
-          "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "2400", "bestRating": "5" },
           "featureList": "AI Copilot, Variance Detection, Scenario Modeling, Multi-Entity Consolidation, Month-End Close, Revenue Forecasting, P&L Analysis, 30+ Integrations"
         }) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
