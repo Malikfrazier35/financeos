@@ -744,7 +744,7 @@ const AuditEntry = ({ entry, c }) => (
       <span style={{ color: c[WORKFLOW_COLORS[entry.newStatus]] || c.accent, fontWeight: 600 }}>{entry.newStatus.replace("_", " ")}</span>
     </div>
     <span style={{ fontSize: 9, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>
-      {new Date(entry.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+      {fmtTime(new Date(entry.timestamp))}
     </span>
   </div>
 );
@@ -916,13 +916,49 @@ const FosLogoFull = memo(({ size = 32, c }) => (
 ));
 
 // ── HELPERS ───────────────────────────────────────────────────
-const fmt = (n) => {
-  if (n == null || !Number.isFinite(n)) return "$0";
-  if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (Math.abs(n) >= 1e3) return `$${Math.round(n / 1e3).toLocaleString()}K`;
-  return `$${n}`;
+// ── LOCALE-AWARE FORMATTERS ──────────────────────────────────
+const CURRENCY_SYMBOLS = { USD: "$", EUR: "\u20ac", GBP: "\u00a3", CAD: "CA$", AUD: "A$", JPY: "\u00a5", CHF: "CHF\u00a0", SGD: "S$", HKD: "HK$", INR: "\u20b9", BRL: "R$", SEK: "" };
+const CURRENCY_SUFFIX = { SEK: "\u00a0kr" };
+const LOCALE_MAP = { US: "en-US", GB: "en-GB", CA: "en-CA", AU: "en-AU", DE: "de-DE", FR: "fr-FR", JP: "ja-JP", SG: "en-SG", HK: "zh-HK", IT: "it-IT", BR: "pt-BR", IN: "en-IN", NL: "nl-NL", SE: "sv-SE", CH: "de-CH", AE: "ar-AE" };
+
+const getLocalePrefs = () => {
+  try {
+    return {
+      currency: localStorage.getItem("fos_currency") || "USD",
+      region: localStorage.getItem("fos_region") || "US",
+      dateFormat: localStorage.getItem("fos_dateformat") || "MM/DD/YYYY",
+      lang: localStorage.getItem("fos_lang") || "en",
+    };
+  } catch { return { currency: "USD", region: "US", dateFormat: "MM/DD/YYYY", lang: "en" }; }
 };
+
+const fmt = (n, prefs) => {
+  if (n == null || !Number.isFinite(n)) return `${CURRENCY_SYMBOLS[(prefs || getLocalePrefs()).currency] || "$"}0`;
+  const p = prefs || getLocalePrefs();
+  const sym = CURRENCY_SYMBOLS[p.currency] || "$";
+  const sfx = CURRENCY_SUFFIX[p.currency] || "";
+  if (Math.abs(n) >= 1e6) return `${sym}${(n / 1e6).toFixed(1)}M${sfx}`;
+  if (Math.abs(n) >= 1e3) return `${sym}${Math.round(n / 1e3).toLocaleString(LOCALE_MAP[p.region] || "en-US")}K${sfx}`;
+  return `${sym}${n}${sfx}`;
+};
+
+const fmtDate = (date, prefs) => {
+  const p = prefs || getLocalePrefs();
+  const d = date instanceof Date ? date : new Date(date);
+  const locale = LOCALE_MAP[p.region] || "en-US";
+  return d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+};
+
+const fmtTime = (date, prefs) => {
+  const p = prefs || getLocalePrefs();
+  const d = date instanceof Date ? date : new Date(date);
+  const locale = LOCALE_MAP[p.region] || "en-US";
+  return d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+};
+
 const fmtPct = (n) => `${n >= 0 ? "+" : ""}${Number.isFinite(n) ? n.toFixed(1) : "0.0"}%`;
+const csym = () => CURRENCY_SYMBOLS[getLocalePrefs().currency] || "$";
+const csfx = () => CURRENCY_SUFFIX[getLocalePrefs().currency] || "";
 const variance = (actual, budget) => (actual || 0) - (budget || 0);
 const variancePct = (actual, budget) => budget ? ((actual - budget) / budget) * 100 : 0;
 const isFavorable = (actual, budget, isRevenue = false) => isRevenue ? actual >= budget : actual <= budget;
@@ -1151,7 +1187,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
       <div>
         <div style={{ fontSize: 10, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>
-          {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+          {fmtDate(new Date())}
         </div>
         <div style={{ fontSize: 24, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}
           {period && <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: c.accentDim, color: c.accent, marginLeft: 10, verticalAlign: "middle", letterSpacing: "0.02em" }}>{period}</span>}
@@ -1315,7 +1351,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             </defs>
             <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} horizontalPoints={[]} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}M`} domain={["auto", "auto"]} />
+            <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}M${csfx()}`} domain={["auto", "auto"]} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "4 4", strokeOpacity: 0.4 }} />
             <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="8 4" strokeWidth={1} strokeOpacity={0.4} label={{ value: "AVG", fill: c.amber, fontSize: 8, fontWeight: 800, position: "right" }} />
             {/* Bear/Bull confidence band */}
@@ -1438,7 +1474,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             </defs>
             <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
+            <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}K${csfx()}`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
             <Bar dataKey="expansion" fill="url(#gExpan)" stackId="rev" radius={[0, 0, 0, 0]} name="Expansion" barSize={28} animationDuration={800} animationEasing="ease-out" />
             <Bar dataKey="newBiz" fill="url(#gNewBiz)" stackId="rev" radius={[0, 0, 0, 0]} name="New Business" animationDuration={1000} animationEasing="ease-out" />
@@ -1487,7 +1523,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             </defs>
             <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
+            <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}K${csfx()}`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.green, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
             <Area type="monotone" dataKey="balance" stroke={c.green} fill="url(#gCash)" strokeWidth={2.5} name="Cash Balance" animationDuration={1200} animationEasing="ease-out" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} />
             <Bar dataKey="inflow" fill={`${c.accent}40`} radius={[3, 3, 0, 0]} barSize={14} name="Inflow" animationDuration={800} animationEasing="ease-out" />
@@ -1530,7 +1566,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
               <linearGradient id="gExpBud" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c.textFaint} stopOpacity={0.35} /><stop offset="100%" stopColor={c.textFaint} stopOpacity={0.15} /></linearGradient>
             </defs>
             <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" horizontal={false} />
-            <XAxis type="number" tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
+            <XAxis type="number" tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}K${csfx()}`} />
             <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: c.textSec, fontWeight: 600 }} axisLine={false} tickLine={false} width={40} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
             <Bar dataKey="actual" fill="url(#gExpAct)" radius={[0, 6, 6, 0]} barSize={16} name="Actual" animationDuration={800} animationEasing="ease-out" />
@@ -2400,7 +2436,7 @@ const ForecastView = ({ c, toast }) => {
             </defs>
             <CartesianGrid stroke={c.chartGrid || c.borderSub} strokeDasharray="3 6" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis || c.textDim, fontWeight: 600 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: c.chartAxis || c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}M`} />
+            <YAxis tick={{ fontSize: 10, fill: c.chartAxis || c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${(v/1000).toFixed(0)}M${csfx()}`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
             <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBull)" name="Bull Range" animationDuration={1200} animationEasing="ease-out" />
             <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBear)" name="Bear Range" animationDuration={1200} animationEasing="ease-out" />
@@ -2538,7 +2574,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.cyan}15`, color: c.cyan, letterSpacing: "0.06em" }}>AUTO IC</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
-            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>FX rates as of {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · IC eliminations auto-applied</div>
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>FX rates as of {fmtTime(new Date())} · IC eliminations auto-applied</div>
           </div>
         </div>
         <button onClick={() => { ENTITIES.forEach(e => { if ((entityStatus[e.name] || e.status) !== "Closed") approve(e.name); }); }} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Close All Pending</button>
@@ -2628,7 +2664,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
                   <td style={{ padding: "9px 12px", fontWeight: isTotal ? 800 : 600, color: isTotal ? c.green : c.text }}>{r.line}</td>
                   {[r.us, r.eu, r.apac, r.elim, r.cons].map((v, j) => (
                     <td key={j} style={{ textAlign: "right", padding: "9px 12px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: j === 4 || isTotal ? 700 : 400, color: j === 3 ? c.red : j === 4 ? c.accent : isTotal ? c.green : c.textSec }}>
-                      {v === null ? "—" : v === 0 && j === 3 ? "$0" : `${v < 0 ? "-" : ""}$${Math.abs(v).toLocaleString()}K`}
+                      {v === null ? "—" : v === 0 && j === 3 ? `${csym()}0` : `${v < 0 ? "-" : ""}${csym()}${Math.abs(v).toLocaleString()}K${csfx()}`}
                     </td>
                   ))}
                 </tr>
@@ -2690,7 +2726,7 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: pct === 100 ? `${c.green}15` : `${c.amber}15`, color: pct === 100 ? c.green : c.amber, letterSpacing: "0.06em" }}>{pct}%</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>February close · {tasks.length - doneCount} tasks remaining · Est. {Math.max(0, (tasks.length - doneCount) * 0.5).toFixed(1)}h to complete</div>
-            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Last updated {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · Deadline: Mar 7</div>
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Last updated {fmtTime(new Date())} · Deadline: Mar 7</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -3249,7 +3285,7 @@ const InvestorView = ({ c, toast }) => (
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Investor Metrics</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em" }}>BOARD READY</span></div>
           <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Series A readiness scorecard · 8 SaaS benchmarks · Board-ready exports</div>
-          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Auto-refreshed daily</div>
+          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {fmtTime(new Date())} · Auto-refreshed daily</div>
         </div>
       </div>
       <div style={{ display: "flex", gap: 8 }}>
@@ -3462,7 +3498,7 @@ const AdminView = ({ c, toast, onNav }) => {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.accent}15`, color: c.accent, letterSpacing: "0.06em" }}>ADMIN</span></div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
-            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · Audit log: real-time</div>
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {fmtTime(new Date())} · Audit log: real-time</div>
           </div>
         </div>
         <button onClick={() => setInviteOpen(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
@@ -4913,7 +4949,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
             {PRICING_PLANS.map((p, idx) => {
               const isHovered = hoveredPlan === idx;
-              const priceDisplay = p.enterprise ? "Custom" : `$${billing === "annual" ? p.annual?.toLocaleString() : p.monthly?.toLocaleString()}`;
+              const priceDisplay = p.enterprise ? "Custom" : `${csym()}${billing === "annual" ? p.annual?.toLocaleString() : p.monthly?.toLocaleString()}${csfx()}`;
               const savings = p.monthly && p.annual ? (p.monthly - p.annual) * 12 : 0;
               return (
               <div key={p.name} onMouseEnter={() => setHoveredPlan(idx)} onMouseLeave={() => setHoveredPlan(null)} style={{
@@ -5987,7 +6023,7 @@ function FinanceOSApp() {
   const [view, setView] = useState("dashboard");
   const [showPlanPicker, setShowPlanPicker] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [clock, setClock] = useState(() => new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }));
+  const [clock, setClock] = useState(() => fmtTime(new Date()));
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
@@ -6196,7 +6232,7 @@ function FinanceOSApp() {
 
   // Live clock
   useEffect(() => {
-    const t = setInterval(() => setClock(new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })), 30000);
+    const t = setInterval(() => setClock(fmtTime(new Date())), 30000);
     return () => clearInterval(t);
   }, []);
 
