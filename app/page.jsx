@@ -842,7 +842,7 @@ const PWAInstallPrompt = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // ── SITE-WIDE STATUS BANNER ──────────────────────────────────
 // Set SHOW_STATUS_BANNER to false to hide. Edit message as needed.
-const SHOW_STATUS_BANNER = true;
+const SHOW_STATUS_BANNER = false;
 const STATUS_BANNER_MSG = "Some connector tools may experience intermittent issues. We are actively working to resolve this.";
 const STATUS_BANNER_TYPE = "warning"; // "warning" | "info" | "incident"
 
@@ -6286,19 +6286,19 @@ function FinanceOSApp() {
           });
           if (res.ok) {
             const data = await res.json();
+            // Update user info from server (DB has canonical name, not Apple relay)
+            if (data.user?.name) {
+              setUser(prev => ({ ...prev, name: data.user.name }));
+            }
             if (data.org?.plan && data.org.plan !== "demo") {
               setUser(prev => ({ ...prev, plan: data.org.plan }));
-              // Paid user — hide plan picker if it was shown
               setShowPlanPicker(false);
+              setShowOnboarding(false);
             }
             if (data.org?.name) {
               setUser(prev => ({ ...prev, orgName: data.org.name }));
             }
-            // If onboarding was already completed, never show plan picker
-            if (data.org?.plan && data.org.plan !== "demo") {
-              setShowOnboarding(false);
-            }
-            // Show plan picker for demo users who haven't upgraded yet
+            // Show plan picker only for demo users
             if (data.org?.plan === "demo" || !data.org?.plan) {
               setShowPlanPicker(true);
             }
@@ -6810,100 +6810,42 @@ function FinanceOSApp() {
           })}
         </div>
 
-        {/* ── Account Panel — Vercel-style ── */}
+        {/* ── Account Panel ── */}
         <div style={{ borderTop: `1px solid ${c.borderSub}`, marginTop: "auto" }}>
-          {/* Upgrade prompt for demo users */}
-          {!sidebarCollapsed && user.plan === "demo" && (
-            <div style={{ padding: "10px 14px 0" }}>
-              <div onClick={() => setShowPlanPicker(true)} style={{ padding: "10px 12px", borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}12`, cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)" }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}35`; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}12`; }}
-              >
-                <div style={{ fontSize: 11, fontWeight: 700, color: c.accent, marginBottom: 1 }}>Upgrade to a paid plan</div>
-                <div style={{ fontSize: 9, color: c.textDim }}>Base + pay-per-use</div>
-              </div>
-            </div>
-          )}
-
-          {/* User identity + nav links */}
           {!sidebarCollapsed ? (
-          <div style={{ padding: "14px 14px 10px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <div style={{ position: "relative", flexShrink: 0 }}>
-                <div style={{
-                  width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
-                  background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff",
-                  boxShadow: `0 2px 8px ${c.accent}30`,
-                }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
-                <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: c.green, border: `2px solid ${c.sidebarBg}` }} />
-              </div>
+          <div style={{ padding: "12px 14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+              <div style={{ width: 30, height: 30, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase()}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name || "Guest"}</div>
-                <div style={{ fontSize: 9, color: c.textFaint, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email || "guest@demo.finance-os.app"}</div>
+                <div style={{ fontSize: 9, color: c.textFaint }}>{user.plan ? user.plan.toUpperCase() : "DEMO"} · {user.orgName || "My Org"}</div>
               </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-              {[{ label: "Feedback", action: () => toast("Thank you — feedback noted", "success") }].map(link => (
-                <div key={link.label} onClick={link.action} style={{ fontSize: 11, color: c.textDim, padding: "7px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500 }}
-                  onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
-                >{link.label}</div>
-              ))}
-              {/* Theme — system / light / dark pills */}
-              <div style={{ padding: "7px 8px", fontSize: 11, color: c.textDim, fontWeight: 500 }}>
-                <div style={{ marginBottom: 6 }}>Theme</div>
-                <div style={{ display: "flex", gap: 0, background: c.surfaceAlt, borderRadius: 6, padding: 2, border: `1px solid ${c.borderSub}` }}>
-                  {[{ id: "system", label: "System" }, { id: "light", label: "Light" }, { id: "dark", label: "Dark" }].map(t => {
-                    const isActive = (t.id === "system" && autoTheme) || (t.id === mode && !autoTheme);
-                    return (
-                    <div key={t.id} onClick={() => { if (t.id !== mode && t.id !== "system") toggleMode(); }} style={{
-                      flex: 1, textAlign: "center", fontSize: 10, fontWeight: isActive ? 700 : 500, padding: "4px 0",
-                      borderRadius: 4, cursor: "pointer", transition: "all 0.15s",
-                      background: isActive ? c.surface : "transparent",
-                      color: isActive ? c.text : c.textFaint,
-                      boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                    }}>{t.label}</div>
-                    );
-                  })}
-                </div>
-              </div>
-              {[
-                { label: "Home Page", action: handleLogout },
-                { label: "Changelog", action: () => toast("Changelog coming soon", "info") },
-                { label: "Help", action: () => window.open("mailto:support@finance-os.app", "_blank") },
-                { label: "Docs", action: () => window.open("https://finance-os.app/llms.txt", "_blank") },
-              ].map(link => (
-                <div key={link.label} onClick={link.action} style={{ fontSize: 11, color: c.textDim, padding: "7px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500 }}
-                  onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
-                >{link.label}</div>
-              ))}
-              <div onClick={handleLogout} style={{ fontSize: 11, color: c.textFaint, padding: "7px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}
-                onMouseEnter={e => { e.currentTarget.style.background = `${c.red}06`; e.currentTarget.style.color = c.red; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
-              ><LogOut size={12} /> Log Out</div>
+            <div style={{ display: "flex", gap: 0, background: c.surfaceAlt, borderRadius: 6, padding: 2, border: `1px solid ${c.borderSub}`, marginBottom: 8 }}>
+              {["Light", "Dark"].map(t => {
+                const isActive = t.toLowerCase() === mode;
+                return (
+                <div key={t} onClick={() => { if (t.toLowerCase() !== mode) toggleMode(); }} style={{
+                  flex: 1, textAlign: "center", fontSize: 10, fontWeight: isActive ? 600 : 400, padding: "4px 0",
+                  borderRadius: 4, cursor: "pointer", transition: "all 0.15s",
+                  background: isActive ? c.surface : "transparent", color: isActive ? c.text : c.textFaint,
+                }}>{t}</div>
+                );
+              })}
             </div>
-            {/* Platform Status */}
-            <div style={{ marginTop: 8, padding: "8px 8px", borderRadius: 6, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ position: "relative", width: 7, height: 7, flexShrink: 0 }}>
-                <span style={{ position: "absolute", inset: 0, borderRadius: "50%", background: c.green }} />
-                <span style={{ position: "absolute", inset: -2, borderRadius: "50%", background: c.green, opacity: 0.25, animation: "pulse 2s infinite" }} />
-              </span>
-              <span style={{ fontSize: 10, color: c.textDim, fontWeight: 500 }}>All systems normal</span>
-            </div>
+            <div onClick={handleLogout} style={{ fontSize: 11, color: c.textFaint, padding: "6px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${c.red}06`; e.currentTarget.style.color = c.red; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+            ><LogOut size={12} /> Log Out</div>
           </div>
           ) : (
           <div style={{ padding: "10px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-            <div onClick={() => navigate("settings")} title={`${user.name || "Guest"}`} style={{ cursor: "pointer" }}>
-              <div style={{ width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff", boxShadow: `0 2px 8px ${c.accent}30` }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
+            <div onClick={() => navigate("settings")} title={user.name || "Guest"} style={{ cursor: "pointer" }}>
+              <div style={{ width: 30, height: 30, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff" }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase()}</div>
             </div>
-            <div onClick={toggleMode} title={`Theme: ${mode}`} style={{ width: 32, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint, transition: "all 0.15s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
-            >{mode === "dark" ? <Moon size={13} /> : <Sun size={13} />}</div>
-            <div onClick={handleLogout} title="Log Out" style={{ width: 32, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint, transition: "all 0.15s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = `${c.red}08`; e.currentTarget.style.color = c.red; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+            <div onClick={handleLogout} title="Log out" style={{ width: 30, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint }}
+              onMouseEnter={e => { e.currentTarget.style.color = c.red; }}
+              onMouseLeave={e => { e.currentTarget.style.color = c.textFaint; }}
             ><LogOut size={13} /></div>
           </div>
           )}
