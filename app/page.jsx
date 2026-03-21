@@ -794,6 +794,34 @@ const PWAInstallPrompt = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 7: LIVE DEMO PIPELINE
 // ══════════════════════════════════════════════════════════════
+// ── SITE-WIDE STATUS BANNER ──────────────────────────────────
+// Set SHOW_STATUS_BANNER to false to hide. Edit message as needed.
+const SHOW_STATUS_BANNER = true;
+const STATUS_BANNER_MSG = "Some connector tools may experience intermittent issues. We are actively working to resolve this.";
+const STATUS_BANNER_TYPE = "warning"; // "warning" | "info" | "incident"
+
+const StatusBanner = memo(({ dark }) => {
+  const [dismissed, setDismissed] = useState(false);
+  if (!SHOW_STATUS_BANNER || dismissed) return null;
+  const bg = dark
+    ? STATUS_BANNER_TYPE === "warning" ? "rgba(251,191,36,0.08)" : STATUS_BANNER_TYPE === "incident" ? "rgba(239,68,68,0.08)" : "rgba(96,165,250,0.08)"
+    : STATUS_BANNER_TYPE === "warning" ? "rgba(251,191,36,0.10)" : STATUS_BANNER_TYPE === "incident" ? "rgba(239,68,68,0.10)" : "rgba(96,165,250,0.10)";
+  const accent = STATUS_BANNER_TYPE === "warning" ? "#fbbf24" : STATUS_BANNER_TYPE === "incident" ? "#ef4444" : "#60a5fa";
+  const border = STATUS_BANNER_TYPE === "warning" ? "rgba(251,191,36,0.15)" : STATUS_BANNER_TYPE === "incident" ? "rgba(239,68,68,0.15)" : "rgba(96,165,250,0.15)";
+  const label = STATUS_BANNER_TYPE === "incident" ? "INCIDENT" : STATUS_BANNER_TYPE === "warning" ? "NOTICE" : "INFO";
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "8px 16px", background: bg, borderBottom: `1px solid ${border}`, fontSize: 11, color: dark ? "#e2e8f0" : "#1e293b", flexShrink: 0, position: "relative", zIndex: 60 }}>
+      <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${accent}20`, color: accent, letterSpacing: "0.08em" }}>{label}</span>
+      <span>{STATUS_BANNER_MSG}</span>
+      <span onClick={() => window.open("mailto:support@finance-os.app?subject=Status%20Inquiry", "_blank")} style={{ fontSize: 10, color: accent, fontWeight: 700, cursor: "pointer", marginLeft: 4 }}>Learn more</span>
+      <div onClick={() => setDismissed(true)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", cursor: "pointer", color: dark ? "#64748b" : "#94a3b8", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 4, transition: "all 0.12s" }}
+        onMouseEnter={e => { e.currentTarget.style.background = `${accent}15`; e.currentTarget.style.color = accent; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = dark ? "#64748b" : "#94a3b8"; }}
+      ><X size={12} /></div>
+    </div>
+  );
+});
+
 const DemoBanner = memo(({ c, onNav, onUpgrade }) => (
   <div style={{
     display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "8px 16px",
@@ -5337,6 +5365,9 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ position: "absolute", bottom: "-20%", left: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 65%)", filter: "blur(100px)" }} />
       </div>
 
+      {/* Site-wide status banner */}
+      <StatusBanner dark={true} />
+
       {/* Nav */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "14px 20px" : "16px 48px", maxWidth: 1200, margin: "0 auto", background: "rgba(9,9,11,0.8)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(30,34,48,0.5)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -6685,6 +6716,9 @@ function FinanceOSApp() {
           <div style={{ position: "absolute", bottom: "-20%", left: "-8%", width: "55%", height: "55%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}${mode === "dark" ? "05" : "02"} 0%, transparent 60%)`, filter: "blur(100px)", transition: "background 0.8s ease" }} />
           <div style={{ position: "absolute", top: "30%", left: "40%", width: "30%", height: "30%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}${mode === "dark" ? "03" : "01"} 0%, transparent 60%)`, filter: "blur(120px)", transition: "background 0.8s ease" }} />
         </div>
+
+        {/* Site-wide status banner */}
+        <StatusBanner dark={mode === "dark"} />
 
         {/* Demo data banner — ENV 7 */}
         {user.plan === "demo" && <DemoBanner c={c} onNav={navigate} onUpgrade={() => setShowPlanPicker(true)} />}
