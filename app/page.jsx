@@ -6152,7 +6152,7 @@ function FinanceOSApp() {
           });
           if (res.ok) {
             const data = await res.json();
-            if (data.org?.plan && data.org.plan !== "trial") {
+            if (data.org?.plan && data.org.plan !== "demo") {
               setUser(prev => ({ ...prev, plan: data.org.plan }));
             }
             if (data.org?.name) {
@@ -6211,19 +6211,63 @@ function FinanceOSApp() {
     return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
-  // Handle Stripe checkout redirect: ?checkout=success&plan=starter
+  // Handle Stripe checkout redirect: ?checkout=success&session_id=cs_xxx
+  // SECURITY: Plan is NEVER read from URL params. It's verified server-side
+  // via the Stripe session_id. Anyone can fake ?plan=business — only the
+  // verify-checkout Edge Function returns the real plan from Stripe.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const checkoutStatus = params.get("checkout");
-    const checkoutPlan = params.get("plan");
-    if (checkoutStatus === "success" && checkoutPlan) {
-      toast(`${checkoutPlan.charAt(0).toUpperCase() + checkoutPlan.slice(1)} plan activated — welcome to FinanceOS!`, "success");
-      setUser(prev => ({ ...prev, plan: checkoutPlan }));
-      setShowPlanPicker(false);
-      setShowOnboarding(true);
-      // Clean URL
+    const sessionId = params.get("session_id");
+    const checkoutPlan = params.get("plan"); // Used ONLY for toast display, never trusted
+
+    if (checkoutStatus === "success" && sessionId?.startsWith("cs_")) {
+      // Clean URL immediately to prevent re-processing on refresh
       window.history.replaceState(null, "", window.location.pathname);
+
+      // Verify the checkout server-side before assigning any plan
+      (async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session?.access_token) {
+            toast("Please sign in to verify your subscription", "warning");
+            return;
+          }
+
+          toast("Verifying your payment...", "info");
+
+          const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-checkout`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${session.access_token}`,
+              "apikey": SUPABASE_KEY,
+            },
+            body: JSON.stringify({ session_id: sessionId }),
+          });
+
+          const data = await res.json();
+
+          if (data.verified && data.plan) {
+            // Plan comes from Stripe via server — this is the ONLY trusted source
+            setUser(prev => ({ ...prev, plan: data.plan }));
+            toast(`${data.plan.charAt(0).toUpperCase() + data.plan.slice(1)} plan activated — welcome to FinanceOS!`, "success");
+            setShowPlanPicker(false);
+            setShowOnboarding(true);
+          } else if (data.reason === "payment_incomplete") {
+            toast("Payment is still processing — your plan will activate shortly", "warning");
+            setShowPlanPicker(true);
+          } else {
+            toast("Could not verify payment. If you completed checkout, your plan will activate within a few minutes via webhook.", "warning");
+            setShowPlanPicker(true);
+          }
+        } catch {
+          // Fallback: webhook will provision the plan async even if verification fails
+          toast("Payment verification pending — your plan will activate shortly", "info");
+          setShowPlanPicker(true);
+        }
+      })();
     } else if (checkoutStatus === "cancel") {
       toast("Checkout cancelled — you can choose a plan anytime", "info");
       setShowPlanPicker(true);
@@ -7231,7 +7275,7 @@ function FinanceOSApp() {
                 orgName: org.name || "",
                 industry: org.industry || "",
                 erp: org.erp || "",
-                plan: planName || "trial",
+                plan: planName || "demo",
               }),
             });
           }
