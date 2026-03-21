@@ -4024,7 +4024,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 14 }}>Display Preferences</div>
         {[
-          { label: "Vaultline Suite panel", desc: "Show product recommendations on the right side of the dashboard", key: "suite", on: suitePanelOpen, action: () => { if (suitePanelOpen) { /* already shown */ toast("Suite panel is currently visible", "info"); } else { onShowSuitePanel(); toast("Suite panel restored", "success"); } } },
+          { label: "Right panel", desc: "Show resources, social, and suite products on the right side", key: "suite", on: suitePanelOpen, action: () => { if (suitePanelOpen) { toast("Panel is currently visible", "info"); } else { onShowSuitePanel(); toast("Panel restored", "success"); } } },
           { label: "Dark mode", desc: `Currently ${mode === "dark" ? "dark" : "light"} theme`, key: "theme", on: mode === "dark" },
           { label: "Compact sidebar", desc: "Collapse sidebar to icons only", key: "sidebar", on: false },
         ].map(p => (
@@ -6870,65 +6870,121 @@ function FinanceOSApp() {
           </>)}
         </div>
 
-        {/* Right-side Suite Panel — dismissable */}
+        {/* Right Panel — Commercial + Social */}
         {suitePanelOpen && !isMobile && loggedIn && (
           <div style={{
-            width: 220, flexShrink: 0, borderLeft: `1px solid ${c.borderSub}`, background: c.bg,
+            width: 230, flexShrink: 0, borderLeft: `1px solid ${c.borderSub}`, background: c.bg,
             display: "flex", flexDirection: "column", overflow: "auto",
             animation: "fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1)",
           }}>
-            <div style={{ padding: "16px 16px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Vaultline Suite</div>
+            <div style={{ padding: "16px 16px 10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Resources</div>
               <div onClick={dismissSuitePanel} style={{ width: 20, height: 20, borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 12, color: c.textFaint, transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
-                title="Dismiss — you can re-enable in Settings"
-              >×</div>
+                title="Dismiss — re-enable in Settings"
+              ><X size={10} /></div>
             </div>
-            <div style={{ padding: "0 16px 16px", flex: 1 }}>
-              <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.5, marginBottom: 14 }}>Extend FinanceOS with treasury, compliance, and ESG — one platform, one login.</div>
+            <div style={{ padding: "0 14px 16px", flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+
+              {/* Upgrade CTA — commercial */}
+              {user.plan === "demo" && (
+                <div onClick={() => setShowPlanPicker(true)} style={{
+                  padding: "14px 12px", borderRadius: 10,
+                  background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`,
+                  border: `1px solid ${c.accent}15`, cursor: "pointer", transition: "all 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}35`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}15`; e.currentTarget.style.transform = "none"; }}
+                >
+                  <div style={{ fontSize: 11, fontWeight: 700, color: c.accent, marginBottom: 2 }}>Upgrade Your Plan</div>
+                  <div style={{ fontSize: 9, color: c.textDim, lineHeight: 1.4 }}>Unlock AI Copilot, consolidation, and more. 30-day money-back guarantee.</div>
+                </div>
+              )}
+
+              {/* Partner Program — commercial */}
+              <div onClick={() => { try { navigator.clipboard.writeText("https://finance-os.app?ref=FOS-DEMO"); } catch {} toast("Referral link copied", "success"); }} style={{
+                padding: "12px", borderRadius: 10, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`,
+                cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}30`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                  <Users size={12} color={c.green} />
+                  <span style={{ fontSize: 10, fontWeight: 700, color: c.text }}>Partner Program</span>
+                </div>
+                <div style={{ fontSize: 9, color: c.textDim, lineHeight: 1.4 }}>Earn 20% recurring commission. Share your referral link.</div>
+                <div style={{ fontSize: 8, fontFamily: "'JetBrains Mono', monospace", color: c.textFaint, marginTop: 4 }}>FOS-DEMO</div>
+              </div>
+
+              {/* Suite Products — commercial */}
+              <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4 }}>Suite Products</div>
               {[
-                { name: "Vaultline", sub: "Treasury Management", desc: "Real-time cash position, forecasting, and multi-bank connectivity.", color: "#22d3ee", icon: "◈", url: "https://vaultline.vercel.app", live: true },
-                { name: "Parallax", sub: "Compliance OS", desc: "AS9100D, CMMC, and ESG framework tracking for suppliers.", color: "#E8915A", icon: "◆", url: null, live: false },
-                { name: "Emberglow", sub: "ESG Advisory", desc: "Sustainability reporting and stakeholder communications.", color: "#34d399", icon: "◇", url: null, live: false },
+                { name: "Vaultline", sub: "Treasury", color: "#22d3ee", url: "https://vaultline.vercel.app", live: true },
+                { name: "Parallax", sub: "Compliance", color: "#E8915A", url: null, live: false },
+                { name: "Emberglow", sub: "ESG Advisory", color: "#34d399", url: null, live: false },
               ].map(p => (
                 <div key={p.name} onClick={() => p.url ? window.open(p.url, "_blank") : null} style={{
-                  padding: "12px", marginBottom: 8, borderRadius: 10,
-                  background: c.surfaceAlt, border: `1px solid ${c.borderSub}`,
-                  cursor: p.live ? "pointer" : "default", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
+                  padding: "10px 12px", borderRadius: 8, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`,
+                  cursor: p.live ? "pointer" : "default", transition: "all 0.15s",
+                  display: "flex", alignItems: "center", gap: 10,
                 }}
-                onMouseEnter={e => { if (p.live) { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = "translateY(-1px)"; } }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.transform = "none"; }}
+                onMouseEnter={e => { if (p.live) e.currentTarget.style.borderColor = `${p.color}30`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                    <div style={{ width: 26, height: 26, borderRadius: 7, background: `${p.color}10`, border: `1px solid ${p.color}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: p.color, fontWeight: 700 }}>{p.icon}</div>
-                    <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: c.text }}>{p.name}</div>
-                      <div style={{ fontSize: 8, color: c.textFaint }}>{p.sub}</div>
-                    </div>
-                    {!p.live && <span style={{ marginLeft: "auto", fontSize: 7, padding: "1px 5px", borderRadius: 3, background: `${p.color}08`, color: `${p.color}99`, fontWeight: 700 }}>SOON</span>}
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: c.text }}>{p.name}</div>
+                    <div style={{ fontSize: 8, color: c.textFaint }}>{p.sub}</div>
                   </div>
-                  <div style={{ fontSize: 10, color: c.textDim, lineHeight: 1.4 }}>{p.desc}</div>
-                  {p.live && <div style={{ fontSize: 9, color: p.color, fontWeight: 600, marginTop: 6 }}>Open →</div>}
+                  {p.live ? <ArrowUpRight size={10} color={c.textFaint} /> : <span style={{ fontSize: 7, padding: "1px 4px", borderRadius: 3, background: `${p.color}08`, color: p.color, fontWeight: 700 }}>SOON</span>}
                 </div>
               ))}
-              {/* Bundle CTA */}
-              <div onClick={() => setShowPlanPicker(true)} style={{
-                padding: "12px", borderRadius: 10, border: `1px dashed ${c.purple}25`,
-                background: `linear-gradient(135deg, ${c.accent}04, ${c.purple}04)`,
-                cursor: "pointer", transition: "all 0.15s", textAlign: "center",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}40`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.purple}25`; }}
-              >
-                <div style={{ fontSize: 11, fontWeight: 700, color: c.purple, marginBottom: 2 }}>Bundle & Save 15%</div>
-                <div style={{ fontSize: 9, color: c.textDim }}>Add products to your plan</div>
-              </div>
-              {/* Dismiss link */}
-              <div onClick={dismissSuitePanel} style={{ textAlign: "center", marginTop: 12, fontSize: 9, color: c.textFaint, cursor: "pointer" }}
+
+              {/* Social Links */}
+              <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4 }}>Connect</div>
+              {[
+                { label: "LinkedIn", url: "https://linkedin.com/company/finance-os" },
+                { label: "X / Twitter", url: "https://x.com/financeos_app" },
+                { label: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
+              ].map(s => (
+                <div key={s.label} onClick={() => window.open(s.url, "_blank")} style={{
+                  padding: "8px 12px", borderRadius: 8, fontSize: 10, color: c.textDim, cursor: "pointer",
+                  transition: "all 0.12s", fontWeight: 500, display: "flex", alignItems: "center", justifyContent: "space-between",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
+                >
+                  {s.label}
+                  <ArrowUpRight size={10} />
+                </div>
+              ))}
+
+              {/* Quick Resources */}
+              <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4 }}>Resources</div>
+              {[
+                { label: "Documentation", action: () => window.open("https://finance-os.app/llms.txt", "_blank") },
+                { label: "Request a Demo", action: () => window.open("mailto:sales@finance-os.app?subject=Demo%20Request", "_blank") },
+                { label: "Support", action: () => window.open("mailto:support@finance-os.app", "_blank") },
+                { label: "Privacy Policy", action: () => window.open("https://finance-os.app/privacy", "_blank") },
+              ].map(r => (
+                <div key={r.label} onClick={r.action} style={{
+                  padding: "8px 12px", borderRadius: 8, fontSize: 10, color: c.textDim, cursor: "pointer",
+                  transition: "all 0.12s", fontWeight: 500,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
+                >
+                  {r.label}
+                </div>
+              ))}
+
+              {/* Dismiss */}
+              <div onClick={dismissSuitePanel} style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: c.textFaint, cursor: "pointer" }}
                 onMouseEnter={e => e.currentTarget.style.color = c.textDim}
                 onMouseLeave={e => e.currentTarget.style.color = c.textFaint}
-              >No thanks, hide this panel</div>
+              >Hide this panel</div>
             </div>
           </div>
         )}
