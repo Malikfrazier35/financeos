@@ -534,7 +534,7 @@ const LoadingSkeleton = memo(({ c }) => (
     {/* KPI grid skeleton */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {[0,1,2,3,4,5].map(i => (
-        <div key={i} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", position: "relative", overflow: "hidden" }}>
+        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}10, transparent)` }} />
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
             <Skeleton c={c} width={80} height={10} />
@@ -548,7 +548,7 @@ const LoadingSkeleton = memo(({ c }) => (
     </div>
     {/* Chart + Insights skeleton */}
     <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16 }}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}10, transparent)` }} />
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
           <Skeleton c={c} width={180} height={14} />
@@ -556,7 +556,7 @@ const LoadingSkeleton = memo(({ c }) => (
         </div>
         <Skeleton c={c} height={200} radius={8} />
       </div>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}10, transparent)` }} />
         <Skeleton c={c} width={140} height={14} />
         <div style={{ height: 14 }} />
@@ -1338,7 +1338,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       const latest = events[0];
       const allOk = events.every(e => e.ok);
       return (
-      <div style={{ marginBottom: 12, padding: "10px 16px", background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 10, fontSize: 9, color: c.textFaint, position: "relative", overflow: "hidden" }}>
+      <div style={{ marginBottom: 12, padding: "10px 16px", background: c.surface, border: `1px solid ${c.border}`, borderRadius: 10, fontSize: 9, color: c.textFaint, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${allOk ? c.green : c.amber}30, transparent)` }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
@@ -1376,7 +1376,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     })()}
 
     {/* Data Flow — animated pipeline stages */}
-    <div style={{ marginBottom: 20, padding: "12px 16px", background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+    <div style={{ marginBottom: 20, padding: "12px 16px", background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
         {[
@@ -1430,7 +1430,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
       <ChartPanel title="Revenue Performance" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         {/* Gradient accent top edge */}
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}50, ${c.purple}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
@@ -1503,7 +1503,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* Segment Donut */}
       <ChartPanel title="Revenue by Segment" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.cyan}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1565,7 +1565,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Waterfall — New Biz / Expansion / Services / Churn */}
       <ChartPanel title="Revenue Composition" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1610,7 +1610,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* Cash Runway */}
       <ChartPanel title="Cash & Runway" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1659,7 +1659,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16 }}>
       {/* Expense Breakdown */}
       <ChartPanel title="OpEx Breakdown" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.amber}18, ${c.red}08)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1715,7 +1715,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       </div>
       </ChartPanel>
       <ChartPanel title="AI Insights" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1742,7 +1742,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* Cash Flow Waterfall */}
       <ChartPanel title="Cash Flow" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
       >
@@ -1786,7 +1786,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* ARR Bridge */}
       <ChartPanel title="ARR Bridge" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
       >
@@ -1825,7 +1825,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* Pipeline Funnel */}
       <ChartPanel title="Pipeline Funnel" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 22px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
       >
@@ -1877,7 +1877,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         const prog = ct.filter(t => t.status === "progress").length;
         const pct = ct.length ? Math.round((done / ct.length) * 100) : 0;
         return (
-        <div onClick={() => onNav("close")} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
+        <div onClick={() => onNav("close")} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.amber}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
         >
@@ -1902,7 +1902,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         );
       })()}
       {/* Recent Activity — live from app state */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
           <Activity size={15} color={c.purple} />
@@ -1932,7 +1932,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       Retention & Cohorts <div style={{ width: 40, height: 1, background: c.borderSub }} />
     </div>
     <ChartPanel title="Cohort Retention" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-    <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}>
       <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1995,7 +1995,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     {/* Cross-sell banner */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
       {/* Partner Program */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer", position: "relative", overflow: "hidden" }}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer", position: "relative", overflow: "hidden" }}
         onClick={() => { try { navigator.clipboard.writeText("https://finance-os.app?ref=FOS-DEMO"); } catch {} toast("Referral link copied — earn 20% recurring commission", "success"); }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
@@ -2334,7 +2334,7 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
           { label: "Total OpEx", value: fmt(pnlData[2]?.total?.actual || 0), delta: fmtPct(variancePct(pnlData[2]?.total?.actual || 0, pnlData[2]?.total?.budget || 1)), fav: (pnlData[2]?.total?.actual || 0) <= (pnlData[2]?.total?.budget || 0), color: c.amber },
           { label: "EBITDA", value: fmt((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)), delta: `${(((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)) / (pnlData[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.green },
         ].map(k => (
-          <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 16px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+          <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
             <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{k.label}</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em", marginBottom: 4 }}>{k.value}</div>
@@ -2342,7 +2342,7 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
           </div>
         ))}
       </div>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px", zIndex: 3 }} />
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
@@ -2543,7 +2543,7 @@ const ForecastView = ({ c, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Forecast Model <div style={{ width: 40, height: 1, background: c.borderSub }} />
       </div>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, marginBottom: 16, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", marginBottom: 16, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}40, ${c.accent}20, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -2601,7 +2601,7 @@ const ForecastView = ({ c, toast }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
           <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Top Drivers</div>
           <div style={{ fontSize: 10, color: c.textDim, marginBottom: 14 }}>SHAP feature importance</div>
@@ -2618,7 +2618,7 @@ const ForecastView = ({ c, toast }) => {
         </div>
 
         {/* Assumption sliders */}
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
           <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Key Assumptions</div>
           <div style={{ fontSize: 10, color: c.textDim, marginBottom: 14 }}>Drag to adjust forecast inputs</div>
@@ -2722,7 +2722,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
           const displayStatus = closing ? "Closing..." : st;
           const statusColor = statusColors[displayStatus] || c.textDim;
           return (
-            <div key={e.name} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.2s" }}
+            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.2s" }}
               onMouseEnter={e2 => { e2.currentTarget.style.borderColor = statusColor + "40"; e2.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={e2 => { e2.currentTarget.style.borderColor = c.border; e2.currentTarget.style.transform = "none"; }}
             >
@@ -2762,7 +2762,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Consolidated Financials <div style={{ width: 40, height: 1, background: c.borderSub }} />
       </div>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px", zIndex: 2 }} />
         <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `2px solid ${c.borderBright}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -2872,7 +2872,7 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
       </div>
 
       {/* Progress bar */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, marginBottom: 20, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: 22, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${pct === 100 ? c.green : c.accent}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <span style={{ fontSize: 14, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
@@ -2896,7 +2896,7 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
           const catPct = Math.round((catDone / catTasks.length) * 100);
           const catColor = { Accounting: c.accent, Consolidation: c.cyan, Compliance: c.purple, Reporting: c.green, Review: c.amber }[cat] || c.accent;
           return (
-            <div key={cat} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative" }}>
+            <div key={cat} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative" }}>
               <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${catColor}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
               {/* Category header */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: c.surfaceAlt, borderBottom: `1px solid ${c.borderSub}` }}>
@@ -2953,7 +2953,7 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
       </div>
 
       {/* Close timeline */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "18px 22px", marginTop: 16, boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "18px 22px", marginTop: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
         <div style={{ fontSize: 11, fontWeight: 800, color: c.textSec, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.06em" }}>Close Timeline</div>
         <div style={{ display: "flex", gap: 0, position: "relative" }}>
           {["Mar 3", "Mar 4", "Mar 5", "Mar 6", "Mar 7", "Mar 8"].map((day, i) => {
@@ -3134,7 +3134,7 @@ const IntegrationsView = ({ c, toast }) => {
           { label: "Avg Freshness", value: avgStr, icon: "~", color: avgFresh < 300 ? c.green : c.amber },
           ];
         })().map(s => (
-          <div key={s.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+          <div key={s.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "14px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}35`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${s.color}08, ${c.cardGlow}`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
           >
@@ -3165,7 +3165,7 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 20px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${co.color}50`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${co.color}10, ${c.cardGlow}`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
           >
@@ -3227,7 +3227,7 @@ const IntegrationsView = ({ c, toast }) => {
         const conn = CONNECTORS.find(co => co.name === connectingName);
         return (
         <div onClick={() => setConnectingName(null)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
               <div style={{ width: 40, height: 40, borderRadius: 10, background: `${conn?.color || c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: conn?.color || c.accent }}>{connectingName[0]}</div>
               <div>
@@ -3257,7 +3257,7 @@ const IntegrationsView = ({ c, toast }) => {
       {/* Disconnect confirmation */}
       {disconnectConfirm && (
         <div onClick={() => setDisconnectConfirm(null)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 380, background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)", textAlign: "center" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 380, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)", textAlign: "center" }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: c.redDim, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
               <X size={20} color={c.red} />
             </div>
@@ -3274,7 +3274,7 @@ const IntegrationsView = ({ c, toast }) => {
       {/* CSV / Excel Upload Modal */}
       {uploadOpen && (
         <div onClick={() => setUploadOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 480, background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 480, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
             {/* Progress steps */}
             <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 20 }}>
               {["Select File", "Map Columns", "Import"].map((label, i) => (
@@ -3366,7 +3366,7 @@ const IntegrationsView = ({ c, toast }) => {
       {/* Plaid Bank Connect Modal */}
       {plaidOpen && (
         <div onClick={() => setPlaidOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
               <div style={{ width: 40, height: 40, borderRadius: 10, background: "linear-gradient(135deg, #0A85EA20, #0A85EA08)", border: "1px solid #0A85EA15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: "#0A85EA" }}>P</div>
               <div>
@@ -3427,7 +3427,7 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Benchmark Scorecard */}
-    <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "18px 24px", marginBottom: 20, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, display: "flex", alignItems: "center", gap: 20, position: "relative", overflow: "hidden" }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "18px 24px", marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: 20, position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
       <div style={{ fontSize: 12, fontWeight: 800, color: c.text, whiteSpace: "nowrap" }}>Series A Readiness</div>
       <div style={{ flex: 1, display: "flex", gap: 3 }}>
@@ -3462,7 +3462,7 @@ const InvestorView = ({ c, toast }) => (
       ].map(k => {
         const Icon = k.icon;
         return (
-        <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}35`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${k.color}10, ${c.cardGlow}`; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
         >
@@ -3485,7 +3485,7 @@ const InvestorView = ({ c, toast }) => (
       Retention & Readiness <div style={{ width: 40, height: 1, background: c.borderSub }} />
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Revenue Cohort Analysis</div>
         <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>Net dollar retention by signup quarter</div>
@@ -3515,7 +3515,7 @@ const InvestorView = ({ c, toast }) => (
         ))}
       </div>
 
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Competitive Positioning</div>
         <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>vs SaaS median benchmarks</div>
@@ -3545,7 +3545,7 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Fundraising Readiness */}
-    <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Series A Readiness Checklist</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {[
@@ -3655,7 +3655,7 @@ const AdminView = ({ c, toast, onNav }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
           {adminKpis.map(k => (
-            <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${k.color}08, ${c.cardGlow}`; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
             >
@@ -3679,7 +3679,7 @@ const AdminView = ({ c, toast, onNav }) => {
           Activity & Security <div style={{ width: 40, height: 1, background: c.borderSub }} />
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
             <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>Activity Log</span>
@@ -3704,7 +3704,7 @@ const AdminView = ({ c, toast, onNav }) => {
             ))}
           </div>
           {/* Quick Admin Actions */}
-          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
             <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Admin Actions</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -3737,7 +3737,7 @@ const AdminView = ({ c, toast, onNav }) => {
       </>)}
 
       {tab === "users" && (
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
@@ -3786,14 +3786,14 @@ const AdminView = ({ c, toast, onNav }) => {
               { label: "Avg Contract Value", value: "$1,752", sub: "Across all tiers" },
               { label: "Churn Rate", value: "2.1%", sub: "Last 30 days" },
             ].map(k => (
-              <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "16px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+              <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                 <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 6 }}>{k.label}</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.value}</div>
                 <div style={{ fontSize: 10, color: c.textDim }}>{k.sub}</div>
               </div>
             ))}
           </div>
-          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue by Plan</div>
             {[
               { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13 },
@@ -3819,7 +3819,7 @@ const AdminView = ({ c, toast, onNav }) => {
         <div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {/* Service Status */}
-            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Service Status</div>
               {[
                 { name: "API Gateway", status: "operational", latency: "42ms" },
@@ -3839,7 +3839,7 @@ const AdminView = ({ c, toast, onNav }) => {
               ))}
             </div>
             {/* Security Headers */}
-            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security Posture</div>
               {[
                 { name: "HSTS Preload", grade: "A+", status: "active" },
@@ -3865,7 +3865,7 @@ const AdminView = ({ c, toast, onNav }) => {
       {/* Invite User Modal */}
       {inviteOpen && (
         <div onClick={() => setInviteOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 400, background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 400, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
             <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Invite Team Member</div>
             <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>They'll receive an email invite to join your workspace.</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -3931,7 +3931,7 @@ const ScenariosView = ({ c, toast }) => {
       </div>
 
       {/* Horizontal bar comparison */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", marginBottom: 16, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", marginBottom: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: c.text }}>Revenue Comparison</div>
@@ -3959,7 +3959,7 @@ const ScenariosView = ({ c, toast }) => {
           const s1 = scenarios[compare[0]];
           const s2 = scenarios[compare[1]];
           const renderCard = (s) => (
-            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}` }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
               {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%`, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
                 <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -3998,7 +3998,7 @@ const ScenariosView = ({ c, toast }) => {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {scenarios.map((s, i) => (
                 <div key={s.name} onClick={() => setSelected(i)} style={{
-                  background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 16, padding: 18, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`,
+                  background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 16, padding: 18, boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                   cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
                 }}
                   onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
@@ -4025,7 +4025,7 @@ const ScenariosView = ({ c, toast }) => {
             <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 16, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
               Assumption Drivers <div style={{ width: 40, height: 1, background: c.borderSub }} />
             </div>
-            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
               <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
               {[
