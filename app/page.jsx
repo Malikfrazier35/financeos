@@ -2846,13 +2846,13 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
 const CONNECTORS = [
   { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA", syncedAt: Date.now() - 120000, health: 100 },
   { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0", syncedAt: Date.now() - 45000, health: 100 },
-  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", syncedAt: Date.now() - 60000, health: 100 },
+  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", syncedAt: Date.now() - 60000, health: 100, badge: "CONNECT" },
   { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847", syncedAt: Date.now() - 240000, health: 98 },
   { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8", syncedAt: Date.now() - 180000, health: 100 },
   { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59", syncedAt: Date.now() - 130000, health: 100 },
   { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E", syncedAt: Date.now() - 300000, health: 97 },
   { name: "Plaid", cat: "Banking", status: "available", records: null, color: "#0A85EA", badge: "NEW" },
-  { name: "QuickBooks", cat: "ERP", status: "available", records: null, color: "#2CA01C" },
+  { name: "QuickBooks", cat: "ERP", status: "available", records: null, color: "#2CA01C", badge: "OAUTH" },
   { name: "Xero", cat: "ERP", status: "available", records: null, color: "#13B5EA" },
   { name: "Workday", cat: "HRIS", status: "available", records: null, color: "#0875E1" },
   { name: "Google Sheets", cat: "Files", status: "available", records: null, color: "#34A853" },
@@ -2894,6 +2894,52 @@ const IntegrationsView = ({ c, toast }) => {
     if (conn?.status === "connected") { setDisconnectConfirm(name); return; }
     if (name === "CSV / Excel") { setUploadOpen(true); setUploadStep(0); setUploadFile(null); return; }
     if (name === "Plaid") { setPlaidOpen(true); return; }
+    // QuickBooks — real OAuth flow
+    if (name === "QuickBooks") {
+      toast("Redirecting to QuickBooks...", "info");
+      window.location.href = "/api/integrations/intuit/connect";
+      return;
+    }
+    // Stripe Connect — real onboarding via Edge Function
+    if (name === "Stripe") {
+      (async () => {
+        toast("Setting up Stripe Connect...", "info");
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session?.access_token) { toast("Please log in first", "error"); return; }
+          const res = await fetch(`${SUPABASE_URL}/functions/v1/stripe-connect`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+            body: JSON.stringify({ action: "status" }),
+          });
+          const data = await res.json();
+          if (data.account?.onboarding_complete) {
+            toast("Stripe Connect is already active", "success");
+            setConns(prev => prev.map(co => co.name === "Stripe" ? { ...co, status: "connected", records: "Active", syncedAt: Date.now() } : co));
+          } else if (data.account) {
+            // Account exists but not fully onboarded — get onboarding link
+            const linkRes = await fetch(`${SUPABASE_URL}/functions/v1/stripe-connect`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+              body: JSON.stringify({ action: "onboarding_link" }),
+            });
+            const linkData = await linkRes.json();
+            if (linkData.url) { window.open(linkData.url, "_blank"); toast("Complete onboarding in the new tab", "info"); }
+          } else {
+            // No account — create one
+            const createRes = await fetch(`${SUPABASE_URL}/functions/v1/stripe-connect`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+              body: JSON.stringify({ action: "create_account" }),
+            });
+            const createData = await createRes.json();
+            if (createData.onboarding_url) { window.open(createData.onboarding_url, "_blank"); toast("Complete Stripe setup in the new tab", "info"); }
+            else toast(createData.error || "Failed to create Stripe account", "error");
+          }
+        } catch (e) { toast("Stripe Connect error: " + (e?.message || "Unknown"), "error"); }
+      })();
+      return;
+    }
     setConnectingName(name);
   };
 
@@ -2932,6 +2978,10 @@ const IntegrationsView = ({ c, toast }) => {
     const name = disconnectConfirm;
     setDisconnectConfirm(null);
     setConns(prev => prev.map(co => co.name === name ? { ...co, status: "available", records: null, syncedAt: null } : co));
+    // QuickBooks — real disconnect
+    if (name === "QuickBooks") {
+      try { await fetch("/api/integrations/intuit/disconnect", { method: "POST" }); } catch {}
+    }
     // Remove from Supabase
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -6341,6 +6391,20 @@ function FinanceOSApp() {
       toast("Checkout cancelled — you can choose a plan anytime", "info");
       setShowPlanPicker(true);
       window.history.replaceState(null, "", window.location.pathname);
+    }
+    // QuickBooks OAuth callback handling
+    const integration = params.get("integration");
+    const integrationStatus = params.get("status");
+    if (integration === "quickbooks") {
+      window.history.replaceState(null, "", window.location.pathname);
+      if (integrationStatus === "success") {
+        toast("QuickBooks connected successfully! Initial sync starting...", "success");
+        setView("integrations");
+      } else if (integrationStatus === "denied") {
+        toast("QuickBooks connection was cancelled", "warning");
+      } else if (integrationStatus === "error") {
+        toast(`QuickBooks connection failed: ${params.get("reason") || "unknown error"}`, "error");
+      }
     }
   }, [loggedIn]);
 
