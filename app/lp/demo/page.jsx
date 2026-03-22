@@ -42,8 +42,10 @@ export default function DemoLanding() {
       // Fire conversion events if pixels are loaded
       if (typeof window !== "undefined") {
         // Google Ads conversion
-        if (window.gtag) window.gtag("event", "conversion", { send_to: "AW-XXXXXXXXXX/XXXXX" });
-        // Meta Pixel
+if (window.gtag) {
+  window.gtag("event", "conversion", { send_to: "AW-18032992189" });
+  window.gtag("event", "generate_lead", { event_category: "engagement", event_label: "demo_request" });
+}        // Meta Pixel
         if (window.fbq) window.fbq("track", "Lead");
         // LinkedIn
         if (window.lintrk) window.lintrk("track", { conversion_id: 0 });
