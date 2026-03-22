@@ -1,11 +1,5 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 export default function DemoLanding() {
   const [email, setEmail] = useState("");
@@ -22,30 +16,28 @@ export default function DemoLanding() {
       let utmData = {};
       try { utmData = JSON.parse(sessionStorage.getItem("fos_utm") || "{}"); } catch {}
 
-      await supabase.from("demo_requests").insert({
-        email: email.trim(),
-        full_name: name.trim(),
-        company: company.trim(),
-        use_case: "ad_landing",
-        utm_data: utmData,
-        referrer: document.referrer || "",
+      // Call the request-demo Edge Function (handles DB insert + lead creation + notifications)
+      await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/request-demo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY },
+        body: JSON.stringify({
+          email: email.trim(),
+          full_name: name.trim(),
+          company: company.trim(),
+          use_case: "ad_landing",
+          utm_data: utmData,
+        }),
       });
-      await supabase.from("waitlist").upsert({
-        email: email.trim(),
-        full_name: name.trim(),
-        company: company.trim(),
-        interest_type: "demo",
-        source: utmData.utm_source || "ad_landing",
-      }, { onConflict: "email" });
       setSubmitted(true);
 
       // Fire conversion events if pixels are loaded
       if (typeof window !== "undefined") {
         // Google Ads conversion
-if (window.gtag) {
-  window.gtag("event", "conversion", { send_to: "AW-18032992189" });
-  window.gtag("event", "generate_lead", { event_category: "engagement", event_label: "demo_request" });
-}        // Meta Pixel
+        if (window.gtag) {
+          window.gtag("event", "conversion", { send_to: "AW-18032992189/6hiYCNWJoY0cEL2_5pZD", value: 1.0, currency: "USD" });
+          window.gtag("event", "generate_lead", { event_category: "engagement", event_label: "demo_request" });
+        }
+        // Meta Pixel
         if (window.fbq) window.fbq("track", "Lead");
         // LinkedIn
         if (window.lintrk) window.lintrk("track", { conversion_id: 0 });
