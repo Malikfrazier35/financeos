@@ -2973,6 +2973,14 @@ const IntegrationsView = ({ c, toast }) => {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadStep, setUploadStep] = useState(0);
   const [uploadFile, setUploadFile] = useState(null);
+  const [csvText, setCsvText] = useState(null);
+  const [csvPreview, setCsvPreview] = useState(null);
+  const [colMap, setColMap] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState(null);
+  const [importError, setImportError] = useState(null);
+  const [defaultPeriod, setDefaultPeriod] = useState(new Date().toISOString().slice(0, 7));
+  const fileInputRef = useRef(null);
   const [plaidOpen, setPlaidOpen] = useState(false);
   const [tick, setTick] = useState(0);
   const cats = ["all", ...new Set(CONNECTORS.map(co => co.cat))];
@@ -3286,96 +3294,178 @@ const IntegrationsView = ({ c, toast }) => {
       )}
 
       {/* CSV / Excel Upload Modal */}
-      {uploadOpen && (
-        <div onClick={() => setUploadOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 480, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s ease" }}>
+      {uploadOpen && (() => {
+        const handleFile = (file) => {
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            const text = e.target.result;
+            setCsvText(text);
+            setUploadFile({ name: file.name, size: (file.size / 1024).toFixed(0) + " KB" });
+            try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session?.access_token) { toast("Sign in to import data", "warning"); return; }
+              const res = await fetch(`${SUPABASE_URL}/functions/v1/import-gl`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+                body: JSON.stringify({ action: "preview", csv_text: text }),
+              });
+              const data = await res.json();
+              if (data.success) { setCsvPreview(data); setColMap(data.detected_columns); setUploadStep(1); }
+              else { toast(data.error || "Could not parse CSV", "error"); }
+            } catch { toast("Preview failed", "error"); }
+          };
+          reader.readAsText(file);
+        };
+
+        const handleImport = async () => {
+          setImporting(true); setUploadStep(2); setImportError(null);
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.access_token) { toast("Sign in to import", "warning"); setImporting(false); return; }
+            const res = await fetch(`${SUPABASE_URL}/functions/v1/import-gl`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+              body: JSON.stringify({ action: "import", csv_text: csvText, column_map: colMap, default_period: defaultPeriod }),
+            });
+            const data = await res.json();
+            if (data.success) {
+              setImportResult(data.summary); setUploadStep(3);
+              setConns(prev => prev.map(co => co.name === "CSV / Excel" ? { ...co, status: "connected", records: data.summary.transactions_created.toLocaleString(), syncedAt: Date.now(), health: 100 } : co));
+            } else { setImportError(data.error || "Import failed"); setUploadStep(1); }
+          } catch { setImportError("Import failed — check your CSV format"); setUploadStep(1); }
+          setImporting(false);
+        };
+
+        return (
+        <div onClick={() => { setUploadOpen(false); setUploadStep(0); setUploadFile(null); }} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 540, maxHeight: "80vh", overflow: "auto", background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s ease" }}>
             {/* Progress steps */}
             <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 20 }}>
-              {["Select File", "Map Columns", "Import"].map((label, i) => (
+              {["Upload CSV", "Map & Preview", "Import"].map((label, i) => (
                 <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: uploadStep >= i ? c.accent : c.bg2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: uploadStep >= i ? "#fff" : c.textFaint, transition: "all 0.3s" }}>{i + 1}</div>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: uploadStep >= i ? (uploadStep > i ? c.green : c.accent) : c.bg2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: uploadStep >= i ? "#fff" : c.textFaint, transition: "all 0.3s" }}>{uploadStep > i ? "✓" : i + 1}</div>
                   <span style={{ fontSize: 10, color: uploadStep >= i ? c.text : c.textFaint, fontWeight: 600 }}>{label}</span>
-                  {i < 2 && <div style={{ width: 24, height: 1, background: uploadStep > i ? c.accent : c.borderSub }} />}
+                  {i < 2 && <div style={{ width: 24, height: 1, background: uploadStep > i ? c.green : c.borderSub }} />}
                 </div>
               ))}
             </div>
 
+            {/* Step 0: File Upload */}
             {uploadStep === 0 && (<>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Import Data</div>
-              <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>Upload a CSV or Excel file to import financial data.</div>
-              {/* Drop zone */}
-              <div onClick={() => setUploadFile({ name: "financial-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 })} style={{
-                border: `2px dashed ${c.border}`, borderRadius: 12, padding: "40px 24px", textAlign: "center", cursor: "pointer",
-                background: c.surfaceAlt, transition: "all 0.2s", marginBottom: 16,
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.background = c.accentDim; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.surfaceAlt; }}
-              >
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Import Financial Data</div>
+              <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>Upload a CSV file with your trial balance, P&L detail, or journal entries.</div>
+              <input ref={fileInputRef} type="file" accept=".csv,.tsv,.txt" style={{ display: "none" }} onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} />
+              <div onClick={() => fileInputRef.current?.click()}
+                onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.background = `${c.accent}06`; }}
+                onDragLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.surfaceAlt; }}
+                onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = c.border; const f = e.dataTransfer.files?.[0]; if (f) handleFile(f); }}
+                style={{ border: `2px dashed ${c.border}`, borderRadius: 12, padding: "48px 24px", textAlign: "center", cursor: "pointer", background: c.surfaceAlt, transition: "all 0.2s", marginBottom: 16 }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; }}>
                 {uploadFile ? (
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 4 }}>{uploadFile.name}</div>
-                    <div style={{ fontSize: 11, color: c.textDim }}>{uploadFile.size} · {uploadFile.rows} rows detected</div>
+                    <div style={{ fontSize: 28, marginBottom: 8 }}>📊</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>{uploadFile.name}</div>
+                    <div style={{ fontSize: 11, color: c.textDim }}>{uploadFile.size} · Parsing...</div>
                   </div>
                 ) : (
                   <div>
-                    <div style={{ fontSize: 24, marginBottom: 8, opacity: 0.4 }}>📄</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 4 }}>Drop your file here or click to browse</div>
-                    <div style={{ fontSize: 10, color: c.textFaint }}>Supports .csv, .xlsx, .xls · Max 50MB</div>
+                    <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.5 }}>📄</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: c.textSec, marginBottom: 4 }}>Drop your CSV here or click to browse</div>
+                    <div style={{ fontSize: 10, color: c.textFaint, marginBottom: 12 }}>Supports .csv files · Trial balances, P&L exports, journal entries</div>
+                    <div style={{ fontSize: 9, color: c.textFaint, padding: "8px 12px", background: c.bg2, borderRadius: 8, display: "inline-block" }}>
+                      Expected columns: Account, Amount (or Debit/Credit), Period, Budget (optional)
+                    </div>
                   </div>
                 )}
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={() => setUploadOpen(false)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
-                <button onClick={() => { if (uploadFile) setUploadStep(1); else { setUploadFile({ name: "financial-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 }); setUploadStep(1); }}} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Continue</button>
-              </div>
+              <button onClick={() => setUploadOpen(false)} style={{ width: "100%", fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
             </>)}
 
-            {uploadStep === 1 && (<>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Map Columns</div>
-              <div style={{ fontSize: 12, color: c.textDim, marginBottom: 16 }}>We detected {uploadFile?.rows || 1247} rows. Verify the column mapping below.</div>
-              <div style={{ background: c.surfaceAlt, borderRadius: 10, padding: 14, marginBottom: 16 }}>
-                {[
-                  { source: "Date", target: "Period", match: true },
-                  { source: "Account", target: "GL Account", match: true },
-                  { source: "Amount", target: "Actual ($)", match: true },
-                  { source: "Department", target: "Cost Center", match: true },
-                  { source: "Notes", target: "Description", match: false },
-                ].map(m => (
-                  <div key={m.source} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 11 }}>
-                    <span style={{ flex: 1, color: c.textSec, fontFamily: "'JetBrains Mono', monospace" }}>{m.source}</span>
-                    <span style={{ color: m.match ? c.green : c.amber }}>→</span>
-                    <span style={{ flex: 1, color: c.text, fontWeight: 600 }}>{m.target}</span>
-                    <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3, background: m.match ? c.greenDim : c.amberDim, color: m.match ? c.green : c.amber }}>{m.match ? "AUTO" : "REVIEW"}</span>
+            {/* Step 1: Preview + Column Mapping */}
+            {uploadStep === 1 && csvPreview && (<>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Preview & Map Columns</div>
+              <div style={{ fontSize: 12, color: c.textDim, marginBottom: 16 }}>{csvPreview.total_rows} data rows detected from <span style={{ fontWeight: 600, color: c.text }}>{uploadFile?.name}</span></div>
+              {importError && <div style={{ padding: "10px 14px", borderRadius: 8, background: `${c.red}10`, border: `1px solid ${c.red}20`, color: c.red, fontSize: 11, fontWeight: 600, marginBottom: 12 }}>{importError}</div>}
+              {/* Column mapping */}
+              <div style={{ background: c.surfaceAlt, borderRadius: 10, padding: 14, marginBottom: 14 }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Detected Column Mapping</div>
+                {Object.entries(colMap || {}).map(([field, idx]) => (
+                  <div key={field} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 11 }}>
+                    <span style={{ flex: 1, color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{csvPreview.headers[idx]}</span>
+                    <span style={{ color: c.green, fontSize: 12 }}>→</span>
+                    <span style={{ flex: 1, color: c.text, fontWeight: 700, textTransform: "capitalize" }}>{field.replace(/_/g, " ")}</span>
+                    <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}12`, color: c.green }}>AUTO</span>
                   </div>
                 ))}
+                {Object.keys(colMap || {}).length === 0 && <div style={{ fontSize: 11, color: c.amber, fontWeight: 600 }}>Could not auto-detect columns. Ensure your CSV has Account and Amount headers.</div>}
+              </div>
+              {/* Period selector */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <span style={{ fontSize: 11, color: c.textDim, fontWeight: 600 }}>Default period:</span>
+                <input type="month" value={defaultPeriod} onChange={e => setDefaultPeriod(e.target.value)} style={{ fontSize: 11, padding: "6px 10px", borderRadius: 6, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "'JetBrains Mono', monospace" }} />
+              </div>
+              {/* Data preview table */}
+              <div style={{ background: c.bg2, borderRadius: 10, overflow: "hidden", marginBottom: 16, maxHeight: 180, overflow: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
+                  <thead>
+                    <tr>{csvPreview.headers.map((h, i) => (
+                      <th key={i} style={{ padding: "8px 10px", background: c.surfaceAlt, color: c.textFaint, fontWeight: 700, textAlign: "left", borderBottom: `1px solid ${c.borderSub}`, whiteSpace: "nowrap", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.04em" }}>{h}</th>
+                    ))}</tr>
+                  </thead>
+                  <tbody>{csvPreview.preview.slice(1).map((row, ri) => (
+                    <tr key={ri}>{row.map((cell, ci) => (
+                      <td key={ci} style={{ padding: "6px 10px", color: c.textSec, borderBottom: `1px solid ${c.borderSub}`, fontFamily: "'JetBrains Mono', monospace", whiteSpace: "nowrap" }}>{cell}</td>
+                    ))}</tr>
+                  ))}</tbody>
+                </table>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={() => setUploadStep(0)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Back</button>
-                <button onClick={() => { setUploadStep(2); setTimeout(() => { if (mountedRef.current) { setUploadStep(3); setConns(prev => prev.map(co => co.name === "CSV / Excel" ? { ...co, status: "connected", records: "1,247", syncedAt: Date.now(), health: 100 } : co)); }}, 2000); }} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Import {uploadFile?.rows || 1247} Rows</button>
+                <button onClick={() => { setUploadStep(0); setCsvPreview(null); setCsvText(null); setUploadFile(null); setImportError(null); }} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Back</button>
+                <button onClick={handleImport} disabled={!colMap?.account && colMap?.account !== 0} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: (colMap?.account !== undefined) ? `linear-gradient(135deg, ${c.accent}, ${c.purple})` : c.borderSub, color: "#fff", cursor: (colMap?.account !== undefined) ? "pointer" : "default", fontFamily: "inherit", fontWeight: 700, boxShadow: (colMap?.account !== undefined) ? `0 4px 12px ${c.accent}25` : "none" }}>Import {csvPreview.total_rows} Rows →</button>
               </div>
             </>)}
 
+            {/* Step 2: Importing */}
             {uploadStep === 2 && (
-              <div style={{ textAlign: "center", padding: "40px 0" }}>
-                <div style={{ width: 40, height: 40, border: `3px solid ${c.accent}30`, borderTopColor: c.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
-                <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>Importing data...</div>
-                <div style={{ fontSize: 11, color: c.textDim }}>Validating schema and writing {uploadFile?.rows || 1247} rows</div>
+              <div style={{ textAlign: "center", padding: "48px 0" }}>
+                <div style={{ width: 44, height: 44, border: `3px solid ${c.accent}30`, borderTopColor: c.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+                <div style={{ fontSize: 15, fontWeight: 800, color: c.text, marginBottom: 4 }}>Importing your data...</div>
+                <div style={{ fontSize: 11, color: c.textDim }}>Creating accounts, transactions, and budgets from {uploadFile?.name}</div>
               </div>
             )}
 
-            {uploadStep === 3 && (
+            {/* Step 3: Complete */}
+            {uploadStep === 3 && importResult && (
               <div style={{ textAlign: "center", padding: "32px 0" }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${c.green}, ${c.accent})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-                  <Check size={24} color="#fff" strokeWidth={3} />
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: `linear-gradient(135deg, ${c.green}, ${c.accent})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16, boxShadow: `0 8px 24px ${c.green}20` }}>
+                  <Check size={26} color="#fff" strokeWidth={3} />
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: c.text, marginBottom: 4 }}>Import Complete</div>
-                <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>{uploadFile?.rows || 1247} rows imported from {uploadFile?.name || "file"}</div>
-                <button onClick={() => { setUploadOpen(false); toast("Data imported successfully", "success"); }} style={{ fontSize: 13, padding: "11px 24px", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Done</button>
+                <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 8 }}>Import Complete</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20, maxWidth: 360, margin: "0 auto 20px" }}>
+                  {[
+                    { label: "Accounts", value: importResult.accounts_created, color: c.accent },
+                    { label: "Transactions", value: importResult.transactions_created, color: c.green },
+                    { label: "Budgets", value: importResult.budgets_created, color: c.purple },
+                  ].map(s => (
+                    <div key={s.label} style={{ padding: "12px 8px", borderRadius: 10, background: `${s.color}08`, border: `1px solid ${s.color}15` }}>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</div>
+                      <div style={{ fontSize: 9, color: c.textDim, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", marginTop: 2 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {importResult.errors > 0 && (
+                  <div style={{ fontSize: 10, color: c.amber, marginBottom: 12 }}>{importResult.errors} rows had errors · {importResult.error_details?.slice(0, 3).join(" · ")}</div>
+                )}
+                <div style={{ fontSize: 11, color: c.textDim, marginBottom: 16 }}>Your P&L and Dashboard will now show this data.</div>
+                <button onClick={() => { setUploadOpen(false); setUploadStep(0); setUploadFile(null); toast(`Imported ${importResult.transactions_created} transactions`, "success"); }} style={{ fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.green}, ${c.accent})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 4px 16px ${c.green}20` }}>Go to Dashboard →</button>
               </div>
             )}
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Plaid Bank Connect Modal */}
       {plaidOpen && (
