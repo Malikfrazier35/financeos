@@ -1286,29 +1286,28 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
   return (
   <div style={{ padding: 32 }}>
     {/* Welcome header */}
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
       <div>
-        <div style={{ fontSize: 10, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+          <span>{new Date().getHours() < 6 ? "🌙" : new Date().getHours() < 12 ? "☀️" : new Date().getHours() < 17 ? "🌤" : "🌙"}</span>
           {fmtDate(new Date())}
         </div>
-        <div style={{ fontSize: 24, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}
-          {period && <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: c.accentDim, color: c.accent, marginLeft: 10, verticalAlign: "middle", letterSpacing: "0.02em" }}>{period}</span>}
+        <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}
+          {period && <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: `${c.accent}08`, color: c.accent, marginLeft: 10, verticalAlign: "middle", letterSpacing: "0.02em", border: `1px solid ${c.accent}12` }}>{period}</span>}
         </div>
-        <div style={{ fontSize: 12, color: c.textDim, marginTop: 6, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} />Revenue ahead by $2.09M</span>
-          <span style={{ color: c.textFaint }}>·</span>
-          <span>Rule of 40 at 52.1</span>
-          <span style={{ color: c.textFaint }}>·</span>
-          <span style={{ color: c.amber, fontWeight: 600 }}>4 variances need attention</span>
+        <div style={{ fontSize: 12, color: c.textDim, marginTop: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 6, background: `${c.green}08`, border: `1px solid ${c.green}10` }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} /><span style={{ color: c.green, fontWeight: 600 }}>Revenue ahead by $2.09M</span></span>
+          <span style={{ padding: "3px 10px", borderRadius: 6, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, fontWeight: 600 }}>Rule of 40: <span style={{ color: c.accent, fontFamily: "'JetBrains Mono', monospace" }}>52.1</span></span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 6, background: `${c.amber}08`, border: `1px solid ${c.amber}10`, color: c.amber, fontWeight: 600 }}>4 variances</span>
         </div>
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <div style={{ padding: "8px 16px", borderRadius: 10, background: `linear-gradient(135deg, ${c.purple}10, ${c.accent}06)`, border: `1px solid ${c.purple}18`, fontSize: 11, color: c.purple, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s" }}
+        <div style={{ padding: "10px 20px", borderRadius: 10, background: `linear-gradient(135deg, ${c.purple}14, ${c.accent}08)`, border: `1px solid ${c.purple}25`, fontSize: 12, color: c.purple, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 7, transition: "all 0.2s", boxShadow: `0 2px 8px ${c.purple}08` }}
           onClick={() => onNav("copilot")}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}40`; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.purple}18`; }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}50`; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 4px 16px ${c.purple}15`; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.purple}25`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 2px 8px ${c.purple}08`; }}
         >
-          <Sparkles size={13} /> Ask AI
+          <Sparkles size={14} /> Ask AI Copilot
         </div>
       </div>
     </div>
@@ -1345,15 +1344,20 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     })()}
 
     {/* KPI Grid */}
-    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 14, marginBottom: 24 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Key Metrics</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 14, marginBottom: 28 }}>
       {kpis.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} />)}
     </div>
 
     {/* Charts Row */}
-    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-      Performance Analytics
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Performance Analytics</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
     </div>
-    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.7fr 1fr", gap: 16, marginBottom: 28 }}>
       {/* Revenue Chart */}
       <ChartPanel title="Revenue Performance" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
@@ -1377,7 +1381,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             ))}
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={260}>
+        <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
             <defs>
               <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.25} /><stop offset="40%" stopColor={c.accent} stopOpacity={0.08} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
@@ -1439,7 +1443,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>FY2025 YTD distribution</div>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={170}>
+        <ResponsiveContainer width="100%" height={190}>
           <PieChart>
             <defs>
               {SEGMENT_DATA.map((s, i) => (
@@ -1487,7 +1491,11 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     </div>
 
     {/* Revenue Composition + Cash Runway */}
-    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Revenue Drivers & Treasury</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 28 }}>
       {/* Revenue Waterfall — New Biz / Expansion / Services / Churn */}
       <ChartPanel title="Revenue Composition" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
@@ -1500,7 +1508,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             <div style={{ fontSize: 10, color: c.textDim }}>New Business · Expansion · Services · Churn</div>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={180}>
+        <ResponsiveContainer width="100%" height={200}>
           <BarChart data={REVENUE_DATA.filter(d => d.newBiz)} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
             <defs>
               <linearGradient id="gNewBiz" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.9}/><stop offset="100%" stopColor={c.accent} stopOpacity={0.6}/></linearGradient>
@@ -1550,7 +1558,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             <div style={{ fontSize: 9, color: c.textDim }}>28 months runway</div>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={160}>
+        <ResponsiveContainer width="100%" height={180}>
           <ComposedChart data={CASH_RUNWAY} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
             <defs>
               <linearGradient id="gCash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.2}/><stop offset="100%" stopColor={c.green} stopOpacity={0}/></linearGradient>
@@ -1579,7 +1587,11 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     </div>
 
     {/* Expense Bars + Insights */}
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Cost Management & Insights</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16, marginBottom: 28 }}>
       {/* Expense Breakdown */}
       <ChartPanel title="OpEx Breakdown" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
@@ -1592,7 +1604,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Actual vs Budget · FY2025 YTD</div>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={180}>
+        <ResponsiveContainer width="100%" height={200}>
           <BarChart data={EXPENSE_DATA} layout="vertical" margin={{ top: 0, right: 10, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="gExpAct" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c.accent} stopOpacity={0.9} /><stop offset="100%" stopColor={c.accent} stopOpacity={0.6} /></linearGradient>
