@@ -261,11 +261,68 @@ const DETAIL_DATA = {
     { label: "G&A", value: "52", color: "text" }, { label: "Customer Success", value: "48", color: "green" },
     { label: "Open Reqs", value: "22", color: "amber" }, { label: "Revenue per Head", value: "$164K", color: "text" },
   ]},
+  // P&L Financial Summary
+  "Total Revenue": { title: "Total Revenue", value: "$51.2M", trend: [38,40,42,44,46,48,50,51.2], details: [
+    { label: "Subscription", value: "$46.4M", color: "accent" }, { label: "Professional Services", value: "$3.2M", color: "green" },
+    { label: "Usage / AI Module", value: "$1.6M", color: "purple" }, { label: "YoY Growth", value: "+44.7%", color: "green" },
+    { label: "QoQ Growth", value: "+8.2%", color: "green" }, { label: "vs Budget", value: "+$2.09M", color: "green" },
+    { label: "Annualized Run Rate", value: "$68.3M", color: "accent" }, { label: "Forecast Accuracy", value: "96.8%", color: "green" },
+  ]},
+  "Gross Profit": { title: "Gross Profit", value: "$43.4M", trend: [30,32,34,36,38,40,42,43.4], details: [
+    { label: "Revenue", value: "$51.2M", color: "text" }, { label: "Total COGS", value: "$7.8M", color: "red" },
+    { label: "Cloud Infrastructure", value: "$4.8M", color: "amber" }, { label: "Customer Success", value: "$2.2M", color: "text" },
+    { label: "Support & Onboarding", value: "$0.8M", color: "text" }, { label: "Gross Margin", value: "84.7%", color: "green" },
+    { label: "Benchmark (SaaS p75)", value: "78%", color: "text" }, { label: "Margin Trend", value: "+2.1pp", color: "green" },
+  ]},
+  "Total OpEx": { title: "Operating Expenses", value: "$39.6M", trend: [28,30,31,33,35,36,38,39.6], details: [
+    { label: "R&D — Engineering", value: "$14.4M", color: "accent" }, { label: "R&D — Product & ML", value: "$4.9M", color: "purple" },
+    { label: "Sales", value: "$8.9M", color: "amber" }, { label: "Marketing", value: "$4.3M", color: "cyan" },
+    { label: "Revenue Operations", value: "$2.2M", color: "text" }, { label: "G&A (Finance, Legal, IT)", value: "$4.9M", color: "text" },
+    { label: "OpEx / Revenue", value: "77.3%", color: "amber" }, { label: "vs Budget", value: "+$0.2M over", color: "red" },
+  ]},
+  "EBITDA": { title: "EBITDA", value: "$3.8M", trend: [-2,-1,0,0.5,1.2,2,3,3.8], details: [
+    { label: "Revenue", value: "$51.2M", color: "text" }, { label: "Gross Profit", value: "$43.4M", color: "green" },
+    { label: "Total OpEx", value: "$39.6M", color: "amber" }, { label: "EBITDA Margin", value: "7.4%", color: "green" },
+    { label: "Rule of 40", value: "52.1", color: "accent" }, { label: "Improvement QoQ", value: "+$1.2M", color: "green" },
+    { label: "Path to Profitability", value: "Q3 2025", color: "accent" }, { label: "Free Cash Flow", value: "$2.1M", color: "green" },
+  ]},
+  // Consolidation entities
+  "Acme US": { title: "Acme US — Domestic", value: "$38.9M", trend: [28,30,32,34,36,37,38,38.9], details: [
+    { label: "Revenue", value: "$38.9M", color: "accent" }, { label: "EBITDA", value: "$3.1M", color: "green" },
+    { label: "Headcount", value: "218", color: "text" }, { label: "Rev / Head", value: "$178K", color: "green" },
+    { label: "IC Eliminations", value: "-$1.2M", color: "amber" }, { label: "Currency", value: "USD", color: "text" },
+    { label: "Close Status", value: "Closed", color: "green" }, { label: "% of Consolidated", value: "76.1%", color: "accent" },
+  ]},
+  "Acme EU": { title: "Acme EU — Europe", value: "$8.7M", trend: [4,5,5.5,6,6.5,7,8,8.7], details: [
+    { label: "Revenue (EUR)", value: "€7.97M", color: "accent" }, { label: "Revenue (USD)", value: "$8.65M", color: "text" },
+    { label: "EBITDA", value: "$520K", color: "green" }, { label: "Headcount", value: "62", color: "text" },
+    { label: "FX Impact", value: "-$142K", color: "red" }, { label: "EUR/USD Rate", value: "1.087", color: "text" },
+    { label: "Close Status", value: "In Review", color: "amber" }, { label: "% of Consolidated", value: "16.9%", color: "purple" },
+  ]},
+  "Acme APAC": { title: "Acme APAC — Asia Pacific", value: "$3.6M", trend: [1,1.5,2,2.2,2.5,2.8,3.2,3.6], details: [
+    { label: "Revenue (SGD)", value: "S$4.85M", color: "accent" }, { label: "Revenue (USD)", value: "$3.62M", color: "text" },
+    { label: "EBITDA", value: "$140K", color: "green" }, { label: "Headcount", value: "32", color: "text" },
+    { label: "FX Impact", value: "+$38K", color: "green" }, { label: "SGD/USD Rate", value: "0.746", color: "text" },
+    { label: "Close Status", value: "Pending", color: "amber" }, { label: "% of Consolidated", value: "7.1%", color: "cyan" },
+  ]},
+  // Investor metrics
+  "CAC Payback": { title: "CAC Payback Period", value: "14 mo", trend: [22,20,18,17,16,15,14.5,14], details: [
+    { label: "Fully-loaded CAC", value: "$28.4K", color: "amber" }, { label: "Monthly ARPU", value: "$2.03K", color: "text" },
+    { label: "Gross Margin", value: "84.7%", color: "green" }, { label: "Blended Payback", value: "14 months", color: "accent" },
+    { label: "Enterprise Payback", value: "11 months", color: "green" }, { label: "SMB Payback", value: "19 months", color: "amber" },
+    { label: "Benchmark (good)", value: "<18 months", color: "text" }, { label: "Trend", value: "Improving", color: "green" },
+  ]},
+  "LTV/CAC": { title: "LTV to CAC Ratio", value: "4.2x", trend: [2.5,2.8,3.0,3.2,3.5,3.8,4.0,4.2], details: [
+    { label: "Customer LTV", value: "$119K", color: "accent" }, { label: "CAC", value: "$28.4K", color: "amber" },
+    { label: "Avg Contract Length", value: "3.2 years", color: "text" }, { label: "NDR", value: "118%", color: "green" },
+    { label: "Enterprise LTV/CAC", value: "5.8x", color: "green" }, { label: "SMB LTV/CAC", value: "2.6x", color: "amber" },
+    { label: "Benchmark (healthy)", value: ">3.0x", color: "text" }, { label: "Trend", value: "+0.4x YoY", color: "green" },
+  ]},
 };
 
 const DetailDrawer = ({ kpi, c, onClose }) => {
   const data = DETAIL_DATA[kpi] || DETAIL_DATA["ARR"];
-  const colorMap = { green: c.green, red: c.red, amber: c.amber, accent: c.accent, text: c.text };
+  const colorMap = { green: c.green, red: c.red, amber: c.amber, accent: c.accent, text: c.text, purple: c.purple, cyan: c.cyan };
   return (
     <>
     <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 999, background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)", animation: "fadeIn 0.15s" }} />
@@ -294,14 +351,33 @@ const DetailDrawer = ({ kpi, c, onClose }) => {
         </div>
         <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
           <span>Breakdown</span>
-          <div style={{ flex: 1, height: 1, background: c.borderSub }} />
+          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+          <span style={{ fontWeight: 600, color: c.textDim, textTransform: "none", letterSpacing: "normal" }}>{data.details.length} metrics</span>
         </div>
-        {data.details.map((d, i) => (
-          <div key={d.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}`, transition: "background 0.1s" }}>
-            <span style={{ fontSize: 12, color: c.textSec, fontWeight: 500 }}>{d.label}</span>
-            <span style={{ fontSize: 13, fontWeight: 800, color: colorMap[d.color], fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
+        {data.details.map((d, i) => {
+          const clr = colorMap[d.color] || c.text;
+          const isNeg = d.value.startsWith("-");
+          const isPct = d.value.endsWith("%");
+          const pctVal = isPct ? parseFloat(d.value) : null;
+          return (
+          <div key={d.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 8px", margin: "0 -8px", borderRadius: 8, borderBottom: `1px solid ${c.borderSub}`, transition: "all 0.15s", cursor: "default" }}
+            onMouseEnter={e => { e.currentTarget.style.background = `${clr}06`; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 6, height: 6, borderRadius: 2, background: clr, opacity: 0.6, flexShrink: 0 }} />
+              <span style={{ fontSize: 12, color: c.textSec, fontWeight: 500 }}>{d.label}</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {isPct && pctVal !== null && pctVal <= 100 && pctVal > 0 && (
+                <div style={{ width: 40, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ width: `${Math.min(pctVal, 100)}%`, height: "100%", background: clr, borderRadius: 2 }} />
+                </div>
+              )}
+              <span style={{ fontSize: 13, fontWeight: 800, color: clr, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
+            </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
     </>
@@ -2184,7 +2260,7 @@ const CopilotView = ({ c, toast, logActivity }) => {
 // ══════════════════════════════════════════════════════════════
 // P&L VIEW
 // ══════════════════════════════════════════════════════════════
-const PnlView = ({ c, onNav, toast, orgName, glData }) => {
+const PnlView = ({ c, onNav, toast, orgName, glData, onDrawer }) => {
   // Use database GL data when available, fall back to hardcoded demo data
   const pnlData = glData?.pnl || PNL_DATA;
   const isLiveData = glData?.source === "database";
@@ -2269,7 +2345,7 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
           { label: "Total OpEx", value: fmt(pnlData[2]?.total?.actual || 0), delta: fmtPct(variancePct(pnlData[2]?.total?.actual || 0, pnlData[2]?.total?.budget || 1)), fav: (pnlData[2]?.total?.actual || 0) <= (pnlData[2]?.total?.budget || 0), color: c.amber },
           { label: "EBITDA", value: fmt((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)), delta: `${(((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)) / (pnlData[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.green },
         ].map(k => (
-          <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 18px", transition: "all 0.2s", cursor: "default" }}
+          <div key={k.label} onClick={() => onDrawer && onDrawer(k.label)} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 18px", transition: "all 0.2s", cursor: "pointer" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 6px 20px ${k.color}10`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
@@ -2695,7 +2771,7 @@ const CONS_PNL = [
   { line: "EBITDA", us: 3120, eu: 520, apac: 140, elim: 0, cons: 3780 },
 ];
 
-const ConsolidationView = ({ c, onNav, toast }) => {
+const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
   const [entityStatus, setEntityStatus] = useState({});
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
@@ -2749,7 +2825,10 @@ const ConsolidationView = ({ c, onNav, toast }) => {
               onMouseLeave={e2 => { e2.currentTarget.style.borderColor = c.border; }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>{e.name}</span>
+                <span onClick={() => onDrawer && onDrawer(e.name)} style={{ fontSize: 14, fontWeight: 800, color: c.text, cursor: "pointer", transition: "color 0.15s" }}
+                  onMouseEnter={ev => ev.currentTarget.style.color = c.accent}
+                  onMouseLeave={ev => ev.currentTarget.style.color = c.text}
+                >{e.name}</span>
                 <span style={{ fontSize: 9, fontWeight: 800, padding: "3px 10px", borderRadius: 6, background: `${statusColor}12`, color: statusColor, border: `1px solid ${statusColor}18`, letterSpacing: "0.03em" }}>{displayStatus}</span>
               </div>
               <div style={{ fontSize: 26, fontWeight: 800, color: c.text, marginBottom: 2, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(e.revenue)}</div>
@@ -3760,7 +3839,7 @@ const SCENARIOS_LIST = [
 // ══════════════════════════════════════════════════════════════
 // INVESTOR METRICS — Fundraising & Investor Marketing
 // ══════════════════════════════════════════════════════════════
-const InvestorView = ({ c, toast }) => (
+const InvestorView = ({ c, toast, onDrawer }) => (
   <div style={{ padding: 32 }}>
     {/* View Header */}
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
@@ -3815,9 +3894,9 @@ const InvestorView = ({ c, toast }) => (
       ].map(k => {
         const Icon = k.icon;
         return (
-        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}35`; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = c.cardGlow; }}
+        <div key={k.label} onClick={() => { const drawerKey = { "Net Dollar Retention": "NDR", "CAC Payback": "CAC Payback", "LTV/CAC": "LTV/CAC", "Cash Runway": "Burn Multiple" }[k.label] || k.label; if (onDrawer) onDrawer(drawerKey); }} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s ease", cursor: "pointer" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${k.color}12`; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
             <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint }}>{k.label}</div>
@@ -7648,14 +7727,14 @@ function FinanceOSApp() {
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
           {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
-          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} /></SectionBoundary>}
+          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} /></SectionBoundary>}
-          {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
+          {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
           {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} tasks={closeTasks} setTasks={setCloseTasks} logActivity={logActivity} /></SectionBoundary>}
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
-          {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} /></SectionBoundary>}
+          {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} user={user} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
           </>)}
         </div>
