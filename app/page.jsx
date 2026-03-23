@@ -5057,11 +5057,12 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
               const savings = p.monthly && p.annual ? (p.monthly - p.annual) * 12 : 0;
               return (
               <div key={p.name} onMouseEnter={() => setHoveredPlan(idx)} onMouseLeave={() => setHoveredPlan(null)} style={{
-                background: p.popular ? `linear-gradient(180deg, ${t.ac}08 0%, ${t.bg2} 100%)` : t.bg2,
-                border: `1px solid ${p.popular ? t.ac : isHovered ? t.bdrBright : t.bdrSub}`,
-                borderRadius: 12, padding: "24px 20px", position: "relative", transition: "all 0.15s ease",
-                transform: isHovered ? "translateY(-4px)" : "none",
-                boxShadow: p.popular ? `0 0 0 1px ${t.ac}18, 0 8px 30px ${t.ac}10` : isHovered ? "0 12px 40px rgba(0,0,0,0.25)" : "none",
+                background: isHovered ? `linear-gradient(180deg, ${p.popular ? t.ac : t.pu}12 0%, ${t.bg2} 100%)` : p.popular ? `linear-gradient(180deg, ${t.ac}08 0%, ${t.bg2} 100%)` : t.bg2,
+                border: `1.5px solid ${isHovered ? (p.popular ? t.ac : t.pu) : p.popular ? t.ac : t.bdrSub}`,
+                borderRadius: 12, padding: "24px 20px", position: "relative", transition: "all 0.2s ease",
+                transform: isHovered ? "translateY(-6px) scale(1.01)" : "none",
+                boxShadow: isHovered ? `0 0 0 1px ${p.popular ? t.ac : t.pu}25, 0 16px 48px ${p.popular ? t.ac : t.pu}15, 0 8px 24px rgba(0,0,0,0.3)` : p.popular ? `0 0 0 1px ${t.ac}18, 0 8px 30px ${t.ac}10` : "none",
+                cursor: "pointer",
               }}>
                 {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
                 <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: t.tx }}>{p.name}</div>
