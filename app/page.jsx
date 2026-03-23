@@ -2250,24 +2250,37 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
         onPDF={() => { const rows = pnlData.flatMap(s => [...s.rows.map(r => [r.name, "$" + r.actual.toLocaleString() + "K", "$" + r.budget.toLocaleString() + "K", "$" + (r.actual - r.budget).toLocaleString() + "K", ((r.actual - r.budget) / Math.abs(r.budget) * 100).toFixed(1) + "%"]), [s.total.name, "$" + s.total.actual.toLocaleString() + "K", "$" + s.total.budget.toLocaleString() + "K", "$" + (s.total.actual - s.total.budget).toLocaleString() + "K", ((s.total.actual - s.total.budget) / Math.abs(s.total.budget) * 100).toFixed(1) + "%"]]); downloadPDF("PnL Statement FY2025", ["Line Item", "Actual", "Budget", "Variance", "Var %"], rows, { subtitle: orgName || "Financial Report" }); toast("P\x26L exported as PDF", "success"); }}
       />
       {/* Financial Summary KPIs */}
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Financial Summary
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Financial Summary</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 20 }}>
         {[
           { label: "Total Revenue", value: fmt(pnlData[0]?.total?.actual || 0), delta: fmtPct(variancePct(pnlData[0]?.total?.actual || 0, pnlData[0]?.total?.budget || 1)), fav: true, color: c.green },
           { label: "Gross Profit", value: fmt((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0)), delta: `${(((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0)) / (pnlData[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.accent },
           { label: "Total OpEx", value: fmt(pnlData[2]?.total?.actual || 0), delta: fmtPct(variancePct(pnlData[2]?.total?.actual || 0, pnlData[2]?.total?.budget || 1)), fav: (pnlData[2]?.total?.actual || 0) <= (pnlData[2]?.total?.budget || 0), color: c.amber },
           { label: "EBITDA", value: fmt((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)), delta: `${(((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)) / (pnlData[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.green },
         ].map(k => (
-          <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "14px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{k.label}</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em", marginBottom: 4 }}>{k.value}</div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: k.fav ? c.green : c.red }}>{k.delta}</div>
+          <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 18px", transition: "all 0.2s", cursor: "default" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 6px 20px ${k.color}10`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.label}</div>
+              <div style={{ width: 20, height: 20, borderRadius: 6, background: `${k.color}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: k.color }} />
+              </div>
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em", marginBottom: 4 }}>{k.value}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: k.fav ? c.green : c.red, padding: "2px 8px", borderRadius: 5, background: k.fav ? `${c.green}10` : `${c.red}10`, display: "inline-block" }}>{k.delta}</div>
           </div>
         ))}
       </div>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden", position: "relative" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Detailed Breakdown</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+        <span style={{ fontSize: 9, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>{pnlData.reduce((a, s) => a + (s.rows?.length || 0), 0)} items</span>
+      </div>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", position: "relative", boxShadow: c.cardGlow }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
@@ -2682,7 +2695,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Consolidated Financials
       </div>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden", position: "relative" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", position: "relative" }}>
         <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `2px solid ${c.borderBright}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 24, height: 24, borderRadius: 7, background: `linear-gradient(135deg, ${c.accent}15, ${c.cyan}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -5818,7 +5831,7 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>How FinanceOS compares</h2>
           <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>Enterprise capability at mid-market pricing. No 6-month implementation.</p>
         </div>
-        <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, overflow: "hidden", position: "relative" }}>
+        <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 14, overflow: "hidden", position: "relative" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid #1e2230" }}>
