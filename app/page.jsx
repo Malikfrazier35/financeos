@@ -5992,7 +5992,6 @@ const LandingPage = ({ onLogin }) => {
               { link: "Privacy Policy", url: "/privacy" },
               { link: "Terms of Service", url: "/terms" },
               { link: "Partner Program", url: "mailto:partners@finance-os.app?subject=FinanceOS%20Partner%20Program%20Interest" },
-              { link: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
             ]},
           ].map(col => (
             <div key={col.title}>
@@ -6034,7 +6033,6 @@ const LandingPage = ({ onLogin }) => {
             {[
               { label: "LinkedIn", url: "https://linkedin.com/company/finance-os" },
               { label: "X", url: "https://x.com/financeos_app" },
-              { label: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
             ].map(s => (
               <span key={s.label} onClick={() => window.open(s.url, "_blank")} style={{ cursor: "pointer", color: "#3d4558", transition: "color 0.15s" }}
                 onMouseEnter={e => e.currentTarget.style.color = "#9ea5b8"}
@@ -7117,7 +7115,6 @@ function FinanceOSApp() {
               {[
                 { label: "LinkedIn", url: "https://linkedin.com/company/finance-os" },
                 { label: "X / Twitter", url: "https://x.com/financeos_app" },
-                { label: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
               ].map(s => (
                 <div key={s.label} onClick={() => window.open(s.url, "_blank")} style={{
                   padding: "8px 12px", borderRadius: 8, fontSize: 10, color: c.textDim, cursor: "pointer",
