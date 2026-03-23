@@ -4296,23 +4296,87 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
       </>)}
 
       {activeTab === "session" && (<>
-        {/* Sign Out */}
+        {/* Active Session — with real device detection */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Activity size={13} color={c.accent} /></div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Active Session</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Activity size={13} color={c.green} /></div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Active Session</div>
+                <div style={{ fontSize: 10, color: c.green, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, boxShadow: `0 0 8px ${c.green}60`, animation: "pulse 2s infinite" }} />
+                  Connected
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: 10, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", textAlign: "right" }}>
+              <div>Session started</div>
+              <div style={{ color: c.textDim, fontWeight: 600 }}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} at {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
+            </div>
           </div>
-          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>{user?.orgName || "My Organization"}</span> · {user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</div>
-          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            {[{ label: "Device", value: "MacBook Pro" }, { label: "Browser", value: "Chrome 122" }, { label: "Location", value: "San Francisco, CA" }, { label: "IP", value: "192.168.1.***" }].map(d => (
-              <div key={d.label} style={{ flex: 1, padding: "8px 10px", borderRadius: 6, background: c.surfaceAlt, fontSize: 10 }}>
-                <div style={{ color: c.textFaint, marginBottom: 2 }}>{d.label}</div>
-                <div style={{ color: c.text, fontWeight: 600 }}>{d.value}</div>
+
+          {/* User identity row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}03)`, border: `1px solid ${c.accent}12`, marginBottom: 14 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "#fff", flexShrink: 0 }}>
+              {(user?.orgName || "M").charAt(0)}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>{user?.orgName || "My Organization"}</div>
+              <div style={{ fontSize: 11, color: c.textDim }}>{user?.email || "—"} · <span style={{ color: c.accent, fontWeight: 600 }}>{user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</span></div>
+            </div>
+            <div style={{ padding: "4px 10px", borderRadius: 6, background: `${c.green}12`, border: `1px solid ${c.green}20`, fontSize: 10, fontWeight: 700, color: c.green }}>Owner</div>
+          </div>
+
+          {/* Device info grid — real data */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+            {(() => {
+              const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+              const isMac = ua.includes("Macintosh"); const isWin = ua.includes("Windows"); const isLinux = ua.includes("Linux"); const isiPhone = ua.includes("iPhone"); const isAndroid = ua.includes("Android"); const isiPad = ua.includes("iPad");
+              const device = isiPhone ? "iPhone" : isiPad ? "iPad" : isAndroid ? "Android" : isMac ? "Mac" : isWin ? "Windows PC" : isLinux ? "Linux" : "Unknown";
+              const isChrome = ua.includes("Chrome") && !ua.includes("Edg"); const isSafari = ua.includes("Safari") && !ua.includes("Chrome"); const isFirefox = ua.includes("Firefox"); const isEdge = ua.includes("Edg");
+              const browser = isEdge ? "Edge" : isChrome ? "Chrome" : isSafari ? "Safari" : isFirefox ? "Firefox" : "Browser";
+              const browserVer = isEdge ? (ua.match(/Edg\/([\d]+)/)?.[1] || "") : isChrome ? (ua.match(/Chrome\/([\d]+)/)?.[1] || "") : isSafari ? (ua.match(/Version\/([\d.]+)/)?.[1]?.split(".")[0] || "") : isFirefox ? (ua.match(/Firefox\/([\d]+)/)?.[1] || "") : "";
+              const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+              const locale = typeof navigator !== "undefined" ? (navigator.language || "en-US") : "en-US";
+              const screenRes = typeof window !== "undefined" ? `${window.screen?.width || "?"}×${window.screen?.height || "?"}` : "—";
+              return [
+                { label: "Device", value: device, icon: isiPhone || isiPad || isAndroid ? "📱" : "💻", color: c.accent },
+                { label: "Browser", value: `${browser} ${browserVer}`, icon: isSafari ? "🧭" : isFirefox ? "🦊" : "🌐", color: c.purple },
+                { label: "Timezone", value: tz.split("/").pop()?.replace(/_/g, " ") || tz, icon: "🕐", color: c.cyan },
+                { label: "Screen", value: screenRes, icon: "🖥", color: c.green },
+              ];
+            })().map(d => (
+              <div key={d.label} style={{ padding: "12px 12px", borderRadius: 10, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${d.color}30`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
+                  <span style={{ fontSize: 11 }}>{d.icon}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em" }}>{d.label}</span>
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: c.text }}>{d.value}</div>
               </div>
             ))}
           </div>
-          <button onClick={onLogout} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.amber}40`, background: c.amberDim, color: c.amber, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
-            <LogOut size={13} /> Sign Out of This Device
+
+          {/* Session stats row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+            {[
+              { label: "Locale", value: typeof navigator !== "undefined" ? navigator.language : "en-US", color: c.accent },
+              { label: "Color Scheme", value: mode === "dark" ? "Dark" : "Light", color: c.purple },
+              { label: "Online", value: typeof navigator !== "undefined" && navigator.onLine ? "Connected" : "Offline", color: typeof navigator !== "undefined" && navigator.onLine ? c.green : c.red },
+            ].map(s => (
+              <div key={s.label} style={{ padding: "10px 12px", borderRadius: 8, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 11, color: c.textDim }}>{s.label}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Sign out button */}
+          <button onClick={onLogout} style={{ fontSize: 12, padding: "11px 22px", borderRadius: 10, border: `1px solid ${c.amber}30`, background: `${c.amber}06`, color: c.amber, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", gap: 8, transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.background = `${c.amber}12`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = `${c.amber}06`; e.currentTarget.style.transform = "none"; }}>
+            <LogOut size={14} /> Sign Out of This Device
           </button>
         </div>
         {/* Data Privacy & Rights — GDPR/CCPA */}
