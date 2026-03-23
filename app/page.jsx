@@ -6592,6 +6592,13 @@ function FinanceOSApp() {
 
   return (
     <div style={{ display: "flex", height: "100vh", width: "100%", background: c.bg, color: c.text, fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14, overflow: "hidden", transition: "background 0.4s ease, color 0.3s ease" }}>
+      {/* Subtle dot grid background — works in both themes */}
+      <div style={{ position: "fixed", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${mode === "dark" ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.035)"} 0.5px, transparent 0.5px)`, backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
+      {/* Subtle vignette gradient — adds depth to edges */}
+      <div style={{ position: "fixed", inset: 0, background: mode === "dark"
+        ? "radial-gradient(ellipse at 50% 0%, rgba(91,156,245,0.03) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(7,8,10,0.6) 0%, transparent 50%)"
+        : "radial-gradient(ellipse at 50% 0%, rgba(29,110,193,0.04) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(243,244,248,0.5) 0%, transparent 50%)",
+        pointerEvents: "none", zIndex: 0 }} />
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
