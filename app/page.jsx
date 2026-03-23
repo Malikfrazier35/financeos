@@ -4016,30 +4016,36 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
     { id: "session", label: "Session", icon: Activity },
   ];
   return (
-    <div style={{ padding: 32, maxWidth: 800 }}>
+    <div style={{ padding: 32, maxWidth: 860 }}>
       {/* View Header */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
-        <div style={{ fontSize: 12, color: c.textDim, marginTop: 4 }}>Manage your account, billing, and preferences</div>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 24 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+          <Settings size={17} color={c.accent} />
+        </div>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
+          <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Manage your workspace, billing, security, and preferences</div>
+        </div>
       </div>
-      {/* Sidebar-style tab nav — vertical on desktop, horizontal on compact */}
+      {/* Tab nav + Content */}
       <div style={{ display: "flex", gap: 24 }}>
         {/* Tab nav */}
-        <div style={{ width: 160, flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+        <div style={{ width: 170, flexShrink: 0, display: "flex", flexDirection: "column", gap: 2, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 8 }}>
           {tabs.map(t => {
             const active = activeTab === t.id;
             return (
             <div key={t.id} onClick={() => setActiveTab(t.id)} style={{
-              display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 8,
-              fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer",
-              color: active ? c.text : c.textDim,
-              background: active ? c.surfaceAlt : "transparent",
-              transition: "all 0.12s",
+              display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8,
+              fontSize: 12, fontWeight: active ? 700 : 500, cursor: "pointer",
+              color: active ? c.accent : c.textDim,
+              background: active ? `${c.accent}08` : "transparent",
+              borderLeft: active ? `2px solid ${c.accent}` : "2px solid transparent",
+              transition: "all 0.15s",
             }}
-            onMouseEnter={e => { if (!active) { e.currentTarget.style.background = `${c.surfaceAlt}80`; e.currentTarget.style.color = c.textSec; } }}
+            onMouseEnter={e => { if (!active) { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.textSec; } }}
             onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; } }}
             >
-              <t.icon size={14} strokeWidth={active ? 2 : 1.5} />
+              <t.icon size={14} strokeWidth={active ? 2.5 : 1.5} />
               {t.label}
             </div>
             );
@@ -4049,17 +4055,56 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         {/* Content */}
         <div style={{ flex: 1, minWidth: 0 }}>
 
-      {activeTab === "org" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
-          {[{ label: "Company", value: user?.orgName || "My Organization" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
-            <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
+      {activeTab === "org" && (<>
+        {/* Company Info Card */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><LayoutDashboard size={13} color={c.accent} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Workspace</div>
+          </div>
+          {[
+            { label: "Company", value: user?.orgName || "My Organization", icon: "🏢" },
+            { label: "Plan", value: user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo", color: user?.plan === "enterprise" ? c.purple : user?.plan === "business" ? c.green : c.accent },
+            { label: "Seats", value: "12 of 25 used" },
+            { label: "Fiscal Year End", value: "December 31" },
+          ].map(f => (
+            <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
               <span style={{ color: c.textDim }}>{f.label}</span>
-              <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
+              <span style={{ color: f.color || c.text, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
+                {f.color && <span style={{ width: 7, height: 7, borderRadius: "50%", background: f.color, boxShadow: `0 0 6px ${f.color}40` }} />}
+                {f.value}
+              </span>
             </div>
           ))}
-          {/* Display Preferences */}
-          <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginTop: 20, marginBottom: 10 }}>Display</div>
+        </div>
+
+        {/* Infrastructure Card */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.green} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Infrastructure</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 4 }}>
+            {[
+              { label: "Data Region", value: "US-East", sub: "Virginia", color: c.green },
+              { label: "Currency", value: "USD", sub: "US Dollar", color: c.accent },
+              { label: "SSO", value: "Off", sub: "Not configured", color: c.textFaint },
+            ].map(s => (
+              <div key={s.label} style={{ padding: "14px 16px", borderRadius: 10, background: c.surfaceAlt, border: `1px solid ${c.borderSub}` }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{s.label}</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</div>
+                <div style={{ fontSize: 10, color: s.color, fontWeight: 600, marginTop: 2 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Display Preferences Card */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.purple}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Eye size={13} color={c.purple} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Display</div>
+          </div>
           {[
             { label: "Right panel", desc: "Resources, social, and suite products", key: "suite", on: suitePanelOpen, action: () => { if (suitePanelOpen) { toast("Panel is currently visible", "info"); } else { onShowSuitePanel(); toast("Panel restored", "success"); } } },
             { label: "Dark mode", desc: `Currently ${mode === "dark" ? "dark" : "light"} theme`, key: "theme", on: mode === "dark" },
@@ -4087,9 +4132,12 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
 
       {/* Regional tab — expanded locales */}
       {activeTab === "regional" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>Regional & Currency</div>
-          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 16 }}>Controls how numbers, dates, and currencies display across all reports and exports.</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.cyan}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Globe size={13} color={c.cyan} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Regional & Currency</div>
+          </div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 16, paddingLeft: 34 }}>Controls how numbers, dates, and currencies display across all reports and exports.</div>
           {[
             { label: "Region", key: "fos_region", value: region, setter: setRegion, options: [
               { v: "US", l: "United States" }, { v: "GB", l: "United Kingdom" }, { v: "CA", l: "Canada" }, { v: "AU", l: "Australia" },
@@ -4156,30 +4204,32 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
       )}
 
       {activeTab === "billing" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 16 }}>Billing & Subscription</div>
-          <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-            <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`, border: `1px solid ${c.accent}15` }}>
-              <div style={{ fontSize: 9, color: c.accent, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Current Plan</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>{user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</div>
-              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3, fontFamily: "'JetBrains Mono', monospace" }}>{user?.plan === "enterprise" ? "Custom pricing" : user?.plan === "business" ? "$3,999/mo" : user?.plan === "growth" ? "$1,499/mo" : user?.plan === "starter" ? "$499/mo" : "Free"}</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><DollarSign size={13} color={c.accent} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Billing & Subscription</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+            <div style={{ padding: "18px 18px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`, border: `1px solid ${c.accent}15` }}>
+              <div style={{ fontSize: 9, color: c.accent, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Current Plan</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: c.text }}>{user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>{user?.plan === "enterprise" ? "Custom pricing" : user?.plan === "business" ? "$3,999/mo" : user?.plan === "growth" ? "$1,499/mo" : user?.plan === "starter" ? "$499/mo" : "Free"}</div>
             </div>
-            <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.green}08, ${c.cyan}04)`, border: `1px solid ${c.green}15` }}>
-              <div style={{ fontSize: 9, color: c.green, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Status</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.green }}>Active</div>
-              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>{user?.orgName || "My Organization"}</div>
+            <div style={{ padding: "18px 18px", borderRadius: 12, background: `linear-gradient(135deg, ${c.green}08, ${c.cyan}04)`, border: `1px solid ${c.green}15` }}>
+              <div style={{ fontSize: 9, color: c.green, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Status</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: c.green }}>Active</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 4 }}>{user?.orgName || "My Organization"}</div>
             </div>
           </div>
-          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>Manage billing through Stripe Customer Portal below</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {[
-              { label: "Manage Subscription", primary: true },
-              { label: "View Invoices", primary: false },
-              { label: "Update Payment Method", primary: false },
+              { label: "Manage Subscription", primary: true, desc: "Upgrade, downgrade, or cancel" },
+              { label: "View Invoices", primary: false, desc: "Download past receipts" },
+              { label: "Update Payment", primary: false, desc: "Change card on file" },
             ].map(b => (
-              <button key={b.label} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${b.primary ? c.accent : c.border}`, background: b.primary ? `${c.accent}08` : "transparent", color: b.primary ? c.accent : c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = b.primary ? c.accent : c.border; e.currentTarget.style.color = b.primary ? c.accent : c.textSec; }}
+              <button key={b.label} style={{ flex: 1, fontSize: 11, padding: "14px 16px", borderRadius: 10, border: `1px solid ${b.primary ? c.accent : c.border}`, background: b.primary ? `${c.accent}08` : c.surfaceAlt, color: b.primary ? c.accent : c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s", textAlign: "left" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 4px 12px ${c.accent}10`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = b.primary ? c.accent : c.border; e.currentTarget.style.color = b.primary ? c.accent : c.textSec; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
                 onClick={async () => {
                   try {
                     const { data: { session } } = await supabase.auth.getSession();
@@ -4195,15 +4245,18 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
                     else { toast(data.error || "Could not open billing portal", "error"); }
                   } catch { toast("Billing portal unavailable — contact support@finance-os.app", "error"); }
                 }}
-              >{b.label}</button>
+              ><div style={{ fontWeight: 700, marginBottom: 2 }}>{b.label}</div><div style={{ fontSize: 10, opacity: 0.7, fontWeight: 400 }}>{b.desc}</div></button>
             ))}
           </div>
         </div>
       )}
 
       {activeTab === "security" && (<>
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 16 }}>Security & Access</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.green} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Security & Access</div>
+          </div>
           {[{ label: "Two-Factor Authentication", value: "Enabled (TOTP)", status: "green" }, { label: "Last Password Change", value: "42 days ago", status: "amber" }, { label: "Active Sessions", value: "2 devices", status: "accent" }, { label: "API Keys", value: "1 active (created Mar 2)", status: "accent" }, { label: "Audit Log", value: "312 events this month", status: "accent" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
               <span style={{ color: c.textSec, fontWeight: 500 }}>{f.label}</span>
@@ -4215,8 +4268,11 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           ))}
         </div>
         {/* Password Change */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px", marginTop: 16 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 12 }}>Change Password</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginTop: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.amber}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.amber} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Change Password</div>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 360 }}>
             <input type="password" placeholder="New password (8+ characters)" style={{ fontSize: 12, padding: "10px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none" }}
               id="pw-new" onFocus={e => e.target.style.borderColor = c.accent} onBlur={e => e.target.style.borderColor = c.border} />
@@ -4241,8 +4297,11 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
 
       {activeTab === "session" && (<>
         {/* Sign Out */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px", marginBottom: 16 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 6 }}>Active Session</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Activity size={13} color={c.accent} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Active Session</div>
+          </div>
           <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>{user?.orgName || "My Organization"}</span> · {user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</div>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
             {[{ label: "Device", value: "MacBook Pro" }, { label: "Browser", value: "Chrome 122" }, { label: "Location", value: "San Francisco, CA" }, { label: "IP", value: "192.168.1.***" }].map(d => (
