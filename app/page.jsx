@@ -5015,13 +5015,13 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
   ];
 
   return (
-    <div onClick={canSkip ? onSkip : undefined} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+    <div onClick={onSkip} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
       <div onClick={e => e.stopPropagation()} style={{ width: "95vw", maxWidth: 860, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s ease" }}>
         {/* Header */}
         <div style={{ padding: "32px 40px 0", textAlign: "center", position: "relative" }}>
           {/* Accent edge */}
-          {/* Close — only if canSkip */}
-          {canSkip ? <button onClick={onSkip} aria-label="Go back" style={{
+          {/* Close button */}
+          {<button onClick={onSkip} aria-label="Go back" style={{
             position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10,
             border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s",
@@ -5029,16 +5029,15 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = t.bdrBright; e.currentTarget.style.color = t.tx; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = t.bdr; e.currentTarget.style.color = t.txD; }}
-          >←</button> : <div style={{ position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10, background: `${t.ac}08`, border: `1px solid ${t.ac}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: t.ac }}><Shield size={14} /></div>}
+          >←</button>}
           <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 12 }}>
             <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
-            <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.ac}10`, border: `1px solid ${t.ac}18`, fontSize: 10, fontWeight: 700, color: t.ac, letterSpacing: "0.04em" }}>LAUNCHING SOON</div>
           </div>
           <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, color: t.tx }}>
             {userName && userName !== "Guest" ? `${userName.split(" ")[0]}, choose your plan` : "Choose your plan"}
           </div>
           <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>
-            {!canSkip ? "Select your plan to join the waitlist. You'll be first in line when we launch." : "Reserve your plan now. 30-day money-back guarantee when subscriptions go live."}
+            {"Select a plan to get started. 30-day money-back guarantee."}
           </div>
           <div style={{ display: "inline-flex", background: t.bg2, borderRadius: 10, padding: 3, border: `1px solid ${t.bdr}` }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? t.bdr : "transparent", color: billing === "monthly" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
@@ -5115,7 +5114,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                 }}
                 onMouseEnter={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdrBright; }}
                 onMouseLeave={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdr; }}
-                >{checkoutLoading === p.name ? "Saving..." : p.enterprise ? "Contact Sales" : `Subscribe — ${p.name}`}</button>
+                >{checkoutLoading === p.name ? "Redirecting..." : p.enterprise ? "Contact Sales" : `Subscribe — ${p.name}`}</button>
                 {/* Platform features */}
                 <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${t.bdrSub}` }}>
                   <div style={{ fontSize: 8, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Platform</div>
@@ -5165,27 +5164,14 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
           </div>
         </div>
 
-        {/* Waitlist confirmation — store launching soon */}
+        {/* Checkout redirect confirmation */}
         {checkoutPending && !verifyingPayment && !verifyFailed && (
           <div style={{ padding: "24px 40px", textAlign: "center" }}>
-            <div style={{ background: `linear-gradient(135deg, ${t.gn}08, ${t.ac}05)`, border: `1px solid ${t.gn}20`, borderRadius: 12, padding: "32px 28px" }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
-                <span style={{ fontSize: 22, color: "#fff" }}>✓</span>
-              </div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: t.tx, marginBottom: 6 }}>You're on the {checkoutPending} list</div>
-              <div style={{ fontSize: 13, color: t.txD, lineHeight: 1.6, maxWidth: 420, margin: "0 auto 20px" }}>
-                Subscriptions are launching soon. We've saved your {checkoutPending} plan preference and will notify you the moment checkout goes live.
-              </div>
-              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                <button onClick={() => { setCheckoutPending(null); onSelect(checkoutPending); }} style={{
-                  fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
-                  background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, color: "#fff", boxShadow: `0 4px 16px ${t.gn}25`,
-                }}>Continue to Dashboard →</button>
-                <button onClick={() => { setCheckoutPending(null); }} style={{
-                  fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
-                }}>Choose Different Plan</button>
-              </div>
-              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Full dashboard access with sample data now. Live billing activates at launch.</div>
+            <div style={{ background: `linear-gradient(135deg, ${t.ac}06, ${t.pu}04)`, border: `1px solid ${t.ac}15`, borderRadius: 12, padding: "48px 28px" }}>
+              <div style={{ width: 40, height: 40, border: `3px solid ${t.ac}30`, borderTopColor: t.ac, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+              <div style={{ fontSize: 16, fontWeight: 800, color: t.tx, marginBottom: 4 }}>Redirecting to checkout...</div>
+              <div style={{ fontSize: 12, color: t.txD }}>Setting up your {checkoutPending} plan with Stripe</div>
+              <button onClick={() => setCheckoutPending(null)} style={{ marginTop: 16, fontSize: 12, padding: "8px 20px", borderRadius: 8, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit" }}>Cancel</button>
             </div>
           </div>
         )}
@@ -5249,15 +5235,9 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
         {!checkoutPending && !verifyingPayment && !verifyFailed && (
         <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
           <div style={{ fontSize: 11, color: t.txF, marginBottom: 10 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · 30-day MBG</div>
-          {canSkip ? (
-            <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>
+          <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>
               {isDemo ? "Continue with demo data →" : "Skip for now →"}
             </button>
-          ) : (
-            <div style={{ fontSize: 10, color: t.txF, padding: "8px 16px", borderRadius: 8, background: `${t.ac}06`, border: `1px solid ${t.ac}10`, display: "inline-block", marginBottom: 8 }}>
-              Select a plan to join the waitlist
-            </div>
-          )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
             {["12-view dashboard", "AI-powered insights", "30-day money-back guarantee"].map(s => (
               <div key={s} style={{ fontSize: 10, color: t.txF, fontWeight: 600 }}>{s}</div>
