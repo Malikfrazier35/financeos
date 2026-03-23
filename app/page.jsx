@@ -4190,7 +4190,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
                       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
                     });
                     const data = await res.json();
-                    if (data.url) { window.open(data.url, "_blank"); }
+                    if (data.url) { window.location.href = data.url; }
                     else if (res.status === 404) { toast("No active subscription yet — choose a plan to get started", "info"); onNav("settings"); }
                     else { toast(data.error || "Could not open billing portal", "error"); }
                   } catch { toast("Billing portal unavailable — contact support@finance-os.app", "error"); }
