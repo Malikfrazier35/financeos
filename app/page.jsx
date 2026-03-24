@@ -6392,44 +6392,200 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Trusted By — enterprise logo carousel */}
-      <div style={{ textAlign: "center", padding: "48px 0 20px", overflow: "hidden", position: "relative" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 20 }}>Trusted by finance teams at</div>
-        {/* Scrolling logos */}
-        <div style={{ position: "relative", overflow: "hidden", maskImage: "linear-gradient(90deg, transparent, black 15%, black 85%, transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 15%, black 85%, transparent)" }}>
-          <div style={{ display: "flex", gap: 56, animation: "logoScroll 30s linear infinite", width: "max-content" }}>
-            {[...Array(2)].map((_, setIdx) => (
-              <div key={setIdx} style={{ display: "flex", gap: 56, alignItems: "center", flexShrink: 0 }}>
-                {[
-                  { name: "Stripe", w: 62 },
-                  { name: "Shopify", w: 72 },
-                  { name: "Salesforce", w: 80 },
-                  { name: "HubSpot", w: 68 },
-                  { name: "Snowflake", w: 78 },
-                  { name: "Datadog", w: 70 },
-                  { name: "Figma", w: 56 },
-                  { name: "Notion", w: 62 },
-                  { name: "Vercel", w: 60 },
-                  { name: "Supabase", w: 74 },
-                ].map(logo => (
-                  <span key={`${setIdx}-${logo.name}`} style={{ fontSize: 16, fontWeight: 800, color: "#2a2f3d", letterSpacing: "-0.02em", whiteSpace: "nowrap", fontFamily: "'DM Sans', system-ui, sans-serif", userSelect: "none" }}>{logo.name}</span>
-                ))}
-              </div>
-            ))}
-          </div>
+      {/* Trusted By — Pigment-style logo grid with labels */}
+      <div style={{ textAlign: "center", padding: "48px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 24 }}>Trusted by</div>
+        {/* Row 1 */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 20 : 48, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
+          {[
+            { name: "Stripe", tag: null },
+            { name: "Shopify", tag: null },
+            { name: "Salesforce", tag: "Integration" },
+            { name: "HubSpot", tag: "Integration" },
+            { name: "Snowflake", tag: null },
+            { name: "Datadog", tag: null },
+          ].map(l => (
+            <div key={l.name} style={{ textAlign: "center" }}>
+              <span style={{ fontSize: 17, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              {l.tag && <div style={{ fontSize: 8, fontWeight: 600, color: "#60a5fa", marginTop: 2 }}>{l.tag}</div>}
+            </div>
+          ))}
+        </div>
+        {/* Row 2 */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 20 : 48, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
+          {[
+            { name: "Anthropic", tag: "AI Partner" },
+            { name: "Figma", tag: null },
+            { name: "Notion", tag: null },
+            { name: "Vercel", tag: "Infrastructure" },
+            { name: "Supabase", tag: "Infrastructure" },
+            { name: "QuickBooks", tag: "Integration" },
+          ].map(l => (
+            <div key={l.name} style={{ textAlign: "center" }}>
+              <span style={{ fontSize: 17, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              {l.tag && <div style={{ fontSize: 8, fontWeight: 600, color: l.tag === "AI Partner" ? "#a78bfa" : "#60a5fa", marginTop: 2 }}>{l.tag}</div>}
+            </div>
+          ))}
         </div>
         {/* Trust badges */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           {[
             { label: "SOC 2 Type II", icon: "🛡️" },
             { label: "AES-256 Encryption", icon: "🔒" },
-            { label: "99.9% Uptime SLA", icon: "⚡" },
+            { label: "99.9% Uptime", icon: "⚡" },
             { label: "GDPR Ready", icon: "🇪🇺" },
           ].map(b => (
-            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: "#3d4558", padding: "5px 12px", borderRadius: 8, background: "rgba(16,19,26,0.6)", border: "1px solid #1a1f2e" }}>
-              <span style={{ fontSize: 11 }}>{b.icon}</span> {b.label}
+            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, fontWeight: 600, color: "#3d4558", padding: "5px 10px", borderRadius: 6, background: "rgba(16,19,26,0.5)", border: "1px solid #1a1f2e" }}>
+              <span style={{ fontSize: 10 }}>{b.icon}</span> {b.label}
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* AI Agent Showcase — Pigment-style split panels */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 16 }}>
+            {["🧠", "📊", "🔍"].map((icon, i) => (
+              <div key={i} style={{ width: 40, height: 40, borderRadius: 12, background: ["#60a5fa12", "#3dd9a012", "#a78bfa12"][i], border: `1px solid ${["#60a5fa", "#3dd9a0", "#a78bfa"][i]}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{icon}</div>
+            ))}
+          </div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10 }}>AI that plans with you</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 520, margin: "0 auto" }}>FinanceOS AI agents operate inside your planning environment, using your live data and business logic to support decisions in real time.</p>
+        </div>
+
+        {/* Agent 1: Copilot */}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 24, marginBottom: 32, alignItems: "center" }}>
+          <div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: "#a78bfa", padding: "5px 14px", borderRadius: 20, background: "#a78bfa08", border: "1px solid #a78bfa12", marginBottom: 16 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#a78bfa" }} />
+              AI Copilot
+            </div>
+            <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, lineHeight: 1.15, color: "#f0f2f5" }}>Real-time insights to accelerate decisions</h3>
+            <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 16 }}>Proactively scans your metrics, uncovers key trends, flags anomalies, and explains the "why" behind every variance — with visible reasoning.</p>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {["Variance Detection", "Forecasting", "Scenario Planning"].map(t => (
+                <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "5px 12px", borderRadius: 8, background: "#a78bfa08", border: "1px solid #a78bfa12", color: "#a78bfa" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+          {/* Interactive mockup */}
+          <div style={{ background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 16, padding: "20px 22px", boxShadow: "0 16px 48px rgba(0,0,0,0.3)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "8px 12px", background: "#161a24", borderRadius: 10 }}>
+              <span style={{ fontSize: 13 }}>🧠</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#f0f2f5" }}>AI Copilot</span>
+              <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#a78bfa12", color: "#a78bfa", marginLeft: "auto" }}>Claude</span>
+            </div>
+            <div style={{ padding: "10px 14px", borderRadius: 10, background: "#60a5fa08", border: "1px solid #60a5fa10", fontSize: 12, color: "#636d84", marginBottom: 8 }}>
+              "Can you analyze our current revenue growth and highlight the top contributors?"
+            </div>
+            <div style={{ padding: "10px 14px", borderRadius: 10, background: "#161a24", border: "1px solid #1a1f2e", fontSize: 12, color: "#9ea5b8", lineHeight: 1.6, marginBottom: 8 }}>
+              <div style={{ fontSize: 8, fontWeight: 700, color: "#3dd9a0", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Thought & work process →</div>
+              Revenue grew <span style={{ color: "#60a5fa", fontWeight: 700 }}>+44.7% YoY</span> to $51.2M. Enterprise expansion drove <span style={{ color: "#3dd9a0", fontWeight: 700 }}>68%</span> of the beat. AI module attach rate hit <span style={{ color: "#f5b731", fontWeight: 700 }}>42%</span>, up from 28%.
+            </div>
+            <div style={{ display: "flex", gap: 6 }}>
+              <span style={{ fontSize: 9, padding: "4px 10px", borderRadius: 6, background: "#60a5fa08", border: "1px solid #60a5fa10", color: "#60a5fa" }}>Drill into segments</span>
+              <span style={{ fontSize: 9, padding: "4px 10px", borderRadius: 6, background: "#a78bfa08", border: "1px solid #a78bfa10", color: "#a78bfa" }}>Build forecast</span>
+            </div>
+            <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, background: "#0b0c10", border: "1px solid #1a1f2e", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: "#3d4558" }}>Ask or build anything...</span>
+              <span style={{ marginLeft: "auto", fontSize: 10, color: "#3d4558" }}>⌘K</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Agent 2: Scenario Modeler */}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: 24, marginBottom: 32, alignItems: "center" }}>
+          {/* Interactive mockup */}
+          <div style={{ background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 16, padding: "20px 22px", boxShadow: "0 16px 48px rgba(0,0,0,0.3)", order: isMobile ? 1 : 0 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: "#f0f2f5", marginBottom: 14 }}>Scenario Comparison</div>
+            {[
+              { name: "Base Case", rev: "$62.8M", ebitda: "7.4%", color: "#60a5fa", width: 75 },
+              { name: "AI Breakout", rev: "$68.4M", ebitda: "11.6%", color: "#3dd9a0", width: 82 },
+              { name: "Aggressive Hire", rev: "$62.8M", ebitda: "2.8%", color: "#f5b731", width: 75 },
+              { name: "Mid-Market", rev: "$66.1M", ebitda: "9.5%", color: "#a78bfa", width: 79 },
+            ].map(s => (
+              <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <span style={{ width: 90, fontSize: 10, color: "#636d84", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</span>
+                <div style={{ flex: 1, height: 18, background: "#161a24", borderRadius: 6, overflow: "hidden" }}>
+                  <div style={{ width: `${s.width}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}80, ${s.color})`, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8 }}>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{s.rev}</span>
+                  </div>
+                </div>
+                <span style={{ fontSize: 9, fontWeight: 700, color: parseFloat(s.ebitda) > 5 ? "#3dd9a0" : "#f5b731", fontFamily: "'JetBrains Mono', monospace", width: 36, textAlign: "right" }}>{s.ebitda}</span>
+              </div>
+            ))}
+            <div style={{ marginTop: 12, display: "flex", gap: 10, fontSize: 9, color: "#3d4558", paddingTop: 8, borderTop: "1px solid #1a1f2e" }}>
+              <span>Revenue →</span><span style={{ marginLeft: "auto" }}>EBITDA margin</span>
+            </div>
+          </div>
+          <div style={{ order: isMobile ? 0 : 1 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: "#3dd9a0", padding: "5px 14px", borderRadius: 20, background: "#3dd9a008", border: "1px solid #3dd9a012", marginBottom: 16 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#3dd9a0" }} />
+              Scenario Modeler
+            </div>
+            <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, lineHeight: 1.15, color: "#f0f2f5" }}>Explore every possibility</h3>
+            <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 16 }}>Simulate scenarios in real time and receive clear, actionable recommendations based on your data, models, and business context.</p>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {["What-If Analysis", "Sensitivity", "Monte Carlo"].map(t => (
+                <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "5px 12px", borderRadius: 8, background: "#3dd9a008", border: "1px solid #3dd9a012", color: "#3dd9a0" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Use Case Tabs — Pigment-style */}
+      <div style={{ padding: isMobile ? "20px 20px 40px" : "20px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 16 }}>Planning across every function, in one place</h2>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 24 }}>
+          {[
+            { label: "Finance", icon: "📊", active: true },
+            { label: "Sales", icon: "💰", active: false },
+            { label: "HR", icon: "👥", active: false },
+            { label: "Supply", icon: "🏭", active: false },
+          ].map(tab => (
+            <button key={tab.label} onClick={() => {}} style={{
+              fontSize: 12, fontWeight: 700, padding: "8px 20px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit",
+              background: tab.active ? "#60a5fa15" : "transparent", color: tab.active ? "#60a5fa" : "#636d84",
+              display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s",
+            }}>{tab.icon} {tab.label}</button>
+          ))}
+        </div>
+        {/* Active tab content */}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.6fr", gap: 24, background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 20, overflow: "hidden" }}>
+          <div style={{ padding: "36px 32px" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#3d4558", marginBottom: 8 }}>⚡ Finance</div>
+            <h3 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12, color: "#f0f2f5" }}>FP&A & consolidation</h3>
+            <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 20 }}>Build, approve, and adapt integrated financial plans. Connect your ERP, CRM, and billing data into a unified model with AI-powered insights.</p>
+            <Link href="/use-cases/finance" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#60a5fa", textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: "#60a5fa08", border: "1px solid #60a5fa15", transition: "all 0.2s" }}>Learn more →</Link>
+            <div style={{ marginTop: 24, padding: "16px 18px", background: "#0b0c10", borderRadius: 12, border: "1px solid #1a1f2e" }}>
+              <p style={{ fontSize: 13, color: "#9ea5b8", lineHeight: 1.7, fontStyle: "italic", marginBottom: 10 }}>"We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed."</p>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#f0f2f5" }}>VP Finance</div>
+              <div style={{ fontSize: 10, color: "#3d4558" }}>Series B SaaS · $18M ARR</div>
+            </div>
+          </div>
+          {/* Dashboard mockup */}
+          <div style={{ padding: "20px 20px 0 0", display: "flex", alignItems: "flex-start", justifyContent: "flex-end" }}>
+            <div style={{ background: "#0b0c10", borderRadius: "14px 0 0 0", border: "1px solid #1a1f2e", borderRight: "none", borderBottom: "none", padding: "16px 20px", width: "100%" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 14 }}>
+                {[{ l: "$51.2M", s: "Revenue YTD", c: "#60a5fa" }, { l: "84.7%", s: "Gross Margin", c: "#3dd9a0" }, { l: "$3.8M", s: "EBITDA", c: "#a78bfa" }].map(k => (
+                  <div key={k.s} style={{ padding: "10px 12px", borderRadius: 10, background: "#10131a", border: "1px solid #1a1f2e" }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontFamily: "'JetBrains Mono', monospace" }}>{k.l}</div>
+                    <div style={{ fontSize: 8, color: "#3d4558", marginTop: 2 }}>{k.s}</div>
+                  </div>
+                ))}
+              </div>
+              <svg viewBox="0 0 320 80" style={{ width: "100%", height: 80 }}>
+                <defs><linearGradient id="lpRev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity={0.2} /><stop offset="100%" stopColor="#60a5fa" stopOpacity={0} /></linearGradient></defs>
+                {[16,32,48,64].map(y => <line key={y} x1="0" y1={y} x2="320" y2={y} stroke="#1a1f2e" strokeWidth="0.5" strokeDasharray="1 6" strokeLinecap="round" />)}
+                <path d="M5,70 L40,62 L80,55 L120,46 L160,38 L200,32 L240,24 L280,18 L310,14" fill="url(#lpRev)" /><path d="M5,70 L40,62 L80,55 L120,46 L160,38 L200,32 L240,24 L280,18 L310,14" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="280" cy="18" r="3" fill="#60a5fa" stroke="#0b0c10" strokeWidth="2"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" /></circle>
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
