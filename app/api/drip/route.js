@@ -349,11 +349,22 @@ function getSupabase() {
 
 export async function POST(request) {
   try {
+    // ── Payload size guard ──
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 10_000) {
+      return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    }
+
     const body = await request.json();
     const { action, email, lead_data, step } = body;
 
     if (!action) {
       return NextResponse.json({ error: "Missing action (start | send_step)" }, { status: 400 });
+    }
+
+    // ── Email validation ──
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
 
     const supabase = getSupabase();

@@ -71,11 +71,42 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // OG image — cache for 1 hour, revalidate
+        source: '/opengraph-image',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=7200',
+          },
+        ],
+      },
+      {
+        // SVG icon — cache for 1 year
+        source: '/icon.svg',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
   },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  images: {
+    // Enable image optimization with aggressive caching
+    minimumCacheTTL: 2592000, // 30 days
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'companieslogo.com' },
+      { protocol: 'https', hostname: 'asset.brandfetch.io' },
+      { protocol: 'https', hostname: 'cdn.simpleicons.org' },
+    ],
+  },
   experimental: {
     optimizePackageImports: ['recharts', 'lucide-react'],
   },

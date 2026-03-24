@@ -231,11 +231,22 @@ async function logNotification(supabase, { type, email, data, status, error }) {
 
 export async function POST(request) {
   try {
+    // ── Input validation & size guard (prevent payload abuse) ──
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 10_000) {
+      return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    }
+
     const body = await request.json();
     const { type, ...data } = body;
 
     if (!type) {
       return NextResponse.json({ error: "Missing notification type" }, { status: 400 });
+    }
+
+    // ── Email format validation ──
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
 
     // Build email based on type
