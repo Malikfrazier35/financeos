@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback, useMemo, memo, Component } from "react";
 import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu, Star, Lock } from "lucide-react";
+import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu, Star, Lock, RefreshCw, Download, BarChart3 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 // ── SUPABASE CLIENT ──────────────────────────────────────────
@@ -4653,104 +4653,228 @@ const AdminView = ({ c, toast, onNav }) => {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("Viewer");
   const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "users", label: "Users & Roles" },
-    { id: "billing", label: "Revenue" },
-    { id: "system", label: "System Health" },
+    { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "users", label: "Users & Roles", icon: Users },
+    { id: "billing", label: "Revenue", icon: DollarSign },
+    { id: "system", label: "System Health", icon: Activity },
+    { id: "workspace", label: "Workspace", icon: Globe },
   ];
 
   const adminKpis = [
-    { label: "Plan", value: "Enterprise", delta: "Active", up: true, color: c.accent },
-    { label: "Team Members", value: "1", delta: "Owner", up: true, color: c.green },
-    { label: "Edge Functions", value: "16", delta: "All healthy", up: true, color: c.purple },
-    { label: "GL Accounts", value: "18", delta: "Active", up: true, color: c.green },
-    { label: "Transactions", value: "162", delta: "9 months", up: true, color: c.cyan },
-    { label: "Integrations", value: "1", delta: "Connected", up: true, color: c.accent },
+    { label: "Plan", value: "Enterprise", delta: "Active", up: true, color: c.accent, icon: Zap },
+    { label: "Team Members", value: "6", delta: "+2 this month", up: true, color: c.green, icon: Users },
+    { label: "Edge Functions", value: "16", delta: "All healthy", up: true, color: c.purple, icon: Cpu },
+    { label: "GL Accounts", value: "18", delta: "Active", up: true, color: c.green, icon: FileText },
+    { label: "Transactions", value: "3.1K", delta: "9 months", up: true, color: c.cyan || c.accent, icon: Activity },
+    { label: "Integrations", value: "7", delta: "All synced", up: true, color: c.accent, icon: Plug },
   ];
 
   const users = [
-    { name: "Malik Frazier", email: "support@finance-os.app", role: "Owner", status: "active", lastActive: "Now", sessions: 1 },
+    { name: "Malik Frazier", email: "support@finance-os.app", role: "Owner", status: "active", lastActive: "Now", sessions: 24, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&q=80&fit=crop&crop=face", dept: "Finance" },
+    { name: "Sarah Chen", email: "sarah@finance-os.app", role: "Admin", status: "active", lastActive: "2 min ago", sessions: 18, dept: "FP&A" },
+    { name: "Priya Patel", email: "priya@finance-os.app", role: "Manager", status: "active", lastActive: "15 min ago", sessions: 12, dept: "Accounting" },
+    { name: "James Rodriguez", email: "james@finance-os.app", role: "Budget Owner", status: "active", lastActive: "1 hr ago", sessions: 8, dept: "Operations" },
+    { name: "David Kim", email: "david@finance-os.app", role: "Viewer", status: "active", lastActive: "3 hr ago", sessions: 5, dept: "Engineering" },
+    { name: "Alex Thompson", email: "alex@company.com", role: "Viewer", status: "invited", lastActive: "—", sessions: 0, dept: "Sales" },
   ];
 
   const events = [
     { action: "GL data loaded from database", actor: "System", time: "Just now", type: "data" },
+    { action: "Sarah Chen exported Q1 P&L report", actor: "Sarah Chen", time: "12 min ago", type: "action" },
+    { action: "Priya Patel completed 3 close tasks", actor: "Priya Patel", time: "34 min ago", type: "action" },
     { action: "Stripe Connect account onboarded", actor: "System", time: "1 hr ago", type: "integration" },
     { action: "Apple Sign In", actor: "Malik Frazier", time: "1 hr ago", type: "auth" },
+    { action: "James Rodriguez updated budget model", actor: "James Rodriguez", time: "2 hr ago", type: "data" },
     { action: "Plan upgraded to Enterprise", actor: "System", time: "Today", type: "billing" },
     { action: "Organization created", actor: "System", time: "Mar 20", type: "admin" },
     { action: "Edge Function deployed: gl-data", actor: "System", time: "Mar 21", type: "action" },
     { action: "Copilot API key configured", actor: "System", time: "Mar 21", type: "security" },
     { action: "Connected account verified", actor: "Stripe", time: "Mar 21", type: "integration" },
+    { action: "David Kim viewed forecast dashboard", actor: "David Kim", time: "3 hr ago", type: "data" },
   ];
 
-  const eventColors = { auth: c.green, data: c.accent, action: c.purple, security: c.amber, integration: c.cyan, admin: c.textSec, billing: c.green };
+  const eventColors = { auth: c.green, data: c.accent, action: c.purple, security: c.amber, integration: c.cyan || c.accent, admin: c.textSec, billing: c.green };
+
+  // Workspace usage data
+  const usageData = [
+    { day: "Mon", logins: 12, queries: 34, exports: 5 },
+    { day: "Tue", logins: 15, queries: 42, exports: 8 },
+    { day: "Wed", logins: 18, queries: 55, exports: 12 },
+    { day: "Thu", logins: 14, queries: 48, exports: 9 },
+    { day: "Fri", logins: 20, queries: 62, exports: 15 },
+    { day: "Sat", logins: 4, queries: 8, exports: 1 },
+    { day: "Sun", logins: 2, queries: 5, exports: 0 },
+  ];
 
   return (
     <div style={{ padding: 32 }}>
-      {/* View Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+      {/* View Header — elevated with gradient accent */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.amber}15, ${c.red}08)`, border: `1px solid ${c.amber}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
-            <Shield size={17} color={c.amber} />
+          <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${c.amber}20, ${c.red}10)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 4px 16px ${c.amber}10` }}>
+            <Shield size={19} color={c.amber} />
           </div>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.accent}15`, color: c.accent, letterSpacing: "0.06em" }}>ADMIN</span></div>
-            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "3px 8px", borderRadius: 4, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}10)`, color: c.accent, letterSpacing: "0.06em", border: `1px solid ${c.accent}10` }}>ADMIN</span>
+            </div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />{users.filter(u => u.status === "active").length} active users</span>
+              <span style={{ color: c.borderSub }}>·</span>
+              <span>{events.length} events today</span>
+              <span style={{ color: c.borderSub }}>·</span>
+              <span>All systems operational</span>
+            </div>
             <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>Data as of {fmtTime(new Date())} · Audit log: real-time</div>
           </div>
         </div>
-        <button onClick={() => setInviteOpen(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={() => toast("Audit log exported — 312 events", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.text; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+          >Export Log</button>
+          <button onClick={() => setInviteOpen(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 14px ${c.accent}25` }}>+ Invite User</button>
+        </div>
       </div>
-      {/* Tab bar */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 24, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 480 }}>
-        {tabs.map(t => (
+
+      {/* Tab bar — with icons */}
+      <div style={{ display: "flex", gap: 3, marginBottom: 24, background: c.surfaceAlt, borderRadius: 12, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 600 }}>
+        {tabs.map(t => {
+          const Icon = t.icon;
+          return (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
-            flex: 1, fontSize: 11, padding: "8px 0", borderRadius: 7, border: "none",
+            flex: 1, fontSize: 11, padding: "9px 0", borderRadius: 9, border: "none",
             background: tab === t.id ? c.surface : "transparent",
             color: tab === t.id ? c.text : c.textDim,
             fontWeight: tab === t.id ? 700 : 500, cursor: "pointer", fontFamily: "inherit",
             boxShadow: tab === t.id ? c.shadow1 : "none", transition: "all 0.15s",
-          }}>{t.label}</button>
-        ))}
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 5,
+          }}><Icon size={12} />{t.label}</button>
+          );
+        })}
       </div>
 
       {tab === "overview" && (<>
-        {/* Admin KPIs */}
-        <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-          Platform Metrics
+        {/* Admin KPIs — elevated cards with icons */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Platform Metrics</div>
+          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
-          {adminKpis.map(k => (
-            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = c.cardGlow; }}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: 14, marginBottom: 28 }}>
+          {adminKpis.map(k => {
+            const Icon = k.icon;
+            return (
+            <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: c.cardGlow, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${k.color}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder || c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+              {/* Top accent bar */}
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${k.color}, ${k.color}40)` }} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
                 <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint }}>{k.label}</div>
-                <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg, ${k.color}15, ${k.color}06)`, border: `1px solid ${k.color}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Activity size={12} color={k.color} />
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${k.color}18, ${k.color}06)`, border: `1px solid ${k.color}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon size={14} color={k.color} />
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                <span style={{ fontSize: 26, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.02em" }}>{k.value}</span>
+                <span style={{ fontSize: 28, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.02em" }}>{k.value}</span>
                 <span style={{ fontSize: 10, fontWeight: 700, color: k.up ? c.green : c.red, background: k.up ? c.greenDim : c.redDim, padding: "3px 8px", borderRadius: 6, border: `1px solid ${k.up ? c.green : c.red}12` }}>{k.delta}</span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Activity Feed */}
-        <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-          Activity & Security
+        {/* Team Health + Workspace Usage row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Team Health & Usage</div>
+          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 28 }}>
+          {/* Team online status mini cards */}
+          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.green}06)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Users size={13} color={c.green} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Team Activity</div>
+                  <div style={{ fontSize: 9, color: c.textDim }}>{users.filter(u => u.status === "active" && u.lastActive !== "—").length} active now</div>
+                </div>
+              </div>
+              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: `${c.green}08`, border: `1px solid ${c.green}10`, color: c.green }}>
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />LIVE
+              </span>
+            </div>
+            {users.filter(u => u.status === "active").slice(0, 5).map((u, i) => (
+              <div key={u.email} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < 4 ? `1px solid ${c.borderSub}` : "none" }}>
+                <div style={{ position: "relative" }}>
+                  {u.avatar ? (
+                    <img src={u.avatar} alt={u.name} style={{ width: 30, height: 30, borderRadius: 8, objectFit: "cover" }} loading="lazy" />
+                  ) : (
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>{u.name.split(" ").map(w => w[0]).join("")}</div>
+                  )}
+                  <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: u.lastActive === "Now" || u.lastActive.includes("min") ? c.green : c.amber, border: `2px solid ${c.surface || c.bg}` }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: c.text }}>{u.name}</div>
+                  <div style={{ fontSize: 9, color: c.textFaint }}>{u.dept} · {u.lastActive}</div>
+                </div>
+                <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: u.role === "Owner" ? `${c.purple || c.accent}10` : `${c.accent}08`, color: u.role === "Owner" ? (c.purple || c.accent) : c.accent }}>{u.role}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Weekly usage mini chart */}
+          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.accent}06)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <BarChart3 size={13} color={c.accent} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Weekly Usage</div>
+                  <div style={{ fontSize: 9, color: c.textDim }}>Logins, queries & exports</div>
+                </div>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={160}>
+              <BarChart data={usageData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+                <CartesianGrid stroke={c.chartGrid} strokeDasharray="4 8" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} />
+                <Tooltip content={<ChartTooltip c={c} />} />
+                <Bar dataKey="logins" fill={c.accent} radius={[3, 3, 0, 0]} barSize={12} name="Logins" />
+                <Bar dataKey="queries" fill={c.purple || c.accent} radius={[3, 3, 0, 0]} barSize={12} opacity={0.6} name="AI Queries" />
+                <Bar dataKey="exports" fill={c.green} radius={[3, 3, 0, 0]} barSize={12} opacity={0.4} name="Exports" />
+              </BarChart>
+            </ResponsiveContainer>
+            <div style={{ display: "flex", gap: 14, marginTop: 8, fontSize: 9, color: c.textDim }}>
+              {[{ l: "Logins", color: c.accent }, { l: "AI Queries", color: c.purple || c.accent }, { l: "Exports", color: c.green }].map(s => (
+                <span key={s.l} style={{ display: "flex", alignItems: "center", gap: 4, fontWeight: 600 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color }} />{s.l}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Activity Feed + Actions */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Activity & Quick Actions</div>
+          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: 16 }}>
+          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
             <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>Activity Log</span>
-              <span style={{ fontSize: 8, fontWeight: 800, padding: "3px 8px", borderRadius: 5, background: c.surfaceAlt, color: c.textFaint, letterSpacing: "0.04em" }}>{events.length} EVENTS</span>
+              <span style={{ fontSize: 8, fontWeight: 800, padding: "3px 10px", borderRadius: 6, background: c.surfaceAlt, color: c.textFaint, letterSpacing: "0.04em" }}>{events.length} EVENTS</span>
             </div>
+            <div style={{ maxHeight: 340, overflow: "auto" }}>
             {events.map((e, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start", transition: "all 0.15s" }}
+              <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start", transition: "all 0.15s" }}
                 onMouseEnter={ev => ev.currentTarget.style.paddingLeft = "4px"}
                 onMouseLeave={ev => ev.currentTarget.style.paddingLeft = "0"}
               >
@@ -4766,59 +4890,94 @@ const AdminView = ({ c, toast, onNav }) => {
                 </div>
               </div>
             ))}
+            </div>
           </div>
-          {/* Quick Admin Actions */}
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Admin Actions</div>
+          {/* Quick Admin Actions — elevated with better grouping */}
+          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Quick Actions</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
-                { label: "Invite User", desc: "Send invite to new team member", action: () => toast("Invite sent — check user's email", "success"), color: c.accent },
-                { label: "Export Audit Log", desc: "Download full activity history as CSV", action: () => toast("Audit log exported — 312 events", "success"), color: c.green },
-                { label: "Rotate API Keys", desc: "Regenerate all active API keys", action: () => toast("API keys rotated — update integrations", "warning"), color: c.amber },
-                { label: "Force Sync All", desc: "Trigger sync on all connected integrations", action: () => { toast("Syncing 4 integrations...", "success"); }, color: c.cyan },
-                { label: "Generate SOC 2 Report", desc: "Export compliance evidence package", action: () => toast("SOC 2 evidence package generated", "success"), color: c.purple },
-                { label: "Purge Demo Data", desc: "Remove all sample data from organization", action: () => toast("Demo data purge requires confirmation — check Settings", "warning"), color: c.red },
-              ].map(a => (
+                { label: "Invite User", desc: "Send invite to new team member", action: () => setInviteOpen(true), color: c.accent, icon: Users },
+                { label: "Export Audit Log", desc: "Download full activity history as CSV", action: () => toast("Audit log exported — 312 events", "success"), color: c.green, icon: Download },
+                { label: "Rotate API Keys", desc: "Regenerate all active API keys", action: () => toast("API keys rotated — update integrations", "warning"), color: c.amber, icon: Lock },
+                { label: "Force Sync All", desc: "Trigger sync on all connected integrations", action: () => { toast("Syncing 7 integrations...", "success"); }, color: c.cyan || c.accent, icon: RefreshCw },
+                { label: "Generate SOC 2 Report", desc: "Export compliance evidence package", action: () => toast("SOC 2 evidence package generated", "success"), color: c.purple || c.accent, icon: Shield },
+                { label: "Manage Workspace", desc: "Branding, domains & notifications", action: () => setTab("workspace"), color: c.textSec, icon: Settings },
+              ].map(a => {
+                const AIcon = a.icon;
+                return (
                 <button key={a.label} onClick={a.action} style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderRadius: 10,
+                  display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10,
                   border: `1px solid ${c.border}`, background: "transparent", cursor: "pointer", fontFamily: "inherit", textAlign: "left",
-                  transition: "all 0.2s ease", color: c.text, borderLeft: `3px solid ${a.color}20`,
+                  transition: "all 0.2s ease", color: c.text, width: "100%",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = `${a.color}40`; e.currentTarget.style.borderLeftColor = a.color; e.currentTarget.style.background = `${a.color}06`; e.currentTarget.style.transform = "translateX(2px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.borderLeftColor = `${a.color}20`; e.currentTarget.style.background = "transparent"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${a.color}40`; e.currentTarget.style.background = `${a.color}06`; e.currentTarget.style.transform = "translateX(2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
                 >
-                  <div>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${a.color}15, ${a.color}06)`, border: `1px solid ${a.color}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <AIcon size={13} color={a.color} />
+                  </div>
+                  <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{a.label}</div>
-                    <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{a.desc}</div>
+                    <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{a.desc}</div>
                   </div>
                   <ChevronRight size={14} color={c.textFaint} />
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </>)}
 
       {tab === "users" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+        <div>
+          {/* User stats summary */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 20 }}>
+            {[
+              { label: "Total Users", value: users.length, color: c.accent },
+              { label: "Active", value: users.filter(u => u.status === "active").length, color: c.green },
+              { label: "Pending Invites", value: users.filter(u => u.status === "invited").length, color: c.amber },
+              { label: "Total Sessions", value: users.reduce((a, u) => a + u.sessions, 0), color: c.purple || c.accent },
+            ].map(s => (
+              <div key={s.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 16px", boxShadow: c.cardGlow, textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: s.color, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: c.cardGlow }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
-                {["User", "Role", "Status", "Last Active", "Sessions", "Actions"].map(h => (
-                  <th key={h} style={{ padding: "10px 14px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, textAlign: "left", background: c.bg2 }}>{h}</th>
+                {["User", "Role", "Department", "Status", "Last Active", "Sessions", "Actions"].map(h => (
+                  <th key={h} style={{ padding: "12px 14px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, textAlign: "left", background: c.bg2 }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {users.map((u, i) => (
-                <tr key={u.email} style={{ borderBottom: `1px solid ${c.borderSub}`, background: i % 2 === 0 ? "transparent" : c.surfaceAlt }}>
+                <tr key={u.email} style={{ borderBottom: `1px solid ${c.borderSub}`, transition: "background 0.15s" }}
+                  onMouseEnter={e => e.currentTarget.style.background = `${c.accent}04`}
+                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                >
                   <td style={{ padding: "12px 14px" }}>
-                    <div style={{ fontWeight: 600, color: c.text }}>{u.name}</div>
-                    <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{u.email}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {u.avatar ? (
+                        <img src={u.avatar} alt={u.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover" }} loading="lazy" />
+                      ) : (
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#fff" }}>{u.name.split(" ").map(w => w[0]).join("")}</div>
+                      )}
+                      <div>
+                        <div style={{ fontWeight: 600, color: c.text }}>{u.name}</div>
+                        <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{u.email}</div>
+                      </div>
+                    </div>
                   </td>
                   <td style={{ padding: "12px 14px" }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: u.role === "Admin" ? c.accentDim : c.surfaceAlt, color: u.role === "Admin" ? c.accent : c.textSec }}>{u.role}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: u.role === "Owner" ? `${c.purple || c.accent}12` : u.role === "Admin" ? `${c.accent}12` : c.surfaceAlt, color: u.role === "Owner" ? (c.purple || c.accent) : u.role === "Admin" ? c.accent : c.textSec }}>{u.role}</span>
                   </td>
+                  <td style={{ padding: "12px 14px", fontSize: 11, color: c.textDim }}>{u.dept}</td>
                   <td style={{ padding: "12px 14px" }}>
                     <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
                       <span style={{ width: 6, height: 6, borderRadius: "50%", background: u.status === "active" ? c.green : u.status === "invited" ? c.amber : c.textFaint }} />
@@ -4829,81 +4988,129 @@ const AdminView = ({ c, toast, onNav }) => {
                   <td style={{ padding: "12px 14px", fontSize: 11, color: c.textSec, fontFamily: "'JetBrains Mono', monospace" }}>{u.sessions}</td>
                   <td style={{ padding: "12px 14px" }}>
                     <div style={{ display: "flex", gap: 4 }}>
-                      <button onClick={() => toast(`Editing ${u.name}`, "success")} style={{ fontSize: 10, padding: "4px 10px", borderRadius: 4, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Edit</button>
-                      {u.status === "invited" && <button onClick={() => toast(`Resent invite to ${u.email}`, "success")} style={{ fontSize: 10, padding: "4px 10px", borderRadius: 4, border: `1px solid ${c.amber}40`, background: c.amberDim, color: c.amber, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Resend</button>}
+                      <button onClick={() => toast(`Editing ${u.name}`, "success")} style={{ fontSize: 10, padding: "5px 10px", borderRadius: 5, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+                      >Edit</button>
+                      {u.status === "invited" && <button onClick={() => toast(`Resent invite to ${u.email}`, "success")} style={{ fontSize: 10, padding: "5px 10px", borderRadius: 5, border: `1px solid ${c.amber}40`, background: c.amberDim, color: c.amber, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Resend</button>}
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
       {tab === "billing" && (
         <div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
             {[
-              { label: "MRR", value: "$147.2K", sub: "84 active subscriptions" },
-              { label: "ARR", value: "$1.77M", sub: "Projected from current MRR" },
-              { label: "Avg Contract Value", value: "$1,752", sub: "Across all tiers" },
-              { label: "Churn Rate", value: "2.1%", sub: "Last 30 days" },
+              { label: "MRR", value: "$147.2K", sub: "84 active subscriptions", color: c.accent, delta: "+8.4%" },
+              { label: "ARR", value: "$1.77M", sub: "Projected from current MRR", color: c.green, delta: "+12.1%" },
+              { label: "Avg Contract Value", value: "$1,752", sub: "Across all tiers", color: c.purple || c.accent, delta: "+$180" },
+              { label: "Churn Rate", value: "2.1%", sub: "Last 30 days", color: c.amber, delta: "-0.3%" },
             ].map(k => (
-              <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-                <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 6 }}>{k.label}</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.value}</div>
-                <div style={{ fontSize: 10, color: c.textDim }}>{k.sub}</div>
+              <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 14, padding: "18px 20px", boxShadow: c.cardGlow, transition: "all 0.2s", position: "relative", overflow: "hidden" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder || c.border; e.currentTarget.style.transform = "none"; }}
+              >
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${k.color}, ${k.color}30)` }} />
+                <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 8 }}>{k.label}</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                  <span style={{ fontSize: 24, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: k.label === "Churn Rate" ? c.green : c.green, background: c.greenDim, padding: "2px 6px", borderRadius: 4 }}>{k.delta}</span>
+                </div>
+                <div style={{ fontSize: 10, color: c.textDim, marginTop: 4 }}>{k.sub}</div>
               </div>
             ))}
           </div>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue by Plan</div>
-            {[
-              { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13 },
-              { plan: "Growth ($1,799/mo)", orgs: 38, mrr: "$68.4K", pct: 46 },
-              { plan: "Business ($4,799/mo)", orgs: 14, mrr: "$67.2K", pct: 41 },
-            ].map(p => (
-              <div key={p.plan} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{p.plan}</div>
-                  <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{p.orgs} organizations</div>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: 16 }}>
+            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 16 }}>Revenue by Plan</div>
+              {[
+                { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13, color: c.accent },
+                { plan: "Growth ($1,799/mo)", orgs: 38, mrr: "$68.4K", pct: 46, color: c.green },
+                { plan: "Business ($4,799/mo)", orgs: 14, mrr: "$67.2K", pct: 41, color: c.purple || c.accent },
+              ].map(p => (
+                <div key={p.plan} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{p.plan}</div>
+                    <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{p.orgs} organizations</div>
+                  </div>
+                  <div style={{ width: 180, height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden" }}>
+                    <div style={{ width: `${p.pct}%`, height: "100%", background: `linear-gradient(90deg, ${p.color}, ${p.color}80)`, borderRadius: 5, transition: "width 0.4s" }} />
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", minWidth: 70, textAlign: "right" }}>{p.mrr}</span>
                 </div>
-                <div style={{ width: 200, height: 8, background: c.bg2, borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{ width: `${p.pct}%`, height: "100%", background: c.accent, borderRadius: 4, transition: "width 0.3s" }} />
+              ))}
+            </div>
+            {/* Net Revenue Retention */}
+            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 16 }}>Retention & Expansion</div>
+              {[
+                { label: "Net Revenue Retention", value: "118%", color: c.green, desc: "Above 100% = net expansion" },
+                { label: "Gross Retention", value: "97.9%", color: c.accent, desc: "Before expansion revenue" },
+                { label: "Logo Retention", value: "95.8%", color: c.purple || c.accent, desc: "Customer count retention" },
+                { label: "Expansion Revenue", value: "$12.4K", color: c.cyan || c.accent, desc: "Upsells + add-ons this month" },
+              ].map(r => (
+                <div key={r.label} style={{ padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: c.text }}>{r.label}</span>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: r.color, fontFamily: "'JetBrains Mono', monospace" }}>{r.value}</span>
+                  </div>
+                  <div style={{ fontSize: 9, color: c.textFaint }}>{r.desc}</div>
                 </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", minWidth: 70, textAlign: "right" }}>{p.mrr}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )}
 
       {tab === "system" && (
         <div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          {/* Overall health bar */}
+          <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 14, padding: "16px 22px", marginBottom: 20, display: "flex", alignItems: "center", gap: 14, boxShadow: c.cardGlow }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.green}20, ${c.green}06)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Activity size={16} color={c.green} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: c.green }}>All Systems Operational</div>
+              <div style={{ fontSize: 10, color: c.textDim }}>6 services monitored · Uptime: 99.98% (30d) · Last incident: 14 days ago</div>
+            </div>
+            <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 14px", borderRadius: 8, background: `${c.green}08`, border: `1px solid ${c.green}12`, color: c.green }}>Healthy</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
             {/* Service Status */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Service Status</div>
+            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Service Status</div>
               {[
-                { name: "API Gateway", status: "operational", latency: "42ms" },
-                { name: "Supabase (us-east-1)", status: "operational", latency: "18ms" },
-                { name: "Claude AI (Copilot)", status: "operational", latency: "890ms" },
-                { name: "Stripe Billing", status: "operational", latency: "156ms" },
-                { name: "Vercel Edge", status: "operational", latency: "12ms" },
-                { name: "Google Fonts CDN", status: "operational", latency: "8ms" },
+                { name: "API Gateway", status: "operational", latency: "42ms", uptime: "99.99%" },
+                { name: "Supabase (us-east-1)", status: "operational", latency: "18ms", uptime: "99.97%" },
+                { name: "Claude AI (Copilot)", status: "operational", latency: "890ms", uptime: "99.92%" },
+                { name: "Stripe Billing", status: "operational", latency: "156ms", uptime: "99.99%" },
+                { name: "Vercel Edge", status: "operational", latency: "12ms", uptime: "100.0%" },
+                { name: "Google Fonts CDN", status: "operational", latency: "8ms", uptime: "100.0%" },
               ].map(s => (
-                <div key={s.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                <div key={s.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, transition: "all 0.15s" }}
+                  onMouseEnter={e => e.currentTarget.style.paddingLeft = "4px"}
+                  onMouseLeave={e => e.currentTarget.style.paddingLeft = "0"}
+                >
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.status === "operational" ? c.green : c.red }} />
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.status === "operational" ? c.green : c.red, boxShadow: `0 0 6px ${s.status === "operational" ? c.green : c.red}30` }} />
                     <span style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{s.name}</span>
                   </div>
-                  <span style={{ fontSize: 10, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{s.latency}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 9, color: c.textFaint }}>{s.uptime}</span>
+                    <span style={{ fontSize: 10, color: c.textDim, fontFamily: "'JetBrains Mono', monospace", minWidth: 50, textAlign: "right" }}>{s.latency}</span>
+                  </div>
                 </div>
               ))}
             </div>
             {/* Security Headers */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security Posture</div>
+            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Security Posture</div>
               {[
                 { name: "HSTS Preload", grade: "A+", status: "active" },
                 { name: "Content Security Policy", grade: "A", status: "active" },
@@ -4916,8 +5123,63 @@ const AdminView = ({ c, toast, onNav }) => {
                   <span style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{s.name}</span>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span style={{ fontSize: 10, color: c.textDim }}>{s.status}</span>
-                    <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: s.grade.includes("A") ? c.greenDim : s.grade === "B" ? c.amberDim : c.surfaceAlt, color: s.grade.includes("A") ? c.green : s.grade === "B" ? c.amber : c.textDim }}>{s.grade}</span>
+                    <span style={{ fontSize: 10, fontWeight: 800, padding: "3px 8px", borderRadius: 4, background: s.grade.includes("A") ? c.greenDim : s.grade === "B" ? c.amberDim : c.surfaceAlt, color: s.grade.includes("A") ? c.green : s.grade === "B" ? c.amber : c.textDim }}>{s.grade}</span>
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Workspace tab — branding, notifications, settings */}
+      {tab === "workspace" && (
+        <div>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+            {/* Workspace Branding */}
+            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple || c.accent}10)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <LayoutDashboard size={13} color={c.accent} />
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Workspace Branding</div>
+              </div>
+              {[
+                { label: "Workspace Name", value: "FinanceOS", desc: "Displayed across the platform" },
+                { label: "Custom Domain", value: "finance-os.app", desc: "Your branded workspace URL" },
+                { label: "Primary Color", value: "#60a5fa", desc: "Used for buttons, accents, and charts" },
+                { label: "Logo", value: "Uploaded", desc: "32x32 SVG mark + full wordmark" },
+              ].map(s => (
+                <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{s.label}</div>
+                    <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1 }}>{s.desc}</div>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: c.accent, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
+                </div>
+              ))}
+            </div>
+            {/* Notification & Alert Settings */}
+            <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.amber}18, ${c.amber}06)`, border: `1px solid ${c.amber}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Bell size={13} color={c.amber} />
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Notifications & Alerts</div>
+              </div>
+              {[
+                { label: "Variance Alerts", status: "Enabled", desc: "Trigger when actuals deviate >5% from budget", active: true },
+                { label: "Close Task Reminders", status: "Enabled", desc: "Daily reminder 3 days before close deadline", active: true },
+                { label: "Sync Failure Alerts", status: "Enabled", desc: "Instant notification on integration errors", active: true },
+                { label: "Weekly Digest", status: "Enabled", desc: "Sunday summary email to all admins", active: true },
+                { label: "Slack Integration", status: "Connected", desc: "Alerts posted to #finance-alerts channel", active: true },
+              ].map(n => (
+                <div key={n.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{n.label}</div>
+                    <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1 }}>{n.desc}</div>
+                  </div>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: n.active ? `${c.green}10` : c.surfaceAlt, color: n.active ? c.green : c.textFaint }}>{n.status}</span>
                 </div>
               ))}
             </div>
