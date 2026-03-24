@@ -692,6 +692,7 @@ const NAV_ITEMS = [
   { id: "consolidation", label: "Consolidation", icon: Layers, section: "Financial" },
   { id: "models", label: "Scenarios", icon: GitBranch, section: "Planning" },
   { id: "close", label: "Close Tasks", icon: CheckSquare, section: "Planning" },
+  { id: "team", label: "Team", icon: Users, section: "Collaborate" },
   { id: "integrations", label: "Integrations", icon: Plug, section: "Platform" },
   { id: "admin", label: "Admin", icon: Shield, section: "Platform" },
   { id: "investor", label: "Investor Metrics", icon: Target, section: "Platform" },
@@ -4176,6 +4177,210 @@ const InvestorView = ({ c, toast, onDrawer }) => (
 // ══════════════════════════════════════════════════════════════
 // SUPER-ADMIN DASHBOARD
 // ══════════════════════════════════════════════════════════════
+// ── TEAM VIEW — Digital office environment ─────────────────
+const TeamView = ({ c, toast, onNav, userName }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [tab, setTab] = useState("members");
+  const [msgInput, setMsgInput] = useState("");
+  const [assignOpen, setAssignOpen] = useState(false);
+
+  const teamMembers = [
+    { id: 1, name: userName || "Malik Frazier", initials: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), role: "Owner", title: "CEO & Founder", dept: "Executive", status: "online", statusMsg: "Working on Q1 close", avatar: null, email: "support@finance-os.app", tasks: 4, lastActive: "Now" },
+    { id: 2, name: "Sarah Chen", initials: "SC", role: "Admin", title: "VP of Finance", dept: "Finance", status: "online", statusMsg: "Reviewing forecasts", avatar: null, email: "s.chen@company.com", tasks: 6, lastActive: "2 min ago" },
+    { id: 3, name: "James Rodriguez", initials: "JR", role: "Manager", title: "FP&A Manager", dept: "Finance", status: "away", statusMsg: "In a meeting until 3pm", avatar: null, email: "j.rodriguez@company.com", tasks: 3, lastActive: "15 min ago" },
+    { id: 4, name: "Priya Patel", initials: "PP", role: "Budget Owner", title: "Controller", dept: "Accounting", status: "online", statusMsg: "", avatar: null, email: "p.patel@company.com", tasks: 8, lastActive: "Just now" },
+    { id: 5, name: "David Kim", initials: "DK", role: "Viewer", title: "Revenue Analyst", dept: "RevOps", status: "offline", statusMsg: "", avatar: null, email: "d.kim@company.com", tasks: 2, lastActive: "1 hr ago" },
+  ];
+
+  const messages = [
+    { id: 1, sender: "Sarah Chen", initials: "SC", content: "I've updated the Q1 revenue forecast with the latest pipeline data. MAPE is down to 2.8% this period.", time: "2:34 PM", channel: "forecast" },
+    { id: 2, sender: "Priya Patel", initials: "PP", content: "Close checklist: 14/18 tasks complete. Waiting on IC elimination review from James.", time: "1:52 PM", channel: "close-tasks" },
+    { id: 3, sender: userName || "Malik Frazier", initials: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), content: "Board deck draft is ready for review. I've exported the investor metrics — can someone double-check the Rule of 40 calc?", time: "12:15 PM", channel: "general" },
+    { id: 4, sender: "James Rodriguez", initials: "JR", content: "IC elimination complete for APAC entity. FX adjustment: -$42K impact on consolidated EBITDA.", time: "11:30 AM", channel: "consolidation" },
+    { id: 5, sender: "David Kim", initials: "DK", content: "New Stripe data synced — 23 new transactions this week. Revenue recognition looks clean.", time: "10:45 AM", channel: "integrations" },
+  ];
+
+  const recentTasks = [
+    { title: "Review Q1 variance analysis", assignee: "Sarah Chen", assigneeInit: "SC", priority: "high", status: "in_progress", due: "Today", view: "pnl" },
+    { title: "Complete IC elimination for EU entity", assignee: "James Rodriguez", assigneeInit: "JR", priority: "urgent", status: "in_progress", due: "Today", view: "consolidation" },
+    { title: "Validate ML forecast accuracy", assignee: "Sarah Chen", assigneeInit: "SC", priority: "medium", status: "pending", due: "Tomorrow", view: "forecast" },
+    { title: "Close AP accruals for March", assignee: "Priya Patel", assigneeInit: "PP", priority: "high", status: "pending", due: "Mar 28", view: "close" },
+    { title: "Update board deck metrics", assignee: userName || "Malik Frazier", assigneeInit: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), priority: "medium", status: "review", due: "Mar 29", view: "investor" },
+    { title: "Sync Salesforce pipeline data", assignee: "David Kim", assigneeInit: "DK", priority: "low", status: "completed", due: "Done", view: "integrations" },
+  ];
+
+  const statusColors = { online: c.green, away: c.amber, busy: c.red, offline: c.textFaint };
+  const priorityColors = { urgent: c.red, high: c.amber, medium: c.accent, low: c.textDim };
+  const statusLabels = { pending: "To Do", in_progress: "In Progress", review: "Review", completed: "Done", cancelled: "Cancelled" };
+  const avatarGradients = [
+    `linear-gradient(135deg, ${c.accent}, ${c.purple})`,
+    `linear-gradient(135deg, ${c.green}, ${c.cyan})`,
+    `linear-gradient(135deg, ${c.amber}, ${c.red})`,
+    `linear-gradient(135deg, ${c.purple}, ${c.accent})`,
+    `linear-gradient(135deg, ${c.cyan}, ${c.green})`,
+  ];
+
+  return (
+    <div style={{ padding: 32 }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <Users size={17} color={c.accent} />
+          </div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Team</div>
+              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${c.green}12`, color: c.green }}>
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
+                {teamMembers.filter(m => m.status === "online").length} online
+              </span>
+            </div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{teamMembers.length} members · {recentTasks.filter(t => t.status !== "completed").length} active tasks</div>
+          </div>
+        </div>
+        <button onClick={() => toast("Invite sent — check their email", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite Member</button>
+      </div>
+
+      {/* Tab bar */}
+      <div style={{ display: "flex", gap: 4, marginBottom: 24, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 500 }}>
+        {[{ id: "members", label: "Members" }, { id: "messages", label: "Messages" }, { id: "tasks", label: "Tasks" }, { id: "activity", label: "Activity" }].map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{
+            flex: 1, fontSize: 11, padding: "8px 0", borderRadius: 7, border: "none",
+            background: tab === t.id ? c.surface : "transparent", color: tab === t.id ? c.text : c.textDim,
+            fontWeight: tab === t.id ? 700 : 500, cursor: "pointer", fontFamily: "inherit",
+            boxShadow: tab === t.id ? c.shadow1 : "none", transition: "all 0.15s",
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* MEMBERS TAB */}
+      {tab === "members" && (
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
+          {teamMembers.map((m, i) => (
+            <div key={m.id} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 20px", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}>
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${c.accent}12, transparent)` }} />
+              <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14 }}>
+                <div style={{ position: "relative" }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: avatarGradients[i % 5], display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#fff", boxShadow: `0 4px 12px ${c.accent}15` }}>{m.initials}</div>
+                  <div style={{ position: "absolute", bottom: -1, right: -1, width: 12, height: 12, borderRadius: "50%", background: statusColors[m.status], border: `2.5px solid ${c.surface}` }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>{m.name}</div>
+                  <div style={{ fontSize: 11, color: c.textDim }}>{m.title}</div>
+                </div>
+                <span style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${c.accent}10`, color: c.accent, letterSpacing: "0.04em" }}>{m.role.toUpperCase()}</span>
+              </div>
+              <div style={{ display: "flex", gap: 8, fontSize: 10, color: c.textFaint, marginBottom: 10 }}>
+                <span>{m.dept}</span>
+                <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.borderBright, alignSelf: "center" }} />
+                <span>{m.lastActive}</span>
+              </div>
+              {m.statusMsg && <div style={{ fontSize: 10, color: c.textDim, fontStyle: "italic", padding: "6px 10px", background: c.surfaceAlt, borderRadius: 8, marginBottom: 10 }}>"{m.statusMsg}"</div>}
+              <div style={{ display: "flex", gap: 6 }}>
+                <button onClick={() => toast(`Message sent to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
+                >Message</button>
+                <button onClick={() => toast(`Task assigned to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.purple; e.currentTarget.style.color = c.purple; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
+                >Assign Task</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* MESSAGES TAB */}
+      {tab === "messages" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
+          <div style={{ padding: "14px 20px", borderBottom: `1px solid ${c.borderSub}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Team Chat</div>
+            <div style={{ display: "flex", gap: 4 }}>
+              {["general", "close-tasks", "forecast"].map(ch => (
+                <span key={ch} style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: ch === "general" ? `${c.accent}12` : c.surfaceAlt, color: ch === "general" ? c.accent : c.textFaint, cursor: "pointer", letterSpacing: "0.04em" }}>#{ch}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{ padding: "14px 20px", maxHeight: 400, overflow: "auto" }}>
+            {messages.map(msg => (
+              <div key={msg.id} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: avatarGradients[msg.id % 5], display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{msg.initials}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>{msg.sender}</span>
+                    <span style={{ fontSize: 9, color: c.textFaint }}>{msg.time}</span>
+                    <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: c.surfaceAlt, color: c.textFaint }}>#{msg.channel}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: c.textSec, lineHeight: 1.6 }}>{msg.content}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ padding: "10px 20px", borderTop: `1px solid ${c.borderSub}`, display: "flex", gap: 8 }}>
+            <input value={msgInput} onChange={e => setMsgInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && msgInput.trim()) { toast("Message sent to #general", "success"); setMsgInput(""); } }}
+              placeholder="Type a message..." style={{ flex: 1, padding: "9px 14px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none" }} />
+            <button onClick={() => { if (msgInput.trim()) { toast("Message sent", "success"); setMsgInput(""); } }} style={{ padding: "9px 16px", borderRadius: 10, border: "none", background: c.accent, color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+              <Send size={14} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TASKS TAB */}
+      {tab === "tasks" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
+          <div style={{ padding: "14px 20px", borderBottom: `1px solid ${c.borderSub}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Task Board</div>
+            <button onClick={() => toast("New task created", "success")} style={{ fontSize: 10, padding: "6px 12px", borderRadius: 6, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ New Task</button>
+          </div>
+          {recentTasks.map((task, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: i < recentTasks.length - 1 ? `1px solid ${c.borderSub}` : "none", transition: "all 0.15s", cursor: "pointer" }}
+              onMouseEnter={e => e.currentTarget.style.background = `${c.accent}04`}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              onClick={() => onNav(task.view)}>
+              <div style={{ width: 24, height: 24, borderRadius: 7, background: avatarGradients[teamMembers.findIndex(m => m.name === task.assignee) % 5] || avatarGradients[0], display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{task.assigneeInit}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{task.title}</div>
+                <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1 }}>{task.assignee} · Due {task.due}</div>
+              </div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${priorityColors[task.priority]}12`, color: priorityColors[task.priority], letterSpacing: "0.04em", textTransform: "uppercase" }}>{task.priority}</span>
+              <span style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: task.status === "completed" ? `${c.green}12` : task.status === "in_progress" ? `${c.accent}12` : `${c.textFaint}08`, color: task.status === "completed" ? c.green : task.status === "in_progress" ? c.accent : c.textDim }}>{statusLabels[task.status]}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ACTIVITY TAB */}
+      {tab === "activity" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px" }}>
+          <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Recent Activity</div>
+          {[
+            { actor: "Sarah Chen", init: "SC", action: "updated Q1 revenue forecast", detail: "MAPE improved to 2.8%", time: "2:34 PM", color: c.accent },
+            { actor: "Priya Patel", init: "PP", action: "completed 3 close tasks", detail: "AP accruals, deferred revenue, prepaid amortization", time: "1:52 PM", color: c.green },
+            { actor: userName || "Malik Frazier", init: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), action: "exported investor metrics PDF", detail: "Rule of 40: 52.1, Burn Multiple: 0.8x", time: "12:15 PM", color: c.purple },
+            { actor: "James Rodriguez", init: "JR", action: "completed IC elimination", detail: "APAC entity, FX adjustment: -$42K", time: "11:30 AM", color: c.amber },
+            { actor: "David Kim", init: "DK", action: "synced Stripe integration", detail: "23 new transactions imported", time: "10:45 AM", color: c.cyan },
+            { actor: "AI Copilot", init: "🧠", action: "flagged revenue variance", detail: "+$2.1M beat vs budget, Enterprise segment", time: "10:00 AM", color: c.purple },
+          ].map((e, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: i < 5 ? `1px solid ${c.borderSub}` : "none" }}>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: typeof e.init === "string" && e.init.length <= 2 ? avatarGradients[i % 5] : `${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: e.init === "🧠" ? 14 : 9, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{e.init}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, color: c.text }}><span style={{ fontWeight: 700 }}>{e.actor}</span> {e.action}</div>
+                <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>{e.detail}</div>
+              </div>
+              <span style={{ fontSize: 9, color: c.textFaint, whiteSpace: "nowrap" }}>{e.time}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AdminView = ({ c, toast, onNav }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [tab, setTab] = useState("overview");
@@ -7968,7 +8173,7 @@ function FinanceOSApp() {
 
   // Navigation with history tracking + loading transition
   // MUST be defined before the if(!loggedIn) return — React Rules of Hooks
-  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
+  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", team: "Team", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
   const navigate = useCallback((v) => {
     if (v === view) return;
     setMobileMenuOpen(false);
@@ -8318,6 +8523,33 @@ function FinanceOSApp() {
           })}
         </div>
 
+        {/* ── Team Presence ── */}
+        {!sidebarCollapsed && (
+        <div style={{ borderTop: `1px solid ${c.borderSub}`, padding: "10px 14px" }}>
+          <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Team</span>
+            <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${c.green}12`, color: c.green }}>1 online</span>
+          </div>
+          {[
+            { name: user.name || "You", initials: (user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase(), status: "online", role: user.plan === "enterprise" ? "Owner" : "Member" },
+          ].map(m => (
+            <div key={m.name} onClick={() => navigate("team")} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 4px", borderRadius: 6, cursor: "pointer", transition: "all 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = `${c.accent}06`}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <div style={{ position: "relative" }}>
+                <div style={{ width: 24, height: 24, borderRadius: 7, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff" }}>{m.initials}</div>
+                <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: m.status === "online" ? c.green : m.status === "away" ? c.amber : c.textFaint, border: `2px solid ${c.bg2}` }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.name}</div>
+                <div style={{ fontSize: 8, color: c.textFaint }}>{m.role}</div>
+              </div>
+            </div>
+          ))}
+          <div onClick={() => navigate("team")} style={{ fontSize: 9, color: c.accent, fontWeight: 600, padding: "4px 4px", cursor: "pointer", marginTop: 4 }}>+ Invite teammates</div>
+        </div>
+        )}
+
         {/* ── Account Panel ── */}
         <div style={{ borderTop: `1px solid ${c.borderSub}`, marginTop: "auto" }}>
           {!sidebarCollapsed ? (
@@ -8518,6 +8750,7 @@ function FinanceOSApp() {
           {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
           {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} tasks={closeTasks} setTasks={setCloseTasks} logActivity={logActivity} /></SectionBoundary>}
+          {view === "team" && <SectionBoundary name="Team" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><TeamView c={c} toast={toast} onNav={navigate} userName={user.name} /></SectionBoundary>}
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
