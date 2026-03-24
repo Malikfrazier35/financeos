@@ -7804,6 +7804,37 @@ const LandingPage = ({ onLogin }) => {
     gradFrom: "#3b82f6", gradTo: "#8b5cf6",
   };
 
+  // ── Scroll-triggered animations via IntersectionObserver ──
+  const useScrollReveal = (threshold = 0.15) => {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+    useEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold });
+      obs.observe(el);
+      return () => obs.disconnect();
+    }, []);
+    return [ref, visible];
+  };
+
+  // ── Animated counter hook ──
+  const useCountUp = (target, duration = 1800, visible = false) => {
+    const [val, setVal] = useState(0);
+    useEffect(() => {
+      if (!visible) return;
+      let start = 0;
+      const step = target / (duration / 16);
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= target) { setVal(target); clearInterval(timer); }
+        else setVal(Math.floor(start));
+      }, 16);
+      return () => clearInterval(timer);
+    }, [visible, target, duration]);
+    return val;
+  };
+
   // Demo entry — enters dashboard with sample data, plan picker has skip option
   const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "", plan: "demo" }); };
 
@@ -8028,36 +8059,55 @@ const LandingPage = ({ onLogin }) => {
           >Sign In to Explore</button>
         </div>
 
-        {/* ROI Impact Stats — real metrics */}
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 16, marginTop: 40, animation: "fosFadeSlideUp 0.6s ease 0.4s both" }}>
+        {/* ROI Impact Stats — animated counters with staggered entrance */}
+        {(() => { const [statsRef, statsVisible] = useScrollReveal(0.2);
+          const c80 = useCountUp(80, 1600, statsVisible);
+          const c3 = useCountUp(3, 1200, statsVisible);
+          const c95 = useCountUp(95, 1800, statsVisible);
+          const c12 = useCountUp(12, 1400, statsVisible);
+          return (
+        <div ref={statsRef} style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 16, marginTop: 40 }}>
           {[
-            { value: "80%", label: "Faster Planning Cycles", color: lp.accent, icon: Zap },
-            { value: "3 weeks", label: "Saved on Budgeting", color: lp.green, icon: CheckSquare },
-            { value: "95%", label: "Faster Financial Reporting", color: lp.purple, icon: TrendingUp },
-            { value: "12-day", label: "Decrease in Close Times", color: lp.gold || lp.amber || "#d97706", icon: Activity },
-          ].map(s => (
-            <div key={s.label} style={{ textAlign: "center", padding: "20px 14px", borderRadius: 16, background: `${s.color}05`, border: `1px solid ${s.color}12`, transition: "all 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}30`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${s.color}10`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = `${s.color}12`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+            { value: `${c80}%`, label: "Faster Planning Cycles", color: lp.accent, icon: Zap },
+            { value: `${c3} weeks`, label: "Saved on Budgeting", color: lp.green, icon: CheckSquare },
+            { value: `${c95}%`, label: "Faster Financial Reporting", color: lp.purple, icon: TrendingUp },
+            { value: `${c12}-day`, label: "Decrease in Close Times", color: lp.gold || lp.amber || "#d97706", icon: Activity },
+          ].map((s, i) => (
+            <div key={s.label} className="fos-glow-pulse" style={{ textAlign: "center", padding: "22px 14px", borderRadius: 16, background: lpMode === "dark" ? `linear-gradient(135deg, ${s.color}08, ${s.color}03)` : `linear-gradient(135deg, ${s.color}06, ${s.color}02)`, border: `1px solid ${s.color}15`, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)", opacity: statsVisible ? 1 : 0, transform: statsVisible ? "translateY(0)" : "translateY(24px)", transitionDelay: `${i * 0.12}s`, position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; e.currentTarget.style.transform = "translateY(-4px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${s.color}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = `${s.color}15`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
             >
-              <div style={{ width: 32, height: 32, borderRadius: 9, background: `${s.color}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
-                <s.icon size={16} color={s.color} />
+              {/* Ambient glow orb */}
+              <div style={{ position: "absolute", top: -20, right: -20, width: 60, height: 60, borderRadius: "50%", background: `radial-gradient(circle, ${s.color}12 0%, transparent 70%)`, pointerEvents: "none" }} />
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}12`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10, transition: "transform 0.3s", position: "relative", zIndex: 1 }}>
+                <s.icon size={17} color={s.color} strokeWidth={2.5} />
               </div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: 10, color: lp.textDim, fontWeight: 600, marginTop: 6, lineHeight: 1.3 }}>{s.label}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1, position: "relative", zIndex: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 10, color: lp.textDim, fontWeight: 600, marginTop: 7, lineHeight: 1.3, position: "relative", zIndex: 1 }}>{s.label}</div>
             </div>
           ))}
-        </div>
+        </div>); })()}
 
-        {/* Trust logos — compact */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 28, marginTop: 32, opacity: 0.4 }}>
+        {/* Trust logos — bold enterprise wordmarks */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 20 : 40, marginTop: 36, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginRight: 8 }}>Trusted by</div>
           {[
-            { name: "Coca-Cola", logo: "https://cdn.simpleicons.org/cocacola", h: 14 },
-            { name: "JPMorgan", logo: "https://cdn.simpleicons.org/jpmorgan", h: 12 },
-            { name: "Deloitte", logo: "https://cdn.simpleicons.org/deloitte", h: 12 },
-            { name: "Target", logo: "https://cdn.simpleicons.org/target", h: 18 },
-            { name: "EY", logo: "https://cdn.simpleicons.org/ey", h: 16 },
-          ].map(b => <img key={b.name} src={b.logo} alt={b.name} style={{ height: b.h, objectFit: "contain", filter: lpMode === "light" ? "grayscale(1) brightness(0.3)" : "grayscale(1) brightness(2.5) invert(1)" }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("span"); fb.style.cssText = `font-size:${b.h}px;font-weight:900;letter-spacing:-0.04em;opacity:0.5;color:${lpMode === "light" ? "#333" : "#ccc"}`; fb.textContent = b.name; e.target.parentElement.insertBefore(fb, e.target.nextSibling); }} />)}
+            { name: "Coca-Cola", logo: "https://cdn.simpleicons.org/cocacola", sz: 22 },
+            { name: "JPMorgan", logo: "https://cdn.simpleicons.org/jpmorgan", sz: 20 },
+            { name: "Deloitte", logo: "https://cdn.simpleicons.org/deloitte", sz: 20 },
+            { name: "Target", logo: "https://cdn.simpleicons.org/target", sz: 26 },
+            { name: "EY", logo: "https://cdn.simpleicons.org/ey", sz: 22 },
+            { name: "Accenture", logo: "https://cdn.simpleicons.org/accenture", sz: 20 },
+          ].map((b, i) => (
+            <div key={b.name} style={{ display: "flex", alignItems: "center", gap: 8, opacity: 0, animation: `fosFadeSlideUp 0.5s ease-out ${0.4 + i * 0.1}s forwards`, transition: "all 0.3s ease" }}
+              onMouseEnter={e => e.currentTarget.style.opacity = "1"}
+              onMouseLeave={e => e.currentTarget.style.opacity = ""}
+            >
+              <img src={b.logo} alt={b.name} style={{ height: b.sz, objectFit: "contain", filter: lpMode === "light" ? "grayscale(1) brightness(0.2)" : "grayscale(1) brightness(3) invert(1)", transition: "filter 0.3s ease" }} loading="lazy"
+                onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("span"); fb.style.cssText = `font-size:${b.sz - 4}px;font-weight:900;letter-spacing:-0.04em;color:${lpMode === "light" ? "#1a1f2e" : "#d0d5e0"};opacity:0.6;font-family:'Manrope',system-ui,sans-serif`; fb.textContent = b.name; e.target.parentElement.insertBefore(fb, e.target.nextSibling); }}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
@@ -8097,13 +8147,26 @@ const LandingPage = ({ onLogin }) => {
         @keyframes fosPulseGlow{0%,100%{box-shadow:0 0 4px rgba(52,211,153,0.3)}50%{box-shadow:0 0 12px rgba(52,211,153,0.6)}}
         @keyframes fosChartDot{0%,50%{r:3.5}75%{r:5}100%{r:3.5}}
         @keyframes fosBarGrow{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+        @keyframes fosPreviewFloat{0%,100%{transform:perspective(1200px) rotateX(2deg) translateY(0)}50%{transform:perspective(1200px) rotateX(0deg) translateY(-6px)}}
+        @keyframes fosPreviewGlow{0%,100%{box-shadow:0 40px 100px rgba(0,0,0,0.6),0 0 0 1px rgba(96,165,250,0.05)}50%{box-shadow:0 50px 120px rgba(0,0,0,0.5),0 0 0 1px rgba(96,165,250,0.12),0 0 60px rgba(96,165,250,0.04)}}
+        @keyframes fosCursorBlink{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
+        @keyframes fosTyping{0%{width:0}100%{width:100%}}
+        @keyframes fosNotifSlide{0%{transform:translateX(100%) scale(0.9);opacity:0}10%{transform:translateX(0) scale(1);opacity:1}90%{transform:translateX(0) scale(1);opacity:1}100%{transform:translateX(100%) scale(0.9);opacity:0}}
+        @keyframes fosDataPulse{0%{opacity:0.5;transform:scale(0.98)}50%{opacity:1;transform:scale(1)}100%{opacity:0.5;transform:scale(0.98)}}
+        @keyframes fosSparkle{0%{opacity:0;transform:scale(0) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(180deg)}100%{opacity:0;transform:scale(0) rotate(360deg)}}
         .fos-preview-line{stroke-dasharray:800;animation:fosDrawLine 3s ease-out forwards}
         .fos-preview-kpi{animation:fosCountUp 0.6s ease-out both}
         .fos-preview-insight{animation:fosSlideIn 0.5s ease-out both}
         .fos-preview-dot{animation:fosChartDot 2s ease-in-out infinite}
         .fos-preview-live{animation:fosPulseGlow 2s ease-in-out infinite}
+        .fos-preview-float{animation:fosPreviewFloat 6s ease-in-out infinite}
+        .fos-preview-wrapper{animation:fosPreviewGlow 4s ease-in-out infinite}
+        .fos-cursor-blink{animation:fosCursorBlink 1.2s ease-in-out infinite}
+        .fos-data-pulse{animation:fosDataPulse 3s ease-in-out infinite}
+        .fos-sparkle{animation:fosSparkle 2s ease-in-out infinite}
+        .fos-notif-slide{animation:fosNotifSlide 5s ease-in-out infinite}
       `}</style>
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 20px 40px" : "0 48px 60px" }}>
+      <div className="fos-preview-float" style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 20px 40px" : "0 48px 60px" }}>
         <div style={{ position: "relative", background: lpMode === "dark" ? "rgba(16,19,26,0.8)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, borderRadius: 24, padding: 3, boxShadow: lpMode === "dark" ? "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.05)" : "0 40px 100px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03)", overflow: "hidden" }}>
           {/* Browser chrome bar */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", background: lpMode === "dark" ? "#0b0c10" : "#f0f1f4", borderRadius: "21px 21px 0 0" }}>
@@ -8228,7 +8291,7 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row1" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 50s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "NetSuite", logo: "https://cdn.simpleicons.org/oracle/C74634", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
+              { name: "NetSuite", logo: "https://cdn.simpleicons.org/netsuite/1B3D6D", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
               { name: "SAP", logo: "https://cdn.simpleicons.org/sap/0FAAFF", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
               { name: "Salesforce", logo: "https://cdn.simpleicons.org/salesforce/00A1E0", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
               { name: "Stripe", logo: "https://cdn.simpleicons.org/stripe/635BFF", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
@@ -8247,7 +8310,7 @@ const LandingPage = ({ onLogin }) => {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = item.featured ? `${lp.purple}30` : lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
               >
-                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: `${item.color}12`, padding: 4 }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("div"); fb.style.cssText = `width:32px;height:32px;border-radius:8px;background:${item.color}18;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:${item.color};flex-shrink:0;letter-spacing:-0.02em`; fb.textContent = item.name[0]; e.target.parentElement.insertBefore(fb, e.target); }} />
+                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: `${item.color}12`, padding: 4 }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("div"); fb.style.cssText = `width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,${item.color}25,${item.color}10);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:${item.color};flex-shrink:0;letter-spacing:-0.02em;border:1px solid ${item.color}20;text-shadow:0 1px 2px rgba(0,0,0,0.1)`; fb.textContent = item.name[0]; e.target.parentElement.insertBefore(fb, e.target); }} />
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
                   <div style={{ fontSize: 8, fontWeight: 700, color: item.featured ? lp.purple : lp.textFaint, letterSpacing: "0.05em", marginTop: 1 }}>{item.featured ? "AI PARTNER" : item.tag}</div>
@@ -8284,7 +8347,7 @@ const LandingPage = ({ onLogin }) => {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
               >
-                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: `${item.color}12`, padding: 4 }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("div"); fb.style.cssText = `width:32px;height:32px;border-radius:8px;background:${item.color}18;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:${item.color};flex-shrink:0;letter-spacing:-0.02em`; fb.textContent = item.name[0]; e.target.parentElement.insertBefore(fb, e.target); }} />
+                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: `${item.color}12`, padding: 4 }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("div"); fb.style.cssText = `width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,${item.color}25,${item.color}10);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:${item.color};flex-shrink:0;letter-spacing:-0.02em;border:1px solid ${item.color}20;text-shadow:0 1px 2px rgba(0,0,0,0.1)`; fb.textContent = item.name[0]; e.target.parentElement.insertBefore(fb, e.target); }} />
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
                   <div style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, letterSpacing: "0.05em", marginTop: 1 }}>{item.tag}</div>
@@ -8320,7 +8383,7 @@ const LandingPage = ({ onLogin }) => {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
               >
-                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: `${item.color}12`, padding: 4 }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("div"); fb.style.cssText = `width:32px;height:32px;border-radius:8px;background:${item.color}18;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:${item.color};flex-shrink:0;letter-spacing:-0.02em`; fb.textContent = item.name[0]; e.target.parentElement.insertBefore(fb, e.target); }} />
+                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "contain", flexShrink: 0, background: `${item.color}12`, padding: 4 }} loading="lazy" onError={e => { e.target.onerror = null; e.target.style.display = "none"; const fb = document.createElement("div"); fb.style.cssText = `width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,${item.color}25,${item.color}10);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:${item.color};flex-shrink:0;letter-spacing:-0.02em;border:1px solid ${item.color}20;text-shadow:0 1px 2px rgba(0,0,0,0.1)`; fb.textContent = item.name[0]; e.target.parentElement.insertBefore(fb, e.target); }} />
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
                   <div style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, letterSpacing: "0.05em", marginTop: 1 }}>{item.tag}</div>
@@ -8429,13 +8492,13 @@ const LandingPage = ({ onLogin }) => {
               { Icon: GitBranch, color: lp.green },
               { Icon: Sparkles, color: lp.purple },
             ].map(({ Icon, color }, i) => (
-              <div key={i} style={{ width: 44, height: 44, borderRadius: 14, background: `${color}08`, border: `1px solid ${color}18`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)", cursor: "default" }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px) scale(1.08)"; e.currentTarget.style.boxShadow = `0 8px 20px ${color}15`; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+              <div key={i} className="fos-float" style={{ width: 44, height: 44, borderRadius: 14, background: `linear-gradient(135deg, ${color}12, ${color}06)`, border: `1px solid ${color}20`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)", cursor: "default", animationDelay: `${i * 0.3}s`, boxShadow: `0 4px 16px ${color}10` }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px) scale(1.12)"; e.currentTarget.style.boxShadow = `0 12px 28px ${color}20`; e.currentTarget.style.borderColor = `${color}40`; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 4px 16px ${color}10`; e.currentTarget.style.borderColor = `${color}20`; }}
               ><Icon size={20} color={color} /></div>
             ))}
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>AI that plans with you</h2>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>AI that <span className="fos-gradient-text" style={{ display: "inline" }}>plans with you</span></h2>
           <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 520, margin: "0 auto" }}>FinanceOS AI agents operate inside your planning environment, using your live data and business logic to support decisions in real time.</p>
         </div>
 
@@ -8468,8 +8531,11 @@ const LandingPage = ({ onLogin }) => {
               "Can you analyze our current revenue growth and highlight the top contributors?"
             </div>
             <div style={{ padding: "12px 14px", borderRadius: 10, background: lp.surfaceAlt, border: `1px solid ${lp.border}`, fontSize: 12, color: lp.textSub, lineHeight: 1.6, marginBottom: 8 }}>
-              <div style={{ fontSize: 8, fontWeight: 700, color: lp.green, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Thought & work process →</div>
-              Revenue grew <span style={{ color: lp.accent, fontWeight: 700 }}>+44.7% YoY</span> to $51.2M. Enterprise expansion drove <span style={{ color: lp.green, fontWeight: 700 }}>68%</span> of the beat. AI module attach rate hit <span style={{ color: lp.gold, fontWeight: 700 }}>42%</span>, up from 28%.
+              <div style={{ fontSize: 8, fontWeight: 700, color: lp.green, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: lp.green, animation: "fosPulseGlow 2s ease-in-out infinite" }} />
+                Thought & work process →
+              </div>
+              Revenue grew <span style={{ color: lp.accent, fontWeight: 700, animation: "fosCountUp 0.6s ease-out 0.3s both" }}>+44.7% YoY</span> to $51.2M. Enterprise expansion drove <span style={{ color: lp.green, fontWeight: 700, animation: "fosCountUp 0.6s ease-out 0.5s both" }}>68%</span> of the beat. AI module attach rate hit <span style={{ color: lp.gold, fontWeight: 700, animation: "fosCountUp 0.6s ease-out 0.7s both" }}>42%</span>, up from 28%.
             </div>
             <div style={{ display: "flex", gap: 6 }}>
               <span style={{ fontSize: 9, padding: "5px 12px", borderRadius: 6, background: `${lp.accent}08`, border: `1px solid ${lp.accent}14`, color: lp.accent, cursor: "pointer", transition: "all 0.2s" }}>Drill into segments</span>
@@ -8477,7 +8543,8 @@ const LandingPage = ({ onLogin }) => {
             </div>
             <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, background: lp.inputBg, border: `1px solid ${lp.border}`, display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 11, color: lp.textFaint }}>Ask or build anything...</span>
-              <span style={{ marginLeft: "auto", fontSize: 10, color: lp.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>⌘K</span>
+              <span className="fos-cursor-blink" style={{ width: 2, height: 14, background: lp.accent, borderRadius: 1, marginLeft: 2 }} />
+              <span style={{ marginLeft: "auto", fontSize: 10, color: lp.textFaint, fontFamily: "'JetBrains Mono', monospace", padding: "2px 6px", borderRadius: 4, background: `${lp.textFaint}10`, border: `1px solid ${lp.textFaint}15` }}>⌘K</span>
             </div>
           </div>
         </div>
@@ -8499,7 +8566,7 @@ const LandingPage = ({ onLogin }) => {
               <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                 <span style={{ width: 90, fontSize: 10, color: lp.textDim, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</span>
                 <div style={{ flex: 1, height: 20, background: lp.surfaceAlt, borderRadius: 6, overflow: "hidden", border: `1px solid ${lp.borderLight}` }}>
-                  <div style={{ width: `${s.width}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}60, ${s.color})`, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8, transition: "width 0.8s cubic-bezier(0.22,1,0.36,1)" }}>
+                  <div className="fos-scenario-bar" style={{ width: `${s.width}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}60, ${s.color})`, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8, transition: "width 1.2s cubic-bezier(0.22,1,0.36,1)", transformOrigin: "left", animation: "fosBarGrow 1.2s ease-out both" }}>
                     <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}>{s.rev}</span>
                   </div>
                 </div>
