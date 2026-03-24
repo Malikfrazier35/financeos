@@ -5653,6 +5653,7 @@ const IntelligenceView = ({ c, toast, onNav }) => {
     try {
       const utm = getUtmData();
       await supabase.from("leads").insert({ email: leadForm.email, first_name: leadForm.first, last_name: leadForm.last, company: leadForm.company, role: leadForm.role, company_size: leadForm.size, source: "intelligence_library", resource_id: modalResource?.id, resource_title: modalResource?.title || "Newsletter", ...utm });
+      fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", email: leadForm.email, full_name: `${leadForm.first} ${leadForm.last}`.trim(), company: leadForm.company, role: leadForm.role, interest_type: "lead", source: "intelligence_library" }) }).catch(() => {});
     } catch {}
     setSubmitted(true);
     toast("Lead captured — download link sent", "success");
@@ -6829,8 +6830,9 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           options: { data: { full_name: name } },
         });
         if (err) { setError(err.message); setLoading(null); return; }
-        // Also add to waitlist
+        // Also add to waitlist + smart notification
         try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal", ...(() => { try { const u = getUtmData(); return Object.keys(u).length ? { metadata: JSON.stringify(u) } : {}; } catch { return {}; } })() }, { onConflict: "email" }); } catch {}
+        fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }) }).catch(() => {});
         // If auto-confirmed, trigger login immediately
         if (data?.session) { onAuth({ method: "email" }); return; }
         // Email confirmation required — show interstitial
@@ -6849,11 +6851,12 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
     }
   };
 
-  // Demo request — just saves to waitlist
+  // Demo request — saves to waitlist + smart notification
   const handleDemo = async () => {
     setLoading("email");
     setError(null);
     try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "demo", source: "demo_modal", ...(() => { try { const u = getUtmData(); return Object.keys(u).length ? { metadata: JSON.stringify(u) } : {}; } catch { return {}; } })() }, { onConflict: "email" }); } catch {}
+    fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "demo_request", email: email.trim(), full_name: name, company, role, source: "demo_modal" }) }).catch(() => {});
     setLoading(null);
     onAuth({ method: "demo" });
   };
@@ -7847,6 +7850,8 @@ const LandingPage = ({ onLogin }) => {
     setEmailStatus("saving");
     try {
       await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: getUtmData().utm_source || "hero" }, { onConflict: "email" });
+      // Smart notification — email alert
+      fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", email: heroEmail.trim(), interest_type: "trial", source: "hero_signup" }) }).catch(() => {});
       setEmailStatus("saved");
     } catch { setEmailStatus("error"); }
     onLogin({ name: heroEmail.split("@")[0], email: heroEmail, plan: "demo" });
@@ -8051,7 +8056,17 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ fontSize: 11, color: lp.textFaint, marginTop: 10, textAlign: "center" }}>No credit card required · 14-day free trial · Interactive demo after signup</div>
 
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 18 }}>
+        {/* Live notification indicator — animated social proof */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, animation: "fosFadeSlideUp 0.6s ease 0.5s both" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 10, background: lpMode === "dark" ? "rgba(16,19,26,0.7)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: lp.green, boxShadow: `0 0 8px ${lp.green}60`, animation: "pulse 2s infinite" }} />
+            <span style={{ fontSize: 10, fontWeight: 600, color: lp.textDim }}>Smart alerts active</span>
+            <span style={{ width: 1, height: 12, background: `${lp.border}` }} />
+            <span style={{ fontSize: 10, fontWeight: 700, color: lp.green }}>Real-time email notifications</span>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 14 }}>
           <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.accent}30`, background: `${lp.accent}06`, color: lp.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 6 }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}60`; e.currentTarget.style.background = `${lp.accent}12`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = `${lp.accent}30`; e.currentTarget.style.background = `${lp.accent}06`; }}
@@ -8180,6 +8195,11 @@ const LandingPage = ({ onLogin }) => {
         .fos-price-pulse{animation:fosPricePulse 3s ease-in-out infinite}
         .fos-tab-slide{animation:fosTabSlide 0.35s ease-out both}
         .fos-stagger-left{animation:fosStaggerLeft 0.5s ease-out both}
+        @keyframes fosNotifRipple{0%{transform:scale(0.8);opacity:0.6}100%{transform:scale(1.4);opacity:0}}
+        @keyframes fosNotifPulse{0%{box-shadow:0 0 0 0 rgba(96,165,250,0.4)}70%{box-shadow:0 0 0 12px rgba(96,165,250,0)}100%{box-shadow:0 0 0 0 rgba(96,165,250,0)}}
+        @keyframes fosAlertSlide{0%{opacity:0;transform:translateY(-100%) scale(0.95)}10%{opacity:1;transform:translateY(0) scale(1)}90%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-20px) scale(0.98)}}
+        .fos-notif-pulse{animation:fosNotifPulse 2s ease-in-out infinite}
+        .fos-alert-slide{animation:fosAlertSlide 4s ease-in-out both}
         .fos-data-pulse{animation:fosDataPulse 3s ease-in-out infinite}
         .fos-sparkle{animation:fosSparkle 2s ease-in-out infinite}
         .fos-notif-slide{animation:fosNotifSlide 5s ease-in-out infinite}
@@ -9423,7 +9443,7 @@ const LandingPage = ({ onLogin }) => {
                 </div>
               )}
               {p.enterprise ? (
-                <button onClick={() => { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); }} style={{
+                <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "sales_inquiry", inquiry_type: "Enterprise Pricing", source: "pricing_card_enterprise" }) }).catch(() => {}); window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); }} style={{
                   width: "100%", fontSize: 12, padding: "12px 0", borderRadius: 10, border: `1px solid ${lp.border}`, cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: "transparent", color: lp.textSub, transition: "all 0.15s",
                 }}
@@ -9441,6 +9461,7 @@ const LandingPage = ({ onLogin }) => {
                 >Try Demo</button>
                 <button onClick={async () => {
                   try { await supabase.from("waitlist").upsert({ email: "subscriber", interest_type: p.name.toLowerCase(), source: "landing_pricing" }, { onConflict: "email" }); } catch {}
+                  fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", interest_type: p.name.toLowerCase(), source: "landing_pricing", plan_interest: p.name }) }).catch(() => {});
                   enterDemo();
                 }} style={{
                   flex: 2, fontSize: 12, padding: "12px 0", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
@@ -9532,7 +9553,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ textAlign: "center", marginTop: 32, display: "flex", gap: 12, justifyContent: "center" }}>
           <button onClick={() => setDemoModal(true)} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25` }}>Schedule a Demo Call</button>
-          <button onClick={() => window.open("mailto:sales@finance-os.app?subject=Enterprise%20Inquiry", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Talk to Sales</button>
+          <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "sales_inquiry", inquiry_type: "Enterprise", source: "why_teams_switch_cta" }) }).catch(() => {}); window.open("mailto:sales@finance-os.app?subject=Enterprise%20Inquiry", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Talk to Sales</button>
         </div>
       </div>
       ); })()}
@@ -9715,11 +9736,11 @@ const LandingPage = ({ onLogin }) => {
               <h2 style={{ fontSize: isMobile ? 28 : 38, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14, color: lpMode === "dark" ? "#fff" : lp.text, lineHeight: 1.15 }}>Building the operating<br />system for modern finance</h2>
               <p style={{ fontSize: 15, color: lpMode === "dark" ? "rgba(255,255,255,0.7)" : lp.textDim, maxWidth: 420, lineHeight: 1.75, marginBottom: 28 }}>FinanceOS is raising its seed round. Term sheet, traction data, and financial model are available under NDA for qualified investors.</p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
-                <button onClick={() => window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Investor%20Deck%20Request&body=Name:%0AFirm:%0ACheck%20size%20range:%0A", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 8px 32px ${lp.accent}30`, transition: "all 0.2s" }}
+                <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "investor_inquiry", source: "investor_deck_cta" }) }).catch(() => {}); window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Investor%20Deck%20Request&body=Name:%0AFirm:%0ACheck%20size%20range:%0A", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 8px 32px ${lp.accent}30`, transition: "all 0.2s" }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${lp.accent}40`; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 8px 32px ${lp.accent}30`; }}
                 >Request Investor Deck</button>
-                <button onClick={() => window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Meeting%20Request", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: `1px solid rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.15)`, background: `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.06)`, backdropFilter: "blur(8px)", color: lpMode === "dark" ? "#fff" : lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s" }}
+                <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "investor_inquiry", inquiry_type: "Meeting Request", source: "investor_call_cta" }) }).catch(() => {}); window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Meeting%20Request", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: `1px solid rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.15)`, background: `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.06)`, backdropFilter: "blur(8px)", color: lpMode === "dark" ? "#fff" : lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s" }}
                   onMouseEnter={e => { e.currentTarget.style.background = `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.12)`; }}
                   onMouseLeave={e => { e.currentTarget.style.background = `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.06)`; }}
                 >Schedule a Call</button>
@@ -9884,8 +9905,8 @@ const LandingPage = ({ onLogin }) => {
               { key: "email", label: "Work Email", type: "email", placeholder: "jane@company.com", required: true },
               { key: "company", label: "Company", type: "text", placeholder: "Company name" },
               { key: "title", label: "Title / Role", type: "text", placeholder: "VP Finance, FP&A Director, CFO..." },
-            ].map(f => (
-              <div key={f.key} style={{ marginBottom: 12 }}>
+            ].map((f, fi) => (
+              <div key={f.key} style={{ marginBottom: 12, animation: `fosFadeSlideUp 0.4s ease-out ${0.05 + fi * 0.06}s both` }}>
                 <label style={{ fontSize: 10, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>{f.label}{f.required && <span style={{ color: "#ef4444" }}> *</span>}</label>
                 <input value={demoForm[f.key]} onChange={e => setDemoForm(prev => ({ ...prev, [f.key]: e.target.value }))} type={f.type} placeholder={f.placeholder}
                   style={{ width: "100%", fontSize: 13, padding: "10px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", outline: "none" }}
@@ -9921,6 +9942,15 @@ const LandingPage = ({ onLogin }) => {
               if (!demoForm.full_name || !demoForm.email?.includes("@")) return;
               setDemoSubmitting(true);
               try {
+                // Fire notification pipeline — sends email alert to sales
+                await fetch("/api/notify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ type: "demo_request", ...demoForm, source: "homepage_modal" }),
+                });
+              } catch {}
+              try {
+                // Legacy edge function call (backward compatible)
                 await fetch(`${SUPABASE_URL}/functions/v1/request-demo`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
@@ -9944,16 +9974,38 @@ const LandingPage = ({ onLogin }) => {
               color: "#fff", cursor: demoSubmitting ? "wait" : "pointer", fontFamily: "inherit", fontWeight: 700,
               opacity: (!demoForm.full_name || !demoForm.email?.includes("@")) ? 0.5 : 1,
               boxShadow: "0 6px 24px rgba(96,165,250,0.25)", transition: "all 0.2s",
-            }}>{demoSubmitting ? "Submitting..." : "Request Demo Call"}</button>
+            }}>{demoSubmitting ? (<span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />Sending alert...</span>) : "Request Demo Call"}</button>
             <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#3d4558" }}>We'll reach out within 24 hours · No commitment required</div>
             </>) : (
-            <div style={{ textAlign: "center", padding: "24px 0" }}>
-              <div style={{ width: 56, height: 56, borderRadius: 12, background: "linear-gradient(135deg, #34d39920, #34d39908)", border: "1px solid #34d39915", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}><Check size={28} color="#34d399" strokeWidth={3} /></div>
-              <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Demo request received</div>
-              <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.6, marginBottom: 20 }}>We'll reach out to {demoForm.email} within 24 hours to schedule your personalized demo.</div>
-              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                <button onClick={() => { setDemoModal(false); setDemoSuccess(false); setDemoForm({ full_name: "", email: "", company: "", title: "", company_size: "", use_case: "", current_tools: "" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Close</button>
-                <button onClick={() => { setDemoModal(false); setDemoSuccess(false); enterDemo(); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Explore the Demo Now →</button>
+            <div style={{ textAlign: "center", padding: "24px 0", animation: "fosScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+              {/* Animated success checkmark with ripple */}
+              <div style={{ position: "relative", display: "inline-block", marginBottom: 20 }}>
+                <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg, #34d39920, #34d39908)", border: "1px solid #34d39915", display: "inline-flex", alignItems: "center", justifyContent: "center", animation: "fosCardPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both", position: "relative", zIndex: 2 }}><Check size={32} color="#34d399" strokeWidth={3} style={{ animation: "fosCheckPop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.2s both" }} /></div>
+                {/* Ripple rings */}
+                <div style={{ position: "absolute", inset: -8, borderRadius: 20, border: "2px solid #34d39915", animation: "fosNotifRipple 1.5s ease-out 0.3s both" }} />
+                <div style={{ position: "absolute", inset: -16, borderRadius: 24, border: "1px solid #34d39910", animation: "fosNotifRipple 1.5s ease-out 0.5s both" }} />
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 6, animation: "fosFadeSlideUp 0.5s ease-out 0.3s both" }}>Demo request received</div>
+              <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.6, marginBottom: 12, animation: "fosFadeSlideUp 0.5s ease-out 0.4s both" }}>We'll reach out to <span style={{ color: "#60a5fa", fontWeight: 600 }}>{demoForm.email}</span> within 24 hours.</div>
+              {/* Notification pipeline visual */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 20, animation: "fosFadeSlideUp 0.5s ease-out 0.5s both" }}>
+                {[
+                  { icon: "✓", label: "Received", color: "#34d399", done: true },
+                  { icon: "→", label: "Routed", color: "#60a5fa", done: true },
+                  { icon: "✉", label: "Alert sent", color: "#a78bfa", done: true },
+                ].map((step, si) => (
+                  <React.Fragment key={step.label}>
+                    {si > 0 && <div style={{ width: 20, height: 2, background: `linear-gradient(90deg, ${[...["#34d399","#60a5fa","#a78bfa"]][si-1]}, ${step.color})`, borderRadius: 1, animation: `fosBarGrow 0.4s ease-out ${0.6 + si * 0.15}s both`, transformOrigin: "left" }} />}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, animation: `fosScaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) ${0.5 + si * 0.15}s both` }}>
+                      <div style={{ width: 28, height: 28, borderRadius: 8, background: `${step.color}15`, border: `1px solid ${step.color}25`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: step.color }}>{step.icon}</div>
+                      <span style={{ fontSize: 8, fontWeight: 700, color: step.color, textTransform: "uppercase", letterSpacing: "0.04em" }}>{step.label}</span>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center", animation: "fosFadeSlideUp 0.5s ease-out 0.7s both" }}>
+                <button onClick={() => { setDemoModal(false); setDemoSuccess(false); setDemoForm({ full_name: "", email: "", company: "", title: "", company_size: "", use_case: "", current_tools: "" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Close</button>
+                <button onClick={() => { setDemoModal(false); setDemoSuccess(false); enterDemo(); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)", transition: "all 0.15s" }}>Explore the Demo Now →</button>
               </div>
             </div>
             )}
