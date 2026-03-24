@@ -3303,8 +3303,8 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
             const ownerPending = ownerTasks.length - ownerDone;
             return (
               <div key={owner} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, padding: "6px 0" }}>
-                <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}20, ${c.purple}10)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: c.accent, flexShrink: 0 }}>
-                  {owner.charAt(0)}
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff", flexShrink: 0 }}>
+                  {owner.split(" ").map(w => w[0]).join("").slice(0,2)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 11, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{owner}</div>
@@ -3376,7 +3376,10 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none", marginBottom: 3 }}>{t.task}</div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 10, color: c.textDim }}>
-                      <span>{t.owner}</span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ width: 18, height: 18, borderRadius: 5, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{t.owner.split(" ").map(w => w[0]).join("").slice(0,2)}</div>
+                        <span>{t.owner}</span>
+                      </div>
                       <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
                       <span>Due {t.due}</span>
                       <span style={{ padding: "1px 6px", borderRadius: 3, background: `${priorityColors[t.priority]}12`, color: priorityColors[t.priority], fontWeight: 700, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>{t.priority}</span>
@@ -6859,6 +6862,36 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
+      {/* ═══ THREE PILLARS — Pigment-style "Designed for decisions" ═══ */}
+      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10 }}>Designed for decisions that can't wait</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
+          {[
+            { title: "Intelligent by design", desc: "AI agents embedded in your planning. Analyze performance, explain drivers, and simulate scenarios in real time. Surface decision-ready insights grounded in your live data.", icon: "🧠", color: "#a78bfa", features: ["SHAP feature importance", "Confidence intervals", "Visible reasoning chain"] },
+            { title: "Collaborative by nature", desc: "Your finance team works as one. Assign tasks, send messages, track activity, and review changes — all inside the platform where your data lives.", icon: "👥", color: "#60a5fa", features: ["Team profiles & presence", "Task assignment & tracking", "Channel-based messaging"] },
+            { title: "Flexible at scale", desc: "Add entities, scenarios, and team members without rebuilding models. Scale from startup to enterprise without ever hitting a wall.", icon: "⚡", color: "#3dd9a0", features: ["Unlimited scenarios", "Multi-entity consolidation", "No seat caps (Enterprise)"] },
+          ].map(p => (
+            <div key={p.title} style={{ background: "rgba(16,19,26,0.7)", backdropFilter: "blur(12px)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 18, padding: "32px 26px", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}25`; e.currentTarget.style.transform = "translateY(-3px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.transform = "none"; }}>
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${p.color}18, transparent)` }} />
+              <div style={{ fontSize: 28, marginBottom: 16 }}>{p.icon}</div>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#eef0f6", marginBottom: 10, letterSpacing: "-0.02em" }}>{p.title}</h3>
+              <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 18 }}>{p.desc}</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {p.features.map(f => (
+                  <div key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#636d84" }}>
+                    <span style={{ color: p.color, fontWeight: 700, fontSize: 12 }}>✓</span> {f}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ═══ PERSONALIZED DASHBOARD PREVIEW — "Designed for your decisions" ═══ */}
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
@@ -8687,6 +8720,15 @@ function FinanceOSApp() {
                 const NOTIFS = [...activityNotifs, ...systemNotifs].slice(0, 8);
                 const unread = NOTIFS.filter(n => !notifRead.has(n.id)).length;
                 return (<>
+              {/* Team inbox */}
+              <div onClick={() => navigate("team")} style={{ cursor: "pointer", padding: 4, borderRadius: 8, position: "relative", transition: "all 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = `${c.accent}10`; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                title="Team messages"
+              >
+                <MessageSquare size={16} color={c.textDim} />
+                <div style={{ position: "absolute", top: 0, right: 0, width: 7, height: 7, borderRadius: "50%", background: c.green, border: `1.5px solid ${c.bg2}` }} />
+              </div>
               {/* Theme toggle */}
               <div onClick={toggleMode} style={{ cursor: "pointer", padding: 4, borderRadius: 8, transition: "all 0.2s" }}
                 onMouseEnter={e => { e.currentTarget.style.background = `${c.accent}10`; }}
