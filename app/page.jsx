@@ -4478,12 +4478,13 @@ const ScenariosView = ({ c, toast }) => {
   const [drivers, setDrivers] = useState({ ndr: 118, pipeline: 42, churn: 2.1, headcount: 128 });
   const [showCompare, setShowCompare] = useState(false);
 
-  const scenarios = SCENARIOS_LIST.map((s, i) => i === 0 ? {
-    ...s,
-    revenue: +(s.revenue * (drivers.ndr / 118) * (drivers.pipeline / 42)).toFixed(1),
-    opex: +(s.opex * (drivers.headcount / 128)).toFixed(1),
-    get ebitda() { return this.revenue ? +((this.revenue - this.opex) / this.revenue * 100).toFixed(1) : 0; }
-  } : s);
+  const scenarios = SCENARIOS_LIST.map((s, i) => {
+    if (i !== 0) return s;
+    const rev = +(s.revenue * (drivers.ndr / 118) * (drivers.pipeline / 42)).toFixed(1) || s.revenue;
+    const opx = +(s.opex * (drivers.headcount / 128)).toFixed(1) || s.opex;
+    const ebt = rev > 0 ? +((rev - opx) / rev * 100).toFixed(1) : 0;
+    return { ...s, revenue: rev, opex: opx, ebitda: ebt };
+  });
 
   const active = scenarios[selected];
   const barMax = Math.max(...scenarios.map(s => s.revenue));
@@ -4532,7 +4533,7 @@ const ScenariosView = ({ c, toast }) => {
             </div>
           </div>
           {scenarios.map((s, i) => {
-            const ebitdaVal = typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda);
+            const ebitdaVal = s.ebitda;
             const isActive = selected === i;
             return (
             <div key={s.name} onClick={() => setSelected(i)} style={{ marginBottom: 14, cursor: "pointer", opacity: isActive ? 1 : 0.6, transition: "all 0.2s", transform: isActive ? "translateX(2px)" : "none" }}>
@@ -4616,7 +4617,7 @@ const ScenariosView = ({ c, toast }) => {
           const renderCard = (s) => (
             <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
-              {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%`, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
+              {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${s.ebitda}%`, color: s.ebitda > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
                 <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
                   <span style={{ color: c.textDim }}>{r.l}</span>
                   <span style={{ fontWeight: 700, color: r.color, fontFamily: "'JetBrains Mono', monospace" }}>{r.v}</span>
@@ -4665,7 +4666,7 @@ const ScenariosView = ({ c, toast }) => {
                     <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: s.status === "Active" ? c.greenDim : c.surfaceAlt, color: s.status === "Active" ? c.green : c.textDim }}>{s.status}</span>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-                    {[{ l: "Rev", v: `$${s.revenue}M` }, { l: "OpEx", v: `$${s.opex}M` }, { l: "EBITDA", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%` }].map(m => (
+                    {[{ l: "Rev", v: `$${s.revenue}M` }, { l: "OpEx", v: `$${s.opex}M` }, { l: "EBITDA", v: `${s.ebitda}%` }].map(m => (
                       <div key={m.l}>
                         <div style={{ fontSize: 8, color: c.textDim, textTransform: "uppercase", letterSpacing: "0.04em" }}>{m.l}</div>
                         <div style={{ fontSize: 15, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{m.v}</div>
