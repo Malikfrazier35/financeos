@@ -6609,37 +6609,118 @@ const LandingPage = ({ onLogin }) => {
       {/* Site-wide status banner */}
       <StatusBanner dark={true} />
 
-      {/* Nav */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "14px 20px" : "16px 48px", maxWidth: 1200, margin: "0 auto", background: "rgba(9,9,11,0.8)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(30,34,48,0.5)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <FosLogo size={32} />
-          <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
+      {/* Nav — sticky with dropdown menus */}
+      <nav style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(9,9,11,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(30,34,48,0.5)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "12px 20px" : "14px 48px", maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <FosLogo size={32} />
+            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
+          </div>
+          {!isMobile ? (
+          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+            {/* Dropdown buttons */}
+            {[
+              { label: "Solutions", items: [
+                { name: "Budget Planning", href: "/use-cases/budget-planning" },
+                { name: "Revenue Forecasting", href: "/use-cases/forecasting" },
+                { name: "Financial Consolidation", href: "/use-cases/consolidation" },
+                { name: "Revenue Planning", href: "/use-cases/revenue-planning" },
+                { name: "Headcount Planning", href: "/use-cases/headcount-planning" },
+                { name: "All Solutions", href: "/use-cases", accent: true },
+              ]},
+              { label: "Integrations", items: [
+                { name: "Stripe", tag: "PAYMENTS" }, { name: "Square", tag: "PAYMENTS" }, { name: "Plaid", tag: "BANKING" },
+                { name: "S&P Global", tag: "MARKET DATA" }, { name: "Morningstar", tag: "RESEARCH" }, { name: "FactSet", tag: "FINANCIAL DATA" },
+                { name: "QuickBooks", tag: "ERP" }, { name: "Anthropic", tag: "AI PARTNER", accent: true },
+                { name: "Supabase", tag: "DATABASE" }, { name: "Vercel", tag: "HOSTING" }, { name: "Cloudflare", tag: "SECURITY" }, { name: "AWS", tag: "CLOUD" },
+                { name: "Ramp", tag: "EXPENSE MGMT" }, { name: "DocuSign", tag: "ESIGNATURE" },
+                { name: "Slack", tag: "MESSAGING" }, { name: "Gmail", tag: "EMAIL" },
+                { name: "HubSpot", tag: "CRM" }, { name: "Salesforce", tag: "CRM" }, { name: "Intercom", tag: "SUPPORT" },
+                { name: "Calendly", tag: "SCHEDULING" }, { name: "Linear", tag: "PROJECTS" },
+              ]},
+              { label: "Trust", items: [
+                { name: "SOC 2 Type II", tag: "COMPLIANCE" }, { name: "AES-256", tag: "ENCRYPTION" },
+                { name: "99.9% Uptime", tag: "RELIABILITY" }, { name: "GDPR Ready", tag: "PRIVACY" },
+                { name: "Row-Level Security", tag: "DATABASE" }, { name: "HSTS + CSP", tag: "HEADERS" },
+              ]},
+              { label: "Pricing", href: "#pricing" },
+              { label: "Compare", items: [
+                { name: "vs Pigment", href: "/compare/financeos-vs-pigment" },
+                { name: "vs Anaplan", href: "/compare/financeos-vs-anaplan" },
+                { name: "vs Adaptive", href: "/compare/financeos-vs-adaptive" },
+                { name: "vs Mosaic", href: "/compare/financeos-vs-mosaic" },
+                { name: "vs Runway", href: "/compare/financeos-vs-runway" },
+              ]},
+            ].map(menu => (
+              <div key={menu.label} style={{ position: "relative" }} className="nav-dd-wrap">
+                {menu.href && !menu.items ? (
+                  <a href={menu.href} style={{ fontSize: 13, color: "#8b92a5", textDecoration: "none", fontWeight: 600, padding: "8px 14px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 4, transition: "all 0.15s" }}
+                    onMouseEnter={e => e.currentTarget.style.color = "#f0f2f5"}
+                    onMouseLeave={e => e.currentTarget.style.color = "#8b92a5"}
+                  >{menu.label}</a>
+                ) : (
+                  <button className="nav-dd-btn" style={{ fontSize: 13, color: "#8b92a5", background: "none", border: "none", fontWeight: 600, padding: "8px 14px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                    {menu.label}
+                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ opacity: 0.5, transition: "transform 0.2s" }}><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </button>
+                )}
+                {menu.items && (
+                  <div className="nav-dd-panel" style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", paddingTop: 8, display: "none", zIndex: 100 }}>
+                    <div style={{ background: "#0f1118", border: "1px solid #1e2230", borderRadius: 16, padding: menu.label === "Integrations" ? "16px 20px" : "10px 8px", boxShadow: "0 16px 48px rgba(0,0,0,0.5)", minWidth: menu.label === "Integrations" ? 520 : 220, maxHeight: 420, overflowY: "auto" }}>
+                      {menu.label === "Integrations" ? (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+                          {menu.items.map(item => (
+                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 8, transition: "background 0.15s", cursor: "default" }}
+                              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.06)"}
+                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            >
+                              <div style={{ width: 6, height: 6, borderRadius: 2, background: item.accent ? "#60a5fa" : "#3d4558", flexShrink: 0 }} />
+                              <div>
+                                <div style={{ fontSize: 11, fontWeight: 700, color: item.accent ? "#60a5fa" : "#eef0f6" }}>{item.name}</div>
+                                <div style={{ fontSize: 8, fontWeight: 700, color: "#3d4558", letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.tag}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        menu.items.map(item => (
+                          item.href ? (
+                            <a key={item.name} href={item.href} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? "#60a5fa" : "#c8cdd8", transition: "all 0.15s" }}
+                              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.06)"}
+                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            >
+                              {item.name}
+                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: "#3d4558", letterSpacing: "0.06em" }}>{item.tag}</span>}
+                            </a>
+                          ) : (
+                            <div key={item.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, color: "#c8cdd8" }}
+                              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.06)"}
+                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            >
+                              {item.name}
+                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: "#3d4558", letterSpacing: "0.06em" }}>{item.tag}</span>}
+                            </div>
+                          )
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div style={{ width: 1, height: 20, background: "#1e2230", margin: "0 4px" }} />
+            <a href="#invest" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none", fontWeight: 600, padding: "8px 12px" }}>Investors</a>
+            <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Sign In</button>
+            <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)" }}>Subscribe</button>
+          </div>
+          ) : (
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+            <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Subscribe</button>
+          </div>
+          )}
         </div>
-        {!isMobile ? (
-        <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
-          {[{ label: "Features", href: "#features" }, { label: "Security", href: "#security" }, { label: "Pricing", href: "#pricing" }].map(link => (
-            <a key={link.label} href={link.href} style={{ fontSize: 13, color: "#8b92a5", textDecoration: "none", fontWeight: 500, transition: "color 0.15s" }}
-              onMouseEnter={e => e.currentTarget.style.color = "#f0f2f5"}
-              onMouseLeave={e => e.currentTarget.style.color = "#8b92a5"}
-            >{link.label}</a>
-          ))}
-          <a href="#invest" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>Investors</a>
-          <div style={{ width: 1, height: 20, background: "#1e2230" }} />
-          <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#3d4558"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "#1e2230"}
-          >Sign In</button>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)", transition: "all 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.boxShadow = "0 6px 24px rgba(96,165,250,0.3)"}
-            onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(96,165,250,0.2)"}
-          >Subscribe</button>
-        </div>
-        ) : (
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Subscribe</button>
-        </div>
-        )}
+        <style>{`.nav-dd-wrap:hover .nav-dd-panel{display:block!important}.nav-dd-wrap:hover .nav-dd-btn{color:#f0f2f5!important;background:rgba(96,165,250,0.06)}.nav-dd-wrap:hover .nav-dd-btn svg{transform:rotate(180deg)}`}</style>
       </nav>
 
       {/* Hero */}
