@@ -5854,8 +5854,8 @@ const PRICING_PLANS = [
       { label: "API calls", included: -1, overage: "Unlimited" },
     ] },
   { name: "Enterprise", monthly: null, annual: null, seats: Infinity, entities: Infinity, enterprise: true,
-    desc: "Custom deployment · SOX compliance · On-prem",
-    features: ["No seat or entity limits", "SOX-compliant audit trails", "On-premises or private cloud", "Custom integrations & API", "Dedicated success team + TAM", "Multi-year & volume pricing", "White-glove onboarding", "Custom SLA (up to 99.99%)"],
+    desc: "Custom deployment · SOX compliance · Financing available",
+    features: ["No seat or entity limits", "SOX-compliant audit trails", "On-premises or private cloud", "Custom integrations & API", "Dedicated success team + TAM", "Multi-year & volume pricing", "Financing options available", "Custom SLA (up to 99.99%)"],
     usage: [
       { label: "All meters", included: -1, overage: "Unlimited" },
       { label: "Committed spend discounts", included: -1, overage: "Custom" },
@@ -6690,53 +6690,56 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Connected Platforms — real integrations, not aspirational logos */}
+      {/* Connected Platforms — real integrations from MCP connectors */}
       <div style={{ textAlign: "center", padding: "48px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 24 }}>Built on & Connected to</div>
-        {/* Row 1 — Payment & CRM */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
+        {/* Row 1 — Financial Data & Payments */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 36, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
           {[
             { name: "Stripe", tag: "Payments" },
             { name: "Square", tag: "Payments" },
-            { name: "HubSpot", tag: "CRM" },
-            { name: "Salesforce", tag: "CRM" },
-            { name: "QuickBooks", tag: "ERP" },
             { name: "Plaid", tag: "Banking" },
+            { name: "S&P Global", tag: "Market Data" },
+            { name: "Morningstar", tag: "Research" },
+            { name: "FactSet", tag: "Financial Data" },
+            { name: "QuickBooks", tag: "ERP" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
               <div style={{ fontSize: 7, fontWeight: 700, color: "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
         </div>
         {/* Row 2 — Infrastructure & AI */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 36, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
           {[
             { name: "Anthropic", tag: "AI Partner", accent: true },
             { name: "Supabase", tag: "Database" },
             { name: "Vercel", tag: "Hosting" },
             { name: "Cloudflare", tag: "Security" },
-            { name: "Snowflake", tag: "Data Warehouse" },
+            { name: "AWS", tag: "Cloud" },
+            { name: "Ramp", tag: "Expense Mgmt" },
             { name: "DocuSign", tag: "eSignature" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: l.accent ? "#a78bfa" : "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: l.accent ? "#a78bfa" : "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
               <div style={{ fontSize: 7, fontWeight: 700, color: l.accent ? "#a78bfa" : "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
         </div>
-        {/* Row 3 — Collaboration & DevOps */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
+        {/* Row 3 — Collaboration & Sales */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 36, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
           {[
             { name: "Slack", tag: "Messaging" },
             { name: "Gmail", tag: "Email" },
-            { name: "Google Calendar", tag: "Scheduling" },
-            { name: "Linear", tag: "Project Mgmt" },
-            { name: "Figma", tag: "Design" },
-            { name: "Calendly", tag: "Booking" },
+            { name: "HubSpot", tag: "CRM" },
+            { name: "Salesforce", tag: "CRM" },
+            { name: "Intercom", tag: "Support" },
+            { name: "Calendly", tag: "Scheduling" },
+            { name: "Linear", tag: "Projects" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
               <div style={{ fontSize: 7, fontWeight: 700, color: "#60a5fa", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
@@ -7752,6 +7755,7 @@ const LandingPage = ({ onLogin }) => {
               { link: "Terms of Service", url: "/terms" },
               { link: "Partner Program", url: "mailto:partners@finance-os.app?subject=FinanceOS%20Partner%20Program%20Interest" },
               { link: "Vaultline Suite", url: "https://vaultline.vercel.app" },
+              { link: "Investor Deck", url: "https://gamma.app/generations/Yur9wWOsn4UTWML1pu8nH" },
             ]},
           ].map(col => (
             <div key={col.title}>
