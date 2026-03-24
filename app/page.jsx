@@ -2105,6 +2105,40 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
           {(!activityLog || activityLog.length === 0) && <div style={{ fontSize: 10, color: c.textFaint, padding: "8px 0" }}>No recent activity</div>}
         </div>
       </div>
+
+      {/* Team Online — digital office presence */}
+      <div onClick={() => onNav("team")} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer", transition: "all 0.2s", gridColumn: "span 2" }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}30`; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <Users size={15} color={c.accent} />
+          <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>Your Team</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto", fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${c.green}12`, color: c.green }}>
+            <span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />3 online
+          </span>
+        </div>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          {[
+            { name: userName || "You", status: "online", doing: "Reviewing dashboard", initials: (userName || "You").split(" ").map(w => w[0]).join("").slice(0,2) },
+            { name: "Sarah C.", status: "online", doing: "Updating Q1 forecast", initials: "SC" },
+            { name: "Priya P.", status: "online", doing: "Closing AP accruals", initials: "PP" },
+            { name: "James R.", status: "away", doing: "In a meeting", initials: "JR" },
+            { name: "David K.", status: "offline", doing: "Last seen 1h ago", initials: "DK" },
+          ].map((m, i) => (
+            <div key={m.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 10, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, minWidth: 160 }}>
+              <div style={{ position: "relative" }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: [`linear-gradient(135deg, ${c.accent}, ${c.purple})`, `linear-gradient(135deg, ${c.green}, ${c.cyan})`, `linear-gradient(135deg, ${c.purple}, ${c.accent})`, `linear-gradient(135deg, ${c.amber}, ${c.red})`, `linear-gradient(135deg, ${c.cyan}, ${c.green})`][i % 5], display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>{m.initials}</div>
+                <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: m.status === "online" ? c.green : m.status === "away" ? c.amber : c.textFaint, border: `2px solid ${c.surfaceAlt}` }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 600, color: c.text }}>{m.name}</div>
+                <div style={{ fontSize: 8, color: c.textFaint }}>{m.doing}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 9, color: c.textDim, marginTop: 10 }}>Click to open Team workspace →</div>
+      </div>
     </div>
 
     {/* Cohort Retention Heatmap */}
