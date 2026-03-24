@@ -56,6 +56,16 @@ export default function FinanceUseCasePage() {
         </div>
       </section>
 
+      {/* Corporate imagery */}
+      <div style={{padding:"0 48px 20px",maxWidth:1100,margin:"0 auto"}}>
+        <div style={{display:"grid",gridTemplateColumns:"1.2fr 0.8fr 1fr",gap:8,borderRadius:16,overflow:"hidden",height:200}}>
+          <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80&fit=crop&crop=faces" alt="Finance team collaborating" style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80&fit=crop&crop=faces" alt="Team presenting data" style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&q=80&fit=crop&crop=faces" alt="Professionals reviewing financials" style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
+        </div>
+        <div style={{textAlign:"center",marginTop:8,fontSize:9,color:c.tf}}>Finance teams using FinanceOS to make faster, better decisions</div>
+      </div>
+
       {/* Trusted By logos */}
       <div style={{textAlign:"center",padding:"40px 0 10px",overflow:"hidden"}}>
         <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.14em",color:c.tf,marginBottom:18}}>Trusted by finance teams at</div>

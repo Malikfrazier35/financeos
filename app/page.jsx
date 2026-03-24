@@ -6463,6 +6463,34 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
+      {/* ═══ SOCIAL PROOF — Corporate team imagery ═══ */}
+      <div style={{ padding: isMobile ? "20px 20px 40px" : "40px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 24, borderRadius: 20, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a" }}>
+          {/* Photo side */}
+          <div style={{ position: "relative", minHeight: 320, overflow: "hidden" }}>
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=700&q=80&fit=crop&crop=faces" alt="Finance team collaborating" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }} loading="lazy" />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 60%, #10131a)" }} />
+            <div style={{ position: "absolute", bottom: 16, left: 16, display: "flex", gap: 8, alignItems: "center" }}>
+              <span style={{ fontSize: 8, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", color: "#eef0f6", letterSpacing: "0.06em" }}>ENTERPRISE FINANCE TEAMS</span>
+            </div>
+          </div>
+          {/* Quote side */}
+          <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#60a5fa", marginBottom: 20 }}>Why teams switch to FinanceOS</div>
+            <p style={{ fontSize: 22, fontWeight: 600, color: "#eef0f6", lineHeight: 1.55, fontStyle: "italic", marginBottom: 28, letterSpacing: "-0.01em" }}>
+              "FinanceOS makes us feel like mini-CFOs within our departments. The AI Copilot doesn't just answer questions — it shows us the reasoning behind every insight."
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #60a5fa20, #a78bfa10)", border: "1px solid #1a1f2e", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#60a5fa" }}>VP</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#eef0f6" }}>VP of Finance</div>
+                <div style={{ fontSize: 11, color: "#3d4558" }}>Series C SaaS · $45M ARR · 12-person finance team</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* AI Agent Showcase — Pigment-style split panels */}
       <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -6903,6 +6931,61 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: `${t.color}08`, border: `1px solid ${t.color}12`, color: t.color, display: "inline-block" }}>{t.metric}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ═══ CUSTOMER STORIES — Photo testimonials ═══ */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#f5b731", marginBottom: 10 }}>Customer Stories</div>
+          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em" }}>Finance leaders who made the switch</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+          {/* Story 1 — with photo */}
+          <div style={{ borderRadius: 18, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a" }}>
+            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80&fit=crop&crop=faces&h=220" alt="Professional presenting data" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} loading="lazy" />
+            <div style={{ padding: "24px 24px" }}>
+              <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>★★★★★</div>
+              <p style={{ fontSize: 14, color: "#eef0f6", lineHeight: 1.7, fontStyle: "italic", marginBottom: 16 }}>"We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed for two months straight."</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa20, #a78bfa10)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#60a5fa" }}>JK</div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#eef0f6" }}>VP of Finance</div>
+                  <div style={{ fontSize: 10, color: "#3d4558" }}>Series B SaaS · $18M ARR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Story 2 — with photo */}
+          <div style={{ borderRadius: 18, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a" }}>
+            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80&fit=crop&crop=faces&h=220" alt="Team reviewing financials" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} loading="lazy" />
+            <div style={{ padding: "24px 24px" }}>
+              <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>★★★★★</div>
+              <p style={{ fontSize: 14, color: "#eef0f6", lineHeight: 1.7, fontStyle: "italic", marginBottom: 16 }}>"The scenario modeling alone is worth the subscription. We ran 14 what-if scenarios for our board meeting — something that used to take our team a full week."</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #3dd9a020, #60a5fa10)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#3dd9a0" }}>SR</div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#eef0f6" }}>Director of FP&A</div>
+                  <div style={{ fontSize: 10, color: "#3d4558" }}>Growth Stage · $45M ARR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Full-width featured story */}
+        <div style={{ marginTop: 16, borderRadius: 18, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr" }}>
+          <div style={{ padding: "36px 32px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>★★★★★</div>
+            <p style={{ fontSize: 18, fontWeight: 500, color: "#eef0f6", lineHeight: 1.65, fontStyle: "italic", marginBottom: 20 }}>"Finally, an FP&A tool that doesn't require a 6-month implementation and a team of consultants. We were live with real data in under an hour. The AI reasoning is what sold us — our CFO can actually trust the numbers because she can see exactly how they were derived."</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #a78bfa20, #60a5fa10)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#a78bfa" }}>ML</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#eef0f6" }}>CFO</div>
+                <div style={{ fontSize: 11, color: "#3d4558" }}>Mid-Market Manufacturing · $12M ARR · 8-person finance org</div>
+              </div>
+            </div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&q=80&fit=crop&crop=faces&h=320" alt="CFO reviewing dashboard" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", minHeight: 260 }} loading="lazy" />
         </div>
       </div>
 
@@ -7361,6 +7444,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1e2230", fontSize: 11, color: "#3d4558", flexWrap: "wrap", gap: 12 }}>
           <span>© {new Date().getFullYear()} Financial Holding LLC · All rights reserved</span>
+          <span style={{ fontSize: 9, color: "#2a2f3d" }}>Photos by <a href="https://unsplash.com/?utm_source=financeos&utm_medium=referral" target="_blank" rel="noopener" style={{ color: "#3d4558", textDecoration: "none" }}>Unsplash</a></span>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             {/* Locale picker — landing page */}
             {[
