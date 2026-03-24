@@ -4515,7 +4515,7 @@ const TeamView = ({ c, toast, onNav, userName }) => {
   const [assignOpen, setAssignOpen] = useState(false);
 
   const teamMembers = [
-    { id: 1, name: userName || "Malik Frazier", initials: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), role: "Owner", title: "CEO & Founder", dept: "Executive", status: "online", statusMsg: "Working on Q1 close", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=120&fit=crop", email: "support@finance-os.app", tasks: 4, lastActive: "Now" },
+    { id: 1, name: userName || "Alex Morgan", initials: (userName || "AM").split(" ").map(w => w[0]).join("").slice(0,2), role: "Owner", title: "CEO & Founder", dept: "Executive", status: "online", statusMsg: "Working on Q1 close", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=120&fit=crop", email: "support@finance-os.app", tasks: 4, lastActive: "Now" },
     { id: 2, name: "Sarah Chen", initials: "SC", role: "Admin", title: "VP of Finance", dept: "Finance", status: "online", statusMsg: "Reviewing forecasts", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=120&fit=crop", email: "s.chen@company.com", tasks: 6, lastActive: "2 min ago" },
     { id: 3, name: "James Rodriguez", initials: "JR", role: "Manager", title: "FP&A Manager", dept: "Finance", status: "away", statusMsg: "In a meeting until 3pm", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497215842964-222b430dc094?w=400&h=120&fit=crop", email: "j.rodriguez@company.com", tasks: 3, lastActive: "15 min ago" },
     { id: 4, name: "Priya Patel", initials: "PP", role: "Budget Owner", title: "Controller", dept: "Accounting", status: "online", statusMsg: "", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=120&fit=crop", email: "p.patel@company.com", tasks: 8, lastActive: "Just now" },
@@ -4525,7 +4525,7 @@ const TeamView = ({ c, toast, onNav, userName }) => {
   const messages = [
     { id: 1, sender: "Sarah Chen", initials: "SC", content: "I've updated the Q1 revenue forecast with the latest pipeline data. MAPE is down to 2.8% this period.", time: "2:34 PM", channel: "forecast" },
     { id: 2, sender: "Priya Patel", initials: "PP", content: "Close checklist: 14/18 tasks complete. Waiting on IC elimination review from James.", time: "1:52 PM", channel: "close-tasks" },
-    { id: 3, sender: userName || "Malik Frazier", initials: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), content: "Board deck draft is ready for review. I've exported the investor metrics — can someone double-check the Rule of 40 calc?", time: "12:15 PM", channel: "general" },
+    { id: 3, sender: userName || "Alex Morgan", initials: (userName || "AM").split(" ").map(w => w[0]).join("").slice(0,2), content: "Board deck draft is ready for review. I've exported the investor metrics — can someone double-check the Rule of 40 calc?", time: "12:15 PM", channel: "general" },
     { id: 4, sender: "James Rodriguez", initials: "JR", content: "IC elimination complete for APAC entity. FX adjustment: -$42K impact on consolidated EBITDA.", time: "11:30 AM", channel: "consolidation" },
     { id: 5, sender: "David Kim", initials: "DK", content: "New Stripe data synced — 23 new transactions this week. Revenue recognition looks clean.", time: "10:45 AM", channel: "integrations" },
   ];
@@ -4535,7 +4535,7 @@ const TeamView = ({ c, toast, onNav, userName }) => {
     { title: "Complete IC elimination for EU entity", assignee: "James Rodriguez", assigneeInit: "JR", priority: "urgent", status: "in_progress", due: "Today", view: "consolidation" },
     { title: "Validate ML forecast accuracy", assignee: "Sarah Chen", assigneeInit: "SC", priority: "medium", status: "pending", due: "Tomorrow", view: "forecast" },
     { title: "Close AP accruals for March", assignee: "Priya Patel", assigneeInit: "PP", priority: "high", status: "pending", due: "Mar 28", view: "close" },
-    { title: "Update board deck metrics", assignee: userName || "Malik Frazier", assigneeInit: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), priority: "medium", status: "review", due: "Mar 29", view: "investor" },
+    { title: "Update board deck metrics", assignee: userName || "Alex Morgan", assigneeInit: (userName || "AM").split(" ").map(w => w[0]).join("").slice(0,2), priority: "medium", status: "review", due: "Mar 29", view: "investor" },
     { title: "Sync Salesforce pipeline data", assignee: "David Kim", assigneeInit: "DK", priority: "low", status: "completed", due: "Done", view: "integrations" },
   ];
 
@@ -4745,7 +4745,7 @@ const TeamView = ({ c, toast, onNav, userName }) => {
           {[
             { actor: "Sarah Chen", init: "SC", action: "updated Q1 revenue forecast", detail: "MAPE improved to 2.8%", time: "2:34 PM", color: c.accent },
             { actor: "Priya Patel", init: "PP", action: "completed 3 close tasks", detail: "AP accruals, deferred revenue, prepaid amortization", time: "1:52 PM", color: c.green },
-            { actor: userName || "Malik Frazier", init: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), action: "exported investor metrics PDF", detail: "Rule of 40: 52.1, Burn Multiple: 0.8x", time: "12:15 PM", color: c.purple },
+            { actor: userName || "Alex Morgan", init: (userName || "AM").split(" ").map(w => w[0]).join("").slice(0,2), action: "exported investor metrics PDF", detail: "Rule of 40: 52.1, Burn Multiple: 0.8x", time: "12:15 PM", color: c.purple },
             { actor: "James Rodriguez", init: "JR", action: "completed IC elimination", detail: "APAC entity, FX adjustment: -$42K", time: "11:30 AM", color: c.amber },
             { actor: "David Kim", init: "DK", action: "synced Stripe integration", detail: "23 new transactions imported", time: "10:45 AM", color: c.cyan },
             { actor: "AI Copilot", init: "◎", action: "flagged revenue variance", detail: "+$2.1M beat vs budget, Enterprise segment", time: "10:00 AM", color: c.purple },
@@ -4790,7 +4790,7 @@ const AdminView = ({ c, toast, onNav }) => {
   ];
 
   const users = [
-    { name: "Malik Frazier", email: "support@finance-os.app", role: "Owner", status: "active", lastActive: "Now", sessions: 24, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&q=80&fit=crop&crop=face", dept: "Finance" },
+    { name: "Alex Morgan", email: "support@finance-os.app", role: "Owner", status: "active", lastActive: "Now", sessions: 24, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&q=80&fit=crop&crop=face", dept: "Finance" },
     { name: "Sarah Chen", email: "sarah@finance-os.app", role: "Admin", status: "active", lastActive: "2 min ago", sessions: 18, dept: "FP&A" },
     { name: "Priya Patel", email: "priya@finance-os.app", role: "Manager", status: "active", lastActive: "15 min ago", sessions: 12, dept: "Accounting" },
     { name: "James Rodriguez", email: "james@finance-os.app", role: "Budget Owner", status: "active", lastActive: "1 hr ago", sessions: 8, dept: "Operations" },
@@ -4803,7 +4803,7 @@ const AdminView = ({ c, toast, onNav }) => {
     { action: "Sarah Chen exported Q1 P&L report", actor: "Sarah Chen", time: "12 min ago", type: "action" },
     { action: "Priya Patel completed 3 close tasks", actor: "Priya Patel", time: "34 min ago", type: "action" },
     { action: "Stripe Connect account onboarded", actor: "System", time: "1 hr ago", type: "integration" },
-    { action: "Apple Sign In", actor: "Malik Frazier", time: "1 hr ago", type: "auth" },
+    { action: "Apple Sign In", actor: "Alex Morgan", time: "1 hr ago", type: "auth" },
     { action: "James Rodriguez updated budget model", actor: "James Rodriguez", time: "2 hr ago", type: "data" },
     { action: "Plan upgraded to Enterprise", actor: "System", time: "Today", type: "billing" },
     { action: "Organization created", actor: "System", time: "Mar 20", type: "admin" },
@@ -8100,7 +8100,7 @@ const LandingPage = ({ onLogin }) => {
             </div>}
             {/* Main content mock */}
             <div style={{ padding: isMobile ? 16 : 20 }}>
-              <div style={{ fontSize: 14, fontWeight: 800, color: lp.text, marginBottom: 4 }}>Good afternoon, Malik</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: lp.text, marginBottom: 4 }}>Good afternoon, Alex</div>
               <div style={{ fontSize: 10, color: lp.textDim, marginBottom: 16 }}>FY2025 YTD · Revenue ahead by $2.09M</div>
               {/* Mini KPI cards */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
@@ -8190,20 +8190,20 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row1" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 50s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "NetSuite", logo: "https://cdn.brandfetch.io/idTwkfAqSW/w/512/h/512/theme/dark/icon.jpeg", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
-              { name: "SAP", logo: "https://cdn.brandfetch.io/idZoDPk1Yi/w/512/h/512/theme/dark/icon.jpeg", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
-              { name: "Salesforce", logo: "https://cdn.brandfetch.io/id7BZGENzY/w/512/h/512/theme/dark/icon.jpeg", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
-              { name: "Stripe", logo: "https://cdn.brandfetch.io/id20mQyGeY/w/512/h/512/theme/dark/icon.jpeg", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
-              { name: "Workday", logo: "https://cdn.brandfetch.io/id-sVJ3JYq/w/512/h/512/theme/dark/icon.jpeg", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
-              { name: "QuickBooks", logo: "https://cdn.brandfetch.io/idGbox7bYU/w/512/h/512/theme/dark/icon.jpeg", desc: "GL, AP/AR & journal entries", color: "#2CA01C", tag: "ERP" },
-              { name: "Sage Intacct", logo: "https://cdn.brandfetch.io/idwpq29FHE/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud accounting & multi-entity", color: "#00DC00", tag: "ERP" },
-              { name: "Zuora", logo: "https://cdn.brandfetch.io/idhS0WIrQ7/w/512/h/512/theme/dark/icon.jpeg", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
-              { name: "HubSpot", logo: "https://cdn.brandfetch.io/id7Xno7kbh/w/512/h/512/theme/dark/icon.jpeg", desc: "Marketing & sales pipeline data", color: "#FF7A59", tag: "CRM" },
-              { name: "Xero", logo: "https://cdn.brandfetch.io/idLSqp03Dv/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud accounting & invoicing", color: "#13B5EA", tag: "ERP" },
-              { name: "Plaid", logo: "https://cdn.brandfetch.io/idRpZN4YfF/w/512/h/512/theme/dark/icon.jpeg", desc: "Bank account & transaction data", color: "#000000", tag: "BANKING" },
-              { name: "Anthropic", logo: "https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true, tag: "AI" },
-              { name: "Ramp", logo: "https://cdn.brandfetch.io/id6MWlXqPb/w/512/h/512/theme/dark/icon.jpeg", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
-              { name: "Dynamics 365", logo: "https://cdn.brandfetch.io/idchmboHEZ/w/512/h/512/theme/dark/icon.jpeg", desc: "Microsoft ERP & business central", color: "#002050", tag: "ERP" },
+              { name: "NetSuite", logo: "https://logo.clearbit.com/netsuite.com", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
+              { name: "SAP", logo: "https://logo.clearbit.com/sap.com", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
+              { name: "Salesforce", logo: "https://logo.clearbit.com/salesforce.com", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
+              { name: "Stripe", logo: "https://logo.clearbit.com/stripe.com", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
+              { name: "Workday", logo: "https://logo.clearbit.com/workday.com", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
+              { name: "QuickBooks", logo: "https://logo.clearbit.com/quickbooks.intuit.com", desc: "GL, AP/AR & journal entries", color: "#2CA01C", tag: "ERP" },
+              { name: "Sage Intacct", logo: "https://logo.clearbit.com/sageintacct.com", desc: "Cloud accounting & multi-entity", color: "#00DC00", tag: "ERP" },
+              { name: "Zuora", logo: "https://logo.clearbit.com/zuora.com", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
+              { name: "HubSpot", logo: "https://logo.clearbit.com/hubspot.com", desc: "Marketing & sales pipeline data", color: "#FF7A59", tag: "CRM" },
+              { name: "Xero", logo: "https://logo.clearbit.com/xero.com", desc: "Cloud accounting & invoicing", color: "#13B5EA", tag: "ERP" },
+              { name: "Plaid", logo: "https://logo.clearbit.com/plaid.com", desc: "Bank account & transaction data", color: "#000000", tag: "BANKING" },
+              { name: "Anthropic", logo: "https://logo.clearbit.com/anthropic.com", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true, tag: "AI" },
+              { name: "Ramp", logo: "https://logo.clearbit.com/ramp.com", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
+              { name: "Dynamics 365", logo: "https://logo.clearbit.com/microsoft.com", desc: "Microsoft ERP & business central", color: "#002050", tag: "ERP" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${item.featured ? `${lp.purple}30` : lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
@@ -8228,19 +8228,19 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row2" style={{ display: "flex", gap: 14, animation: "fosScrollRight 45s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "Snowflake", logo: "https://cdn.brandfetch.io/idU0VYFfaF/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud data warehouse & analytics", color: "#29B5E8", tag: "DATA" },
-              { name: "Databricks", logo: "https://cdn.brandfetch.io/idr4816dxq/w/512/h/512/theme/dark/icon.jpeg", desc: "Data lakehouse & ML platform", color: "#FF3621", tag: "DATA" },
-              { name: "Rippling", logo: "https://cdn.brandfetch.io/idcF_zn9sQ/w/512/h/512/theme/dark/icon.jpeg", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
-              { name: "ADP", logo: "https://cdn.brandfetch.io/idmmQhOJnT/w/512/h/512/theme/dark/icon.jpeg", desc: "Payroll & workforce management", color: "#D0271D", tag: "HRIS" },
-              { name: "BambooHR", logo: "https://cdn.brandfetch.io/idrYgjdxGR/w/512/h/512/theme/dark/icon.jpeg", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
-              { name: "Brex", logo: "https://cdn.brandfetch.io/idJM4RtWVR/w/512/h/512/theme/dark/icon.jpeg", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
-              { name: "Slack", logo: "https://cdn.brandfetch.io/id3MpTOpY-/w/512/h/512/theme/dark/icon.jpeg", desc: "Alerts, approvals & team messaging", color: "#4A154B", tag: "COMMS" },
-              { name: "AWS", logo: "https://cdn.brandfetch.io/idexQYsBMb/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud infrastructure & compute", color: "#FF9900", tag: "CLOUD" },
-              { name: "DocuSign", logo: "https://cdn.brandfetch.io/idFJP03YdT/w/512/h/512/theme/dark/icon.jpeg", desc: "Contract & eSignature workflows", color: "#4088FF", tag: "ESIGN" },
-              { name: "Gusto", logo: "https://cdn.brandfetch.io/ideSg-2L_t/w/512/h/512/theme/dark/icon.jpeg", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
-              { name: "Mercury", logo: "https://cdn.brandfetch.io/idpOhB-8fN/w/512/h/512/theme/dark/icon.jpeg", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
-              { name: "BigQuery", logo: "https://cdn.brandfetch.io/id_KsyK7J9/w/512/h/512/theme/dark/icon.jpeg", desc: "Google Cloud data warehouse", color: "#669DF6", tag: "DATA" },
-              { name: "Intercom", logo: "https://cdn.brandfetch.io/idKAzczsaW/w/512/h/512/theme/dark/icon.jpeg", desc: "Customer support & engagement", color: "#1F8DED", tag: "SUPPORT" },
+              { name: "Snowflake", logo: "https://logo.clearbit.com/snowflake.com", desc: "Cloud data warehouse & analytics", color: "#29B5E8", tag: "DATA" },
+              { name: "Databricks", logo: "https://logo.clearbit.com/databricks.com", desc: "Data lakehouse & ML platform", color: "#FF3621", tag: "DATA" },
+              { name: "Rippling", logo: "https://logo.clearbit.com/rippling.com", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
+              { name: "ADP", logo: "https://logo.clearbit.com/adp.com", desc: "Payroll & workforce management", color: "#D0271D", tag: "HRIS" },
+              { name: "BambooHR", logo: "https://logo.clearbit.com/bamboohr.com", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
+              { name: "Brex", logo: "https://logo.clearbit.com/brex.com", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
+              { name: "Slack", logo: "https://logo.clearbit.com/slack.com", desc: "Alerts, approvals & team messaging", color: "#4A154B", tag: "COMMS" },
+              { name: "AWS", logo: "https://logo.clearbit.com/aws.amazon.com", desc: "Cloud infrastructure & compute", color: "#FF9900", tag: "CLOUD" },
+              { name: "DocuSign", logo: "https://logo.clearbit.com/docusign.com", desc: "Contract & eSignature workflows", color: "#4088FF", tag: "ESIGN" },
+              { name: "Gusto", logo: "https://logo.clearbit.com/gusto.com", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
+              { name: "Mercury", logo: "https://logo.clearbit.com/mercury.com", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
+              { name: "BigQuery", logo: "https://logo.clearbit.com/cloud.google.com", desc: "Google Cloud data warehouse", color: "#669DF6", tag: "DATA" },
+              { name: "Intercom", logo: "https://logo.clearbit.com/intercom.com", desc: "Customer support & engagement", color: "#1F8DED", tag: "SUPPORT" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
@@ -8265,18 +8265,18 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row3" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 55s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "Supabase", logo: "https://cdn.brandfetch.io/id4UDCjQ1K/w/512/h/512/theme/dark/icon.jpeg", desc: "Database, auth & real-time sync", color: "#3ECF8E", tag: "DATABASE" },
-              { name: "Vercel", logo: "https://cdn.brandfetch.io/idnMHSR0JC/w/512/h/512/theme/dark/icon.jpeg", desc: "Edge hosting & CI/CD", color: "#000000", tag: "HOSTING" },
-              { name: "Cloudflare", logo: "https://cdn.brandfetch.io/idnLPsmXME/w/512/h/512/theme/dark/icon.jpeg", desc: "Security, CDN & DDoS protection", color: "#F48120", tag: "SECURITY" },
-              { name: "Tableau", logo: "https://cdn.brandfetch.io/id_iJXJxz7/w/512/h/512/theme/dark/icon.jpeg", desc: "Business intelligence & dashboards", color: "#E97627", tag: "BI" },
-              { name: "Power BI", logo: "https://cdn.brandfetch.io/idchmboHEZ/w/512/h/512/theme/dark/icon.jpeg", desc: "Microsoft analytics & reporting", color: "#F2C811", tag: "BI" },
-              { name: "S&P Global", logo: "https://cdn.brandfetch.io/idkiDKNT4W/w/512/h/512/theme/dark/icon.jpeg", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
-              { name: "FactSet", logo: "https://cdn.brandfetch.io/id9nNqJr4d/w/512/h/512/theme/dark/icon.jpeg", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
-              { name: "Morningstar", logo: "https://cdn.brandfetch.io/id5E23WfPK/w/512/h/512/theme/dark/icon.jpeg", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
-              { name: "Square", logo: "https://cdn.brandfetch.io/idMpz3PQzT/w/512/h/512/theme/dark/icon.jpeg", desc: "POS & payment data", color: "#3E4348", tag: "PAYMENTS" },
-              { name: "Gmail", logo: "https://cdn.brandfetch.io/idfJzomMB4/w/512/h/512/theme/dark/icon.jpeg", desc: "Email notifications & alerts", color: "#EA4335", tag: "EMAIL" },
-              { name: "Calendly", logo: "https://cdn.brandfetch.io/idhF37bGDf/w/512/h/512/theme/dark/icon.jpeg", desc: "Meeting scheduling & booking", color: "#006BFF", tag: "SCHEDULING" },
-              { name: "Linear", logo: "https://cdn.brandfetch.io/idYHMJchZG/w/512/h/512/theme/dark/icon.jpeg", desc: "Project tracking & sprint data", color: "#5E6AD2", tag: "PROJECTS" },
+              { name: "Supabase", logo: "https://logo.clearbit.com/supabase.com", desc: "Database, auth & real-time sync", color: "#3ECF8E", tag: "DATABASE" },
+              { name: "Vercel", logo: "https://logo.clearbit.com/vercel.com", desc: "Edge hosting & CI/CD", color: "#000000", tag: "HOSTING" },
+              { name: "Cloudflare", logo: "https://logo.clearbit.com/cloudflare.com", desc: "Security, CDN & DDoS protection", color: "#F48120", tag: "SECURITY" },
+              { name: "Tableau", logo: "https://logo.clearbit.com/tableau.com", desc: "Business intelligence & dashboards", color: "#E97627", tag: "BI" },
+              { name: "Power BI", logo: "https://logo.clearbit.com/microsoft.com", desc: "Microsoft analytics & reporting", color: "#F2C811", tag: "BI" },
+              { name: "S&P Global", logo: "https://logo.clearbit.com/spglobal.com", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
+              { name: "FactSet", logo: "https://logo.clearbit.com/factset.com", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
+              { name: "Morningstar", logo: "https://logo.clearbit.com/morningstar.com", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
+              { name: "Square", logo: "https://logo.clearbit.com/squareup.com", desc: "POS & payment data", color: "#3E4348", tag: "PAYMENTS" },
+              { name: "Gmail", logo: "https://logo.clearbit.com/gmail.com", desc: "Email notifications & alerts", color: "#EA4335", tag: "EMAIL" },
+              { name: "Calendly", logo: "https://logo.clearbit.com/calendly.com", desc: "Meeting scheduling & booking", color: "#006BFF", tag: "SCHEDULING" },
+              { name: "Linear", logo: "https://logo.clearbit.com/linear.app", desc: "Project tracking & sprint data", color: "#5E6AD2", tag: "PROJECTS" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
@@ -9114,7 +9114,7 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ padding: isMobile ? "36px 28px" : "52px 44px", background: lpMode === "dark" ? `linear-gradient(135deg, #0f1118, #161a24)` : `linear-gradient(135deg, #f8f9fb, #ffffff)`, position: "relative" }}>
               {/* Anthropic logo */}
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-                <img src="https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg" alt="Anthropic" style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover", border: `1px solid ${lp.border}` }} />
+                <img src="https://logo.clearbit.com/anthropic.com" alt="Anthropic" style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover", border: `1px solid ${lp.border}` }} />
                 <div>
                   <div style={{ fontSize: 20, fontWeight: 800, color: lp.text, letterSpacing: "-0.02em" }}>Anthropic</div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: lp.purple }}>Strategic AI Partner</div>
@@ -9139,7 +9139,7 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ textAlign: "center", position: "relative", width: "100%" }}>
                 {/* Claude logo large */}
                 <div style={{ width: 88, height: 88, borderRadius: 22, background: `linear-gradient(135deg, ${lp.purple}18, ${lp.accent}10)`, border: `2px solid ${lp.purple}20`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", boxShadow: `0 12px 40px ${lp.purple}12` }}>
-                  <img src="https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg" alt="Claude" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
+                  <img src="https://logo.clearbit.com/anthropic.com" alt="Claude" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
                 </div>
                 <div style={{ fontSize: 24, fontWeight: 800, color: lp.text, marginBottom: 8, letterSpacing: "-0.02em" }}>Powered by Claude</div>
                 <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.65, maxWidth: 300, margin: "0 auto 20px" }}>Enterprise-grade AI reasoning with visible thought process, SHAP explanations, and confidence intervals.</p>
