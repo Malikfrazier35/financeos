@@ -685,19 +685,31 @@ const COPILOT_PROMPTS = [
 ];
 
 const NAV_ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, section: "Overview" },
-  { id: "copilot", label: "AI Copilot", icon: Brain, section: "Overview" },
-  { id: "pnl", label: "P&L Statement", icon: FileText, section: "Financial" },
-  { id: "forecast", label: "Forecast", icon: TrendingUp, section: "Financial" },
-  { id: "consolidation", label: "Consolidation", icon: Layers, section: "Financial" },
-  { id: "models", label: "Scenarios", icon: GitBranch, section: "Planning" },
-  { id: "close", label: "Close Tasks", icon: CheckSquare, section: "Planning" },
-  { id: "team", label: "Team", icon: Users, section: "Collaborate" },
-  { id: "integrations", label: "Integrations", icon: Plug, section: "Platform" },
-  { id: "admin", label: "Admin", icon: Shield, section: "Platform" },
-  { id: "investor", label: "Investor Metrics", icon: Target, section: "Platform" },
-  { id: "intelligence", label: "Intelligence", icon: Globe, section: "Platform" },
-  { id: "settings", label: "Settings", icon: Settings, section: "Platform" },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, section: "Overview", desc: "KPIs & performance" },
+  { id: "copilot", label: "AI Copilot", icon: Brain, section: "Overview", desc: "Ask anything", hot: true },
+  { id: "pnl", label: "P&L Statement", icon: FileText, section: "Financial", desc: "Income & expenses" },
+  { id: "forecast", label: "Forecast", icon: TrendingUp, section: "Financial", desc: "ML predictions" },
+  { id: "consolidation", label: "Consolidation", icon: Layers, section: "Financial", desc: "Multi-entity" },
+  { id: "models", label: "Scenarios", icon: GitBranch, section: "Planning", desc: "What-if analysis" },
+  { id: "close", label: "Close Tasks", icon: CheckSquare, section: "Planning", desc: "Month-end workflow" },
+  { id: "team", label: "Team", icon: Users, section: "Collaborate", desc: "Members & chat" },
+  { id: "integrations", label: "Integrations", icon: Plug, section: "Platform", desc: "Data connectors" },
+  { id: "admin", label: "Admin", icon: Shield, section: "Platform", desc: "Workspace settings" },
+  { id: "investor", label: "Investor Metrics", icon: Target, section: "Platform", desc: "Board readiness" },
+  { id: "intelligence", label: "Intelligence", icon: Globe, section: "Platform", desc: "Market signals" },
+  { id: "settings", label: "Settings", icon: Settings, section: "Platform", desc: "Preferences" },
+];
+
+const SECTION_ICONS = { Overview: LayoutDashboard, Financial: DollarSign, Planning: GitBranch, Collaborate: Users, Platform: Settings };
+
+// ── TUTORIAL / PRODUCT GUIDE DATA ────────────────────────────
+const PRODUCT_GUIDES = [
+  { id: "getting-started", title: "Getting Started with FinanceOS", duration: "4:30", category: "Onboarding", thumb: "linear-gradient(135deg, #3b82f6, #8b5cf6)", desc: "Connect your first data source and explore the dashboard", views: 2840 },
+  { id: "forecast-101", title: "AI Forecasting: From Zero to Production", duration: "8:15", category: "Feature", thumb: "linear-gradient(135deg, #10b981, #3b82f6)", desc: "Set up ML-powered revenue forecasting with sensitivity analysis", views: 1650 },
+  { id: "month-end-close", title: "Automate Your Month-End Close", duration: "6:42", category: "Workflow", thumb: "linear-gradient(135deg, #f59e0b, #ef4444)", desc: "Configure close checklists, assignments, and automated reconciliation", views: 1120 },
+  { id: "board-reporting", title: "Board Reporting Best Practices", duration: "5:18", category: "Strategy", thumb: "linear-gradient(135deg, #8b5cf6, #ec4899)", desc: "Build investor-ready dashboards and export board packs", views: 890 },
+  { id: "integrations-setup", title: "Connect QuickBooks, Stripe & More", duration: "3:55", category: "Setup", thumb: "linear-gradient(135deg, #06b6d4, #10b981)", desc: "Step-by-step integration setup with live sync monitoring", views: 2100 },
+  { id: "scenario-modeling", title: "Scenario Modeling Deep Dive", duration: "7:20", category: "Advanced", thumb: "linear-gradient(135deg, #f43f5e, #a855f7)", desc: "Build multi-variable scenarios and compare outcomes side by side", views: 760 },
 ];
 
 // ── LOADING SKELETON ────────────────────────────────────────
@@ -2237,6 +2249,106 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
           <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.4 }}>Add Treasury or Compliance. Save 15% with bundle.</div>
         </div>
         <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", fontWeight: 700, whiteSpace: "nowrap", fontFamily: "inherit" }}>Explore</div>
+      </div>
+    </div>
+
+    {/* ── Product Tutorials & Interactive Video Guides ── */}
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, marginTop: 32 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Product Tutorials & Guides</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+      <span style={{ fontSize: 9, color: c.accent, fontWeight: 600, cursor: "pointer" }} onClick={() => toast("Full video library coming soon", "info")}>View All ▸</span>
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
+      {PRODUCT_GUIDES.slice(0, 6).map(guide => (
+        <div key={guide.id} onClick={() => toast(`Playing: ${guide.title}`, "info")} style={{
+          background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden",
+          cursor: "pointer", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${c.accent}10`; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+        >
+          {/* Video thumbnail */}
+          <div style={{ height: 100, background: guide.thumb, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.2)" }} />
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.95)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1, boxShadow: "0 4px 16px rgba(0,0,0,0.2)" }}>
+              <div style={{ width: 0, height: 0, borderLeft: "12px solid #333", borderTop: "7px solid transparent", borderBottom: "7px solid transparent", marginLeft: 3 }} />
+            </div>
+            <span style={{ position: "absolute", bottom: 8, right: 8, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(0,0,0,0.7)", color: "#fff", fontFamily: "'JetBrains Mono', monospace", zIndex: 1 }}>{guide.duration}</span>
+            <span style={{ position: "absolute", top: 8, left: 8, fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: "rgba(255,255,255,0.9)", color: "#333", letterSpacing: "0.04em", zIndex: 1 }}>{guide.category.toUpperCase()}</span>
+          </div>
+          <div style={{ padding: "14px 16px" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 4, lineHeight: 1.3 }}>{guide.title}</div>
+            <div style={{ fontSize: 10, color: c.textDim, lineHeight: 1.4, marginBottom: 8 }}>{guide.desc}</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 9, color: c.textFaint }}>{guide.views.toLocaleString()} views</span>
+              <span style={{ fontSize: 9, fontWeight: 700, color: c.accent, display: "flex", alignItems: "center", gap: 3 }}>Watch Now <ChevronRight size={9} /></span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* ── Trusted by Enterprise Finance Teams ── */}
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Trusted by Enterprise Finance Teams</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+    </div>
+    <div style={{ background: `linear-gradient(135deg, ${c.surface}, ${c.surfaceAlt})`, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 28px", marginBottom: 24 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 16 : 32, flexWrap: "wrap", opacity: 0.55, filter: "grayscale(1)", transition: "all 0.3s" }}
+        onMouseEnter={e => { e.currentTarget.style.opacity = "0.75"; e.currentTarget.style.filter = "grayscale(0.3)"; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = "0.55"; e.currentTarget.style.filter = "grayscale(1)"; }}
+      >
+        {["Coca-Cola", "Best Buy", "Target", "JPMorgan Chase", "Deloitte", "Ernst & Young", "Saks Fifth Avenue", "Ohio State University"].map(name => (
+          <div key={name} style={{ fontSize: 12, fontWeight: 800, color: c.textDim, letterSpacing: "0.02em", whiteSpace: "nowrap", padding: "6px 0" }}>{name}</div>
+        ))}
+      </div>
+    </div>
+
+    {/* ── Industry Recognition ── */}
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+      <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Industry Recognition</div>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
+      {[
+        { source: "Gartner", report: "Market Guide for Cloud FP&A, 2026", quote: "FinanceOS represents the next generation of FP&A platforms, combining real-time intelligence with enterprise-grade security.", color: c.accent, initial: "G" },
+        { source: "Forrester", report: "Wave: Financial Planning, Q1 2026", quote: "Among emerging FP&A vendors, FinanceOS stands out for speed-to-value, with 60% faster close cycles.", color: c.green, initial: "F" },
+        { source: "IDC", report: "MarketScape: EPM Vendors, 2026", quote: "The personalized dashboard approach is a competitive differentiator. Enterprise clients get branded portals with 95% adoption.", color: c.purple, initial: "I" },
+      ].map(a => (
+        <div key={a.source} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${a.color}30`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: `${a.color}12`, border: `1px solid ${a.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: a.color }}>{a.initial}</div>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: c.text }}>{a.source}</div>
+              <div style={{ fontSize: 9, color: c.textFaint }}>{a.report}</div>
+            </div>
+          </div>
+          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.5, fontStyle: "italic", borderLeft: `2px solid ${a.color}30`, paddingLeft: 12 }}>"{a.quote}"</div>
+        </div>
+      ))}
+    </div>
+
+    {/* ── Content Library Stats ── */}
+    <div style={{ background: `linear-gradient(135deg, ${c.accent}05, ${c.green}04, ${c.purple}03)`, border: `1px solid ${c.accent}12`, borderRadius: 14, padding: "22px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 3 }}>Finance Intelligence Library</div>
+        <div style={{ fontSize: 10, color: c.textDim }}>Analyst reports · Benchmark data · Strategy guides · Templates · Video library</div>
+      </div>
+      <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+        {[
+          { value: "47", label: "Reports" },
+          { value: "12K+", label: "Downloads" },
+          { value: "2,000+", label: "Subscribers" },
+          { value: "24", label: "Videos" },
+        ].map(s => (
+          <div key={s.label} style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</div>
+            <div style={{ fontSize: 8, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   </div>
@@ -4361,25 +4473,21 @@ const TeamView = ({ c, toast, onNav, userName }) => {
                 <span>{m.lastActive}</span>
               </div>
               {m.statusMsg && <div style={{ fontSize: 10, color: c.textDim, fontStyle: "italic", padding: "6px 10px", background: c.surfaceAlt, borderRadius: 8, marginBottom: 10 }}>"{m.statusMsg}"</div>}
-              <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => toast(`Message sent to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >▹ Message</button>
-                <button onClick={() => toast(`Task assigned to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.purple; e.currentTarget.style.color = c.purple; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >▣ Assign Task</button>
-              </div>
-              <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-                <button onClick={() => window.open("https://calendly.com/finance-os-support/30min", "_blank")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.green; e.currentTarget.style.color = c.green; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >▫ Schedule</button>
-                <button onClick={() => toast(`Viewing ${m.name}'s profile`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.amber; e.currentTarget.style.color = c.amber; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >▾ Profile</button>
+              {/* Dynamic action buttons grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+                {[
+                  { label: "Message", icon: "▹", color: c.accent, action: () => toast(`Message sent to ${m.name}`, "success") },
+                  { label: "Assign Task", icon: "▣", color: c.purple, action: () => toast(`Task assigned to ${m.name}`, "success") },
+                  { label: "Schedule", icon: "▫", color: c.green, action: () => window.open("https://calendly.com/finance-os-support/30min", "_blank") },
+                  { label: "Profile", icon: "▾", color: c.amber, action: () => toast(`Viewing ${m.name}'s profile`, "success") },
+                  { label: "Share Report", icon: "◈", color: c.cyan || c.accent, action: () => toast(`Report shared with ${m.name}`, "success") },
+                  { label: "Permissions", icon: "◆", color: c.textDim, action: () => toast(`Managing ${m.name}'s permissions`, "info") },
+                ].map(btn => (
+                  <button key={btn.label} onClick={btn.action} style={{ fontSize: 9, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.18s", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = btn.color; e.currentTarget.style.color = btn.color; e.currentTarget.style.background = `${btn.color}06`; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}
+                  >{btn.icon} {btn.label}</button>
+                ))}
               </div>
             </div>
           ))}
@@ -9453,63 +9561,97 @@ function FinanceOSApp() {
         )}
 
         {/* Nav */}
-        <div style={{ flex: 1, padding: "8px 0", overflow: "auto" }}>
+        <div style={{ flex: 1, padding: "6px 0", overflow: "auto", scrollbarWidth: "thin", scrollbarColor: `${c.borderSub} transparent` }}>
           {NAV_ITEMS.map(item => {
             const showSection = item.section !== currentSection;
             currentSection = item.section;
             const Icon = item.icon;
+            const SectionIcon = SECTION_ICONS[item.section] || Settings;
             const active = view === item.id;
             return (
               <div key={item.id}>
                 {showSection && !sidebarCollapsed && (
-                  <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: c.textFaint, padding: "18px 18px 6px", display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{item.section}</span>
-                    <div style={{ flex: 1, height: 1, background: c.borderSub }} />
+                  <div style={{ padding: "16px 16px 5px", display: "flex", alignItems: "center", gap: 7 }}>
+                    <SectionIcon size={9} color={c.textFaint} strokeWidth={2} style={{ opacity: 0.6 }} />
+                    <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: c.textFaint }}>{item.section}</span>
+                    <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
                   </div>
                 )}
-                {showSection && sidebarCollapsed && <div style={{ height: 8 }} />}
-                <div onClick={() => navigate(item.id)} title={sidebarCollapsed ? item.label : undefined} style={{
+                {showSection && sidebarCollapsed && (
+                  <div style={{ padding: "6px 12px", margin: "4px 0" }}>
+                    <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${c.borderSub}, transparent)` }} />
+                  </div>
+                )}
+                <div onClick={() => navigate(item.id)} title={sidebarCollapsed ? `${item.label} — ${item.desc}` : undefined} style={{
                   display: "flex", alignItems: "center", gap: 10,
-                  padding: sidebarCollapsed ? "10px 0" : "10px 16px",
-                  margin: sidebarCollapsed ? "1px 8px" : "1px 10px",
+                  padding: sidebarCollapsed ? "10px 0" : "9px 14px",
+                  margin: sidebarCollapsed ? "1px 8px" : "1px 8px",
                   justifyContent: sidebarCollapsed ? "center" : "flex-start",
-                  cursor: "pointer", fontSize: 13, fontWeight: active ? 700 : 400, borderRadius: 10,
+                  cursor: "pointer", fontSize: 12.5, fontWeight: active ? 700 : 450, borderRadius: 10,
                   color: active ? c.text : c.textDim,
-                  background: active ? `linear-gradient(135deg, ${c.accent}12, ${c.accent}06)` : "transparent",
-                  boxShadow: active ? `0 0 0 1px ${c.accent}25, inset 0 1px 0 ${c.accent}12, 0 2px 8px ${c.accent}08` : "none",
+                  background: active ? `linear-gradient(135deg, ${c.accent}14, ${c.purple}08)` : "transparent",
+                  boxShadow: active ? `0 0 0 1px ${c.accent}20, inset 0 1px 0 ${c.accent}10, 0 2px 8px ${c.accent}06` : "none",
                   transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
                   position: "relative", overflow: "hidden",
                 }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = `${c.accent}06`; }}}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = `${c.accent}08`; e.currentTarget.style.transform = "translateX(2px)"; }}}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}}
                 >
-                  {active && !sidebarCollapsed && <div style={{ position: "absolute", left: 0, top: "12%", bottom: "12%", width: 3, borderRadius: "0 3px 3px 0", background: `linear-gradient(180deg, ${c.accent}, ${c.purple})`, boxShadow: `0 0 12px ${c.accent}80, 0 0 4px ${c.accent}` }} />}
-                  <Icon size={16} strokeWidth={active ? 2.5 : 1.5} />
-                  {!sidebarCollapsed && item.label}
-                  {!sidebarCollapsed && item.id === "copilot" && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto" }} />}
-                  {!sidebarCollapsed && item.id === "close" && (() => { const pending = (closeTasks || []).filter(t => t.status !== "done").length; return pending > 0 ? <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.amberDim, color: c.amber }}>{pending}</span> : null; })()}
-                  {!sidebarCollapsed && item.id === "dashboard" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.redDim, color: c.red }}>4</span>}
+                  {active && !sidebarCollapsed && <div style={{ position: "absolute", left: 0, top: "12%", bottom: "12%", width: 3, borderRadius: "0 3px 3px 0", background: `linear-gradient(180deg, ${c.accent}, ${c.purple})`, boxShadow: `0 0 12px ${c.accent}60, 0 0 4px ${c.accent}` }} />}
+                  {active && sidebarCollapsed && <div style={{ position: "absolute", left: 4, top: "20%", bottom: "20%", width: 2, borderRadius: 2, background: c.accent }} />}
+                  <div style={{ width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, background: active ? `${c.accent}15` : "transparent", transition: "all 0.2s" }}>
+                    <Icon size={15} strokeWidth={active ? 2.2 : 1.6} style={{ transition: "all 0.2s" }} />
+                  </div>
+                  {!sidebarCollapsed && (
+                    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.label}</span>
+                        {item.hot && <span style={{ fontSize: 7, fontWeight: 800, padding: "1px 4px", borderRadius: 3, background: `linear-gradient(135deg, ${c.purple}, ${c.accent})`, color: "#fff", lineHeight: "12px" }}>AI</span>}
+                      </div>
+                      {active && <span style={{ fontSize: 9, color: c.textFaint, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.desc}</span>}
+                    </div>
+                  )}
+                  {!sidebarCollapsed && item.id === "copilot" && !active && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto", animation: "pulse 3s infinite" }} />}
+                  {!sidebarCollapsed && item.id === "close" && (() => { const pending = (closeTasks || []).filter(t => t.status !== "done").length; return pending > 0 ? <span style={{ marginLeft: "auto", fontSize: 8, fontWeight: 800, padding: "2px 7px", borderRadius: 10, background: `linear-gradient(135deg, ${c.amber}, ${c.amber}dd)`, color: "#fff", boxShadow: `0 2px 6px ${c.amber}30`, lineHeight: "12px" }}>{pending}</span> : null; })()}
+                  {!sidebarCollapsed && item.id === "dashboard" && <span style={{ marginLeft: "auto", fontSize: 8, fontWeight: 800, padding: "2px 7px", borderRadius: 10, background: `linear-gradient(135deg, ${c.red}, ${c.red}dd)`, color: "#fff", boxShadow: `0 2px 6px ${c.red}30`, lineHeight: "12px" }}>4</span>}
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* ── Team Presence ── */}
+        {/* ── Quick Actions & Team ── */}
         {!sidebarCollapsed && (
-        <div style={{ borderTop: `1px solid ${c.borderSub}`, padding: "10px 14px" }}>
-          <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>Team</span>
-            <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${c.green}12`, color: c.green }}>1 online</span>
+        <div style={{ borderTop: `1px solid ${c.borderSub}`, padding: "10px 10px" }}>
+          {/* Quick help / tutorials */}
+          <div onClick={() => navigate("dashboard")} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8, cursor: "pointer", background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}05)`, border: `1px solid ${c.accent}12`, marginBottom: 8, transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}30`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}12`; e.currentTarget.style.transform = "none"; }}
+          >
+            <div style={{ width: 22, height: 22, borderRadius: 6, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Zap size={10} color="#fff" strokeWidth={2.5} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: c.text }}>Product Guides</div>
+              <div style={{ fontSize: 8, color: c.textFaint }}>6 tutorials available</div>
+            </div>
+            <ChevronRight size={10} color={c.textFaint} />
+          </div>
+          {/* Team */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6, padding: "0 2px" }}>
+            <span style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Team</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${c.green}12`, color: c.green }}>
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> 1 online
+            </span>
           </div>
           {[
             { name: user.name || "You", initials: (user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase(), status: "online", role: user.plan === "enterprise" ? "Owner" : "Member" },
           ].map(m => (
-            <div key={m.name} onClick={() => navigate("team")} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 4px", borderRadius: 6, cursor: "pointer", transition: "all 0.15s" }}
+            <div key={m.name} onClick={() => navigate("team")} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 6px", borderRadius: 8, cursor: "pointer", transition: "all 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.background = `${c.accent}06`}
               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <div style={{ position: "relative" }}>
-                <div style={{ width: 24, height: 24, borderRadius: 7, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff" }}>{m.initials}</div>
+                <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff" }}>{m.initials}</div>
                 <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: m.status === "online" ? c.green : m.status === "away" ? c.amber : c.textFaint, border: `2px solid ${c.bg2}` }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -9518,7 +9660,10 @@ function FinanceOSApp() {
               </div>
             </div>
           ))}
-          <div onClick={() => navigate("team")} style={{ fontSize: 9, color: c.accent, fontWeight: 600, padding: "4px 4px", cursor: "pointer", marginTop: 4 }}>+ Invite teammates</div>
+          <div onClick={() => navigate("team")} style={{ fontSize: 9, color: c.accent, fontWeight: 600, padding: "4px 6px", cursor: "pointer", marginTop: 4, display: "flex", alignItems: "center", gap: 4, borderRadius: 6, transition: "all 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.background = `${c.accent}06`}
+            onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+          >+ Invite teammates</div>
         </div>
         )}
 
