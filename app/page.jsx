@@ -7645,14 +7645,16 @@ const DEMO_TABS = [
 
 const ProductDemo = ({ enterDemo, lp, lpMode }) => {
   const [tab, setTab] = useState("planning");
+  const [tabKey, setTabKey] = useState(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const active = DEMO_TABS.find(d => d.id === tab) || DEMO_TABS[0];
+  const [demoRef, demoVis] = useScrollReveal(0.08);
   const t = lpMode === "dark" ? { bg: "#0b0c10", surface: "rgba(16,19,26,0.7)", border: "#1e2230", text: "#f0f2f5", dim: "#8b92a5", faint: "#3d4558", accent: "#60a5fa", green: "#34d399", purple: "#a78bfa" } : { bg: "#f0f2f5", surface: "rgba(255,255,255,0.8)", border: "#e0e3ea", text: "#0f1118", dim: "#636d84", faint: "#9ea5b8", accent: "#3b82f6", green: "#10b981", purple: "#8b5cf6" };
   return (
-    <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+    <div ref={demoRef} style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
       {/* Ambient glow */}
       <div style={{ position: "absolute", top: "20%", left: "50%", transform: "translate(-50%, -50%)", width: 500, height: 300, borderRadius: "50%", background: `radial-gradient(ellipse, ${lp.accent}05 0%, transparent 70%)`, pointerEvents: "none" }} />
-      <div style={{ textAlign: "center", marginBottom: 48, position: "relative" }}>
+      <div style={{ textAlign: "center", marginBottom: 48, position: "relative", opacity: demoVis ? 1 : 0, transform: demoVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}14`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
           <Eye size={12} color={lp.accent} strokeWidth={2.5} />Product Tour
         </div>
@@ -7660,18 +7662,19 @@ const ProductDemo = ({ enterDemo, lp, lpMode }) => {
         <p style={{ fontSize: 16, color: lp.textDim, maxWidth: 500, margin: "0 auto", lineHeight: 1.7 }}>Explore the platform by use case. Click a tab to see how each module works.</p>
       </div>
       {/* Tabs */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 36 }}>
-        {DEMO_TABS.map(d => (
-          <button key={d.id} onClick={() => setTab(d.id)} style={{
+      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 36, opacity: demoVis ? 1 : 0, transform: demoVis ? "translateY(0)" : "translateY(16px)", transition: "all 0.5s ease 0.15s" }}>
+        {DEMO_TABS.map((d, di) => (
+          <button key={d.id} onClick={() => { setTab(d.id); setTabKey(k => k + 1); }} style={{
             fontSize: 13, padding: "10px 22px", borderRadius: 12, border: tab === d.id ? `1px solid ${lp.accent}` : `1px solid ${lp.border}`,
             background: tab === d.id ? `${lp.accent}0c` : "transparent",
-            color: tab === d.id ? lp.accent : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s",
+            color: tab === d.id ? lp.accent : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
             boxShadow: tab === d.id ? `0 4px 16px ${lp.accent}10` : "none",
+            transform: tab === d.id ? "scale(1.04)" : "scale(1)",
           }}>{d.label}</button>
         ))}
       </div>
       {/* Content + Mockup */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 36, alignItems: "center" }}>
+      <div key={tabKey} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 36, alignItems: "center", animation: "fosTabSlide 0.4s ease-out both" }}>
         <div>
           <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 14, color: lp.text }}>{active.title}</h3>
           <p style={{ fontSize: 15, color: lp.textDim, lineHeight: 1.75, marginBottom: 24 }}>{active.sub}</p>
@@ -8162,6 +8165,21 @@ const LandingPage = ({ onLogin }) => {
         .fos-preview-float{animation:fosPreviewFloat 6s ease-in-out infinite}
         .fos-preview-wrapper{animation:fosPreviewGlow 4s ease-in-out infinite}
         .fos-cursor-blink{animation:fosCursorBlink 1.2s ease-in-out infinite}
+        @keyframes fosScaleIn{0%{opacity:0;transform:scale(0.92) translateY(16px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes fosRowReveal{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1;transform:translateX(0)}}
+        @keyframes fosCardPop{0%{opacity:0;transform:scale(0.9) translateY(20px)}60%{transform:scale(1.02) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes fosPricePulse{0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,0)}50%{box-shadow:0 0 0 6px rgba(96,165,250,0.08)}}
+        @keyframes fosShieldSpin{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+        @keyframes fosTabSlide{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes fosAccordionOpen{0%{opacity:0;max-height:0}100%{opacity:1;max-height:400px}}
+        @keyframes fosStaggerLeft{0%{opacity:0;transform:translateX(-20px)}100%{opacity:1;transform:translateX(0)}}
+        @keyframes fosCheckPop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+        .fos-card-pop{animation:fosCardPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both}
+        .fos-row-reveal{animation:fosRowReveal 0.4s ease-out both}
+        .fos-scale-in{animation:fosScaleIn 0.5s ease-out both}
+        .fos-price-pulse{animation:fosPricePulse 3s ease-in-out infinite}
+        .fos-tab-slide{animation:fosTabSlide 0.35s ease-out both}
+        .fos-stagger-left{animation:fosStaggerLeft 0.5s ease-out both}
         .fos-data-pulse{animation:fosDataPulse 3s ease-in-out infinite}
         .fos-sparkle{animation:fosSparkle 2s ease-in-out infinite}
         .fos-notif-slide{animation:fosNotifSlide 5s ease-in-out infinite}
@@ -9163,12 +9181,13 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Competitive Comparison */}
-      <div style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>How FinanceOS compares</h2>
+      {(() => { const [compRef, compVis] = useScrollReveal(0.1); return (
+      <div ref={compRef} style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40, opacity: compVis ? 1 : 0, transform: compVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
+          <h2 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>How FinanceOS compares</h2>
           <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 500, margin: "0 auto" }}>Enterprise capability at mid-market pricing. No 6-month implementation.</p>
         </div>
-        <div style={{ background: lp.cardBg, backdropFilter: "blur(12px)", border: `1px solid ${lp.border}`, borderRadius: 18, overflow: "hidden", position: "relative" }}>
+        <div style={{ background: lp.cardBg, backdropFilter: "blur(12px)", border: `1px solid ${lp.border}`, borderRadius: 18, overflow: "hidden", position: "relative", opacity: compVis ? 1 : 0, transform: compVis ? "scale(1)" : "scale(0.96)", transition: "all 0.7s cubic-bezier(0.22,1,0.36,1) 0.15s" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: `1px solid ${lp.border}` }}>
@@ -9193,13 +9212,13 @@ const LandingPage = ({ onLogin }) => {
                 { cap: "Enterprise / on-prem option", us: true, an: true, pi: true, ru: false },
                 { cap: "Implementation time", us: "< 48hr", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
                 { cap: "Starting price", us: "From $499/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
-              ].map(row => (
-                <tr key={row.cap} style={{ borderBottom: `1px solid ${lp.border}80` }}>
+              ].map((row, ri) => (
+                <tr key={row.cap} style={{ borderBottom: `1px solid ${lp.border}80`, opacity: compVis ? 1 : 0, transform: compVis ? "translateX(0)" : "translateX(-12px)", transition: `all 0.4s ease-out ${0.3 + ri * 0.04}s` }}>
                   <td style={{ padding: "12px 16px", color: lp.textSub, fontWeight: 500 }}>{row.cap}</td>
                   {[row.us, row.an, row.pi, row.ru].map((v, i) => (
                     <td key={i} style={{ padding: "12px 16px", textAlign: "center", background: i === 0 ? `${lp.accent}04` : "transparent" }}>
                       {typeof v === "boolean" ? (
-                        v ? <Check size={16} color={lp.green} strokeWidth={2.5} /> : <X size={14} color={lp.textFaint} strokeWidth={2} />
+                        v ? <Check size={16} color={lp.green} strokeWidth={2.5} style={{ opacity: compVis ? 1 : 0, transform: compVis ? "scale(1)" : "scale(0)", transition: `all 0.3s cubic-bezier(0.34,1.56,0.64,1) ${0.5 + ri * 0.04}s` }} /> : <X size={14} color={lp.textFaint} strokeWidth={2} />
                       ) : (
                         <span style={{ fontWeight: 700, color: i === 0 ? lp.accent : lp.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{v}</span>
                       )}
@@ -9210,14 +9229,16 @@ const LandingPage = ({ onLogin }) => {
             </tbody>
           </table>
         </div>
-        <div style={{ textAlign: "center", marginTop: 20 }}>
+        <div style={{ textAlign: "center", marginTop: 20, opacity: compVis ? 1 : 0, transition: "opacity 0.5s ease 0.8s" }}>
           <a href="/use-cases/finance" style={{ fontSize: 12, fontWeight: 700, color: lp.accent, textDecoration: "none" }}>View full competitive analysis →</a>
         </div>
       </div>
+      ); })()}
 
       {/* Powered by Claude — premium partnership highlight */}
-      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ borderRadius: 24, overflow: "hidden", border: `1px solid ${lp.border}`, position: "relative" }}>
+      {(() => { const [claudeRef, claudeVis] = useScrollReveal(0.1); return (
+      <div ref={claudeRef} style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ borderRadius: 24, overflow: "hidden", border: `1px solid ${lp.border}`, position: "relative", opacity: claudeVis ? 1 : 0, transform: claudeVis ? "scale(1) translateY(0)" : "scale(0.96) translateY(16px)", transition: "all 0.7s cubic-bezier(0.22,1,0.36,1)" }}>
           {/* Ambient glow */}
           <div style={{ position: "absolute", top: -60, right: -60, width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${lp.purple}10 0%, transparent 70%)`, pointerEvents: "none" }} />
           <div style={{ position: "absolute", bottom: -40, left: -40, width: 250, height: 250, borderRadius: "50%", background: `radial-gradient(circle, ${lp.accent}08 0%, transparent 70%)`, pointerEvents: "none" }} />
@@ -9277,6 +9298,7 @@ const LandingPage = ({ onLogin }) => {
           </div>
         </div>
       </div>
+      ); })()}
 
       {/* Quick comparison strip */}
       <div style={{ padding: "20px 48px 40px", maxWidth: 900, margin: "0 auto" }}>
@@ -9298,8 +9320,9 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Pricing */}
       {/* Resources — like Pigment's Further Reading */}
-      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
+      {(() => { const [resRef, resVis] = useScrollReveal(0.1); return (
+      <div ref={resRef} style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 32, opacity: resVis ? 1 : 0, transform: resVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: lp.green, marginBottom: 10 }}>Resources</div>
           <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.03em", color: lp.text }}>Further reading</h2>
         </div>
@@ -9308,10 +9331,10 @@ const LandingPage = ({ onLogin }) => {
             { tag: "GUIDE", title: "The Complete SaaS FP&A Playbook", desc: "From ARR to Rule of 40 — every metric, benchmark, and best practice modern SaaS finance teams need.", href: "/use-cases/saas-fpa", color: lp.accent },
             { tag: "USE CASE", title: "Revenue Planning", desc: "Driver-based revenue models with pipeline-weighted forecasting, cohort retention analysis, and expansion tracking.", href: "/use-cases/revenue-planning", color: lp.green },
             { tag: "COMPARISON", title: "FinanceOS vs. Legacy FP&A", desc: "See how FinanceOS compares to Anaplan, Pigment, Adaptive Planning, and Planful on 10 capabilities.", href: "/use-cases/finance", color: lp.purple },
-          ].map(r => (
-            <a key={r.title} href={r.href} style={{ background: lp.cardBg, border: `1px solid ${lp.border}`, borderRadius: 16, padding: "24px 22px", textDecoration: "none", display: "block", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${r.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${r.color}08`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+          ].map((r, ri) => (
+            <a key={r.title} href={r.href} style={{ background: lp.cardBg, border: `1px solid ${lp.border}`, borderRadius: 16, padding: "24px 22px", textDecoration: "none", display: "block", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", position: "relative", overflow: "hidden", opacity: resVis ? 1 : 0, transform: resVis ? "scale(1) translateY(0)" : "scale(0.92) translateY(16px)", transitionDelay: `${0.1 + ri * 0.1}s` }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${r.color}30`; e.currentTarget.style.transform = "translateY(-4px) scale(1.01)"; e.currentTarget.style.boxShadow = `0 12px 36px ${r.color}10`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "scale(1) translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
               <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${r.color}15, transparent)` }} />
               <span style={{ fontSize: 8, fontWeight: 800, padding: "3px 8px", borderRadius: 4, background: `${r.color}10`, color: r.color, letterSpacing: "0.08em" }}>{r.tag}</span>
               <h3 style={{ fontSize: 16, fontWeight: 800, color: lp.text, marginTop: 12, marginBottom: 8, letterSpacing: "-0.01em" }}>{r.title}</h3>
@@ -9321,11 +9344,13 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
       </div>
+      ); })()}
 
-      <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+      {(() => { const [priceRef, priceVis] = useScrollReveal(0.08); return (
+      <div id="pricing" ref={priceRef} style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
         {/* Ambient pricing glow */}
         <div style={{ position: "absolute", top: "15%", left: "50%", transform: "translate(-50%, -50%)", width: 500, height: 300, borderRadius: "50%", background: `radial-gradient(ellipse, ${lp.accent}05 0%, transparent 70%)`, pointerEvents: "none" }} />
-        <div style={{ textAlign: "center", marginBottom: 52, position: "relative" }}>
+        <div style={{ textAlign: "center", marginBottom: 52, position: "relative", opacity: priceVis ? 1 : 0, transform: priceVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `linear-gradient(135deg, ${lp.accent}0c, ${lp.green}06)`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
             <DollarSign size={12} color={lp.accent} strokeWidth={2.5} />Pricing
           </div>
@@ -9337,8 +9362,8 @@ const LandingPage = ({ onLogin }) => {
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
-          {plans.map(p => (
-            <div key={p.name} style={{ background: p.popular ? `linear-gradient(180deg, ${lp.accent}06, ${lp.cardBg})` : lp.cardBg, backdropFilter: "blur(12px)", border: `1px solid ${p.popular ? `${lp.accent}50` : lp.border}`, borderRadius: 16, padding: "28px 24px", boxShadow: p.popular ? `0 0 0 1px ${lp.accent}15, 0 12px 40px ${lp.accent}08` : "none", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+          {plans.map((p, pIdx) => (
+            <div key={p.name} style={{ background: p.popular ? `linear-gradient(180deg, ${lp.accent}06, ${lp.cardBg})` : lp.cardBg, backdropFilter: "blur(12px)", border: `1px solid ${p.popular ? `${lp.accent}50` : lp.border}`, borderRadius: 16, padding: "28px 24px", boxShadow: p.popular ? `0 0 0 1px ${lp.accent}15, 0 12px 40px ${lp.accent}08` : "none", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", position: "relative", overflow: "hidden", opacity: priceVis ? 1 : 0, transform: priceVis ? "scale(1) translateY(0)" : "scale(0.9) translateY(20px)", transitionDelay: `${0.15 + pIdx * 0.1}s` }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = p.popular ? `0 0 0 1px ${lp.accent}30, 0 20px 60px ${lp.accent}12` : `0 12px 40px ${lp.accent}08`; e.currentTarget.style.borderColor = p.popular ? lp.accent : `${lp.accent}30`; e.currentTarget.style.transform = "translateY(-3px)"; }}
               onMouseLeave={e => { e.currentTarget.style.boxShadow = p.popular ? `0 0 0 1px ${lp.accent}15, 0 12px 40px ${lp.accent}08` : "none"; e.currentTarget.style.borderColor = p.popular ? `${lp.accent}50` : lp.border; e.currentTarget.style.transform = "none"; }}
             >
@@ -9442,8 +9467,9 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: lp.textFaint }}>All plans include: SOC 2 architecture · AES-256 encryption · 24/7 monitoring · Email support</div>
+        <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: lp.textFaint, opacity: priceVis ? 1 : 0, transition: "opacity 0.6s ease 0.7s" }}>All plans include: SOC 2 architecture · AES-256 encryption · 24/7 monitoring · Email support</div>
       </div>
+      ); })()}
 
       {/* ═══ CUSTOMER SUCCESS — Photo testimonial panel ═══ */}
       <div style={{ padding: isMobile ? "20px 20px 40px" : "40px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
@@ -9467,10 +9493,11 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* ═══ Enterprise Sales Enablement — Why Teams Switch ═══ */}
-      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+      {(() => { const [switchRef, switchVis] = useScrollReveal(0.08); return (
+      <div ref={switchRef} style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40, opacity: switchVis ? 1 : 0, transform: switchVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>For Enterprise Buyers</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Why finance teams switch</h2>
+          <h2 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Why finance teams switch</h2>
           <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 520, margin: "0 auto" }}>The conversation your CFO is having with procurement right now.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: 16 }}>
@@ -9481,13 +9508,13 @@ const LandingPage = ({ onLogin }) => {
             { Icon: Layers, title: "One platform, not five tools", detail: "FP&A + Treasury + Compliance + ESG in a single suite. One login, one vendor, one contract.", tag: "Consolidation", img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80&fit=crop&h=200" },
             { Icon: Shield, title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs.", tag: "Security", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=80&fit=crop&h=200" },
             { Icon: TrendingUp, title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. Enterprise agreements include committed spend discounts.", tag: "Pricing", img: "https://images.unsplash.com/photo-1543286386-2e659306cd6c?w=400&q=80&fit=crop&h=200" },
-          ].map(s => (
-            <div key={s.title} style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 14, overflow: "hidden", transition: "all 0.2s ease" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${lp.accent}08`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+          ].map((s, sIdx) => (
+            <div key={s.title} style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 14, overflow: "hidden", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", opacity: switchVis ? 1 : 0, transform: switchVis ? "scale(1) translateY(0)" : "scale(0.92) translateY(20px)", transitionDelay: `${0.1 + sIdx * 0.08}s` }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}40`; e.currentTarget.style.transform = "translateY(-4px) scale(1.01)"; e.currentTarget.style.boxShadow = `0 12px 36px ${lp.accent}10`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "scale(1) translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
             >
               <div style={{ height: 100, overflow: "hidden", position: "relative" }}>
-                <img src={s.img} alt={s.tag} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.7 }} loading="lazy" />
+                <img src={s.img} alt={s.tag} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.7, transition: "transform 0.5s ease" }} loading="lazy" />
                 <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 40%, ${lp.surface})` }} />
                 <span style={{ position: "absolute", top: 10, right: 10, fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${lp.accent}15`, color: lp.accent, letterSpacing: "0.04em", backdropFilter: "blur(8px)" }}>{s.tag}</span>
               </div>
@@ -9508,10 +9535,12 @@ const LandingPage = ({ onLogin }) => {
           <button onClick={() => window.open("mailto:sales@finance-os.app?subject=Enterprise%20Inquiry", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Talk to Sales</button>
         </div>
       </div>
-      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 800, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
+      ); })()}
+      {(() => { const [faqRef, faqVis] = useScrollReveal(0.08); return (
+      <div ref={faqRef} style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48, opacity: faqVis ? 1 : 0, transform: faqVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.purple}0a`, border: `1px solid ${lp.purple}18`, fontSize: 10, fontWeight: 700, color: lp.purple, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>FAQ</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Frequently asked questions</h2>
+          <h2 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Frequently asked questions</h2>
         </div>
         {[
           { q: "What is FinanceOS?", a: "FinanceOS is an AI-powered financial planning and analysis (FP&A) platform. It connects to your ERP, CRM, and billing systems to build a unified financial model, then uses AI to surface variances, forecast revenue, and answer natural language questions about your data — with visible reasoning so you can verify every insight." },
@@ -9527,19 +9556,21 @@ const LandingPage = ({ onLogin }) => {
           { q: "Do you offer a money-back guarantee?", a: "Yes — all plans include a 30-day money-back guarantee. Subscribe, connect your data, and if you're not satisfied within 30 days, contact us for a full refund. No questions asked." },
           { q: "Do you offer custom pricing for large teams?", a: "Yes. Enterprise agreements have no seat limits, no entity caps, and no usage ceilings. We offer multi-year committed spend discounts, custom SLAs, dedicated TAMs, on-premises deployment, and SOX-compliant audit trails. Contact sales for a proposal." },
         ].map((faq, i) => (
-          <details key={i} style={{ borderBottom: `1px solid ${lp.border}80`, cursor: "pointer" }}>
-            <summary style={{ padding: "20px 0", fontSize: 15, fontWeight: 600, color: lp.text, listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <details key={i} style={{ borderBottom: `1px solid ${lp.border}80`, cursor: "pointer", opacity: faqVis ? 1 : 0, transform: faqVis ? "translateY(0)" : "translateY(12px)", transition: `all 0.4s ease-out ${0.15 + i * 0.04}s` }}>
+            <summary style={{ padding: "20px 0", fontSize: 15, fontWeight: 600, color: lp.text, listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "color 0.2s" }}>
               {faq.q}
-              <ChevronDown size={16} color={lp.textDim} style={{ flexShrink: 0, transition: "transform 0.2s" }} />
+              <ChevronDown size={16} color={lp.textDim} style={{ flexShrink: 0, transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1)" }} />
             </summary>
             <div style={{ padding: "0 0 20px", fontSize: 13, color: lp.textSub, lineHeight: 1.75 }}>{faq.a}</div>
           </details>
         ))}
       </div>
+      ); })()}
 
       {/* Security & Trust — Premium */}
-      <div id="security" style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
+      {(() => { const [secRef, secVis] = useScrollReveal(0.08); return (
+      <div id="security" ref={secRef} style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 56, opacity: secVis ? 1 : 0, transform: secVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `linear-gradient(135deg, ${lp.green}0c, ${lp.accent}06)`, border: `1px solid ${lp.green}18`, fontSize: 10, fontWeight: 700, color: lp.green, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
             <Shield size={12} color={lp.green} strokeWidth={2.5} />Security
           </div>
@@ -9555,8 +9586,8 @@ const LandingPage = ({ onLogin }) => {
             {[
               { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging, role-based controls, and automated compliance evidence generation.", badge: "AUDIT-READY", Icon: Shield, color: lp.green, stat: "100%", statLabel: "Audit coverage" },
               { title: "AES-256 Encryption", sub: "Military-grade encryption at rest and in transit. Zero plaintext storage of credentials or PII.", badge: "AT REST + TRANSIT", Icon: Lock, color: lp.accent, stat: "256-bit", statLabel: "Encryption standard" },
-            ].map(s => (
-              <div key={s.title} style={{ background: lpMode === "dark" ? `linear-gradient(145deg, ${lp.cardBg}, ${s.color}04)` : lp.cardBg, border: `1px solid ${lp.border}`, borderRadius: 16, padding: isMobile ? "24px 20px" : "28px 24px", transition: "all 0.2s ease", cursor: "default", position: "relative", overflow: "hidden" }}
+            ].map((s, si) => (
+              <div key={s.title} style={{ background: lpMode === "dark" ? `linear-gradient(145deg, ${lp.cardBg}, ${s.color}04)` : lp.cardBg, border: `1px solid ${lp.border}`, borderRadius: 16, padding: isMobile ? "24px 20px" : "28px 24px", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", cursor: "default", position: "relative", overflow: "hidden", opacity: secVis ? 1 : 0, transform: secVis ? "scale(1) translateY(0)" : "scale(0.92) translateY(20px)", transitionDelay: `${0.1 + si * 0.12}s` }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${s.color}12`; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
               >
@@ -9584,8 +9615,8 @@ const LandingPage = ({ onLogin }) => {
             {[
               { title: "Row-Level Security", sub: "Every database query scoped to your organization via Supabase RLS. Zero cross-tenant data leakage.", badge: "SUPABASE RLS", Icon: Layers, color: lp.purple, stat: "0", statLabel: "Cross-tenant leaks" },
               { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, X-Frame-Options, and 5 additional security headers.", badge: "VERCEL EDGE", Icon: Globe, color: "#22d3ee", stat: "A+", statLabel: "Security rating" },
-            ].map(s => (
-              <div key={s.title} style={{ background: lpMode === "dark" ? `linear-gradient(145deg, ${lp.cardBg}, ${s.color}04)` : lp.cardBg, border: `1px solid ${lp.border}`, borderRadius: 16, padding: isMobile ? "24px 20px" : "28px 24px", transition: "all 0.2s ease", cursor: "default", position: "relative", overflow: "hidden" }}
+            ].map((s, si) => (
+              <div key={s.title} style={{ background: lpMode === "dark" ? `linear-gradient(145deg, ${lp.cardBg}, ${s.color}04)` : lp.cardBg, border: `1px solid ${lp.border}`, borderRadius: 16, padding: isMobile ? "24px 20px" : "28px 24px", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", cursor: "default", position: "relative", overflow: "hidden", opacity: secVis ? 1 : 0, transform: secVis ? "scale(1) translateY(0)" : "scale(0.92) translateY(20px)", transitionDelay: `${0.35 + si * 0.12}s` }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${s.color}12`; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
               >
@@ -9624,11 +9655,13 @@ const LandingPage = ({ onLogin }) => {
           </div>
         </div>
       </div>
+      ); })()}
 
       {/* Ecosystem — Vaultline Suite */}
-      <div style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Part of the Vaultline Suite</h2>
+      {(() => { const [ecoRef, ecoVis] = useScrollReveal(0.1); return (
+      <div ref={ecoRef} style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40, opacity: ecoVis ? 1 : 0, transform: ecoVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
+          <h2 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Part of the Vaultline Suite</h2>
           <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 560, margin: "0 auto" }}>FinanceOS works standalone or as part of a unified finance ecosystem. Bundle all three and save 15%.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
@@ -9636,8 +9669,8 @@ const LandingPage = ({ onLogin }) => {
             { name: "Vaultline", desc: "Cloud-native treasury management. Real-time cash position, AI forecasting, multi-currency FX, and bank connectivity.", color: "#22d3ee", market: "Mid-market Treasury", price: "$499-$2,499/mo" },
             { name: "FinanceOS", desc: "AI-powered FP&A platform. Variance detection, scenario modeling, consolidation, and natural language querying.", color: lp.accent, market: "FP&A / Planning", price: "$599-$4,799/mo", current: true },
             { name: "Parallax", desc: "Aerospace supplier compliance OS. ITAR/EAR tracking, audit trails, supplier risk scoring, and regulatory mapping.", color: lp.gold, market: "Aerospace Compliance", price: "$799-$3,999/mo" },
-          ].map(p => (
-            <div key={p.name} style={{ background: lp.cardBg, border: `1px solid ${p.current ? p.color + "40" : lp.border}`, borderRadius: 12, padding: 24, position: "relative" }}>
+          ].map((p, pi) => (
+            <div key={p.name} style={{ background: lp.cardBg, border: `1px solid ${p.current ? p.color + "40" : lp.border}`, borderRadius: 12, padding: 24, position: "relative", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", opacity: ecoVis ? 1 : 0, transform: ecoVis ? "scale(1) translateY(0)" : "scale(0.92) translateY(16px)", transitionDelay: `${0.1 + pi * 0.1}s` }}>
               {p.current && <div style={{ position: "absolute", top: -8, right: 16, padding: "3px 10px", borderRadius: 4, background: p.color, fontSize: 9, fontWeight: 700, color: "#000" }}>CURRENT PRODUCT</div>}
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 3, background: p.color }} />
@@ -9659,6 +9692,7 @@ const LandingPage = ({ onLogin }) => {
           <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25` }}>Subscribe — Full Suite</button>
         </div>
       </div>
+      ); })()}
 
       {/* ═══ FUNDRAISER — Seed Round with translucent video panel ═══ */}
       <div id="invest" style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
