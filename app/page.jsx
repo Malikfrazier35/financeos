@@ -1304,6 +1304,53 @@ const ChartTooltip = memo(({ active, payload, label, c }) => {
 });
 
 // ── SPARKLINE ────────────────────────────────────────────────
+// ── SKELETON LOADING ─────────────────────────────────────────
+const Skeleton = ({ width = "100%", height = 16, borderRadius = 6, style = {} }) => (
+  <div className="fos-skeleton" style={{ width, height, borderRadius, background: "currentColor", opacity: 0.06, ...style }} />
+);
+
+const SkeletonKpi = ({ c }) => (
+  <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+      <Skeleton width={80} height={10} />
+      <Skeleton width={26} height={26} borderRadius={8} />
+    </div>
+    <Skeleton width={100} height={28} borderRadius={4} style={{ marginBottom: 8 }} />
+    <Skeleton width={60} height={14} borderRadius={4} />
+  </div>
+);
+
+const SkeletonChart = ({ c, height = 200 }) => (
+  <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <Skeleton width={30} height={30} borderRadius={9} />
+        <div><Skeleton width={140} height={14} style={{ marginBottom: 4 }} /><Skeleton width={200} height={10} /></div>
+      </div>
+      <Skeleton width={100} height={28} borderRadius={8} />
+    </div>
+    <Skeleton width="100%" height={height} borderRadius={8} />
+    <div style={{ display: "flex", gap: 12, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
+      <Skeleton width={60} height={12} borderRadius={4} />
+      <Skeleton width={60} height={12} borderRadius={4} />
+      <Skeleton width={60} height={12} borderRadius={4} />
+    </div>
+  </div>
+);
+
+const SkeletonTable = ({ c, rows = 5 }) => (
+  <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
+    <div style={{ display: "flex", gap: 20, padding: "14px 18px", background: c.surfaceAlt, borderBottom: `1px solid ${c.borderSub}` }}>
+      {[120, 80, 80, 80, 60, 100].map((w, i) => <Skeleton key={i} width={w} height={10} />)}
+    </div>
+    {Array.from({ length: rows }).map((_, i) => (
+      <div key={i} style={{ display: "flex", gap: 20, padding: "12px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
+        {[120, 80, 80, 80, 60, 100].map((w, j) => <Skeleton key={j} width={w * (0.7 + Math.random() * 0.3)} height={10} />)}
+      </div>
+    ))}
+  </div>
+);
+
 const Spark = memo(({ data, color, width = 64, height = 24 }) => {
   if (!data || data.length < 2) return <svg width={width} height={height} />;
   const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
@@ -1435,7 +1482,7 @@ const InsightRow = memo(({ item, c, onClick }) => {
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
-const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks, activityLog, glData }) => {
+const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks, activityLog, glData, glLoading }) => {
   // Use database GL data when available, fall back to hardcoded demo data
   const pnlData = glData?.pnl || PNL_DATA;
   const isLiveData = glData?.source === "database";
@@ -1540,7 +1587,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
     </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 14, marginBottom: 28 }}>
-      {kpis.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} />)}
+      {glLoading ? Array.from({ length: 6 }).map((_, i) => <SkeletonKpi key={i} c={c} />) :
+      kpis.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} />)}
     </div>
 
     {/* Charts Row */}
@@ -7466,7 +7514,8 @@ function FinanceOSApp() {
         .recharts-bar-rectangle { animation: barGrowUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .recharts-pie-sector { animation: pieScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .recharts-active-dot circle { animation: liveDot 2s ease-in-out infinite; }
-        .recharts-dot circle { transition: r 0.2s ease, fill 0.2s ease; }
+        .recharts-cartesian-grid-horizontal line { stroke-dasharray: 1 12 !important; stroke-linecap: round !important; }
+        .recharts-cartesian-grid-vertical line { stroke-dasharray: 1 12 !important; stroke-linecap: round !important; }
         .fos-kpi-value { animation: kpiFlash 0.6s ease forwards; }
         .fos-skeleton { animation: skeletonPulse 1.5s ease-in-out infinite; background: linear-gradient(90deg, transparent 25%, rgba(91,156,245,0.06) 50%, transparent 75%); background-size: 200% 100%; }
         .recharts-pie-sector { animation: fadeSlideUp 0.5s ease backwards; }
@@ -7861,7 +7910,7 @@ function FinanceOSApp() {
           <div style={{ position: "fixed", bottom: "15%", right: "10%", width: "35%", height: "35%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
           <div style={{ position: "fixed", top: "50%", right: "35%", width: "25%", height: "25%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}04 0%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} /></SectionBoundary>}
+          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} glLoading={glLoading} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
