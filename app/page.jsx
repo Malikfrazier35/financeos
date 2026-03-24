@@ -2961,9 +2961,9 @@ const ForecastView = ({ c, toast, onDrawer }) => {
 // CONSOLIDATION VIEW
 // ══════════════════════════════════════════════════════════════
 const ENTITIES = [
-  { name: "Acme US", revenue: 38920, ebitda: 3120, hc: 218, currency: "USD", status: "Closed", ic: -1200, fx: null },
-  { name: "Acme EU", revenue: 8650, ebitda: 520, hc: 62, currency: "EUR → USD", status: "In Review", ic: 0, fx: -142 },
-  { name: "Acme APAC", revenue: 3620, ebitda: 140, hc: 32, currency: "SGD → USD", status: "Pending", ic: 0, fx: 38 },
+  { name: "Acme US", revenue: 38920, ebitda: 3120, hc: 218, currency: "USD", status: "Closed", ic: -1200, fx: null, reviewer: "Sarah Chen", reviewerInit: "SC" },
+  { name: "Acme EU", revenue: 8650, ebitda: 520, hc: 62, currency: "EUR → USD", status: "In Review", ic: 0, fx: -142, reviewer: "James Rodriguez", reviewerInit: "JR" },
+  { name: "Acme APAC", revenue: 3620, ebitda: 140, hc: 32, currency: "SGD → USD", status: "Pending", ic: 0, fx: 38, reviewer: "Priya Patel", reviewerInit: "PP" },
 ];
 
 const CONS_PNL = [
@@ -3055,6 +3055,17 @@ const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
                 )}
                 <button onClick={() => onNav("pnl")} style={{ flex: 1, fontSize: 10, padding: "8px 0", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Drill →</button>
               </div>
+              {/* Reviewer assignment */}
+              {e.reviewer && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
+                  <div style={{ width: 22, height: 22, borderRadius: 7, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff" }}>{e.reviewerInit}</div>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: 9, color: c.textFaint }}>Reviewer: </span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: c.text }}>{e.reviewer}</span>
+                  </div>
+                  <button onClick={(ev) => { ev.stopPropagation(); toast(`Comment sent to ${e.reviewer}`, "success"); }} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 4, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>💬</button>
+                </div>
+              )}
             </div>
           );
         })}
@@ -4320,11 +4331,21 @@ const TeamView = ({ c, toast, onNav, userName }) => {
                 <button onClick={() => toast(`Message sent to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >Message</button>
+                >💬 Message</button>
                 <button onClick={() => toast(`Task assigned to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = c.purple; e.currentTarget.style.color = c.purple; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >Assign Task</button>
+                >📋 Assign Task</button>
+              </div>
+              <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+                <button onClick={() => window.open("https://calendly.com/finance-os-support/30min", "_blank")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.green; e.currentTarget.style.color = c.green; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
+                >📅 Schedule</button>
+                <button onClick={() => toast(`Viewing ${m.name}'s profile`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.amber; e.currentTarget.style.color = c.amber; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
+                >👤 Profile</button>
               </div>
             </div>
           ))}
