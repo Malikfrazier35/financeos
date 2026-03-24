@@ -6898,8 +6898,8 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   };
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: 420, maxHeight: "90vh", overflow: "auto", background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s ease" }}>
+    <div onClick={onClose} className="fos-auth-overlay" style={{ position: "fixed", inset: 0, zIndex: 10000 }}>
+      <div onClick={e => e.stopPropagation()} className="fos-auth-card" style={{ width: 420, maxHeight: "90vh", overflow: "auto" }}>
         {/* Header */}
         <div style={{ padding: "28px 32px 0", textAlign: "center", position: "relative" }}>
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#8b92a5", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
@@ -6925,12 +6925,13 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
                 { name: "Apple", icon: <svg viewBox="0 0 24 24" width={15} height={15}><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>, key: "apple" },
               ].map(p => (
                 <button key={p.key} onClick={() => handleOAuth(p.name === "Apple" ? "Apple" : p.name)} disabled={!!loading} style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "11px 0", borderRadius: 10,
-                  border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
-                  cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== p.key ? 0.4 : 1,
+                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px 0", borderRadius: 12,
+                  border: "1px solid #1e2230", background: "rgba(11,12,16,0.6)", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
+                  cursor: loading ? "wait" : "pointer", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", opacity: loading && loading !== p.key ? 0.4 : 1,
+                  backdropFilter: "blur(8px)",
                 }}
-                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.background = "#111318"; }}}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.background = "#0b0c10"; }}
+                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.background = "rgba(17,19,24,0.8)"; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)"; }}}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.background = "rgba(11,12,16,0.6)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
                 >{p.icon} {loading === p.key ? "..." : p.name}</button>
               ))}
             </div>
@@ -6994,14 +6995,15 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
                 <option>CFO / VP Finance</option><option>FP&A Manager / Director</option><option>Controller</option><option>Finance Analyst</option><option>RevOps / BizOps</option><option>CEO / COO</option>
               </select>
             )}
-            <button onClick={() => authMode === "demo" ? handleDemo() : handleEmail()} disabled={!!loading} style={{
-              width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
-              background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 2,
+            <button className="fos-cta-primary" onClick={() => authMode === "demo" ? handleDemo() : handleEmail()} disabled={!!loading} style={{
+              width: "100%", padding: "14px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
+              background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 4,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading === "email" ? 0.7 : 1,
-              transition: "all 0.2s", boxShadow: "0 4px 16px rgba(96,165,250,0.2)",
+              transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", boxShadow: "0 6px 20px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
+              backgroundSize: "200% 100%",
             }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.9"; }}
-            onMouseLeave={e => e.currentTarget.style.transform = "none"}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 8px 28px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.15)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.1)"; e.currentTarget.style.transform = "none"; }}
             >
               {loading === "email" && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />}
               {authMode === "login" ? "Sign In" : authMode === "signup" ? "Create Account" : "Request Demo"}
@@ -7021,10 +7023,10 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           </div>
 
           {/* Trust signals */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
-            {[{ icon: Shield, label: "SOC 2" }, { icon: Zap, label: "AES-256" }, { icon: Globe, label: "Custom SLA" }].map(t => (
-              <div key={t.label} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, color: "#3d4558", fontWeight: 600 }}>
-                <t.icon size={10} color="#3d4558" /> {t.label}
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
+            {[{ icon: Shield, label: "SOC 2 Type II", color: "#34d399" }, { icon: Lock, label: "AES-256", color: "#60a5fa" }, { icon: Globe, label: "99.9% Uptime", color: "#a78bfa" }].map(t => (
+              <div key={t.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, color: "#4a5268", fontWeight: 600, padding: "4px 8px", borderRadius: 6, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                <t.icon size={10} color={t.color} /> {t.label}
               </div>
             ))}
           </div>
@@ -7922,12 +7924,12 @@ const LandingPage = ({ onLogin }) => {
             {/* Dropdown buttons */}
             {[
               { label: "Solutions", items: [
-                { name: "Budget Planning", href: "/use-cases/budget-planning" },
-                { name: "Revenue Forecasting", href: "/use-cases/forecasting" },
-                { name: "Financial Consolidation", href: "/use-cases/consolidation" },
-                { name: "Revenue Planning", href: "/use-cases/revenue-planning" },
-                { name: "Headcount Planning", href: "/use-cases/headcount-planning" },
-                { name: "All Solutions", href: "/use-cases", accent: true },
+                { name: "Budget Planning", href: "/use-cases/budget-planning", desc: "Driver-based budgets with AI variance analysis" },
+                { name: "Revenue Forecasting", href: "/use-cases/forecasting", desc: "ML-powered forecasts with 96.8% accuracy" },
+                { name: "Financial Consolidation", href: "/use-cases/consolidation", desc: "Multi-entity close with IC elimination" },
+                { name: "Revenue Planning", href: "/use-cases/revenue-planning", desc: "Pipeline-connected revenue models" },
+                { name: "Headcount Planning", href: "/use-cases/headcount-planning", desc: "Workforce planning with HRIS sync" },
+                { name: "All Solutions", href: "/use-cases", accent: true, desc: "Explore every use case" },
               ]},
               { label: "Integrations", items: [
                 { name: "Stripe", tag: "PAYMENTS" }, { name: "Square", tag: "PAYMENTS" }, { name: "Plaid", tag: "BANKING" },
@@ -7967,64 +7969,68 @@ const LandingPage = ({ onLogin }) => {
                 )}
                 {menu.items && (
                   <div className="nav-dd-panel" style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", paddingTop: 10, display: "none", zIndex: 100 }}>
-                    <div style={{ background: lpMode === "dark" ? "#0f1118" : "#fff", border: `1px solid ${lpMode === "dark" ? "#1e2230" : "#e5e7ec"}`, borderRadius: 20, padding: menu.label === "Integrations" ? "20px 22px" : "14px 12px", boxShadow: lpMode === "dark" ? "0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.04)" : "0 20px 60px rgba(0,0,0,0.12)", minWidth: menu.label === "Integrations" ? 560 : menu.label === "Solutions" ? 340 : 240, maxHeight: 440, overflowY: "auto" }}>
+                    <div style={{ background: lpMode === "dark" ? "rgba(15,17,24,0.95)" : "rgba(255,255,255,0.98)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", border: `1px solid ${lpMode === "dark" ? "#1e2230" : "#e5e7ec"}`, borderRadius: 20, padding: menu.label === "Integrations" ? "20px 22px" : "16px 14px", boxShadow: lpMode === "dark" ? "0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(96,165,250,0.06), inset 0 1px 0 rgba(255,255,255,0.03)" : "0 24px 80px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)", minWidth: menu.label === "Integrations" ? 560 : menu.label === "Solutions" ? 340 : 260, maxHeight: 440, overflowY: "auto" }}>
                       {/* Panel title */}
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${lpMode === "dark" ? "#1e2230" : "#eef0f4"}` }}>
                         <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: lpMode === "dark" ? "#3d4558" : "#9ea5b8" }}>{menu.label}</span>
                         {menu.label === "Integrations" && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${lp.accent}10`, color: lp.accent }}>40+ CONNECTED</span>}
                       </div>
                       {menu.label === "Integrations" ? (
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 3 }}>
-                          {menu.items.map(item => (
-                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, transition: "all 0.15s", cursor: "default" }}
-                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(2px)"; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2 }}>
+                          {menu.items.map(item => {
+                            const tagColors = { "PAYMENTS": lp.green, "BANKING": lp.accent, "MARKET DATA": "#22d3ee", "RESEARCH": lp.purple, "FINANCIAL DATA": lp.accent, "ERP": lp.gold, "AI PARTNER": lp.purple, "DATABASE": lp.green, "HOSTING": lp.text, "SECURITY": "#f59e0b", "CLOUD": "#f97316", "EXPENSE MGMT": lp.green, "ESIGNATURE": lp.accent, "MESSAGING": lp.purple, "EMAIL": "#ef4444", "CRM": lp.accent, "SUPPORT": lp.green, "SCHEDULING": lp.accent, "PROJECTS": lp.purple };
+                            const tc = tagColors[item.tag] || lp.textFaint;
+                            return (
+                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", cursor: "default", borderLeft: "2px solid transparent" }}
+                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? `${tc}08` : `${tc}06`; e.currentTarget.style.borderLeftColor = tc; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderLeftColor = "transparent"; }}
                             >
-                              <div style={{ width: 24, height: 24, borderRadius: 6, background: item.accent ? `${lp.accent}15` : (lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, flexShrink: 0 }}>
-                                <Plug size={10} color={item.accent ? lp.accent : lp.textFaint} />
+                              <div style={{ width: 26, height: 26, borderRadius: 7, background: item.accent ? `${lp.accent}12` : (lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)"), border: `1px solid ${item.accent ? `${lp.accent}20` : "transparent"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, flexShrink: 0 }}>
+                                {item.accent ? <Sparkles size={11} color={lp.accent} /> : <Plug size={10} color={tc} />}
                               </div>
                               <div>
                                 <div style={{ fontSize: 11, fontWeight: 700, color: item.accent ? lp.accent : lp.text, lineHeight: 1.2 }}>{item.name}</div>
-                                <div style={{ fontSize: 7, fontWeight: 700, color: lpMode === "dark" ? "#3d4558" : "#9ea5b8", letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.tag}</div>
+                                <div style={{ fontSize: 7, fontWeight: 700, color: tc, letterSpacing: "0.06em", textTransform: "uppercase", opacity: 0.7 }}>{item.tag}</div>
                               </div>
                             </div>
-                          ))}
+                          );})}
                         </div>
                       ) : menu.label === "Solutions" ? (
                         menu.items.map(item => (
-                          <a key={item.name} href={item.href || "#"} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, textDecoration: "none", transition: "all 0.15s" }}
-                            onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(3px)"; }}
-                            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
+                          <a key={item.name} href={item.href || "#"} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 12, textDecoration: "none", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", borderLeft: "2px solid transparent" }}
+                            onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.borderLeftColor = item.accent ? lp.accent : lp.green; e.currentTarget.style.transform = "translateX(3px)"; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderLeftColor = "transparent"; e.currentTarget.style.transform = "none"; }}
                           >
-                            <div style={{ width: 28, height: 28, borderRadius: 8, background: item.accent ? `linear-gradient(135deg, ${lp.accent}20, ${lp.purple}15)` : (lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)"), border: `1px solid ${item.accent ? `${lp.accent}20` : (lpMode === "dark" ? "#1e2230" : "#eef0f4")}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                              <TrendingUp size={12} color={item.accent ? lp.accent : lp.textDim} />
+                            <div style={{ width: 32, height: 32, borderRadius: 9, background: item.accent ? `linear-gradient(135deg, ${lp.accent}15, ${lp.purple}10)` : (lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)"), border: `1px solid ${item.accent ? `${lp.accent}20` : (lpMode === "dark" ? "#1e2230" : "#eef0f4")}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                              {item.accent ? <Sparkles size={13} color={lp.accent} /> : <TrendingUp size={13} color={lp.textDim} />}
                             </div>
-                            <div>
+                            <div style={{ flex: 1 }}>
                               <div style={{ fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? lp.accent : lp.text, lineHeight: 1.2 }}>{item.name}</div>
-                              <div style={{ fontSize: 9, color: lp.textDim, marginTop: 1 }}>{item.accent ? "See all use cases" : "AI-powered automation"}</div>
+                              <div style={{ fontSize: 10, color: lp.textFaint, marginTop: 2, lineHeight: 1.3 }}>{item.desc}</div>
                             </div>
-                            <ChevronRight size={12} color={lp.textFaint} style={{ marginLeft: "auto" }} />
+                            <ChevronRight size={12} color={lp.textFaint} style={{ marginLeft: "auto", opacity: 0.5 }} />
                           </a>
                         ))
                       ) : (
                         menu.items.map(item => (
                           item.href ? (
-                            <a key={item.name} href={item.href} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, textDecoration: "none", fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? lp.accent : lp.text, transition: "all 0.15s" }}
-                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(2px)"; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
+                            <a key={item.name} href={item.href} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 10, textDecoration: "none", fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? lp.accent : lp.text, transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", borderLeft: "2px solid transparent" }}
+                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.borderLeftColor = lp.accent; e.currentTarget.style.transform = "translateX(3px)"; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderLeftColor = "transparent"; e.currentTarget.style.transform = "none"; }}
                             >
-                              <div style={{ width: 6, height: 6, borderRadius: 2, background: item.accent ? lp.accent : lp.textFaint, flexShrink: 0 }} />
-                              {item.name}
-                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: lpMode === "dark" ? "#3d4558" : "#9ea5b8", letterSpacing: "0.06em", marginLeft: "auto" }}>{item.tag}</span>}
+                              <div style={{ width: 6, height: 6, borderRadius: 2, background: item.accent ? lp.accent : lp.textFaint, flexShrink: 0, transition: "all 0.2s" }} />
+                              <span style={{ flex: 1 }}>{item.name}</span>
+                              {item.tag && <span style={{ fontSize: 7, fontWeight: 700, padding: "2px 6px", borderRadius: 4, background: `${lp.green}08`, color: lp.green, letterSpacing: "0.06em" }}>{item.tag}</span>}
+                              <ChevronRight size={10} color={lp.textFaint} style={{ opacity: 0.4, flexShrink: 0 }} />
                             </a>
                           ) : (
-                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, fontSize: 12, fontWeight: 600, color: lp.text, transition: "all 0.15s" }}
-                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(2px)"; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
+                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, color: lp.text, transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", borderLeft: "2px solid transparent" }}
+                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.borderLeftColor = lp.green; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderLeftColor = "transparent"; }}
                             >
-                              <div style={{ width: 6, height: 6, borderRadius: 2, background: lp.textFaint, flexShrink: 0 }} />
-                              {item.name}
-                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: lpMode === "dark" ? "#3d4558" : "#9ea5b8", letterSpacing: "0.06em", marginLeft: "auto" }}>{item.tag}</span>}
+                              <div style={{ width: 6, height: 6, borderRadius: "50%", background: lp.green, flexShrink: 0, boxShadow: `0 0 6px ${lp.green}40` }} />
+                              <span style={{ flex: 1 }}>{item.name}</span>
+                              {item.tag && <span style={{ fontSize: 7, fontWeight: 700, padding: "2px 6px", borderRadius: 4, background: `${lp.green}08`, color: lp.green, letterSpacing: "0.06em" }}>{item.tag}</span>}
                             </div>
                           )
                         ))
@@ -8050,7 +8056,15 @@ const LandingPage = ({ onLogin }) => {
           </div>
           )}
         </div>
-        <style>{`.nav-dd-wrap:hover .nav-dd-panel{display:block!important;animation:fadeSlideUp 0.2s ease}.nav-dd-wrap:hover .nav-dd-btn{color:${lpMode === "dark" ? "#f0f2f5" : "#0f1118"}!important;background:${lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.05)"}}.nav-dd-wrap:hover .nav-dd-btn svg{transform:rotate(180deg)}`}</style>
+        <style>{`
+          .nav-dd-wrap:hover .nav-dd-panel{display:block!important;animation:fosDropdownIn 0.25s cubic-bezier(0.16,1,0.3,1)}
+          .nav-dd-wrap:hover .nav-dd-btn{color:${lpMode === "dark" ? "#f0f2f5" : "#0f1118"}!important;background:${lpMode === "dark" ? "rgba(96,165,250,0.08)" : "rgba(59,130,246,0.06)"};border-radius:10px}
+          .nav-dd-wrap:hover .nav-dd-btn svg{transform:rotate(180deg)}
+          @keyframes fosDropdownIn{0%{opacity:0;transform:translateX(-50%) translateY(-8px) scale(0.96)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+          .nav-dd-panel::-webkit-scrollbar{width:4px}
+          .nav-dd-panel::-webkit-scrollbar-thumb{background:${lpMode === "dark" ? "#2a3040" : "#d0d4dc"};border-radius:4px}
+          .nav-dd-panel::-webkit-scrollbar-track{background:transparent}
+        `}</style>
       </nav>
 
       {/* Hero */}
@@ -8257,9 +8271,12 @@ const LandingPage = ({ onLogin }) => {
         .fos-data-pulse{animation:fosDataPulse 3s ease-in-out infinite}
         .fos-sparkle{animation:fosSparkle 2s ease-in-out infinite}
         .fos-notif-slide{animation:fosNotifSlide 5s ease-in-out infinite}
-        .fos-auth-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease}
-        .fos-auth-card{background:#10131a;border:1px solid #1e2230;border-radius:20px;box-shadow:0 40px 100px rgba(0,0,0,0.6),0 0 0 1px rgba(96,165,250,0.05);position:relative;overflow:hidden}
-        .fos-auth-card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;border-radius:21px;background:linear-gradient(135deg,rgba(96,165,250,0.1),transparent 40%,transparent 60%,rgba(167,139,250,0.08));pointer-events:none}
+        .fos-auth-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);display:flex;align-items:center;justify-content:center;animation:fosAuthOverlayIn 0.3s cubic-bezier(0.16,1,0.3,1)}
+        @keyframes fosAuthOverlayIn{0%{opacity:0}100%{opacity:1}}
+        @keyframes fosAuthCardIn{0%{opacity:0;transform:scale(0.92) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+        .fos-auth-card{background:linear-gradient(165deg,#10131a 0%,#0d0f15 100%);border:1px solid #1e2230;border-radius:24px;box-shadow:0 40px 120px rgba(0,0,0,0.7),0 0 0 1px rgba(96,165,250,0.06),0 0 80px rgba(96,165,250,0.03);position:relative;overflow:hidden;animation:fosAuthCardIn 0.35s cubic-bezier(0.16,1,0.3,1) 0.05s both}
+        .fos-auth-card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;border-radius:25px;background:linear-gradient(135deg,rgba(96,165,250,0.12),transparent 35%,transparent 65%,rgba(167,139,250,0.1));pointer-events:none}
+        .fos-auth-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,0.15),rgba(167,139,250,0.1),transparent);pointer-events:none}
         .fos-gate-lock{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.12);font-size:9px;font-weight:700;color:#34d399;letter-spacing:0.06em;text-transform:uppercase}
         .fos-paywall-blur{filter:blur(6px);pointer-events:none;user-select:none;-webkit-user-select:none}
         .fos-paywall-gate{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(6,8,12,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:inherit}
