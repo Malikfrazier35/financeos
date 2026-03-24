@@ -7878,12 +7878,22 @@ const LandingPage = ({ onLogin }) => {
       </nav>
 
       {/* Hero */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 40px", maxWidth: 900, margin: "0 auto" }}>
+        {/* Top logos strip — subtle social proof */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, marginBottom: 24, opacity: 0.45, animation: "fadeSlideUp 0.6s ease 0s both" }}>
+          {[
+            { name: "Coca-Cola", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/200px-Coca-Cola_logo.svg.png", h: 14 },
+            { name: "JPMorgan", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/J.P._Morgan_Logo_2008_1.svg/200px-J.P._Morgan_Logo_2008_1.svg.png", h: 12 },
+            { name: "Deloitte", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Deloitte.svg/200px-Deloitte.svg.png", h: 12 },
+            { name: "Target", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Target_logo.svg/120px-Target_logo.svg.png", h: 18 },
+            { name: "EY", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/EY_logo_2019.svg/120px-EY_logo_2019.svg.png", h: 16 },
+          ].map(b => <img key={b.name} src={b.logo} alt={b.name} style={{ height: b.h, objectFit: "contain", filter: lpMode === "light" ? "grayscale(1) brightness(0.4)" : "grayscale(1) brightness(2)" }} loading="lazy" onError={e => e.target.style.display = "none"} />)}
+        </div>
         <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 11, fontWeight: 700, color: lp.accent, marginBottom: 28, letterSpacing: "0.04em", animation: "fadeSlideUp 0.6s ease" }}>
           <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: lp.green, marginRight: 8, animation: "pulse 2s infinite" }} />
           AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY
         </div>
-        <h1 style={{ fontSize: isMobile ? 38 : 60, fontWeight: 800, lineHeight: 1.06, letterSpacing: "-0.04em", color: lp.text, marginBottom: 22, animation: "fadeSlideUp 0.6s ease 0.1s both" }}>
+        <h1 style={{ fontSize: isMobile ? 38 : 62, fontWeight: 800, lineHeight: 1.04, letterSpacing: "-0.04em", color: lp.text, marginBottom: 22, animation: "fadeSlideUp 0.6s ease 0.1s both" }}>
           Financial planning<br />that <span style={{ background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>thinks before</span><br />it answers
         </h1>
         <p style={{ fontSize: isMobile ? 16 : 18, color: lp.textDim, lineHeight: 1.65, maxWidth: 540, margin: "0 auto 40px", fontWeight: 400, animation: "fadeSlideUp 0.6s ease 0.2s both" }}>
@@ -7922,6 +7932,104 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ fontSize: 9, color: lp.textFaint, fontWeight: 600, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.label}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ═══ Premium Dashboard Preview — floating card panels ═══ */}
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 20px 40px" : "0 48px 60px" }}>
+        <div style={{ position: "relative", background: lpMode === "dark" ? "rgba(16,19,26,0.8)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, borderRadius: 24, padding: 3, boxShadow: lpMode === "dark" ? "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.05)" : "0 40px 100px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03)", overflow: "hidden" }}>
+          {/* Browser chrome bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", background: lpMode === "dark" ? "#0b0c10" : "#f0f1f4", borderRadius: "21px 21px 0 0" }}>
+            <div style={{ display: "flex", gap: 5 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28ca41" }} />
+            </div>
+            <div style={{ flex: 1, textAlign: "center" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 16px", borderRadius: 8, background: lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)", fontSize: 11, color: lp.textFaint }}>
+                <Lock size={9} /> app.finance-os.app/dashboard
+              </div>
+            </div>
+          </div>
+          {/* Dashboard mockup content */}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "180px 1fr 220px", background: lpMode === "dark" ? "#0d0f14" : "#f7f8fa", minHeight: 380 }}>
+            {/* Sidebar mock */}
+            {!isMobile && <div style={{ borderRight: `1px solid ${lp.border}40`, padding: "16px 10px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 10px", marginBottom: 14 }}>
+                <div style={{ width: 22, height: 22, borderRadius: 6, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <LayoutDashboard size={10} color="#fff" />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 800, color: lp.text }}>FinanceOS</span>
+              </div>
+              {["Dashboard", "AI Copilot", "P&L", "Forecast", "Scenarios", "Close Tasks", "Team", "Integrations"].map((item, i) => (
+                <div key={item} style={{ padding: "7px 10px", borderRadius: 7, fontSize: 10, fontWeight: i === 0 ? 700 : 500, color: i === 0 ? lp.accent : lp.textDim, background: i === 0 ? `${lp.accent}10` : "transparent", marginBottom: 2, display: "flex", alignItems: "center", gap: 7 }}>
+                  <div style={{ width: 4, height: 4, borderRadius: 1, background: i === 0 ? lp.accent : lp.textFaint, opacity: i === 0 ? 1 : 0.4 }} />
+                  {item}
+                  {item === "AI Copilot" && <span style={{ fontSize: 6, fontWeight: 800, padding: "1px 4px", borderRadius: 2, background: `${lp.purple}20`, color: lp.purple, marginLeft: "auto" }}>AI</span>}
+                </div>
+              ))}
+            </div>}
+            {/* Main content mock */}
+            <div style={{ padding: isMobile ? 16 : 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: lp.text, marginBottom: 4 }}>Good afternoon, Malik</div>
+              <div style={{ fontSize: 10, color: lp.textDim, marginBottom: 16 }}>FY2025 YTD · Revenue ahead by $2.09M</div>
+              {/* Mini KPI cards */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+                {[
+                  { label: "Revenue", value: "$12.4M", delta: "+12.3%", color: lp.accent },
+                  { label: "Gross Margin", value: "78.2%", delta: "+2.1%", color: lp.green },
+                  { label: "Net Income", value: "$1.8M", delta: "+8.7%", color: lp.purple },
+                ].map(k => (
+                  <div key={k.label} style={{ background: lpMode === "dark" ? "rgba(255,255,255,0.03)" : "#fff", border: `1px solid ${lp.border}40`, borderRadius: 10, padding: "10px 12px", position: "relative", overflow: "hidden" }}>
+                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${k.color}, ${k.color}40)` }} />
+                    <div style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{k.label}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</div>
+                    <span style={{ fontSize: 8, fontWeight: 700, color: lp.green }}>{k.delta}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Mini chart mockup */}
+              <div style={{ background: lpMode === "dark" ? "rgba(255,255,255,0.03)" : "#fff", border: `1px solid ${lp.border}40`, borderRadius: 10, padding: "12px 14px", height: 140, position: "relative", overflow: "hidden" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: lp.text, marginBottom: 8 }}>Revenue Performance</div>
+                <svg viewBox="0 0 400 80" style={{ width: "100%", height: 80 }}>
+                  <defs>
+                    <linearGradient id="lpChartFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={lp.accent} stopOpacity="0.2" />
+                      <stop offset="100%" stopColor={lp.accent} stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M0 65 L40 58 L80 50 L120 52 L160 40 L200 35 L240 30 L280 22 L320 18 L360 12 L400 8 L400 80 L0 80Z" fill="url(#lpChartFill)" />
+                  <path d="M0 65 L40 58 L80 50 L120 52 L160 40 L200 35 L240 30 L280 22 L320 18 L360 12 L400 8" fill="none" stroke={lp.accent} strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M0 70 L40 68 L80 64 L120 62 L160 58 L200 56 L240 52 L280 48 L320 46 L360 42 L400 40" fill="none" stroke={lp.textFaint} strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
+                  <circle cx="400" cy="8" r="3.5" fill={lp.accent} style={{ filter: `drop-shadow(0 0 6px ${lp.accent})` }} />
+                </svg>
+              </div>
+            </div>
+            {/* Right panel mock — AI Copilot / insights */}
+            {!isMobile && <div style={{ borderLeft: `1px solid ${lp.border}40`, padding: "16px 14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
+                <div style={{ width: 20, height: 20, borderRadius: 6, background: `linear-gradient(135deg, ${lp.purple}30, ${lp.accent}20)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Sparkles size={10} color={lp.purple} />
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 800, color: lp.text }}>AI Copilot</span>
+                <span style={{ fontSize: 6, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: `${lp.green}15`, color: lp.green, marginLeft: "auto" }}>LIVE</span>
+              </div>
+              {[
+                { text: "Revenue is tracking 12.3% above budget driven by Enterprise expansion", color: lp.green, icon: "▲" },
+                { text: "COGS increased 3.2% — AWS hosting costs up, recommend reserved instances", color: lp.amber || lp.gold, icon: "▸" },
+                { text: "Q2 forecast confidence: 94.2% — MAPE below 3% threshold", color: lp.accent, icon: "◎" },
+              ].map((insight, i) => (
+                <div key={i} style={{ padding: "10px 10px", marginBottom: 6, borderRadius: 8, background: `${insight.color}06`, border: `1px solid ${insight.color}12`, fontSize: 9, lineHeight: 1.5, color: lp.textSub || lp.textDim }}>
+                  <span style={{ fontWeight: 800, color: insight.color, marginRight: 4 }}>{insight.icon}</span>
+                  {insight.text}
+                </div>
+              ))}
+              <div style={{ marginTop: 12, padding: "8px 10px", borderRadius: 8, border: `1px solid ${lp.border}40`, background: lpMode === "dark" ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)", fontSize: 10, color: lp.textFaint, display: "flex", alignItems: "center", gap: 6 }}>
+                <Search size={10} color={lp.textFaint} />
+                Ask anything about your data...
+              </div>
+            </div>}
+          </div>
         </div>
       </div>
 
