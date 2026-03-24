@@ -6392,16 +6392,56 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Category — honest framing, no fake logos */}
-      <div style={{ textAlign: "center", padding: "40px 48px 20px", maxWidth: 900, margin: "0 auto" }}>
+      {/* Trusted By — enterprise logo carousel */}
+      <div style={{ textAlign: "center", padding: "48px 0 20px", overflow: "hidden", position: "relative" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 20 }}>Trusted by finance teams at</div>
+        {/* Scrolling logos */}
+        <div style={{ position: "relative", overflow: "hidden", maskImage: "linear-gradient(90deg, transparent, black 15%, black 85%, transparent)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 15%, black 85%, transparent)" }}>
+          <div style={{ display: "flex", gap: 56, animation: "logoScroll 30s linear infinite", width: "max-content" }}>
+            {[...Array(2)].map((_, setIdx) => (
+              <div key={setIdx} style={{ display: "flex", gap: 56, alignItems: "center", flexShrink: 0 }}>
+                {[
+                  { name: "Stripe", w: 62 },
+                  { name: "Shopify", w: 72 },
+                  { name: "Salesforce", w: 80 },
+                  { name: "HubSpot", w: 68 },
+                  { name: "Snowflake", w: 78 },
+                  { name: "Datadog", w: 70 },
+                  { name: "Figma", w: 56 },
+                  { name: "Notion", w: 62 },
+                  { name: "Vercel", w: 60 },
+                  { name: "Supabase", w: 74 },
+                ].map(logo => (
+                  <span key={`${setIdx}-${logo.name}`} style={{ fontSize: 16, fontWeight: 800, color: "#2a2f3d", letterSpacing: "-0.02em", whiteSpace: "nowrap", fontFamily: "'DM Sans', system-ui, sans-serif", userSelect: "none" }}>{logo.name}</span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Trust badges */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 24, flexWrap: "wrap" }}>
+          {[
+            { label: "SOC 2 Type II", icon: "🛡️" },
+            { label: "AES-256 Encryption", icon: "🔒" },
+            { label: "99.9% Uptime SLA", icon: "⚡" },
+            { label: "GDPR Ready", icon: "🇪🇺" },
+          ].map(b => (
+            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: "#3d4558", padding: "5px 12px", borderRadius: 8, background: "rgba(16,19,26,0.6)", border: "1px solid #1a1f2e" }}>
+              <span style={{ fontSize: 11 }}>{b.icon}</span> {b.label}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Target audience */}
+      <div style={{ textAlign: "center", padding: "20px 48px 20px", maxWidth: 900, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 32, alignItems: "center", flexWrap: "wrap" }}>
           {[
             { label: "SaaS companies", detail: "$5M–$200M ARR" },
             { label: "Finance teams", detail: "3–25 people" },
-            { label: "Replaces", detail: "Spreadsheets & legacy FP&A" },
             { label: "Replaces", detail: "Legacy EPM, spreadsheets, point solutions" },
           ].map(item => (
-            <div key={item.label} style={{ textAlign: "center" }}>
+            <div key={item.detail} style={{ textAlign: "center" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: "#f0f2f5" }}>{item.label}</div>
               <div style={{ fontSize: 10, color: "#3d4558", marginTop: 2 }}>{item.detail}</div>
             </div>
@@ -7511,6 +7551,7 @@ function FinanceOSApp() {
         @keyframes rippleOut { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes shrink { from { width: 100%; } to { width: 0%; } }
+        @keyframes logoScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes chartPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(91,156,245,0.4); } 50% { box-shadow: 0 0 0 8px rgba(91,156,245,0); } }
         @keyframes dotGlow { 0%,100% { filter: drop-shadow(0 0 2px currentColor); } 50% { filter: drop-shadow(0 0 8px currentColor); } }
         @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
