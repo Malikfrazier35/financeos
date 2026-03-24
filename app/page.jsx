@@ -2328,18 +2328,32 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       ))}
     </div>
 
-    {/* ── Trusted by Enterprise Finance Teams ── */}
+    {/* ── Trusted by Enterprise Finance Teams — Real logos ── */}
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
       <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Trusted by Enterprise Finance Teams</div>
       <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
     </div>
-    <div style={{ background: `linear-gradient(135deg, ${c.surface}, ${c.surfaceAlt})`, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 28px", marginBottom: 24 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 16 : 32, flexWrap: "wrap", opacity: 0.55, filter: "grayscale(1)", transition: "all 0.3s" }}
-        onMouseEnter={e => { e.currentTarget.style.opacity = "0.75"; e.currentTarget.style.filter = "grayscale(0.3)"; }}
-        onMouseLeave={e => { e.currentTarget.style.opacity = "0.55"; e.currentTarget.style.filter = "grayscale(1)"; }}
-      >
-        {["Coca-Cola", "Best Buy", "Target", "JPMorgan Chase", "Deloitte", "Ernst & Young", "Saks Fifth Avenue", "Ohio State University"].map(name => (
-          <div key={name} style={{ fontSize: 12, fontWeight: 800, color: c.textDim, letterSpacing: "0.02em", whiteSpace: "nowrap", padding: "6px 0" }}>{name}</div>
+    <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 28px", marginBottom: 24, boxShadow: c.cardGlow }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 18 : 34, flexWrap: "wrap", transition: "all 0.3s" }}>
+        {[
+          { name: "Coca-Cola", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/200px-Coca-Cola_logo.svg.png", h: 20 },
+          { name: "Best Buy", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Best_Buy_Logo.svg/200px-Best_Buy_Logo.svg.png", h: 26 },
+          { name: "Target", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Target_logo.svg/120px-Target_logo.svg.png", h: 28 },
+          { name: "JPMorgan Chase", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/J.P._Morgan_Logo_2008_1.svg/200px-J.P._Morgan_Logo_2008_1.svg.png", h: 18 },
+          { name: "Deloitte", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Deloitte.svg/200px-Deloitte.svg.png", h: 18 },
+          { name: "Ernst & Young", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/EY_logo_2019.svg/120px-EY_logo_2019.svg.png", h: 26 },
+          { name: "Saks Fifth Avenue", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Saks_Fifth_Avenue_Logo.svg/200px-Saks_Fifth_Avenue_Logo.svg.png", h: 14 },
+          { name: "Ohio State", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Ohio_State_University_seal.svg/120px-Ohio_State_University_seal.svg.png", h: 30 },
+        ].map(brand => (
+          <div key={brand.name} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "8px 4px", transition: "all 0.25s", cursor: "default", opacity: 0.55, filter: "grayscale(1)" }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.filter = "grayscale(0)"; e.currentTarget.style.transform = "scale(1.08)"; }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = "0.55"; e.currentTarget.style.filter = "grayscale(1)"; e.currentTarget.style.transform = "scale(1)"; }}
+            title={brand.name}
+          >
+            <img src={brand.logo} alt={brand.name} style={{ height: brand.h, maxWidth: 100, objectFit: "contain" }} loading="lazy"
+              onError={e => { e.target.style.display = "none"; e.target.parentElement.innerHTML = `<span style="font-size:12px;font-weight:800;color:${c.textDim};letter-spacing:0.02em;white-space:nowrap">${brand.name}</span>`; }}
+            />
+          </div>
         ))}
       </div>
     </div>
@@ -4467,27 +4481,63 @@ const TeamView = ({ c, toast, onNav, userName }) => {
     `linear-gradient(135deg, ${c.cyan}, ${c.green})`,
   ];
 
+  // Hero background images for team view — cycles through scenic office/city imagery
+  const [bgIdx, setBgIdx] = useState(0);
+  const teamBgImages = [
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80&fit=crop", // glass skyscraper
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&fit=crop", // modern office
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&fit=crop", // beach
+    "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&q=80&fit=crop", // city skyline night
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80&fit=crop", // mountain snow
+    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200&q=80&fit=crop", // city aerial
+  ];
+  useEffect(() => { const t = setInterval(() => setBgIdx(i => (i + 1) % teamBgImages.length), 8000); return () => clearInterval(t); }, []);
+
   return (
-    <div style={{ padding: 32 }}>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
-            <Users size={17} color={c.accent} />
+    <div style={{ padding: 0 }}>
+      {/* Dynamic Hero Banner with slideshow */}
+      <div style={{ position: "relative", height: 180, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
+        {teamBgImages.map((img, i) => (
+          <img key={i} src={img} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transition: "opacity 1.5s ease-in-out", opacity: bgIdx === i ? 1 : 0 }} />
+        ))}
+        {/* Gradient overlay for text readability */}
+        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 60%, ${c.bg || c.surface} 100%)` }} />
+        {/* FinanceOS watermark */}
+        <div style={{ position: "absolute", top: 16, right: 20, display: "flex", alignItems: "center", gap: 6, opacity: 0.6 }}>
+          <div style={{ width: 22, height: 22, borderRadius: 6, background: "linear-gradient(135deg, #3b82f6, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <LayoutDashboard size={11} color="#fff" />
           </div>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Team</div>
-              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${c.green}12`, color: c.green }}>
-                <span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
-                {teamMembers.filter(m => m.status === "online").length} online
-              </span>
-            </div>
-            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{teamMembers.length} members · {recentTasks.filter(t => t.status !== "completed").length} active tasks</div>
-          </div>
+          <span style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,255,255,0.8)", letterSpacing: "-0.02em" }}>FinanceOS</span>
         </div>
-        <button onClick={() => toast("Invite sent — check their email", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite Member</button>
+        {/* Slideshow dots */}
+        <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6 }}>
+          {teamBgImages.map((_, i) => (
+            <div key={i} onClick={() => setBgIdx(i)} style={{ width: bgIdx === i ? 18 : 6, height: 6, borderRadius: 3, background: bgIdx === i ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)", cursor: "pointer", transition: "all 0.3s ease" }} />
+          ))}
+        </div>
+        {/* Header content overlaid on banner */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 32px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 14 }}>
+            <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}30, ${c.purple || c.accent}20)`, backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Users size={19} color="#fff" />
+            </div>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}>Team</div>
+                <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 8, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: "rgba(52,211,153,0.2)", backdropFilter: "blur(8px)", border: "1px solid rgba(52,211,153,0.3)", color: "#6ee7b7" }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#6ee7b7", animation: "pulse 2s infinite" }} />
+                  {teamMembers.filter(m => m.status === "online").length} online
+                </span>
+              </div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginTop: 3 }}>{teamMembers.length} members · {recentTasks.filter(t => t.status !== "completed").length} active tasks</div>
+            </div>
+          </div>
+          <button onClick={() => toast("Invite sent — check their email", "success")} style={{ fontSize: 11, padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 14px rgba(0,0,0,0.3)` }}>+ Invite Member</button>
+        </div>
       </div>
+
+      {/* Content area below banner */}
+      <div style={{ padding: "20px 32px 32px" }}>
 
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 4, marginBottom: 24, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 500 }}>
@@ -4642,6 +4692,7 @@ const TeamView = ({ c, toast, onNav, userName }) => {
           ))}
         </div>
       )}
+      </div>{/* close content area below banner */}
     </div>
   );
 };
@@ -5876,11 +5927,25 @@ const IntelligenceView = ({ c, toast }) => {
           <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "28px 30px" }}>
             <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 4 }}>Trusted by Enterprise Finance Teams</div>
             <div style={{ fontSize: 10, color: c.textDim, marginBottom: 18 }}>FinanceOS powers treasury and FP&A for leading organizations worldwide</div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {["Coca-Cola", "Best Buy", "Target", "Saks Fifth Avenue", "Ohio State University", "JPMorgan Chase", "Deloitte", "Ernst & Young"].map(name => (
-                <span key={name} style={{ fontSize: 11, fontWeight: 600, color: c.textSec, padding: "9px 18px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, transition: "all 0.2s", cursor: "default" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.background = `${c.accent}05`; e.currentTarget.style.color = c.text; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.textSec; e.currentTarget.style.transform = "none"; }}>{name}</span>
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+              {[
+                { name: "Coca-Cola", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/200px-Coca-Cola_logo.svg.png", h: 18 },
+                { name: "Best Buy", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Best_Buy_Logo.svg/200px-Best_Buy_Logo.svg.png", h: 24 },
+                { name: "Target", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Target_logo.svg/120px-Target_logo.svg.png", h: 26 },
+                { name: "JPMorgan Chase", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/J.P._Morgan_Logo_2008_1.svg/200px-J.P._Morgan_Logo_2008_1.svg.png", h: 16 },
+                { name: "Deloitte", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Deloitte.svg/200px-Deloitte.svg.png", h: 16 },
+                { name: "Ernst & Young", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/EY_logo_2019.svg/120px-EY_logo_2019.svg.png", h: 24 },
+                { name: "Saks Fifth Avenue", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Saks_Fifth_Avenue_Logo.svg/200px-Saks_Fifth_Avenue_Logo.svg.png", h: 12 },
+                { name: "Ohio State", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Ohio_State_University_seal.svg/120px-Ohio_State_University_seal.svg.png", h: 28 },
+              ].map(brand => (
+                <div key={brand.name} style={{ padding: "8px 14px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, transition: "all 0.2s", cursor: "default", display: "flex", alignItems: "center", justifyContent: "center" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.background = `${c.accent}05`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.transform = "none"; }}
+                >
+                  <img src={brand.logo} alt={brand.name} style={{ height: brand.h, maxWidth: 90, objectFit: "contain", opacity: 0.7, filter: "grayscale(0.3)" }} loading="lazy"
+                    onError={e => { e.target.style.display = "none"; e.target.parentElement.innerHTML += `<span style="font-size:11px;font-weight:600;color:${c.textSec}">${brand.name}</span>`; }}
+                  />
+                </div>
               ))}
             </div>
           </div>
