@@ -10,9 +10,11 @@ export default function UseCasesIndex() {
     { title: "Budget Planning & Forecasting", desc: "Driver-based budgeting with rolling forecasts, what-if scenarios, and ML-powered accuracy tracking.", href: "/use-cases/budget-planning", color: GN, badge: null },
     { title: "Financial Consolidation", desc: "Multi-entity consolidation with automatic intercompany elimination, real-time FX rates, and one-click period close.", href: "/use-cases/consolidation", color: PU, badge: null },
     { title: "Revenue Forecasting", desc: "ML ensemble models with 96.8% accuracy, SHAP feature importance, live sensitivity sliders, and bear/base/bull scenarios.", href: "/use-cases/forecasting", color: AM, badge: "ML" },
+    { title: "Revenue Planning", desc: "Driver-based revenue plans across any granularity. Pipeline, bookings, expansion, and churn in one unified model.", href: "/use-cases/revenue-planning", color: AC, badge: "New" },
     { title: "SaaS FP&A Guide", desc: "The complete guide to financial planning and analysis for SaaS companies — metrics, benchmarks, and best practices.", href: "/use-cases/saas-fpa", color: AC, badge: "Guide" },
     { title: "Month-End Close", desc: "Checklist-driven close workflow with task assignment, owner tracking, category grouping, and burndown analytics.", href: "/", color: GN, badge: null },
     { title: "Investor Metrics & Reporting", desc: "Board-ready SaaS metrics, cohort analysis, fundraising readiness scorecards, and one-click PDF export.", href: "/", color: PU, badge: null },
+    { title: "Headcount Planning", desc: "Align with HR on budgeted vs actual headcount. See the P&L impact of every hire and model org design scenarios.", href: "/use-cases/headcount-planning", color: PU, badge: "Roadmap" },
     { title: "P&L, Cash Flow & Balance Sheet", desc: "Automated three-statement model with real-time variance detection, budget-to-actual comparison, and drill-down detail.", href: "/", color: AM, badge: null },
   ];
 

@@ -8,6 +8,8 @@ export default function sitemap() {
     { url: `${base}/use-cases/consolidation`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/use-cases/forecasting`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/use-cases/saas-fpa`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/use-cases/revenue-planning`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/use-cases/headcount-planning`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/compare/financeos-vs-pigment`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/compare/financeos-vs-anaplan`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/compare/financeos-vs-adaptive`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
