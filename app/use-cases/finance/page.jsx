@@ -27,7 +27,7 @@ export default function FinanceUseCasePage() {
 
   return (
     <div style={{background:c.bg,color:c.t,fontFamily:"'DM Sans',system-ui,sans-serif",minHeight:"100vh"}}>
-      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.uc-f{animation:fadeUp .7s ease both}.uc-f1{animation:fadeUp .7s ease .1s both}.uc-f2{animation:fadeUp .7s ease .2s both}.uc-f3{animation:fadeUp .7s ease .3s both}.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}.uc-card{transition:all .3s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-4px);border-color:rgba(91,156,245,.25)!important;box-shadow:0 16px 48px rgba(0,0,0,.3),0 0 0 1px rgba(91,156,245,.1)!important}.uc-nav:hover{color:${c.t}!important}`}</style>
+      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}@keyframes logoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.uc-f{animation:fadeUp .7s ease both}.uc-f1{animation:fadeUp .7s ease .1s both}.uc-f2{animation:fadeUp .7s ease .2s both}.uc-f3{animation:fadeUp .7s ease .3s both}.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}.uc-card{transition:all .3s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-4px);border-color:rgba(91,156,245,.25)!important;box-shadow:0 16px 48px rgba(0,0,0,.3),0 0 0 1px rgba(91,156,245,.1)!important}.uc-nav:hover{color:${c.t}!important}`}</style>
 
       <nav style={{position:"sticky",top:0,zIndex:50,borderBottom:`1px solid ${c.b}40`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(24px) saturate(1.4)",WebkitBackdropFilter:"blur(24px) saturate(1.4)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 48px",maxWidth:1200,margin:"0 auto"}}>
@@ -55,6 +55,24 @@ export default function FinanceUseCasePage() {
           <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{fontSize:15,padding:"14px 30px",borderRadius:12,border:`1px solid ${c.b}`,background:"transparent",color:c.td,textDecoration:"none",fontWeight:600}}>Join Next Live Demo</a>
         </div>
       </section>
+
+      {/* Trusted By logos */}
+      <div style={{textAlign:"center",padding:"40px 0 10px",overflow:"hidden"}}>
+        <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.14em",color:c.tf,marginBottom:18}}>Trusted by finance teams at</div>
+        <div style={{position:"relative",overflow:"hidden",maskImage:"linear-gradient(90deg,transparent,black 15%,black 85%,transparent)",WebkitMaskImage:"linear-gradient(90deg,transparent,black 15%,black 85%,transparent)"}}>
+          <div style={{display:"flex",gap:56,animation:"logoScroll 28s linear infinite",width:"max-content"}}>
+            {[...Array(2)].map((_,si)=>(<div key={si} style={{display:"flex",gap:56,alignItems:"center",flexShrink:0}}>
+              {["Stripe","Shopify","Salesforce","HubSpot","Snowflake","Datadog","Figma","Notion","Vercel","Supabase"].map(n=>(
+                <span key={`${si}-${n}`} style={{fontSize:16,fontWeight:800,color:`${c.b}`,letterSpacing:"-0.02em",whiteSpace:"nowrap",userSelect:"none"}}>{n}</span>
+              ))}</div>))}
+          </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"center",gap:14,marginTop:20}}>
+          {[{l:"SOC 2 Type II",i:"🛡️"},{l:"AES-256",i:"🔒"},{l:"99.9% SLA",i:"⚡"},{l:"GDPR",i:"🇪🇺"}].map(b=>(
+            <div key={b.l} style={{display:"flex",alignItems:"center",gap:5,fontSize:9,fontWeight:600,color:c.tf,padding:"4px 10px",borderRadius:6,background:`${c.s}80`,border:`1px solid ${c.b}`}}><span style={{fontSize:10}}>{b.i}</span>{b.l}</div>
+          ))}
+        </div>
+      </div>
 
       <section ref={reg("metrics")} style={{padding:"50px 48px 70px",maxWidth:1000,margin:"0 auto"}}>
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:20,opacity:show("metrics")?1:0,transform:show("metrics")?"none":"translateY(16px)",transition:"all .6s ease"}}>
