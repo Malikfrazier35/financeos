@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback, useMemo, memo, Component } from "react";
 import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu } from "lucide-react";
+import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu, Star, Lock } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 // ── SUPABASE CLIENT ──────────────────────────────────────────
@@ -7207,6 +7207,22 @@ const LandingPage = ({ onLogin }) => {
   const [emailStatus, setEmailStatus] = useState(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  // Landing page light/dark theme
+  const [lpMode, setLpMode] = useState("light");
+  const lp = lpMode === "dark" ? {
+    bg: "#06080c", surface: "#10131a", surfaceAlt: "#0b0c10", border: "#1a1f2e", borderLight: "#1e2230",
+    text: "#f0f2f5", textSub: "#c8cdd8", textDim: "#8b92a5", textFaint: "#3d4558",
+    accent: "#60a5fa", green: "#3dd9a0", purple: "#a78bfa", gold: "#f5b731",
+    navBg: "rgba(6,8,12,0.85)", cardBg: "rgba(16,19,26,0.7)", inputBg: "#0b0c10",
+    gradFrom: "#60a5fa", gradTo: "#a78bfa",
+  } : {
+    bg: "#ffffff", surface: "#f8f9fb", surfaceAlt: "#ffffff", border: "#e5e7ec", borderLight: "#eef0f4",
+    text: "#0f1118", textSub: "#2d3348", textDim: "#636d84", textFaint: "#9ea5b8",
+    accent: "#3b82f6", green: "#10b981", purple: "#8b5cf6", gold: "#d97706",
+    navBg: "rgba(255,255,255,0.88)", cardBg: "rgba(248,249,251,0.9)", inputBg: "#ffffff",
+    gradFrom: "#3b82f6", gradTo: "#8b5cf6",
+  };
+
   // Demo entry — enters dashboard with sample data, plan picker has skip option
   const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "", plan: "demo" }); };
 
@@ -7229,10 +7245,10 @@ const LandingPage = ({ onLogin }) => {
   const plans = PRICING_PLANS;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'Manrope', system-ui, sans-serif", overflow: "auto", position: "relative" }}>
+    <div style={{ minHeight: "100vh", background: lp.bg, color: lp.text, fontFamily: "'Manrope', system-ui, sans-serif", overflow: "auto", position: "relative", transition: "background 0.4s ease, color 0.4s ease" }}>
       {/* Ambient depth — dot grid + gradient orbs */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 0.5px, transparent 0.5px)", backgroundSize: "40px 40px" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${lpMode === "dark" ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.04)"} 0.5px, transparent 0.5px)`, backgroundSize: "40px 40px" }} />
       </div>
       {/* Ambient */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
@@ -7244,11 +7260,11 @@ const LandingPage = ({ onLogin }) => {
       <StatusBanner dark={true} />
 
       {/* Nav — sticky with dropdown menus */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(9,9,11,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(30,34,48,0.5)" }}>
+      <nav style={{ position: "sticky", top: 0, zIndex: 50, background: lp.navBg, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: `1px solid ${lp.border}50`, transition: "background 0.4s ease" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "12px 20px" : "14px 48px", maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <FosLogo size={32} />
-            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
+            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px", color: lp.text }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
           </div>
           {!isMobile ? (
           <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
@@ -7342,10 +7358,14 @@ const LandingPage = ({ onLogin }) => {
                 )}
               </div>
             ))}
-            <div style={{ width: 1, height: 20, background: "#1e2230", margin: "0 4px" }} />
-            <a href="#invest" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none", fontWeight: 600, padding: "8px 12px" }}>Investors</a>
-            <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Sign In</button>
-            <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)" }}>Subscribe</button>
+            <div style={{ width: 1, height: 20, background: lp.border, margin: "0 4px" }} />
+            <a href="#invest" style={{ fontSize: 12, color: lp.accent, textDecoration: "none", fontWeight: 600, padding: "8px 12px" }}>Investors</a>
+            <button onClick={() => setLpMode(p => p === "dark" ? "light" : "dark")} title={lpMode === "dark" ? "Switch to light" : "Switch to dark"} style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${lp.border}`, background: lp.surface, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.25s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = lp.accent}
+              onMouseLeave={e => e.currentTarget.style.borderColor = lp.border}
+            >{lpMode === "dark" ? <Sun size={15} color={lp.textDim} /> : <Moon size={15} color={lp.textDim} />}</button>
+            <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: `1px solid ${lp.border}`, background: "transparent", color: lp.text, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Sign In</button>
+            <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 4px 16px ${lp.accent}33` }}>Subscribe</button>
           </div>
           ) : (
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -7359,37 +7379,37 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Hero */}
       <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 11, fontWeight: 700, color: "#60a5fa", marginBottom: 28, letterSpacing: "0.04em", animation: "fadeSlideUp 0.6s ease" }}>
-          <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#34d399", marginRight: 8, animation: "pulse 2s infinite" }} />
+        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 11, fontWeight: 700, color: lp.accent, marginBottom: 28, letterSpacing: "0.04em", animation: "fadeSlideUp 0.6s ease" }}>
+          <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: lp.green, marginRight: 8, animation: "pulse 2s infinite" }} />
           AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY
         </div>
-        <h1 style={{ fontSize: isMobile ? 38 : 60, fontWeight: 800, lineHeight: 1.06, letterSpacing: "-0.04em", marginBottom: 22, animation: "fadeSlideUp 0.6s ease 0.1s both" }}>
-          Financial planning<br />that <span style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>thinks before</span><br />it answers
+        <h1 style={{ fontSize: isMobile ? 38 : 60, fontWeight: 800, lineHeight: 1.06, letterSpacing: "-0.04em", color: lp.text, marginBottom: 22, animation: "fadeSlideUp 0.6s ease 0.1s both" }}>
+          Financial planning<br />that <span style={{ background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>thinks before</span><br />it answers
         </h1>
-        <p style={{ fontSize: isMobile ? 16 : 18, color: "#8b92a5", lineHeight: 1.65, maxWidth: 540, margin: "0 auto 40px", fontWeight: 400, animation: "fadeSlideUp 0.6s ease 0.2s both" }}>
+        <p style={{ fontSize: isMobile ? 16 : 18, color: lp.textDim, lineHeight: 1.65, maxWidth: 540, margin: "0 auto 40px", fontWeight: 400, animation: "fadeSlideUp 0.6s ease 0.2s both" }}>
           Connect your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
         <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto", flexDirection: isMobile ? "column" : "row" }}>
           <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
             placeholder="Work email" type="email"
-            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: isMobile ? 10 : "10px 0 0 10px", border: "1px solid #1e2230", borderRight: isMobile ? "1px solid #1e2230" : "none", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
-            onFocus={e => e.target.style.borderColor = "#60a5fa"}
-            onBlur={e => e.target.style.borderColor = "#1e2230"}
+            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: isMobile ? 10 : "10px 0 0 10px", border: `1px solid ${lp.border}`, borderRight: isMobile ? `1px solid ${lp.border}` : "none", background: lp.inputBg, color: lp.text, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
+            onFocus={e => e.target.style.borderColor = lp.accent}
+            onBlur={e => e.target.style.borderColor = lp.border}
           />
-          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Subscribe Now</button>
+          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 30px ${lp.accent}33` }}>Subscribe Now</button>
         </div>
-        <div style={{ fontSize: 11, color: "#3d4558", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · 30-day money-back guarantee</div>
+        <div style={{ fontSize: 11, color: lp.textFaint, marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · 30-day money-back guarantee</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
-          <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.color = "#9ea5b8"; }}
+          <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = lp.textFaint; e.currentTarget.style.color = lp.text; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.color = lp.textDim; }}
           >Try the Live Demo</button>
-          <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #60a5fa30", background: "rgba(96,165,250,0.06)", color: "#60a5fa", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#60a5fa60"; e.currentTarget.style.background = "rgba(96,165,250,0.10)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#60a5fa30"; e.currentTarget.style.background = "rgba(96,165,250,0.06)"; }}
+          <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: `1px solid ${lp.accent}30`, background: `${lp.accent}0a`, color: lp.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}60`; e.currentTarget.style.background = `${lp.accent}14`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = `${lp.accent}30`; e.currentTarget.style.background = `${lp.accent}0a`; }}
           >Request a Demo Call</button>
         </div>
-        {/* Product value props — not vanity metrics */}
+        {/* Product value props */}
         <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 32, flexWrap: "wrap" }}>
           {[
             { value: "< 48hr", label: "Go-live" },
@@ -7398,107 +7418,102 @@ const LandingPage = ({ onLogin }) => {
             { value: "SOC 2", label: "Compliant" },
           ].map(m => (
             <div key={m.label} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f2f5", fontFamily: "'JetBrains Mono', monospace" }}>{m.value}</div>
-              <div style={{ fontSize: 9, color: "#3d4558", fontWeight: 600, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.label}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace" }}>{m.value}</div>
+              <div style={{ fontSize: 9, color: lp.textFaint, fontWeight: 600, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Connected Platforms — real integrations from MCP connectors */}
-      <div style={{ textAlign: "center", padding: "48px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 24 }}>Built on & Connected to</div>
-        {/* Row 1 — Financial Data & Payments */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 36, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
-          {[
-            { name: "Stripe", tag: "Payments" },
-            { name: "Square", tag: "Payments" },
-            { name: "Plaid", tag: "Banking" },
-            { name: "S&P Global", tag: "Market Data" },
-            { name: "Morningstar", tag: "Research" },
-            { name: "FactSet", tag: "Financial Data" },
-            { name: "QuickBooks", tag: "ERP" },
-          ].map(l => (
-            <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>{l.name}</span>
-              <div style={{ fontSize: 7, fontWeight: 700, color: "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
+      {/* Connected Platforms — categorized integration cards */}
+      <div style={{ textAlign: "center", padding: isMobile ? "32px 20px 10px" : "56px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: lp.textFaint, marginBottom: 8 }}>Built on & Connected to</div>
+        <p style={{ fontSize: 14, color: lp.textDim, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>21 enterprise connectors across payments, data, infrastructure, and collaboration.</p>
+
+        {/* Integration cards by category */}
+        {[
+          { cat: "Financial Data & Payments", color: lp.green, items: [
+            { name: "Stripe", tag: "Payments", icon: "◆" }, { name: "Square", tag: "Payments", icon: "◆" }, { name: "Plaid", tag: "Banking", icon: "◈" },
+            { name: "S&P Global", tag: "Market Data", icon: "◇" }, { name: "Morningstar", tag: "Research", icon: "◎" }, { name: "FactSet", tag: "Financial Data", icon: "▣" }, { name: "QuickBooks", tag: "ERP", icon: "■" },
+          ]},
+          { cat: "Infrastructure & AI", color: lp.purple, items: [
+            { name: "Anthropic", tag: "AI Partner", icon: "◎", featured: true }, { name: "Supabase", tag: "Database", icon: "▣" }, { name: "Vercel", tag: "Hosting", icon: "▲" },
+            { name: "Cloudflare", tag: "Security", icon: "◇" }, { name: "AWS", tag: "Cloud", icon: "■" }, { name: "Ramp", tag: "Expense Mgmt", icon: "◆" }, { name: "DocuSign", tag: "eSignature", icon: "◈" },
+          ]},
+          { cat: "Collaboration & Sales", color: lp.accent, items: [
+            { name: "Slack", tag: "Messaging", icon: "▸" }, { name: "Gmail", tag: "Email", icon: "◇" }, { name: "HubSpot", tag: "CRM", icon: "◆" },
+            { name: "Salesforce", tag: "CRM", icon: "◆" }, { name: "Intercom", tag: "Support", icon: "◎" }, { name: "Calendly", tag: "Scheduling", icon: "◈" }, { name: "Linear", tag: "Projects", icon: "▣" },
+          ]},
+        ].map((group, gi) => (
+          <div key={group.cat} style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: group.color, marginBottom: 10, opacity: 0.8 }}>{group.cat}</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
+              {group.items.map((item, ii) => (
+                <div key={item.name} className="lp-connector" style={{
+                  display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 10,
+                  background: item.featured ? `${lp.purple}08` : lp.cardBg,
+                  border: `1px solid ${item.featured ? `${lp.purple}25` : lp.border}`,
+                  backdropFilter: "blur(8px)", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+                  cursor: "default", animation: `fadeSlideUp 0.4s ease ${gi * 0.1 + ii * 0.03}s both`,
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${group.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${group.color}10`; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = item.featured ? `${lp.purple}25` : lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                >
+                  <span style={{ fontSize: 12, opacity: 0.5 }}>{item.icon}</span>
+                  <div style={{ textAlign: "left" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: item.featured ? lp.purple : lp.text, letterSpacing: "-0.01em", lineHeight: 1.2 }}>{item.name}</div>
+                    <div style={{ fontSize: 7, fontWeight: 700, color: group.color, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.7 }}>{item.tag}</div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        {/* Row 2 — Infrastructure & AI */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 36, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
-          {[
-            { name: "Anthropic", tag: "AI Partner", accent: true },
-            { name: "Supabase", tag: "Database" },
-            { name: "Vercel", tag: "Hosting" },
-            { name: "Cloudflare", tag: "Security" },
-            { name: "AWS", tag: "Cloud" },
-            { name: "Ramp", tag: "Expense Mgmt" },
-            { name: "DocuSign", tag: "eSignature" },
-          ].map(l => (
-            <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: l.accent ? "#a78bfa" : "#252a38", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>{l.name}</span>
-              <div style={{ fontSize: 7, fontWeight: 700, color: l.accent ? "#a78bfa" : "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
-            </div>
-          ))}
-        </div>
-        {/* Row 3 — Collaboration & Sales */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 36, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
-          {[
-            { name: "Slack", tag: "Messaging" },
-            { name: "Gmail", tag: "Email" },
-            { name: "HubSpot", tag: "CRM" },
-            { name: "Salesforce", tag: "CRM" },
-            { name: "Intercom", tag: "Support" },
-            { name: "Calendly", tag: "Scheduling" },
-            { name: "Linear", tag: "Projects" },
-          ].map(l => (
-            <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>{l.name}</span>
-              <div style={{ fontSize: 7, fontWeight: 700, color: "#60a5fa", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
-            </div>
-          ))}
-        </div>
+          </div>
+        ))}
+
         {/* Trust badges + ratings */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", alignItems: "center", marginTop: 20 }}>
           {[
-            { label: "SOC 2 Type II", icon: "■️" },
-            { label: "AES-256", icon: "■" },
-            { label: "99.9% Uptime", icon: "▸" },
-            { label: "GDPR Ready", icon: "◇" },
+            { label: "SOC 2 Type II", icon: Shield, color: lp.green },
+            { label: "AES-256 Encryption", icon: Lock, color: lp.accent },
+            { label: "99.9% Uptime SLA", icon: Zap, color: lp.purple },
+            { label: "GDPR Ready", icon: Globe, color: lp.green },
           ].map(b => (
-            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, fontWeight: 600, color: "#3d4558", padding: "5px 10px", borderRadius: 6, background: "rgba(16,19,26,0.5)", border: "1px solid #1a1f2e" }}>
-              <span style={{ fontSize: 10 }}>{b.icon}</span> {b.label}
+            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: lp.textDim, padding: "6px 14px", borderRadius: 8, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(6px)" }}>
+              <b.icon size={11} color={b.color} /> {b.label}
             </div>
           ))}
-          <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, color: "#f5b731", padding: "5px 10px", borderRadius: 6, background: "rgba(245,183,49,0.06)", border: "1px solid rgba(245,183,49,0.12)" }}>
-            ■ 4.9 Rating
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, fontWeight: 700, color: lp.gold, padding: "6px 14px", borderRadius: 8, background: `${lp.gold}08`, border: `1px solid ${lp.gold}18` }}>
+            <Star size={11} fill={lp.gold} color={lp.gold} /> 4.9 Rating
           </div>
         </div>
       </div>
 
       {/* ═══ SOCIAL PROOF — Corporate team imagery ═══ */}
       <div style={{ padding: isMobile ? "20px 20px 40px" : "40px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 24, borderRadius: 20, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 0, borderRadius: 20, overflow: "hidden", border: `1px solid ${lp.border}`, background: lp.surface }}>
           {/* Photo side */}
           <div style={{ position: "relative", minHeight: 320, overflow: "hidden" }}>
-            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=700&q=80&fit=crop&crop=faces" alt="Finance team collaborating" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }} loading="lazy" />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 60%, #10131a)" }} />
-            <div style={{ position: "absolute", bottom: 16, left: 16, display: "flex", gap: 8, alignItems: "center" }}>
-              <span style={{ fontSize: 8, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", color: "#eef0f6", letterSpacing: "0.06em" }}>ENTERPRISE FINANCE TEAMS</span>
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=700&q=80&fit=crop&crop=faces" alt="Finance team collaborating" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block", transition: "transform 0.6s ease" }} loading="lazy"
+              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.03)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+            />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, transparent 50%, ${lp.surface})` }} />
+            <div style={{ position: "absolute", bottom: 16, left: 16 }}>
+              <span style={{ fontSize: 8, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", color: "#eef0f6", letterSpacing: "0.06em" }}>ENTERPRISE FINANCE TEAMS</span>
             </div>
           </div>
           {/* Quote side */}
           <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#60a5fa", marginBottom: 20 }}>Why teams switch to FinanceOS</div>
-            <p style={{ fontSize: 22, fontWeight: 600, color: "#eef0f6", lineHeight: 1.55, fontStyle: "italic", marginBottom: 28, letterSpacing: "-0.01em" }}>
-              "FinanceOS makes us feel like mini-CFOs within our departments. The AI Copilot doesn't just answer questions — it shows us the reasoning behind every insight."
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: lp.accent, marginBottom: 20 }}>Why teams switch to FinanceOS</div>
+            <div style={{ fontSize: 36, color: `${lp.accent}20`, fontWeight: 800, lineHeight: 1, marginBottom: -10 }}>"</div>
+            <p style={{ fontSize: 20, fontWeight: 600, color: lp.text, lineHeight: 1.6, marginBottom: 28, letterSpacing: "-0.01em" }}>
+              FinanceOS makes us feel like mini-CFOs within our departments. The AI Copilot doesn't just answer questions — it shows us the reasoning behind every insight.
             </p>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #60a5fa20, #a78bfa10)", border: "1px solid #1a1f2e", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#60a5fa" }}>VP</div>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: `linear-gradient(135deg, ${lp.accent}20, ${lp.purple}15)`, border: `1px solid ${lp.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: lp.accent }}>VP</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#eef0f6" }}>VP of Finance</div>
-                <div style={{ fontSize: 11, color: "#3d4558" }}>Series C SaaS · $45M ARR · 12-person finance team</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>VP of Finance</div>
+                <div style={{ fontSize: 11, color: lp.textFaint }}>Series C SaaS · $45M ARR · 12-person finance team</div>
               </div>
             </div>
           </div>
@@ -7510,49 +7525,55 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 16 }}>
             {["◎", "◆", "◈"].map((icon, i) => (
-              <div key={i} style={{ width: 40, height: 40, borderRadius: 12, background: ["#60a5fa12", "#3dd9a012", "#a78bfa12"][i], border: `1px solid ${["#60a5fa", "#3dd9a0", "#a78bfa"][i]}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{icon}</div>
+              <div key={i} style={{ width: 44, height: 44, borderRadius: 14, background: `${[lp.accent, lp.green, lp.purple][i]}0a`, border: `1px solid ${[lp.accent, lp.green, lp.purple][i]}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, transition: "transform 0.3s", cursor: "default" }}
+                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-3px) scale(1.08)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "none"}
+              >{icon}</div>
             ))}
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10 }}>AI that plans with you</h2>
-          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 520, margin: "0 auto" }}>FinanceOS AI agents operate inside your planning environment, using your live data and business logic to support decisions in real time.</p>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>AI that plans with you</h2>
+          <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 520, margin: "0 auto" }}>FinanceOS AI agents operate inside your planning environment, using your live data and business logic to support decisions in real time.</p>
         </div>
 
         {/* Agent 1: Copilot */}
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 24, marginBottom: 32, alignItems: "center" }}>
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: "#a78bfa", padding: "5px 14px", borderRadius: 20, background: "#a78bfa08", border: "1px solid #a78bfa12", marginBottom: 16 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#a78bfa" }} />
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: lp.purple, padding: "5px 14px", borderRadius: 20, background: `${lp.purple}08`, border: `1px solid ${lp.purple}18`, marginBottom: 16 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: lp.purple, animation: "pulse 2s infinite" }} />
               AI Copilot
             </div>
-            <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, lineHeight: 1.15, color: "#f0f2f5" }}>Real-time insights to accelerate decisions</h3>
-            <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 16 }}>Proactively scans your metrics, uncovers key trends, flags anomalies, and explains the "why" behind every variance — with visible reasoning.</p>
+            <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, lineHeight: 1.15, color: lp.text }}>Real-time insights to accelerate decisions</h3>
+            <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.7, marginBottom: 16 }}>Proactively scans your metrics, uncovers key trends, flags anomalies, and explains the "why" behind every variance — with visible reasoning.</p>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {["Variance Detection", "Forecasting", "Scenario Planning"].map(t => (
-                <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "5px 12px", borderRadius: 8, background: "#a78bfa08", border: "1px solid #a78bfa12", color: "#a78bfa" }}>{t}</span>
+                <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "5px 12px", borderRadius: 8, background: `${lp.purple}08`, border: `1px solid ${lp.purple}18`, color: lp.purple }}>{t}</span>
               ))}
             </div>
           </div>
           {/* Interactive mockup */}
-          <div style={{ background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 16, padding: "20px 22px", boxShadow: "0 16px 48px rgba(0,0,0,0.3)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "8px 12px", background: "#161a24", borderRadius: 10 }}>
+          <div style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`, transition: "box-shadow 0.3s" }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 20px 60px ${lp.accent}12`}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "8px 12px", background: lp.surfaceAlt, borderRadius: 10, border: `1px solid ${lp.borderLight}` }}>
               <span style={{ fontSize: 13 }}>◎</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#f0f2f5" }}>AI Copilot</span>
-              <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#a78bfa12", color: "#a78bfa", marginLeft: "auto" }}>Claude</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>AI Copilot</span>
+              <span style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${lp.purple}12`, color: lp.purple, marginLeft: "auto" }}>Claude</span>
             </div>
-            <div style={{ padding: "10px 14px", borderRadius: 10, background: "#60a5fa08", border: "1px solid #60a5fa10", fontSize: 12, color: "#636d84", marginBottom: 8 }}>
+            <div style={{ padding: "10px 14px", borderRadius: 10, background: `${lp.accent}06`, border: `1px solid ${lp.accent}12`, fontSize: 12, color: lp.textDim, marginBottom: 8 }}>
               "Can you analyze our current revenue growth and highlight the top contributors?"
             </div>
-            <div style={{ padding: "10px 14px", borderRadius: 10, background: "#161a24", border: "1px solid #1a1f2e", fontSize: 12, color: "#9ea5b8", lineHeight: 1.6, marginBottom: 8 }}>
-              <div style={{ fontSize: 8, fontWeight: 700, color: "#3dd9a0", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Thought & work process →</div>
-              Revenue grew <span style={{ color: "#60a5fa", fontWeight: 700 }}>+44.7% YoY</span> to $51.2M. Enterprise expansion drove <span style={{ color: "#3dd9a0", fontWeight: 700 }}>68%</span> of the beat. AI module attach rate hit <span style={{ color: "#f5b731", fontWeight: 700 }}>42%</span>, up from 28%.
+            <div style={{ padding: "12px 14px", borderRadius: 10, background: lp.surfaceAlt, border: `1px solid ${lp.border}`, fontSize: 12, color: lp.textSub, lineHeight: 1.6, marginBottom: 8 }}>
+              <div style={{ fontSize: 8, fontWeight: 700, color: lp.green, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Thought & work process →</div>
+              Revenue grew <span style={{ color: lp.accent, fontWeight: 700 }}>+44.7% YoY</span> to $51.2M. Enterprise expansion drove <span style={{ color: lp.green, fontWeight: 700 }}>68%</span> of the beat. AI module attach rate hit <span style={{ color: lp.gold, fontWeight: 700 }}>42%</span>, up from 28%.
             </div>
             <div style={{ display: "flex", gap: 6 }}>
-              <span style={{ fontSize: 9, padding: "4px 10px", borderRadius: 6, background: "#60a5fa08", border: "1px solid #60a5fa10", color: "#60a5fa" }}>Drill into segments</span>
-              <span style={{ fontSize: 9, padding: "4px 10px", borderRadius: 6, background: "#a78bfa08", border: "1px solid #a78bfa10", color: "#a78bfa" }}>Build forecast</span>
+              <span style={{ fontSize: 9, padding: "5px 12px", borderRadius: 6, background: `${lp.accent}08`, border: `1px solid ${lp.accent}14`, color: lp.accent, cursor: "pointer", transition: "all 0.2s" }}>Drill into segments</span>
+              <span style={{ fontSize: 9, padding: "5px 12px", borderRadius: 6, background: `${lp.purple}08`, border: `1px solid ${lp.purple}14`, color: lp.purple, cursor: "pointer", transition: "all 0.2s" }}>Build forecast</span>
             </div>
-            <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, background: "#0b0c10", border: "1px solid #1a1f2e", display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 11, color: "#3d4558" }}>Ask or build anything...</span>
-              <span style={{ marginLeft: "auto", fontSize: 10, color: "#3d4558" }}>⌘K</span>
+            <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, background: lp.inputBg, border: `1px solid ${lp.border}`, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: lp.textFaint }}>Ask or build anything...</span>
+              <span style={{ marginLeft: "auto", fontSize: 10, color: lp.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>⌘K</span>
             </div>
           </div>
         </div>
@@ -7560,38 +7581,41 @@ const LandingPage = ({ onLogin }) => {
         {/* Agent 2: Scenario Modeler */}
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: 24, marginBottom: 32, alignItems: "center" }}>
           {/* Interactive mockup */}
-          <div style={{ background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 16, padding: "20px 22px", boxShadow: "0 16px 48px rgba(0,0,0,0.3)", order: isMobile ? 1 : 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#f0f2f5", marginBottom: 14 }}>Scenario Comparison</div>
+          <div style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`, order: isMobile ? 1 : 0, transition: "box-shadow 0.3s" }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 20px 60px ${lp.green}12`}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`}
+          >
+            <div style={{ fontSize: 12, fontWeight: 800, color: lp.text, marginBottom: 14 }}>Scenario Comparison</div>
             {[
-              { name: "Base Case", rev: "$62.8M", ebitda: "7.4%", color: "#60a5fa", width: 75 },
-              { name: "AI Breakout", rev: "$68.4M", ebitda: "11.6%", color: "#3dd9a0", width: 82 },
-              { name: "Aggressive Hire", rev: "$62.8M", ebitda: "2.8%", color: "#f5b731", width: 75 },
-              { name: "Mid-Market", rev: "$66.1M", ebitda: "9.5%", color: "#a78bfa", width: 79 },
+              { name: "Base Case", rev: "$62.8M", ebitda: "7.4%", color: lp.accent, width: 75 },
+              { name: "AI Breakout", rev: "$68.4M", ebitda: "11.6%", color: lp.green, width: 82 },
+              { name: "Aggressive Hire", rev: "$62.8M", ebitda: "2.8%", color: lp.gold, width: 75 },
+              { name: "Mid-Market", rev: "$66.1M", ebitda: "9.5%", color: lp.purple, width: 79 },
             ].map(s => (
               <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                <span style={{ width: 90, fontSize: 10, color: "#636d84", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</span>
-                <div style={{ flex: 1, height: 18, background: "#161a24", borderRadius: 6, overflow: "hidden" }}>
-                  <div style={{ width: `${s.width}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}80, ${s.color})`, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8 }}>
-                    <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{s.rev}</span>
+                <span style={{ width: 90, fontSize: 10, color: lp.textDim, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</span>
+                <div style={{ flex: 1, height: 20, background: lp.surfaceAlt, borderRadius: 6, overflow: "hidden", border: `1px solid ${lp.borderLight}` }}>
+                  <div style={{ width: `${s.width}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}60, ${s.color})`, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8, transition: "width 0.8s cubic-bezier(0.22,1,0.36,1)" }}>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}>{s.rev}</span>
                   </div>
                 </div>
-                <span style={{ fontSize: 9, fontWeight: 700, color: parseFloat(s.ebitda) > 5 ? "#3dd9a0" : "#f5b731", fontFamily: "'JetBrains Mono', monospace", width: 36, textAlign: "right" }}>{s.ebitda}</span>
+                <span style={{ fontSize: 9, fontWeight: 700, color: parseFloat(s.ebitda) > 5 ? lp.green : lp.gold, fontFamily: "'JetBrains Mono', monospace", width: 36, textAlign: "right" }}>{s.ebitda}</span>
               </div>
             ))}
-            <div style={{ marginTop: 12, display: "flex", gap: 10, fontSize: 9, color: "#3d4558", paddingTop: 8, borderTop: "1px solid #1a1f2e" }}>
+            <div style={{ marginTop: 12, display: "flex", gap: 10, fontSize: 9, color: lp.textFaint, paddingTop: 8, borderTop: `1px solid ${lp.border}` }}>
               <span>Revenue →</span><span style={{ marginLeft: "auto" }}>EBITDA margin</span>
             </div>
           </div>
           <div style={{ order: isMobile ? 0 : 1 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: "#3dd9a0", padding: "5px 14px", borderRadius: 20, background: "#3dd9a008", border: "1px solid #3dd9a012", marginBottom: 16 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#3dd9a0" }} />
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: lp.green, padding: "5px 14px", borderRadius: 20, background: `${lp.green}08`, border: `1px solid ${lp.green}18`, marginBottom: 16 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: lp.green, animation: "pulse 2s infinite 0.5s" }} />
               Scenario Modeler
             </div>
-            <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, lineHeight: 1.15, color: "#f0f2f5" }}>Explore every possibility</h3>
-            <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 16 }}>Simulate scenarios in real time and receive clear, actionable recommendations based on your data, models, and business context.</p>
+            <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, lineHeight: 1.15, color: lp.text }}>Explore every possibility</h3>
+            <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.7, marginBottom: 16 }}>Simulate scenarios in real time and receive clear, actionable recommendations based on your data, models, and business context.</p>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {["What-If Analysis", "Sensitivity", "Monte Carlo"].map(t => (
-                <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "5px 12px", borderRadius: 8, background: "#3dd9a008", border: "1px solid #3dd9a012", color: "#3dd9a0" }}>{t}</span>
+                <span key={t} style={{ fontSize: 10, fontWeight: 600, padding: "5px 12px", borderRadius: 8, background: `${lp.green}08`, border: `1px solid ${lp.green}18`, color: lp.green }}>{t}</span>
               ))}
             </div>
           </div>
