@@ -2525,6 +2525,18 @@ const PnlView = ({ c, onNav, toast, orgName, glData, onDrawer }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 4, height: 4, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />LIVE</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>FY2025 YTD · Click any variance to ask AI Copilot for root cause analysis</div>
+            {/* Collaborators viewing this report */}
+            <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 8 }}>
+              {[
+                { init: "PP", name: "Priya Patel", color: `linear-gradient(135deg, ${c.purple}, ${c.accent})` },
+                { init: "SC", name: "Sarah Chen", color: `linear-gradient(135deg, ${c.green}, ${c.cyan})` },
+                { init: "JR", name: "James Rodriguez", color: `linear-gradient(135deg, ${c.amber}, ${c.red})` },
+              ].map((collab, i) => (
+                <div key={collab.init} title={`${collab.name} — viewing`} style={{ width: 22, height: 22, borderRadius: 7, background: collab.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, fontWeight: 800, color: "#fff", marginLeft: i > 0 ? -6 : 0, border: `2px solid ${c.bg2}`, cursor: "pointer" }}>{collab.init}</div>
+              ))}
+              <span style={{ fontSize: 9, color: c.textFaint, marginLeft: 4 }}>3 viewing · </span>
+              <span onClick={() => toast("Thread opened for P&L discussion", "success")} style={{ fontSize: 9, color: c.accent, fontWeight: 600, cursor: "pointer" }}>💬 4 comments</span>
+            </div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -2746,6 +2758,16 @@ const ForecastView = ({ c, toast, onDrawer }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.purple}15`, color: c.purple, letterSpacing: "0.06em" }}>ML</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>ML ensemble with live sensitivity sliders · MAPE {retrained ? "2.9%" : "3.2%"} · 14 drivers</div>
+            {/* Collaborators */}
+            <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 8 }}>
+              {[
+                { init: "SC", name: "Sarah Chen", color: `linear-gradient(135deg, ${c.green}, ${c.cyan})` },
+                { init: "DK", name: "David Kim", color: `linear-gradient(135deg, ${c.cyan}, ${c.green})` },
+              ].map((collab, i) => (
+                <div key={collab.init} title={`${collab.name} — editing`} style={{ width: 22, height: 22, borderRadius: 7, background: collab.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, fontWeight: 800, color: "#fff", marginLeft: i > 0 ? -6 : 0, border: `2px solid ${c.bg2}`, cursor: "pointer" }}>{collab.init}</div>
+              ))}
+              <span style={{ fontSize: 9, color: c.textFaint, marginLeft: 4 }}>2 collaborators</span>
+            </div>
           </div>
         </div>
         <button onClick={handleRetrain} disabled={retraining} style={{
@@ -3009,6 +3031,17 @@ const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
               <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.cyan}15`, color: c.cyan, letterSpacing: "0.06em" }}>AUTO IC</span>
             </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
+            {/* Entity reviewers */}
+            <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 8 }}>
+              {[
+                { init: "SC", color: `linear-gradient(135deg, ${c.green}, ${c.cyan})` },
+                { init: "JR", color: `linear-gradient(135deg, ${c.amber}, ${c.red})` },
+                { init: "PP", color: `linear-gradient(135deg, ${c.purple}, ${c.accent})` },
+              ].map((r, i) => (
+                <div key={r.init} style={{ width: 22, height: 22, borderRadius: 7, background: r.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, fontWeight: 800, color: "#fff", marginLeft: i > 0 ? -6 : 0, border: `2px solid ${c.bg2}` }}>{r.init}</div>
+              ))}
+              <span style={{ fontSize: 9, color: c.textFaint, marginLeft: 4 }}>3 reviewers assigned</span>
+            </div>
             <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4 }}>FX rates as of {fmtTime(new Date())} · IC eliminations auto-applied</div>
           </div>
         </div>
