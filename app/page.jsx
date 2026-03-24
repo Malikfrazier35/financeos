@@ -1020,9 +1020,9 @@ const PWAInstallPrompt = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // ── SITE-WIDE STATUS BANNER ──────────────────────────────────
 // Set SHOW_STATUS_BANNER to false to hide. Edit message as needed.
-const SHOW_STATUS_BANNER = false;
-const STATUS_BANNER_MSG = "Some connector tools may experience intermittent issues. We are actively working to resolve this.";
-const STATUS_BANNER_TYPE = "warning"; // "warning" | "info" | "incident"
+const SHOW_STATUS_BANNER = true;
+const STATUS_BANNER_MSG = "New: AI Copilot powered by Claude — visible reasoning for every financial insight";
+const STATUS_BANNER_TYPE = "info"; // "warning" | "info" | "incident"
 
 const StatusBanner = memo(({ dark }) => {
   const [dismissed, setDismissed] = useState(false);
@@ -5405,7 +5405,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
                   cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== p.key ? 0.4 : 1,
                 }}
                 onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.background = "#111318"; }}}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.background = "#0b0c10"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.background = "#0b0c10"; }}
                 >{p.icon} {loading === p.key ? "..." : p.name}</button>
               ))}
             </div>
@@ -6182,7 +6182,7 @@ const ProductDemo = ({ enterDemo }) => {
         {/* Browser mockup */}
         <div style={{ background: "#0b0c10", border: "1px solid #1e2230", borderRadius: 12, padding: 4, boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
           <div style={{ background: "#111318", borderRadius: 13, overflow: "hidden" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0b0c10", borderBottom: "1px solid #1e2230" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0b0c10", borderBottom: "1px solid rgba(26,31,46,0.5)" }}>
               <div style={{ display: "flex", gap: 5 }}>{["#ef4444","#fbbf24","#22c55e"].map(cl => <div key={cl} style={{ width: 8, height: 8, borderRadius: "50%", background: cl }} />)}</div>
               <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: "#0a0a0d", border: "1px solid #1e2230", fontSize: 10, color: "#3d4558" }}>app.finance-os.app/{active.id}</div>
             </div>
@@ -6226,7 +6226,7 @@ const ProductDemo = ({ enterDemo }) => {
                           { entity: "Acme EU (EUR)", status: "In Review", color: "#fbbf24" },
                           { entity: "Acme APAC (JPY)", status: "Pending", color: "#60a5fa" },
                         ].map(e => (
-                          <div key={e.entity} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid #1e2230" }}>
+                          <div key={e.entity} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid rgba(26,31,46,0.5)" }}>
                             <span style={{ fontSize: 10, color: "#9ea5b8" }}>{e.entity}</span>
                             <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: `${e.color}10`, color: e.color }}>{e.status}</span>
                           </div>
@@ -6369,7 +6369,7 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
           <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.color = "#9ea5b8"; }}
           >Try the Live Demo</button>
           <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #60a5fa30", background: "rgba(96,165,250,0.06)", color: "#60a5fa", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#60a5fa60"; e.currentTarget.style.background = "rgba(96,165,250,0.10)"; }}
@@ -6620,10 +6620,11 @@ const LandingPage = ({ onLogin }) => {
             { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", Icon: Cpu, color: "#f87171" },
             { title: "Native Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
           ].map(f => (
-            <div key={f.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "26px 24px", transition: "all 0.15s ease" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${f.color}40`; e.currentTarget.style.boxShadow = `0 12px 40px ${f.color}08`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.boxShadow = "none"; }}
+            <div key={f.title} style={{ background: "rgba(16,19,26,0.7)", backdropFilter: "blur(12px)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 16, padding: "28px 24px", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${f.color}35`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${f.color}08, 0 0 0 1px ${f.color}10`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
             >
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${f.color}15, transparent)` }} />
               <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${f.color}15, ${f.color}06)`, border: `1px solid ${f.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <f.Icon size={20} color={f.color} strokeWidth={1.8} />
               </div>
@@ -6652,9 +6653,9 @@ const LandingPage = ({ onLogin }) => {
             { step: 3, title: "Plan & scenario model", desc: "Run what-if scenarios, adjust assumptions with live sliders, and compare 4 models side-by-side.", color: "#34d399" },
             { step: 4, title: "Close & report", desc: "Multi-entity consolidation, variance commentary, and board-ready exports — all from one platform.", color: "#fbbf24" },
           ].map(s => (
-            <div key={s.step} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "26px 24px", position: "relative", zIndex: 1, transition: "all 0.15s ease" }}
+            <div key={s.step} style={{ background: "rgba(16,19,26,0.7)", backdropFilter: "blur(12px)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 16, padding: "28px 24px", position: "relative", zIndex: 1, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; }}
             >
               <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${s.color}18, ${s.color}06)`, border: `1px solid ${s.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 16 }}>{s.step}</div>
               <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 8 }}>{s.title}</div>
@@ -6681,9 +6682,9 @@ const LandingPage = ({ onLogin }) => {
             { Icon: GitBranch, outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "Scenario modeling in minutes", color: "#a78bfa" },
             { Icon: Eye, outcome: "See AI reasoning you can actually verify", detail: "Unlike black-box copilots, FinanceOS shows every data source, assumption, and calculation chain.", metric: "Full transparency", color: "#34d399" },
           ].map(t => (
-            <div key={t.outcome} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "28px 24px", transition: "all 0.15s ease" }}
+            <div key={t.outcome} style={{ background: "rgba(16,19,26,0.7)", backdropFilter: "blur(12px)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 16, padding: "28px 24px", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${t.color}40`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; }}
             >
               <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.color}08`, border: `1px solid ${t.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
                 <t.Icon size={18} color={t.color} strokeWidth={1.8} />
@@ -6702,12 +6703,12 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>How FinanceOS compares</h2>
           <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>Enterprise capability at mid-market pricing. No 6-month implementation.</p>
         </div>
-        <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 14, overflow: "hidden", position: "relative" }}>
+        <div style={{ background: "rgba(16,19,26,0.8)", backdropFilter: "blur(12px)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 18, overflow: "hidden", position: "relative" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #1e2230" }}>
+              <tr style={{ borderBottom: "1px solid rgba(26,31,46,0.7)" }}>
                 {["Capability", "FinanceOS", "Legacy EPM", "Mid-Market FP&A", "Startup Tools"].map((h, i) => (
-                  <th key={h} style={{ padding: "14px 16px", textAlign: i === 0 ? "left" : "center", fontSize: 11, fontWeight: 700, color: i === 1 ? "#60a5fa" : "#8b92a5", textTransform: "uppercase", letterSpacing: "0.04em" }}>{h}</th>
+                  <th key={h} style={{ padding: "16px 18px", textAlign: i === 0 ? "left" : "center", fontSize: 10, fontWeight: 800, color: i === 1 ? "#60a5fa" : "#636d84", textTransform: "uppercase", letterSpacing: "0.08em", background: i === 1 ? "rgba(96,165,250,0.03)" : "transparent" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -6728,7 +6729,7 @@ const LandingPage = ({ onLogin }) => {
                 { cap: "Implementation time", us: "< 48hr", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
                 { cap: "Starting price", us: "From $499/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
               ].map(row => (
-                <tr key={row.cap} style={{ borderBottom: "1px solid #1e2230" }}>
+                <tr key={row.cap} style={{ borderBottom: "1px solid rgba(26,31,46,0.5)" }}>
                   <td style={{ padding: "12px 16px", color: "#9ea5b8", fontWeight: 500 }}>{row.cap}</td>
                   {[row.us, row.an, row.pi, row.ru].map((v, i) => (
                     <td key={i} style={{ padding: "12px 16px", textAlign: "center" }}>
@@ -6871,7 +6872,7 @@ const LandingPage = ({ onLogin }) => {
                   background: "transparent", color: "#9ea5b8", transition: "all 0.15s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.color = "#9ea5b8"; }}
                 >Contact Sales</button>
               ) : (
               <div style={{ display: "flex", gap: 8 }}>
@@ -6880,7 +6881,7 @@ const LandingPage = ({ onLogin }) => {
                   background: "transparent", color: "#8b92a5", transition: "all 0.15s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#8b92a5"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.color = "#8b92a5"; }}
                 >Try Demo</button>
                 <button onClick={async () => {
                   try { await supabase.from("waitlist").upsert({ email: "subscriber", interest_type: p.name.toLowerCase(), source: "landing_pricing" }, { onConflict: "email" }); } catch {}
@@ -6931,7 +6932,7 @@ const LandingPage = ({ onLogin }) => {
           ].map(s => (
             <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "24px 22px", transition: "all 0.15s ease" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.10)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -6968,7 +6969,7 @@ const LandingPage = ({ onLogin }) => {
           { q: "Do you offer a money-back guarantee?", a: "Yes — all plans include a 30-day money-back guarantee. Subscribe, connect your data, and if you're not satisfied within 30 days, contact us for a full refund. No questions asked." },
           { q: "Do you offer custom pricing for large teams?", a: "Yes. Enterprise agreements have no seat limits, no entity caps, and no usage ceilings. We offer multi-year committed spend discounts, custom SLAs, dedicated TAMs, on-premises deployment, and SOX-compliant audit trails. Contact sales for a proposal." },
         ].map((faq, i) => (
-          <details key={i} style={{ borderBottom: "1px solid #1e2230", cursor: "pointer" }}>
+          <details key={i} style={{ borderBottom: "1px solid rgba(26,31,46,0.5)", cursor: "pointer" }}>
             <summary style={{ padding: "20px 0", fontSize: 15, fontWeight: 600, color: "#f0f2f5", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               {faq.q}
               <ChevronDown size={16} color="#8b92a5" style={{ flexShrink: 0, transition: "transform 0.2s" }} />
@@ -6994,7 +6995,7 @@ const LandingPage = ({ onLogin }) => {
           ].map(s => (
             <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "24px 20px", textAlign: "center", transition: "all 0.15s ease" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; }}
             >
               <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${s.color}15, ${s.color}06)`, border: `1px solid ${s.color}12`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
                 <s.icon size={18} color={s.color} strokeWidth={1.8} />
@@ -7060,7 +7061,7 @@ const LandingPage = ({ onLogin }) => {
               >Request Investor Deck</button>
               <button onClick={() => window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Meeting%20Request", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.color = "#9ea5b8"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.color = "#9ea5b8"; }}
               >Schedule a Call</button>
             </div>
             <div style={{ marginTop: 24, display: "flex", justifyContent: "center", gap: 24, fontSize: 11, color: "#3d4558" }}>
@@ -7076,7 +7077,7 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Footer — expanded per blueprint */}
       <div style={{ borderTop: "1px solid #1e2230", padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1.8fr 1fr 1fr 1fr", gap: 28, marginBottom: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <FosLogo size={28} />
@@ -7095,15 +7096,18 @@ const LandingPage = ({ onLogin }) => {
               { link: "Consolidation", action: "demo" },
               { link: "Integrations", action: "demo" },
             ]},
-            { title: "Suite", links: [
-              { link: "Vaultline", sub: "Treasury", url: "https://vaultline.vercel.app" },
-              { link: "Parallax", sub: "Compliance" },
-              { link: "Emberglow", sub: "ESG Advisory" },
+            { title: "Use Cases", links: [
+              { link: "For Finance Teams", url: "/use-cases/finance" },
+              { link: "Budget Planning", url: "/use-cases/budget-planning" },
+              { link: "Consolidation", url: "/use-cases/consolidation" },
+              { link: "Forecasting", url: "/use-cases/forecasting" },
+              { link: "SaaS FP&A Guide", url: "/use-cases/saas-fpa" },
             ]},
             { title: "Company", links: [
               { link: "Privacy Policy", url: "/privacy" },
               { link: "Terms of Service", url: "/terms" },
               { link: "Partner Program", url: "mailto:partners@finance-os.app?subject=FinanceOS%20Partner%20Program%20Interest" },
+              { link: "Vaultline Suite", url: "https://vaultline.vercel.app" },
             ]},
           ].map(col => (
             <div key={col.title}>
