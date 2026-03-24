@@ -2424,6 +2424,7 @@ const CopilotView = ({ c, toast, logActivity }) => {
 // P&L VIEW
 // ══════════════════════════════════════════════════════════════
 const PnlView = ({ c, onNav, toast, orgName, glData, onDrawer }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   // Use database GL data when available, fall back to hardcoded demo data
   const pnlData = glData?.pnl || PNL_DATA;
   const isLiveData = glData?.source === "database";
@@ -2667,6 +2668,7 @@ const DRIVERS = [
 ];
 
 const ForecastView = ({ c, toast, onDrawer }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [ndr, setNdr] = useState(118);
   const [pipeline, setPipeline] = useState(40);
   const [churn, setChurn] = useState(82);
@@ -2784,7 +2786,7 @@ const ForecastView = ({ c, toast, onDrawer }) => {
         <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Forecast Accuracy & Scenarios</div>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
         {/* Accuracy gauge */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 12 }}>Model Accuracy</div>
@@ -2862,7 +2864,7 @@ const ForecastView = ({ c, toast, onDrawer }) => {
         <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Drivers & Assumptions</div>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Top Drivers</div>
@@ -2935,6 +2937,7 @@ const CONS_PNL = [
 ];
 
 const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [entityStatus, setEntityStatus] = useState({});
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
@@ -3023,7 +3026,7 @@ const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
         <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Revenue Mix & FX Impact</div>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
         {/* Entity Revenue Contribution */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", transition: "all 0.2s" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
@@ -3156,6 +3159,7 @@ const CLOSE_TASKS = [
 ];
 
 const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const statusLabel = { done: "Complete", progress: "In Progress", notstarted: "Not Started" };
   const statusColor = { done: c.green, progress: c.accent, notstarted: c.textFaint };
@@ -3221,7 +3225,7 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
         <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Close Analytics</div>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
         {/* Burndown chart */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 14 }}>Close Burndown</div>
@@ -4520,7 +4524,7 @@ const ScenariosView = ({ c, toast }) => {
         <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Scenario Comparison</div>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 16, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr", gap: 16, marginBottom: 24 }}>
         {/* Revenue / OpEx / EBITDA stacked bars */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", transition: "all 0.2s" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
@@ -5941,7 +5945,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                 {p.enterprise && <div style={{ fontSize: 11, color: t.txD, marginBottom: 10, lineHeight: 1.5 }}>No seat, entity, or usage limits.<br />Multi-year & volume pricing available.</div>}
                 <div style={{ fontSize: 11, color: t.txD, lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
                 <button onClick={async () => {
-                  if (p.enterprise) { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); return; }
+                  if (p.enterprise) { window.open("https://calendly.com/finance-os-support/30min", "_blank"); return; }
                   setCheckoutLoading(p.name);
                   try {
                     const { data: { session: authSession } } = await supabase.auth.getSession();
@@ -5979,7 +5983,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                 }}
                 onMouseEnter={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdrBright; }}
                 onMouseLeave={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdr; }}
-                >{checkoutLoading === p.name ? "Redirecting..." : p.enterprise ? "Contact Sales" : `Subscribe — ${p.name}`}</button>
+                >{checkoutLoading === p.name ? "Redirecting..." : p.enterprise ? "Let's Talk →" : `Subscribe — ${p.name}`}</button>
                 {/* Platform features */}
                 <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${t.bdrSub}` }}>
                   <div style={{ fontSize: 8, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Platform</div>
