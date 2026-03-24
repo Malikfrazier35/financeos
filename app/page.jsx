@@ -1371,7 +1371,7 @@ const KpiCard = memo(({ kpi, c, onClick }) => {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>{kpi.value}</div>
+          <div className="fos-kpi-value" style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>{kpi.value}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: kpi.up ? c.green : c.red, display: "inline-flex", alignItems: "center", gap: 2, padding: "2px 6px", borderRadius: 5, background: kpi.up ? `${c.green}10` : `${c.red}10` }}>
               {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
@@ -7125,6 +7125,8 @@ function FinanceOSApp() {
             }
             // Fetch GL data from database
             fetchGlData();
+            // Remove loading splash
+            if (typeof window !== "undefined" && window.__fosRemoveSplash) window.__fosRemoveSplash();
           } else if (res.status === 429) {
             // Rate limited — back off and retry once after delay
             const retryAfter = parseInt(res.headers.get("Retry-After") || "30", 10);
@@ -7387,6 +7389,14 @@ function FinanceOSApp() {
 
 
   // Show marketing page when not logged in
+  // Remove loading splash after first render
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.__fosRemoveSplash) {
+      // Slight delay so React has painted
+      setTimeout(() => window.__fosRemoveSplash(), 200);
+    }
+  }, []);
+
   if (!loggedIn) {
     return <LandingPage onLogin={(userData) => {
       setUser(prev => ({ ...prev, ...userData }));
@@ -7445,9 +7455,20 @@ function FinanceOSApp() {
         @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes chartReveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
         @keyframes barGrow { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
+        @keyframes barGrowUp { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); transform-origin: bottom; } }
+        @keyframes pieScale { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes liveDot { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.7; } }
+        @keyframes kpiFlash { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scanline { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+        @keyframes skeletonPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
         .recharts-area-area { animation: chartReveal 1.2s ease forwards; }
         .recharts-line-curve { animation: chartReveal 1s ease forwards; }
-        .recharts-bar-rectangle { animation: barGrow 0.6s ease forwards; }
+        .recharts-bar-rectangle { animation: barGrowUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .recharts-pie-sector { animation: pieScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .recharts-active-dot circle { animation: liveDot 2s ease-in-out infinite; }
+        .recharts-dot circle { transition: r 0.2s ease, fill 0.2s ease; }
+        .fos-kpi-value { animation: kpiFlash 0.6s ease forwards; }
+        .fos-skeleton { animation: skeletonPulse 1.5s ease-in-out infinite; background: linear-gradient(90deg, transparent 25%, rgba(91,156,245,0.06) 50%, transparent 75%); background-size: 200% 100%; }
         .recharts-pie-sector { animation: fadeSlideUp 0.5s ease backwards; }
         .recharts-pie-sector:nth-child(1) { animation-delay: 0.05s; }
         .recharts-pie-sector:nth-child(2) { animation-delay: 0.15s; }

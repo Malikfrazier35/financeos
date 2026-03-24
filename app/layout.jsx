@@ -110,6 +110,36 @@ export default function RootLayout({ children }) {
         }) }} />
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
+        {/* Loading splash — visible until React hydrates */}
+        <div id="fos-splash" style={{ position: "fixed", inset: 0, zIndex: 99999, background: "#060A14", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16, transition: "opacity 0.4s" }}>
+          <div style={{ width: 48, height: 48, border: "3px solid rgba(91,156,245,0.15)", borderTopColor: "#5B9CF5", borderRadius: "50%", animation: "fos-spin 0.8s linear infinite" }} />
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#5B9CF5", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>FinanceOS</div>
+          <div style={{ fontSize: 10, color: "#3d4558" }}>Loading your workspace...</div>
+        </div>
+        <style dangerouslySetInnerHTML={{ __html: `@keyframes fos-spin { to { transform: rotate(360deg); } }` }} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          // Remove splash after React mounts
+          window.__fosRemoveSplash = function() {
+            var s = document.getElementById('fos-splash');
+            if (s) { s.style.opacity = '0'; setTimeout(function() { s.remove(); }, 400); }
+          };
+          // Auto-remove after 6s failsafe
+          setTimeout(function() { window.__fosRemoveSplash && window.__fosRemoveSplash(); }, 6000);
+          // Chunk error recovery
+          window.addEventListener('error', function(e) {
+            if (e.message && (e.message.includes('Loading chunk') || e.message.includes('Failed to fetch dynamically'))) {
+              if (!sessionStorage.getItem('fos_chunk_retry')) {
+                sessionStorage.setItem('fos_chunk_retry', '1');
+                caches && caches.keys().then(function(k) { k.forEach(function(n) { caches.delete(n); }); });
+                window.location.reload();
+              }
+            }
+          });
+          // ResizeObserver loop suppression
+          window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('ResizeObserver')) { e.stopImmediatePropagation(); }
+          });
+        `}} />
         {children}
         <Analytics />
         <PlausibleAnalytics />
