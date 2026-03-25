@@ -186,7 +186,7 @@ class AppErrorBoundary extends Component {
             <div style={{ fontSize: 13, color: "#636d84", lineHeight: 1.6, marginBottom: 24 }}>
               An unexpected error occurred. Our team has been notified. Please try refreshing the page.
             </div>
-            <button onClick={() => window.location.reload()} style={{ fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Refresh Page</button>
+            <button onClick={() => window.location.reload()} style={{ fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${THEME.dark.accent}, ${THEME.dark.purple})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Refresh Page</button>
             <div style={{ marginTop: 16, fontSize: 10, color: "#3d4558" }}>Error: {this.state.error?.message || "Unknown"}</div>
           </div>
         </div>
@@ -1157,11 +1157,13 @@ const QuickActions = memo(({ c, onNav, toast }) => (
 ));
 
 // ── FINANCEOS BRAND MARK ─────────────────────────────────────
-const FosLogo = memo(({ size = 32 }) => (
+const FosLogo = memo(({ size = 32, colors }) => {
+  const cl = colors || THEME.dark;
+  return (
   <div style={{
     width: size, height: size, borderRadius: size * 0.3, display: "flex", alignItems: "center", justifyContent: "center",
-    background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", flexShrink: 0,
-    boxShadow: "0 4px 14px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
+    background: `linear-gradient(135deg, ${cl.accent}, ${cl.purple})`, flexShrink: 0,
+    boxShadow: `0 4px 14px ${cl.accentDim}, inset 0 1px 0 rgba(255,255,255,0.15)`,
   }}>
     <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none">
       {/* Stylized "F" with chart bar motif */}
@@ -1173,7 +1175,8 @@ const FosLogo = memo(({ size = 32 }) => (
       <rect x="18" y="10" width="2.8" height="12" rx="1" fill="white" opacity="0.55" />
     </svg>
   </div>
-));
+  );
+});
 
 const FosLogoFull = memo(({ size = 32, c }) => (
   <div style={{ display: "flex", alignItems: "center", gap: size * 0.3 }}>
@@ -5267,7 +5270,7 @@ const AdminView = ({ c, toast, onNav }) => {
               {[
                 { label: "Workspace Name", value: "FinanceOS", desc: "Displayed across the platform" },
                 { label: "Custom Domain", value: "finance-os.app", desc: "Your branded workspace URL" },
-                { label: "Primary Color", value: "#60a5fa", desc: "Used for buttons, accents, and charts" },
+                { label: "Primary Color", value: c.accent, desc: "Used for buttons, accents, and charts" },
                 { label: "Logo", value: "Uploaded", desc: "32x32 SVG mark + full wordmark" },
               ].map(s => (
                 <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
@@ -6803,7 +6806,8 @@ const MicrosoftIcon = () => (
   <svg viewBox="0 0 24 24" width={18} height={18}><rect fill="#F25022" x="1" y="1" width="10" height="10"/><rect fill="#7FBA00" x="13" y="1" width="10" height="10"/><rect fill="#00A4EF" x="1" y="13" width="10" height="10"/><rect fill="#FFB900" x="13" y="13" width="10" height="10"/></svg>
 );
 
-const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
+const AuthModal = ({ mode: initialMode, onClose, onAuth, colors }) => {
+  const c = colors || THEME.dark;
   const [authMode, setAuthMode] = useState(initialMode || "login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -6819,7 +6823,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   // Password strength
   const pwStrength = password.length === 0 ? 0 : password.length < 6 ? 1 : password.length < 8 ? 2 : (password.match(/[A-Z]/) && password.match(/[0-9]/) && password.length >= 10) ? 4 : 3;
   const pwLabel = ["", "Weak", "Fair", "Good", "Strong"][pwStrength];
-  const pwColor = ["transparent", "#ef4444", "#f59e0b", "#60a5fa", "#34d399"][pwStrength];
+  const pwColor = ["transparent", c.red, c.amber, c.accent, c.green][pwStrength];
 
   // OAuth sign-in — redirects to provider
   const handleOAuth = async (provider) => {
@@ -6893,7 +6897,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
 
   const inputStyle = {
     width: "100%", fontSize: 14, padding: "12px 14px", borderRadius: 10,
-    border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5",
+    border: `1px solid ${c.border}`, background: c.bg2, color: c.text,
     fontFamily: "'Manrope', system-ui, sans-serif", outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
   };
 
@@ -6902,14 +6906,14 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
       <div onClick={e => e.stopPropagation()} className="fos-auth-card" style={{ width: 420, maxHeight: "90vh", overflow: "auto" }}>
         {/* Header */}
         <div style={{ padding: "28px 32px 0", textAlign: "center", position: "relative" }}>
-          <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#8b92a5", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+          <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
             <X size={14} />
           </button>
           <FosLogo size={36} />
           <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 4, marginTop: 14 }}>
             {authMode === "login" ? "Welcome back" : authMode === "signup" ? "Get started" : "Request a demo"}
           </div>
-          <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.5 }}>
+          <div style={{ fontSize: 13, color: c.textDim, lineHeight: 1.5 }}>
             {authMode === "login" ? "Sign in to your FinanceOS workspace" : authMode === "signup" ? "Join the waitlist · Launching soon" : "Our team will prepare a personalized walkthrough"}
           </div>
         </div>
@@ -6926,31 +6930,31 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
               ].map(p => (
                 <button key={p.key} onClick={() => handleOAuth(p.name === "Apple" ? "Apple" : p.name)} disabled={!!loading} style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px 0", borderRadius: 12,
-                  border: "1px solid #1e2230", background: "rgba(11,12,16,0.6)", color: "#f0f2f5", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
+                  border: `1px solid ${c.border}`, background: c.accentDim, color: c.text, fontFamily: "inherit", fontSize: 12, fontWeight: 600,
                   cursor: loading ? "wait" : "pointer", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", opacity: loading && loading !== p.key ? 0.4 : 1,
                   backdropFilter: "blur(8px)",
                 }}
-                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.background = "rgba(17,19,24,0.8)"; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)"; }}}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e2230"; e.currentTarget.style.background = "rgba(11,12,16,0.6)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = c.borderBright; e.currentTarget.style.background = c.accentMid; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)"; }}}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
                 >{p.icon} {loading === p.key ? "..." : p.name}</button>
               ))}
             </div>
             {error && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", fontSize: 12, color: "#ef4444", marginBottom: 8, textAlign: "center" }}>{error}</div>}
             {resetSent && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)", fontSize: 12, color: "#34d399", marginBottom: 8, textAlign: "center" }}>Password reset link sent to {email}</div>}
             {emailSent && (
-              <div style={{ padding: "20px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.03))", border: "1px solid rgba(96,165,250,0.15)", marginBottom: 12, textAlign: "center" }}>
-                <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10, fontSize: 18 }}>▹</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f2f5", marginBottom: 4 }}>Check your email</div>
-                <div style={{ fontSize: 12, color: "#8b92a5", lineHeight: 1.5, marginBottom: 10 }}>
-                  We sent a confirmation link to <strong style={{ color: "#f0f2f5" }}>{email}</strong>. Click the link to activate your account.
+              <div style={{ padding: "20px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accentDim}, ${c.purpleDim})`, border: `1px solid ${c.accentMid}`, marginBottom: 12, textAlign: "center" }}>
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10, fontSize: 18, color: "#fff" }}>▹</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>Check your email</div>
+                <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.5, marginBottom: 10 }}>
+                  We sent a confirmation link to <strong style={{ color: c.text }}>{email}</strong>. Click the link to activate your account.
                 </div>
-                <div style={{ fontSize: 10, color: "#3d4558" }}>Didn't receive it? Check spam, or <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => { setEmailSent(false); setAuthMode("signup"); }}>try again</span></div>
+                <div style={{ fontSize: 10, color: c.textFaint }}>Didn't receive it? Check spam, or <span style={{ color: c.accent, cursor: "pointer" }} onClick={() => { setEmailSent(false); setAuthMode("signup"); }}>try again</span></div>
               </div>
             )}
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 14px" }}>
-              <div style={{ flex: 1, height: 1, background: "#1e2230" }} />
-              <span style={{ fontSize: 10, color: "#3d4558", textTransform: "uppercase", letterSpacing: "0.08em" }}>or email</span>
-              <div style={{ flex: 1, height: 1, background: "#1e2230" }} />
+              <div style={{ flex: 1, height: 1, background: c.border }} />
+              <span style={{ fontSize: 10, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.08em" }}>or email</span>
+              <div style={{ flex: 1, height: 1, background: c.border }} />
             </div>
           </>)}
 
@@ -6959,33 +6963,33 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             {(authMode === "signup" || authMode === "demo") && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <input className="fos-input-glow" value={name} onChange={e => setName(e.target.value)} placeholder="Full name" style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
-                  onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
+                  onFocus={e => { e.target.style.borderColor = c.accent; }}
+                  onBlur={e => { e.target.style.borderColor = c.border; }}
                 />
                 <input className="fos-input-glow" value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
-                  onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
+                  onFocus={e => { e.target.style.borderColor = c.accent; }}
+                  onBlur={e => { e.target.style.borderColor = c.border; }}
                 />
               </div>
             )}
             <input className="fos-input-glow" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={authMode === "demo" ? "Work email" : "Email address"} style={inputStyle}
-              onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
-              onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
+              onFocus={e => { e.target.style.borderColor = c.accent; }}
+              onBlur={e => { e.target.style.borderColor = c.border; }}
               onKeyDown={e => e.key === "Enter" && (authMode === "demo" ? handleDemo() : handleEmail())}
             />
             {authMode !== "demo" && (
               <div style={{ position: "relative" }}>
                 <input className="fos-input-glow" type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create password (8+ chars)" : "Password"} style={{ ...inputStyle, paddingRight: 44 }}
-                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
-                  onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
+                  onFocus={e => { e.target.style.borderColor = c.accent; }}
+                  onBlur={e => { e.target.style.borderColor = c.border; }}
                   onKeyDown={e => e.key === "Enter" && handleEmail()}
                 />
-                <button onClick={() => setShowPw(!showPw)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: 2 }}><Eye size={14} color={showPw ? "#60a5fa" : "#3d4558"} /></button>
+                <button onClick={() => setShowPw(!showPw)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: 2 }}><Eye size={14} color={showPw ? c.accent : c.textFaint} /></button>
               </div>
             )}
             {authMode === "signup" && password.length > 0 && (
               <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
-                {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= pwStrength ? pwColor : "#1e2230", transition: "background 0.2s" }} />)}
+                {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= pwStrength ? pwColor : c.border, transition: "background 0.2s" }} />)}
                 <span style={{ fontSize: 10, fontWeight: 600, color: pwColor, marginLeft: 6, minWidth: 36 }}>{pwLabel}</span>
               </div>
             )}
@@ -6997,13 +7001,13 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             )}
             <button className="fos-cta-primary" onClick={() => authMode === "demo" ? handleDemo() : handleEmail()} disabled={!!loading} style={{
               width: "100%", padding: "14px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
-              background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 4,
+              background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", fontFamily: "inherit", marginTop: 4,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading === "email" ? 0.7 : 1,
-              transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", boxShadow: "0 6px 20px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
+              transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", boxShadow: `0 6px 20px ${c.accentDim}, inset 0 1px 0 rgba(255,255,255,0.1)`,
               backgroundSize: "200% 100%",
             }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 8px 28px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.15)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.1)"; e.currentTarget.style.transform = "none"; }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 8px 28px ${c.accentMid}, inset 0 1px 0 rgba(255,255,255,0.15)`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = `0 6px 20px ${c.accentDim}, inset 0 1px 0 rgba(255,255,255,0.1)`; e.currentTarget.style.transform = "none"; }}
             >
               {loading === "email" && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />}
               {authMode === "login" ? "Sign In" : authMode === "signup" ? "Create Account" : "Request Demo"}
@@ -7011,20 +7015,20 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           </div>
 
           {/* Footer */}
-          <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: "#3d4558" }}>
+          <div style={{ textAlign: "center", marginTop: 12, fontSize: 12, color: c.textFaint }}>
             {authMode === "login" ? (<>
-              <span style={{ cursor: "pointer", color: "#60a5fa" }} onClick={handleForgot}>{loading === "forgot" ? "Sending..." : "Forgot password?"}</span>
-              <span> · </span><span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); setResetSent(false); }}>Create account</span>
+              <span style={{ cursor: "pointer", color: c.accent }} onClick={handleForgot}>{loading === "forgot" ? "Sending..." : "Forgot password?"}</span>
+              <span> · </span><span style={{ cursor: "pointer", color: c.accent, fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); setResetSent(false); }}>Create account</span>
             </>) : authMode === "signup" ? (<>
-              Already have an account? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("login"); setError(null); }}>Sign in</span>
+              Already have an account? <span style={{ cursor: "pointer", color: c.accent, fontWeight: 600 }} onClick={() => { setAuthMode("login"); setError(null); }}>Sign in</span>
             </>) : (<>
-              Want to explore first? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); }}>Get started</span>
+              Want to explore first? <span style={{ cursor: "pointer", color: c.accent, fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); }}>Get started</span>
             </>)}
           </div>
 
           {/* Trust signals */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
-            {[{ icon: Shield, label: "SOC 2 Type II", color: "#34d399" }, { icon: Lock, label: "AES-256", color: "#60a5fa" }, { icon: Globe, label: "99.9% Uptime", color: "#a78bfa" }].map(t => (
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${c.border}` }}>
+            {[{ icon: Shield, label: "SOC 2 Type II", color: c.green }, { icon: Lock, label: "AES-256", color: c.accent }, { icon: Globe, label: "99.9% Uptime", color: c.purple }].map(t => (
               <div key={t.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, color: "#4a5268", fontWeight: 600, padding: "4px 8px", borderRadius: 6, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
                 <t.icon size={10} color={t.color} /> {t.label}
               </div>
@@ -10085,7 +10089,7 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Auth Modal */}
-      {authModal && <AuthModal mode={authModal} onAuth={handleAuth} onClose={() => setAuthModal(null)} />}
+      {authModal && <AuthModal mode={authModal} onAuth={handleAuth} onClose={() => setAuthModal(null)} colors={THEME[lpMode]} />}
 
       {/* Demo Request Modal */}
       {demoModal && (
