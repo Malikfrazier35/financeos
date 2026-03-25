@@ -9029,7 +9029,7 @@ const LandingPage = ({ onLogin }) => {
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Tailored to your role</div>
-          <h2 style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.035em", marginBottom: 12, color: lp.text }}>One platform. Every finance role.</h2>
+          <h2 style={{ fontSize: isMobile ? 30 : 44, fontWeight: 800, letterSpacing: "-0.04em", marginBottom: 14, color: lp.text, lineHeight: 1.08 }}>One platform. Every finance role.</h2>
           <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 540, margin: "0 auto", lineHeight: 1.7 }}>Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
@@ -9040,9 +9040,9 @@ const LandingPage = ({ onLogin }) => {
             { role: "FP&A Manager", focus: "Variance analysis, budget vs actual, forecast accuracy, scenario comparison", photo: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80&fit=crop&h=280", color: lp.gold, Icon: Target },
           ].map(p => (
             <div key={p.role} style={{ background: lpMode === "dark" ? `linear-gradient(165deg, ${lp.surface}, ${p.color}04)` : lp.surface, border: `1px solid ${lp.border}`, borderRadius: 18, overflow: "hidden", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 16px 48px ${p.color}15`; e.currentTarget.style.borderColor = `${p.color}30`; }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px) scale(1.01)"; e.currentTarget.style.boxShadow = `0 20px 60px ${p.color}18, 0 0 0 1px ${p.color}12`; e.currentTarget.style.borderColor = `${p.color}40`; }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = lp.border; }}>
-              <div style={{ position: "relative", height: 150, overflow: "hidden" }}>
+              <div style={{ position: "relative", height: 160, overflow: "hidden" }}>
                 <img src={p.photo} alt={p.role} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.4s", filter: lpMode === "dark" ? "brightness(0.6) saturate(1.2)" : "brightness(0.85) saturate(1.1)" }} loading="lazy" />
                 <div style={{ position: "absolute", inset: 0, background: `linear-gradient(160deg, ${p.color}15, transparent 50%)` }} />
                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "70%", background: `linear-gradient(transparent, ${lpMode === "dark" ? lp.surface : lp.surface})` }} />
@@ -9065,10 +9065,12 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* ═══ PERSONALIZED DASHBOARD PREVIEW — "Designed for your decisions" ═══ */}
-      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+        {/* Plax-inspired blurred gradient orb */}
+        <div style={{ position: "absolute", top: "20%", left: "50%", transform: "translate(-50%, -50%)", width: 600, height: 400, borderRadius: "50%", background: `radial-gradient(ellipse, ${lp.green}08 0%, ${lp.accent}04 40%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none" }} />
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.green}0a`, border: `1px solid ${lp.green}18`, fontSize: 10, fontWeight: 700, color: lp.green, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Designed for your decisions</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>See what FinanceOS looks like<br />for <span style={{ color: lp.accent }}>your</span> business</h2>
+          <h2 style={{ fontSize: isMobile ? 28 : 40, fontWeight: 800, letterSpacing: "-0.04em", marginBottom: 12, color: lp.text, lineHeight: 1.1 }}>See what FinanceOS looks like<br />for <span className="fos-gradient-text">your</span> business</h2>
           <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 520, margin: "0 auto" }}>Every dashboard is personalized to your industry, metrics, and workflow. Select your business type to preview.</p>
         </div>
 
@@ -9081,12 +9083,14 @@ const LandingPage = ({ onLogin }) => {
             { id: "mfg", label: "Manufacturing", Icon: Layers },
           ].map(tab => (
             <button key={tab.id} onClick={() => setPreviewIndustry(tab.id)} style={{
-              fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit",
-              background: previewIndustry === tab.id ? `${lp.accent}18` : lp.cardBg,
+              fontSize: 12, fontWeight: 700, padding: "10px 22px", borderRadius: 12, border: "none", cursor: "pointer", fontFamily: "inherit",
+              background: previewIndustry === tab.id ? `linear-gradient(135deg, ${lp.accent}20, ${lp.purple}10)` : lp.cardBg,
               color: previewIndustry === tab.id ? lp.accent : lp.textDim,
               borderWidth: 1, borderStyle: "solid",
-              borderColor: previewIndustry === tab.id ? `${lp.accent}40` : lp.border,
-              display: "flex", alignItems: "center", gap: 8, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)",
+              borderColor: previewIndustry === tab.id ? `${lp.accent}50` : lp.border,
+              display: "flex", alignItems: "center", gap: 8, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+              boxShadow: previewIndustry === tab.id ? `0 4px 20px ${lp.accent}15, inset 0 1px 0 rgba(255,255,255,0.05)` : "none",
+              backdropFilter: "blur(8px)",
             }}><tab.Icon size={13} /> {tab.label}</button>
           ))}
         </div>
@@ -9570,7 +9574,7 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `linear-gradient(135deg, ${lp.accent}0c, ${lp.green}06)`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
             <DollarSign size={12} color={lp.accent} strokeWidth={2.5} />Pricing
           </div>
-          <h2 style={{ fontSize: isMobile ? 28 : 40, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14, color: lp.text, lineHeight: 1.15 }}>Base + consumption pricing</h2>
+          <h2 style={{ fontSize: isMobile ? 30 : 44, fontWeight: 800, letterSpacing: "-0.04em", marginBottom: 14, color: lp.text, lineHeight: 1.08 }}>Base + consumption pricing</h2>
           <p style={{ fontSize: 16, color: lp.textDim, marginBottom: 28, maxWidth: 480, margin: "0 auto 28px", lineHeight: 1.7 }}>Predictable base fee. Pay-per-use overages only when you exceed included limits.</p>
           <div style={{ display: "inline-flex", background: lpMode === "dark" ? "rgba(16,19,26,0.7)" : "rgba(248,249,251,0.9)", borderRadius: 12, padding: 4, border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)" }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "10px 22px", borderRadius: 9, border: "none", background: billing === "monthly" ? (lpMode === "dark" ? lp.surface : "#fff") : "transparent", color: billing === "monthly" ? lp.text : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s", boxShadow: billing === "monthly" ? `0 2px 8px ${lp.accent}10` : "none" }}>Monthly</button>
@@ -9579,12 +9583,12 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {plans.map((p, pIdx) => (
-            <div key={p.name} style={{ background: p.popular ? `linear-gradient(180deg, ${lp.accent}06, ${lp.cardBg})` : lp.cardBg, backdropFilter: "blur(12px)", border: `1px solid ${p.popular ? `${lp.accent}50` : lp.border}`, borderRadius: 16, padding: "28px 24px", boxShadow: p.popular ? `0 0 0 1px ${lp.accent}15, 0 12px 40px ${lp.accent}08` : "none", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", position: "relative", overflow: "hidden", opacity: priceVis ? 1 : 0, transform: priceVis ? "scale(1) translateY(0)" : "scale(0.9) translateY(20px)", transitionDelay: `${0.15 + pIdx * 0.1}s` }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = p.popular ? `0 0 0 1px ${lp.accent}30, 0 20px 60px ${lp.accent}12` : `0 12px 40px ${lp.accent}08`; e.currentTarget.style.borderColor = p.popular ? lp.accent : `${lp.accent}30`; e.currentTarget.style.transform = "translateY(-3px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = p.popular ? `0 0 0 1px ${lp.accent}15, 0 12px 40px ${lp.accent}08` : "none"; e.currentTarget.style.borderColor = p.popular ? `${lp.accent}50` : lp.border; e.currentTarget.style.transform = "none"; }}
+            <div key={p.name} style={{ background: p.popular ? `linear-gradient(180deg, ${lp.accent}08, ${lp.purple}04, ${lp.cardBg})` : lp.cardBg, backdropFilter: "blur(16px)", border: `1px solid ${p.popular ? `${lp.accent}50` : lp.border}`, borderRadius: 18, padding: "28px 24px", boxShadow: p.popular ? `0 0 0 1px ${lp.accent}15, 0 16px 48px ${lp.accent}10, 0 4px 16px ${lp.purple}06` : "none", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", position: "relative", overflow: "hidden", opacity: priceVis ? 1 : 0, transform: priceVis ? "scale(1) translateY(0)" : "scale(0.9) translateY(20px)", transitionDelay: `${0.15 + pIdx * 0.1}s` }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = p.popular ? `0 0 0 1px ${lp.accent}35, 0 24px 72px ${lp.accent}15, 0 0 40px ${lp.purple}08` : `0 16px 48px ${lp.accent}10`; e.currentTarget.style.borderColor = p.popular ? lp.accent : `${lp.accent}35`; e.currentTarget.style.transform = "translateY(-5px) scale(1.01)"; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = p.popular ? `0 0 0 1px ${lp.accent}15, 0 16px 48px ${lp.accent}10, 0 4px 16px ${lp.purple}06` : "none"; e.currentTarget.style.borderColor = p.popular ? `${lp.accent}50` : lp.border; e.currentTarget.style.transform = "none"; }}
             >
               {p.popular && <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: "linear-gradient(90deg, transparent, #60a5fa50, transparent)", borderRadius: "0 0 2px 2px" }} />}
-              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
+              {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "5px 16px", borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.05em", boxShadow: "0 4px 16px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.2)" }}>MOST POPULAR</div>}
               <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, color: lp.text }}>{p.name}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
                 {p.enterprise ? (
@@ -9667,16 +9671,16 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         {/* Social proof + ROI below pricing */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 32, marginTop: 32, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 40, marginTop: 40, flexWrap: "wrap" }}>
           {[
-            { value: "Days", label: "Not months to deploy" },
-            { value: "Minutes", label: "Scenario analysis time" },
-            { value: "< 48hr", label: "Onboarding time" },
-            { value: "< 48hr", label: "Implementation time" },
+            { value: "Days", label: "Not months to deploy", color: lp.accent },
+            { value: "Minutes", label: "Scenario analysis time", color: lp.purple },
+            { value: "< 48hr", label: "Onboarding time", color: lp.green },
+            { value: "< 48hr", label: "Implementation time", color: lp.accent },
           ].map(s => (
             <div key={s.label} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em" }}>{s.value}</div>
-              <div style={{ fontSize: 10, color: lp.textDim, fontWeight: 500, marginTop: 2 }}>{s.label}</div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: s.color, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.03em" }}>{s.value}</div>
+              <div style={{ fontSize: 10, color: lp.textDim, fontWeight: 600, marginTop: 4, letterSpacing: "0.02em" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -9753,7 +9757,8 @@ const LandingPage = ({ onLogin }) => {
       <div ref={faqRef} style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 800, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48, opacity: faqVis ? 1 : 0, transform: faqVis ? "translateY(0)" : "translateY(24px)", transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)" }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.purple}0a`, border: `1px solid ${lp.purple}18`, fontSize: 10, fontWeight: 700, color: lp.purple, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>FAQ</div>
-          <h2 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Frequently asked questions</h2>
+          <h2 style={{ fontSize: isMobile ? 28 : 40, fontWeight: 800, letterSpacing: "-0.04em", marginBottom: 14, color: lp.text, lineHeight: 1.1 }}>Frequently asked questions</h2>
+          <p style={{ fontSize: 14, color: lp.textDim, maxWidth: 420, margin: "0 auto", lineHeight: 1.7 }}>Everything you need to know about FinanceOS. Can't find an answer? <a href="mailto:support@finance-os.app" style={{ color: lp.accent, textDecoration: "none", fontWeight: 600 }}>Reach out</a>.</p>
         </div>
         {[
           { q: "What is FinanceOS?", a: "FinanceOS is an AI-powered financial planning and analysis (FP&A) platform. It connects to your ERP, CRM, and billing systems to build a unified financial model, then uses AI to surface variances, forecast revenue, and answer natural language questions about your data — with visible reasoning so you can verify every insight." },
@@ -9769,12 +9774,14 @@ const LandingPage = ({ onLogin }) => {
           { q: "Do you offer a money-back guarantee?", a: "Yes — all plans include a 30-day money-back guarantee. Subscribe, connect your data, and if you're not satisfied within 30 days, contact us for a full refund. No questions asked." },
           { q: "Do you offer custom pricing for large teams?", a: "Yes. Enterprise agreements have no seat limits, no entity caps, and no usage ceilings. We offer multi-year committed spend discounts, custom SLAs, dedicated TAMs, on-premises deployment, and SOX-compliant audit trails. Contact sales for a proposal." },
         ].map((faq, i) => (
-          <details key={i} style={{ borderBottom: `1px solid ${lp.border}80`, cursor: "pointer", opacity: faqVis ? 1 : 0, transform: faqVis ? "translateY(0)" : "translateY(12px)", transition: `all 0.4s ease-out ${0.15 + i * 0.04}s` }}>
-            <summary style={{ padding: "20px 0", fontSize: 15, fontWeight: 600, color: lp.text, listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "color 0.2s" }}>
+          <details key={i} style={{ borderBottom: `1px solid ${lp.border}60`, cursor: "pointer", opacity: faqVis ? 1 : 0, transform: faqVis ? "translateY(0)" : "translateY(12px)", transition: `all 0.4s ease-out ${0.15 + i * 0.04}s`, borderRadius: 4, padding: "0 4px" }}
+            onMouseEnter={e => e.currentTarget.style.background = `${lp.accent}03`}
+            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+            <summary style={{ padding: "22px 0", fontSize: 15, fontWeight: 700, color: lp.text, listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center", transition: "color 0.2s", letterSpacing: "-0.01em" }}>
               {faq.q}
               <ChevronDown size={16} color={lp.textDim} style={{ flexShrink: 0, transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1)" }} />
             </summary>
-            <div style={{ padding: "0 0 20px", fontSize: 13, color: lp.textSub, lineHeight: 1.75 }}>{faq.a}</div>
+            <div style={{ padding: "0 0 22px", fontSize: 13, color: lp.textSub, lineHeight: 1.8, paddingLeft: 2 }}>{faq.a}</div>
           </details>
         ))}
       </div>
@@ -9986,14 +9993,16 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Footer */}
-      <div style={{ borderTop: `1px solid ${lp.border}`, padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1.8fr 1fr 1fr 1fr", gap: 28, marginBottom: 32 }}>
+      <div style={{ borderTop: `1px solid ${lp.border}`, padding: isMobile ? "40px 20px 28px" : "56px 48px 36px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+        {/* Subtle top gradient accent */}
+        <div style={{ position: "absolute", top: 0, left: "20%", right: "20%", height: 1, background: `linear-gradient(90deg, transparent, ${lp.accent}15, ${lp.purple}10, transparent)` }} />
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1.8fr 1fr 1fr 1fr", gap: 28, marginBottom: 36 }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-              <FosLogo size={28} />
-              <span style={{ fontSize: 15, fontWeight: 800 }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <FosLogo size={30} />
+              <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em" }}>Finance<span style={{ fontWeight: 400, opacity: 0.5 }}>OS</span></span>
             </div>
-            <p style={{ fontSize: 12, color: lp.textFaint, lineHeight: 1.7, maxWidth: 240 }}>AI-powered financial planning for modern finance teams. Part of the Vaultline Suite.</p>
+            <p style={{ fontSize: 12, color: lp.textFaint, lineHeight: 1.75, maxWidth: 240 }}>AI-powered financial planning for modern finance teams. Part of the Vaultline Suite.</p>
             <div style={{ marginTop: 8, fontSize: 11 }}>
               <a href="mailto:support@finance-os.app" style={{ color: lp.textDim, textDecoration: "none" }}>support@finance-os.app</a>
             </div>
@@ -10023,22 +10032,22 @@ const LandingPage = ({ onLogin }) => {
             ]},
           ].map(col => (
             <div key={col.title}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: lp.textDim, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>{col.title}</div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: lp.text, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 14 }}>{col.title}</div>
               {col.links.map(item => (
                 <div key={item.link} onClick={() => {
                   if (item.url?.startsWith("/")) window.location.href = item.url;
                   else if (item.url) window.open(item.url, "_blank");
                   else if (item.action === "demo") enterDemo();
-                }} style={{ fontSize: 12, color: lp.textFaint, marginBottom: 8, cursor: item.url || item.action ? "pointer" : "default", display: "flex", alignItems: "center", gap: 4 }}
-                  onMouseEnter={e => { if (item.url || item.action) e.currentTarget.style.color = lp.textSub; }}
-                  onMouseLeave={e => e.currentTarget.style.color = lp.textFaint}
+                }} style={{ fontSize: 12, color: lp.textFaint, marginBottom: 10, cursor: item.url || item.action ? "pointer" : "default", display: "flex", alignItems: "center", gap: 4, transition: "color 0.2s, transform 0.2s" }}
+                  onMouseEnter={e => { if (item.url || item.action) { e.currentTarget.style.color = lp.accent; e.currentTarget.style.transform = "translateX(2px)"; } }}
+                  onMouseLeave={e => { e.currentTarget.style.color = lp.textFaint; e.currentTarget.style.transform = "none"; }}
                 >{item.link}{item.sub && <span style={{ fontSize: 10, color: "#3d4558", marginLeft: 2 }}>· {item.sub}</span>}</div>
               ))}
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: `1px solid ${lp.border}`, fontSize: 11, color: lp.textFaint, flexWrap: "wrap", gap: 12 }}>
-          <span>© {new Date().getFullYear()} Financial Holding LLC · All rights reserved</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 24, borderTop: `1px solid ${lp.border}60`, fontSize: 11, color: lp.textFaint, flexWrap: "wrap", gap: 12 }}>
+          <span style={{ letterSpacing: "0.01em" }}>© {new Date().getFullYear()} Financial Holding LLC · All rights reserved</span>
           <span style={{ fontSize: 9, color: lp.textFaint }}>Photos by <a href="https://unsplash.com/?utm_source=financeos&utm_medium=referral" target="_blank" rel="noopener" style={{ color: lp.textDim, textDecoration: "none" }}>Unsplash</a></span>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             {/* Locale picker — premium dropdowns */}
