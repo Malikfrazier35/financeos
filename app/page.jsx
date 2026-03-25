@@ -8079,10 +8079,10 @@ const LandingPage = ({ onLogin }) => {
           <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: `${lp.green}12`, color: lp.green, letterSpacing: "0.06em" }}>NEW</span>
         </div>
 
-        <h1 style={{ fontSize: isMobile ? 38 : 64, fontWeight: 800, lineHeight: 1.02, letterSpacing: "-0.04em", color: lp.text, marginBottom: 22, animation: "fosFadeSlideUp 0.6s ease 0.1s both" }}>
+        <h1 style={{ fontSize: isMobile ? 40 : 68, fontWeight: 800, lineHeight: 0.98, letterSpacing: "-0.045em", color: lp.text, marginBottom: 24, animation: "fosFadeSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both" }}>
           Financial planning<br />that <span className="fos-gradient-text" style={{ position: "relative", display: "inline-block" }}>thinks before</span><br />it answers
         </h1>
-        <p style={{ fontSize: isMobile ? 16 : 19, color: lp.textDim, lineHeight: 1.65, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400, animation: "fosFadeSlideUp 0.6s ease 0.2s both" }}>
+        <p style={{ fontSize: isMobile ? 16 : 19, color: lp.textDim, lineHeight: 1.7, maxWidth: 540, margin: "0 auto 36px", fontWeight: 400, animation: "fosFadeSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both", letterSpacing: "-0.005em" }}>
           Connect your ERP, CRM, and billing data into a unified model with AI-powered variance detection, natural language querying, and visible reasoning.
         </p>
 
@@ -8092,7 +8092,9 @@ const LandingPage = ({ onLogin }) => {
             placeholder="Work email" type="email"
             style={{ flex: 1, fontSize: 15, padding: "16px 20px", borderRadius: isMobile ? 12 : "12px 0 0 12px", border: `1px solid ${lp.border}`, borderRight: isMobile ? `1px solid ${lp.border}` : "none", background: lp.inputBg, color: lp.text, fontFamily: "inherit", outline: "none" }}
           />
-          <button className="fos-cta-primary" onClick={handleHeroSignup} style={{ fontSize: 15, padding: "16px 28px", borderRadius: isMobile ? 12 : "0 12px 12px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 30px ${lp.accent}33` }}
+          <button className="fos-cta-primary" onClick={handleHeroSignup} style={{ fontSize: 15, padding: "16px 32px", borderRadius: isMobile ? 12 : "0 12px 12px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, #818cf8, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 32px ${lp.accent}40, inset 0 1px 0 rgba(255,255,255,0.15)`, backgroundSize: "200% 100%", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 12px 40px ${lp.accent}50, inset 0 1px 0 rgba(255,255,255,0.2)`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = `0 8px 32px ${lp.accent}40, inset 0 1px 0 rgba(255,255,255,0.15)`; e.currentTarget.style.transform = "none"; }}
           >Get Started Free</button>
         </div>
         <div style={{ fontSize: 11, color: lp.textFaint, marginTop: 10, textAlign: "center" }}>No credit card required · 14-day free trial · Interactive demo after signup</div>
@@ -8187,7 +8189,7 @@ const LandingPage = ({ onLogin }) => {
         .fos-ken-burns{animation:fosKenBurns 12s ease-in-out infinite}
         .fos-fade-up{animation:fosFadeSlideUp 0.6s ease-out both}
         .fos-reveal{animation:fosRevealLeft 0.8s ease-out both}
-        .fos-gradient-text{background:linear-gradient(135deg,#5b9cf5,#a181f7,#3dd9a0,#5b9cf5);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fosGradientText 6s ease infinite}
+        .fos-gradient-text{background:linear-gradient(135deg,#60a5fa,#818cf8,#a78bfa,#34d399,#60a5fa);background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fosGradientText 8s ease infinite}
         .fos-float{animation:fosFloat 4s ease-in-out infinite}
         .fos-glow-pulse{animation:fosGlowPulse 3s ease-in-out infinite}
         .fos-testimonial-img{transition:transform 0.5s cubic-bezier(0.22,1,0.36,1),filter 0.5s ease;will-change:transform}
@@ -8647,9 +8649,9 @@ const LandingPage = ({ onLogin }) => {
       <div style={{ padding: isMobile ? "20px 20px 40px" : "48px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Customer Stories</div>
-          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", color: lp.text }}>Trusted by modern finance teams</h2>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.035em", color: lp.text }}>Trusted by modern finance teams</h2>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 0, borderRadius: 24, overflow: "hidden", border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "linear-gradient(135deg, #10131a, #0d0f14)" : "linear-gradient(135deg, #f8f9fb, #ffffff)", boxShadow: lpMode === "dark" ? "0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(96,165,250,0.04)" : "0 24px 64px rgba(0,0,0,0.06)", transition: "box-shadow 0.3s ease" }}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 0, borderRadius: 24, overflow: "hidden", border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "linear-gradient(145deg, #10131a 0%, #0c0e14 50%, #10131a 100%)" : "linear-gradient(145deg, #f8f9fb, #ffffff)", boxShadow: lpMode === "dark" ? "0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(96,165,250,0.06), 0 0 60px rgba(96,165,250,0.02)" : "0 32px 80px rgba(0,0,0,0.08), 0 0 0 1px rgba(59,130,246,0.06)", transition: "all 0.4s cubic-bezier(0.22,1,0.36,1)" }}
           onMouseEnter={e => e.currentTarget.style.boxShadow = lpMode === "dark" ? `0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px ${lp.accent}10` : `0 32px 80px rgba(0,0,0,0.08)`}
           onMouseLeave={e => e.currentTarget.style.boxShadow = lpMode === "dark" ? "0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(96,165,250,0.04)" : "0 24px 64px rgba(0,0,0,0.06)"}
         >
@@ -8675,7 +8677,9 @@ const LandingPage = ({ onLogin }) => {
             </div>
           </div>
           {/* Quote side */}
-          <div style={{ padding: isMobile ? "28px 24px" : "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ padding: isMobile ? "28px 24px" : "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center", position: "relative" }}>
+            {/* Accent bar */}
+            <div style={{ position: "absolute", left: 0, top: "15%", bottom: "15%", width: 3, background: `linear-gradient(180deg, ${lp.accent}, ${lp.purple}, ${lp.green})`, borderRadius: 2 }} />
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
               <div style={{ display: "flex", gap: 2 }}>{[1,2,3,4,5].map(i => <Star key={i} size={14} fill={lp.gold} color={lp.gold} />)}</div>
               <span style={{ fontSize: 10, fontWeight: 700, color: lp.textFaint }}>5.0</span>
@@ -8717,8 +8721,8 @@ const LandingPage = ({ onLogin }) => {
               ><Icon size={20} color={color} /></div>
             ))}
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>AI that <span className="fos-gradient-text" style={{ display: "inline" }}>plans with you</span></h2>
-          <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 520, margin: "0 auto" }}>FinanceOS AI agents operate inside your planning environment, using your live data and business logic to support decisions in real time.</p>
+          <h2 style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.035em", marginBottom: 12, color: lp.text }}>AI that <span className="fos-gradient-text" style={{ display: "inline" }}>plans with you</span></h2>
+          <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>FinanceOS AI agents operate inside your planning environment, using your live data and business logic to support decisions in real time.</p>
         </div>
 
         {/* Agent 1: Copilot */}
@@ -8737,13 +8741,16 @@ const LandingPage = ({ onLogin }) => {
             </div>
           </div>
           {/* Interactive mockup */}
-          <div style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`, transition: "box-shadow 0.3s" }}
-            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 20px 60px ${lp.accent}12`}
-            onMouseLeave={e => e.currentTarget.style.boxShadow = `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`}
+          <div style={{ background: lpMode === "dark" ? "linear-gradient(165deg, rgba(16,19,26,0.95), rgba(12,14,20,0.98))" : lp.surface, border: `1px solid ${lp.border}`, borderRadius: 18, padding: "22px 24px", boxShadow: `0 20px 60px ${lpMode === "dark" ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)"}, 0 0 0 1px ${lp.purple}06`, transition: "all 0.4s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 28px 80px ${lp.purple}18, 0 0 0 1px ${lp.purple}15, 0 0 40px ${lp.purple}06`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = `0 20px 60px ${lpMode === "dark" ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)"}, 0 0 0 1px ${lp.purple}06`; e.currentTarget.style.transform = "none"; }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "8px 12px", background: lp.surfaceAlt, borderRadius: 10, border: `1px solid ${lp.borderLight}` }}>
+            {/* Top edge glow */}
+            <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 1, background: `linear-gradient(90deg, transparent, ${lp.purple}25, ${lp.accent}20, transparent)` }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "9px 14px", background: lp.surfaceAlt, borderRadius: 11, border: `1px solid ${lp.borderLight}` }}>
               <Brain size={14} color={lp.purple} />
               <span style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>AI Copilot</span>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: lp.green, boxShadow: `0 0 8px ${lp.green}60`, animation: "pulse 2s infinite", marginLeft: 4 }} />
               <span style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${lp.purple}12`, color: lp.purple, marginLeft: "auto" }}>Claude</span>
             </div>
             <div style={{ padding: "10px 14px", borderRadius: 10, background: `${lp.accent}06`, border: `1px solid ${lp.accent}12`, fontSize: 12, color: lp.textDim, marginBottom: 8 }}>
@@ -8966,7 +8973,8 @@ const LandingPage = ({ onLogin }) => {
       {/* ═══ THREE PILLARS — Pigment-style "Designed for decisions" ═══ */}
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>Designed for decisions that can't wait</h2>
+          <h2 style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.035em", marginBottom: 12, color: lp.text }}>Designed for decisions that can't wait</h2>
+          <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>Three principles that define every feature we ship.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
           {[
@@ -8999,14 +9007,19 @@ const LandingPage = ({ onLogin }) => {
       {/* ═══ FULL-WIDTH CORPORATE CTA BREAK — Template Pattern B ═══ */}
       <div style={{ position: "relative", overflow: "hidden", margin: "0 auto", maxWidth: 1200 }}>
         <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", margin: isMobile ? "0 16px" : "0 48px" }}>
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&fit=crop" alt="Modern corporate office" style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }} loading="lazy" />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(6,8,12,0.82), rgba(16,19,26,0.7))" }} />
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 32 }}>
-            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: "#fff" }}>Replace 6 tools with one platform</h2>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", maxWidth: 500, marginBottom: 24, lineHeight: 1.65 }}>From budgeting to board decks, FinanceOS consolidates your entire FP&A workflow. Same-day deployment. 96.8% forecast accuracy.</p>
-            <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={enterDemo} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try the Demo</button>
-              <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Book a Demo</a>
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&fit=crop" alt="Modern corporate office" style={{ width: "100%", height: 380, objectFit: "cover", display: "block", filter: "brightness(0.9) saturate(1.1)" }} loading="lazy" />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(6,8,12,0.88) 0%, rgba(16,19,26,0.78) 50%, rgba(96,165,250,0.08) 100%)" }} />
+          {/* Subtle accent line at top */}
+          <div style={{ position: "absolute", top: 0, left: "20%", right: "20%", height: 1, background: "linear-gradient(90deg, transparent, rgba(96,165,250,0.2), rgba(167,139,250,0.15), transparent)" }} />
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 40 }}>
+            <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.035em", marginBottom: 12, color: "#fff" }}>Replace 6 tools with one platform</h2>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.8)", maxWidth: 500, marginBottom: 28, lineHeight: 1.7 }}>From budgeting to board decks, FinanceOS consolidates your entire FP&A workflow. Same-day deployment. 96.8% forecast accuracy.</p>
+            <div style={{ display: "flex", gap: 14 }}>
+              <button className="fos-cta-primary" onClick={enterDemo} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.12)" }}>Try the Demo</button>
+              <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.18)", background: "rgba(255,255,255,0.04)", backdropFilter: "blur(8px)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", transition: "all 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
+              >Book a Demo</a>
             </div>
           </div>
         </div>
@@ -9016,8 +9029,8 @@ const LandingPage = ({ onLogin }) => {
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Tailored to your role</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>One platform. Every finance role.</h2>
-          <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 540, margin: "0 auto" }}>Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</p>
+          <h2 style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.035em", marginBottom: 12, color: lp.text }}>One platform. Every finance role.</h2>
+          <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 540, margin: "0 auto", lineHeight: 1.7 }}>Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {[
@@ -9774,13 +9787,13 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `linear-gradient(135deg, ${lp.green}0c, ${lp.accent}06)`, border: `1px solid ${lp.green}18`, fontSize: 10, fontWeight: 700, color: lp.green, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
             <Shield size={12} color={lp.green} strokeWidth={2.5} />Security
           </div>
-          <h2 style={{ fontSize: isMobile ? 30 : 40, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14, color: lp.text, lineHeight: 1.15 }}>Enterprise-grade security</h2>
+          <h2 style={{ fontSize: isMobile ? 30 : 44, fontWeight: 800, letterSpacing: "-0.035em", marginBottom: 14, color: lp.text, lineHeight: 1.1 }}>Enterprise-grade security</h2>
           <p style={{ fontSize: 16, color: lp.textDim, maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>Your financial data deserves bank-level protection. We build security into every layer.</p>
         </div>
         {/* Security shield visual + grid */}
         <div style={{ position: "relative" }}>
-          {/* Ambient glow */}
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${lp.green}08 0%, transparent 70%)`, pointerEvents: "none" }} />
+          {/* Ambient glow — stronger */}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${lp.green}0c 0%, ${lp.accent}04 40%, transparent 70%)`, pointerEvents: "none", animation: "fosPulseSubtle 6s ease-in-out infinite" }} />
           {/* Top row — 2 large cards */}
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 16, position: "relative" }}>
             {[
