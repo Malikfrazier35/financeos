@@ -5678,13 +5678,13 @@ const IntelligenceView = ({ c, toast, onNav }) => {
       await supabase.from("leads").insert({ email: leadForm.email, first_name: leadForm.first, last_name: leadForm.last, company: leadForm.company, role: leadForm.role, company_size: leadForm.size, source: "intelligence_library", resource_id: modalResource?.id, resource_title: modalResource?.title || "Newsletter", ...utm });
       fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", email: leadForm.email, full_name: `${leadForm.first} ${leadForm.last}`.trim(), company: leadForm.company, role: leadForm.role, interest_type: "lead", source: "intelligence_library" }) }).catch(() => {});
     } catch {}
-    setSubmitted(true);
+    if (typeof window !== "undefined" && window.gtag) { window.gtag("event", "conversion", { send_to: "AW-18032992189/6hiYCNWJoY0cEL2_5pZD", value: 1.0, currency: "USD" }); }setSubmitted(true);
     toast("Lead captured — download link sent", "success");
   };
 
   const handleNewsletter = async () => {
     if (!newsletterEmail) return;
-    try { await supabase.from("leads").insert({ email: newsletterEmail, source: "newsletter_intelligence" }); } catch {}
+    try { await supabase.from("leads").insert({ email: newsletterEmail, source: "newsletter_intelligence" }); } catch {}if (typeof window !== "undefined" && window.gtag) { window.gtag("event", "conversion", { send_to: "AW-18032992189/6hiYCNWJoY0cEL2_5pZD", value: 1.0, currency: "USD" }); }
     setNewsletterDone(true);
     toast("Subscribed to Finance Intelligence", "success");
   };
