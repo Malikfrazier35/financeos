@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
+
+// The v3 HTML files live in public/site/
+const V3 = "/site";
+
 const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/(.*)' ,
         headers: [
           {
             key: 'Strict-Transport-Security',
@@ -52,7 +56,6 @@ const nextConfig = {
         ],
       },
       {
-        // Immutable static assets — cache for 1 year
         source: '/_next/static/(.*)',
         headers: [
           {
@@ -62,7 +65,6 @@ const nextConfig = {
         ],
       },
       {
-        // Font files — cache for 1 year
         source: '/fonts/(.*)',
         headers: [
           {
@@ -72,7 +74,6 @@ const nextConfig = {
         ],
       },
       {
-        // OG image — cache for 1 hour, revalidate
         source: '/opengraph-image',
         headers: [
           {
@@ -82,7 +83,6 @@ const nextConfig = {
         ],
       },
       {
-        // SVG icon — cache for 1 year
         source: '/icon.svg',
         headers: [
           {
@@ -93,12 +93,61 @@ const nextConfig = {
       },
     ];
   },
+
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Main marketing pages
+        { source: "/", destination: `${V3}/landing.html` },
+        { source: "/pricing", destination: `${V3}/pricing.html` },
+        { source: "/about", destination: `${V3}/about.html` },
+        { source: "/contact", destination: `${V3}/contact.html` },
+        { source: "/solutions", destination: `${V3}/solutions.html` },
+        { source: "/integrations", destination: `${V3}/integrations.html` },
+        { source: "/security", destination: `${V3}/security.html` },
+        { source: "/resources", destination: `${V3}/resources.html` },
+        { source: "/whats-new", destination: `${V3}/whats-new.html` },
+        { source: "/competitors", destination: `${V3}/competitors.html` },
+        { source: "/xpa-planning", destination: `${V3}/xpa-planning.html` },
+        { source: "/pain-points", destination: `${V3}/pain-points.html` },
+        { source: "/ad-campaign", destination: `${V3}/ad-campaign.html` },
+
+        // Dashboard showcase pages
+        { source: "/dashboard/standard", destination: `${V3}/dashboard/standard.html` },
+        { source: "/dashboard/ceo", destination: `${V3}/dashboard/ceo.html` },
+        { source: "/dashboard/ceo-light", destination: `${V3}/dashboard/ceo-light.html` },
+        { source: "/dashboard/cfo", destination: `${V3}/dashboard/cfo.html` },
+        { source: "/dashboard/cfo-light", destination: `${V3}/dashboard/cfo-light.html` },
+        { source: "/dashboard/controller", destination: `${V3}/dashboard/controller.html` },
+        { source: "/dashboard/controller-light", destination: `${V3}/dashboard/controller-light.html` },
+        { source: "/dashboard/fpa", destination: `${V3}/dashboard/fpa.html` },
+        { source: "/dashboard/fpa-light", destination: `${V3}/dashboard/fpa-light.html` },
+        { source: "/dashboard/command-center", destination: `${V3}/dashboard/command-center.html` },
+        { source: "/dashboard/roles", destination: `${V3}/dashboard/roles.html` },
+        { source: "/dashboard/roles-upgraded", destination: `${V3}/dashboard/roles-upgraded.html` },
+        { source: "/dashboard/tiers", destination: `${V3}/dashboard/tiers.html` },
+        { source: "/dashboard/tiers-clean", destination: `${V3}/dashboard/tiers-clean.html` },
+        { source: "/dashboard/tiers-spring", destination: `${V3}/dashboard/tiers-spring.html` },
+        { source: "/dashboard/customizer", destination: `${V3}/dashboard/customizer.html` },
+        { source: "/dashboard/customizer-v2", destination: `${V3}/dashboard/customizer-v2.html` },
+        { source: "/dashboard/onboarding", destination: `${V3}/dashboard/onboarding.html` },
+        { source: "/dashboard/guided-tour", destination: `${V3}/dashboard/guided-tour.html` },
+        { source: "/dashboard/workspace", destination: `${V3}/dashboard/workspace.html` },
+        { source: "/dashboard/committed-spend", destination: `${V3}/dashboard/committed-spend.html` },
+
+        // Design studio and templates
+        { source: "/design-studio/:path*", destination: `${V3}/design-studio/:path*` },
+        { source: "/templates/:path*", destination: `${V3}/templates/:path*` },
+        { source: "/v3/:path*", destination: `${V3}/:path*` },
+      ],
+    };
+  },
+
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
   images: {
-    // Enable image optimization with aggressive caching
-    minimumCacheTTL: 2592000, // 30 days
+    minimumCacheTTL: 2592000,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
