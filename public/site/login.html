@@ -106,6 +106,7 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
   .right{border-left:none;min-height:100vh}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -164,37 +165,73 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 </div>
 
 <script>
+// Supabase Auth Client
+const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Check if already logged in
+supabase.auth.getSession().then(({data:{session}}) => {
+  if (session) window.location.href = '/dashboard/command-center';
+});
+
 // Testimonial rotation
-const testimonials=document.querySelectorAll('.testimonial');let current=0;
-setInterval(()=>{testimonials[current].classList.remove('active');current=(current+1)%testimonials.length;testimonials[current].classList.add('active')},5000);
+const testimonials = document.querySelectorAll('.testimonial'); let current = 0;
+setInterval(() => { testimonials[current].classList.remove('active'); current = (current + 1) % testimonials.length; testimonials[current].classList.add('active'); }, 5000);
 
 // Password toggle
-const pw=document.getElementById('password'),toggle=document.getElementById('togglePw');
-toggle.addEventListener('click',()=>{const isPw=pw.type==='password';pw.type=isPw?'text':'password';toggle.textContent=isPw?'Hide':'Show'});
+const pw = document.getElementById('password'), toggle = document.getElementById('togglePw');
+toggle.addEventListener('click', () => { const isPw = pw.type === 'password'; pw.type = isPw ? 'text' : 'password'; toggle.textContent = isPw ? 'Hide' : 'Show'; });
 
-// Demo toast notification
-function showToast(msg){
-  let t=document.getElementById('demo-toast');
-  if(!t){t=document.createElement('div');t.id='demo-toast';t.style.cssText='position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:14px 28px;border-radius:12px;font-size:14px;font-family:var(--font);z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.2);opacity:0;transition:opacity .3s;pointer-events:none';document.body.appendChild(t)}
-  t.textContent=msg;t.style.opacity='1';
-  setTimeout(()=>{t.style.opacity='0'},3000);
+// Toast notification
+function showToast(msg, isError) {
+  let t = document.getElementById('demo-toast');
+  if (!t) { t = document.createElement('div'); t.id = 'demo-toast'; t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);padding:14px 28px;border-radius:12px;font-size:14px;font-family:var(--font);z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.2);opacity:0;transition:opacity .3s;pointer-events:none'; document.body.appendChild(t); }
+  t.style.background = isError ? '#EF4444' : '#0F172A';
+  t.style.color = '#fff';
+  t.textContent = msg; t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 4000);
 }
 
-// SSO buttons — show demo toast
-document.querySelectorAll('.sso-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const provider=btn.textContent.trim().replace('Continue with ','');
-    showToast(provider+' SSO will be available at launch — request early access below');
+// SSO Providers
+const ssoMap = { 'Google': 'google', 'Microsoft': 'azure', 'Apple': 'apple' };
+document.querySelectorAll('.sso-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const label = btn.textContent.trim().replace('Continue with ', '');
+    if (label === 'SSO / SAML') {
+      showToast('Enterprise SSO/SAML — contact sales@finance-os.app to configure');
+      return;
+    }
+    const provider = ssoMap[label];
+    if (!provider) return;
+    showToast('Redirecting to ' + label + '...');
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: { redirectTo: window.location.origin + '/dashboard/command-center' }
+    });
+    if (error) showToast(error.message, true);
   });
 });
 
-// Sign In form — validate and show demo flow
-document.getElementById('loginForm').addEventListener('submit',e=>{
-  e.preventDefault();let valid=true;
-  const email=document.getElementById('email'),emailErr=document.getElementById('emailError'),pwErr=document.getElementById('pwError');
-  if(!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){email.classList.add('error');emailErr.classList.add('show');valid=false}else{email.classList.remove('error');emailErr.classList.remove('show')}
-  if(pw.value.length<8){pw.classList.add('error');pwErr.classList.add('show');valid=false}else{pw.classList.remove('error');pwErr.classList.remove('show')}
-  if(valid){showToast('Welcome! Redirecting to your dashboard...');setTimeout(()=>{window.location.href='/dashboard/command-center'},1500)}
+// Email/Password Sign In
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); let valid = true;
+  const email = document.getElementById('email'), emailErr = document.getElementById('emailError'), pwErr = document.getElementById('pwError');
+  if (!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { email.classList.add('error'); emailErr.classList.add('show'); valid = false; } else { email.classList.remove('error'); emailErr.classList.remove('show'); }
+  if (pw.value.length < 8) { pw.classList.add('error'); pwErr.classList.add('show'); valid = false; } else { pw.classList.remove('error'); pwErr.classList.remove('show'); }
+  if (!valid) return;
+  
+  const submitBtn = document.querySelector('.submit-btn');
+  submitBtn.textContent = 'Signing in...'; submitBtn.disabled = true;
+  
+  const { data, error } = await supabase.auth.signInWithPassword({ email: email.value, password: pw.value });
+  if (error) {
+    showToast(error.message, true);
+    submitBtn.textContent = 'Sign In'; submitBtn.disabled = false;
+  } else {
+    showToast('Welcome! Redirecting to your dashboard...');
+    setTimeout(() => { window.location.href = '/dashboard/command-center'; }, 1000);
+  }
 });
 </script>
 
