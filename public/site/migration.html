@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiftOff&trade; — AI Migration Engine | FinanceOS</title>
+<link rel="icon" type="image/svg+xml" href="/site/logo.svg">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#10B981;--green-50:#ECFDF5;--green-100:#D1FAE5;--green-200:#A7F3D0;--green-600:#059669;--green-700:#047857;
+  --cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--red:#EF4444;
+  --bg:#FFFFFF;--bg-alt:#F8FAFC;--bg-warm:#FAFAF9;
+  --text:#0F172A;--text-secondary:#334155;--muted:#64748B;--light:#94A3B8;
+  --border:#E2E8F0;--border-light:#F1F5F9;
+  --shadow-xs:0 1px 2px rgba(0,0,0,0.04);--shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.07),0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl:0 20px 25px -5px rgba(0,0,0,0.07),0 8px 10px -6px rgba(0,0,0,0.04);
+  --font:'DM Sans',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:12px;--radius-lg:16px;--radius-xl:20px;--max-w:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--border-light)}
+.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
+.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
+.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
+.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
+.nav-end{display:flex;align-items:center;gap:10px}
+.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
+.nav-end a:hover{color:#0F172A}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+@media(max-width:900px){.nav-mid{display:none}}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:var(--font);transition:all .15s ease;white-space:nowrap}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn-md{padding:10px 22px}
+.btn-lg{padding:13px 28px;font-size:15px;border-radius:10px}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-600);box-shadow:0 2px 12px rgba(16,185,129,0.25);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:#94A3B8;background:#F8FAFC;transform:translateY(-2px)}
+
+/* SECTIONS */
+.section{max-width:var(--max-w);margin:0 auto;padding:80px 24px}
+.section-alt{background:var(--bg-alt)}
+.section-dark{background:#0F172A;color:#fff}
+.section-header{text-align:center;max-width:700px;margin:0 auto 56px}
+.overline{font-size:13px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;font-family:var(--mono)}
+.section-header h2{font-size:clamp(28px,3.5vw,40px);font-weight:800;line-height:1.15;letter-spacing:-0.025em;margin-bottom:14px}
+.section-header p{font-size:16px;color:var(--text-secondary);line-height:1.65;max-width:560px;margin:0 auto}
+
+/* FADE IN */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* HERO */
+.hero{padding:100px 24px 80px;text-align:center;background:linear-gradient(180deg,var(--green-50) 0%,#fff 100%)}
+.hero-inner{max-width:800px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:6px 16px 6px 8px;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:24px;box-shadow:var(--shadow-xs)}
+.hero-badge .badge-icon{width:28px;height:28px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.hero h1{font-size:clamp(36px,5vw,56px);font-weight:800;line-height:1.1;letter-spacing:-0.03em;margin-bottom:18px}
+.hero h1 .brand-accent{color:var(--green);position:relative}
+.hero h1 .brand-accent::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:4px;background:var(--green);border-radius:2px;opacity:0.3}
+.hero p{font-size:18px;color:var(--text-secondary);line-height:1.65;max-width:600px;margin:0 auto 32px}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* SUPPORTED PLATFORMS STRIP */
+.platforms-strip{padding:40px 24px;text-align:center;border-bottom:1px solid var(--border-light)}
+.platforms-strip .ps-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px}
+.platforms-grid{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;max-width:800px;margin:0 auto}
+.plat-item{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.6;transition:opacity .2s}
+.plat-item:hover{opacity:1}
+.plat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:var(--mono);border:1px solid var(--border);background:#fff}
+.plat-name{font-size:11px;font-weight:600;color:var(--muted)}
+
+/* METRICS STRIP */
+.metrics-strip{padding:48px 24px;background:var(--text);color:#fff}
+.metrics-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.m-val{font-family:var(--mono);font-size:clamp(22px,2.5vw,30px);font-weight:700;color:var(--green);margin-bottom:2px;letter-spacing:-0.02em}
+.m-label{font-size:12px;color:#94A3B8;font-weight:400}
+@media(max-width:600px){.metrics-inner{grid-template-columns:repeat(2,1fr)}}
+
+/* PIPELINE VISUAL */
+.pipeline{max-width:900px;margin:0 auto;position:relative}
+.pipeline-track{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
+.pipeline-track::before{content:'';position:absolute;top:36px;left:10%;right:10%;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan),var(--purple));border-radius:2px;z-index:0}
+.pipe-stage{text-align:center;position:relative;z-index:1}
+.pipe-node{width:72px;height:72px;border-radius:50%;border:3px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:var(--shadow-md);transition:all .3s}
+.pipe-stage:hover .pipe-node{border-color:var(--green);box-shadow:0 0 0 6px rgba(16,185,129,0.12),var(--shadow-md);transform:scale(1.08)}
+.pipe-stage h4{font-size:14px;font-weight:700;margin-bottom:4px;letter-spacing:-0.01em}
+.pipe-stage p{font-size:12px;color:var(--muted);line-height:1.45;max-width:150px;margin:0 auto}
+.pipe-stage .pipe-time{font-family:var(--mono);font-size:11px;color:var(--green);font-weight:600;margin-top:6px}
+
+/* DETAIL CARDS */
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.detail-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:all .3s;overflow:hidden}
+.detail-card:hover{box-shadow:var(--shadow-md);border-color:#CBD5E1;transform:translateY(-4px)}
+.detail-card .card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
+.detail-card h3{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-0.01em}
+.detail-card p{font-size:13px;color:var(--text-secondary);line-height:1.55}
+.detail-card .card-stat{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green);margin-top:16px}
+.detail-card .card-stat-label{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* TERMINAL */
+.terminal{max-width:700px;margin:0 auto;background:#0F172A;border-radius:var(--radius-lg);overflow:hidden;font-family:var(--mono);font-size:12px;box-shadow:var(--shadow-xl)}
+.terminal-header{padding:10px 16px;background:rgba(0,0,0,0.3);display:flex;align-items:center;gap:6px}
+.terminal-header span{width:10px;height:10px;border-radius:50%}
+.terminal-header span:nth-child(1){background:#EF4444}
+.terminal-header span:nth-child(2){background:#F59E0B}
+.terminal-header span:nth-child(3){background:#10B981}
+.terminal-header .t-title{margin-left:12px;font-size:11px;color:#475569}
+.terminal-body{padding:20px;line-height:2;color:#94A3B8}
+.terminal-body .prompt{color:#10B981}
+.terminal-body .response{color:#67E8F9}
+.terminal-body .dim{color:#475569}
+.terminal-body .hl{color:#fff;font-weight:500}
+.terminal-body .warn{color:#F59E0B}
+.terminal-body .ok{color:#10B981}
+
+/* COMPARISON TABLE */
+.compare-table{max-width:900px;margin:0 auto;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-md)}
+.compare-table table{width:100%;border-collapse:collapse;font-size:14px}
+.compare-table th{padding:14px 20px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);background:var(--bg-alt);border-bottom:1px solid var(--border)}
+.compare-table th:first-child{width:35%}
+.compare-table th.highlight{color:var(--green);background:var(--green-50)}
+.compare-table td{padding:14px 20px;border-bottom:1px solid var(--border-light)}
+.compare-table td.feature{font-weight:500;color:var(--text)}
+.compare-table td.highlight{background:var(--green-50)}
+.compare-table .check{color:var(--green);font-weight:700;font-size:16px}
+.compare-table .partial{color:var(--amber);font-weight:700;font-size:16px}
+.compare-table .none{color:var(--light);font-size:16px}
+.compare-table tr:last-child td{border-bottom:none}
+
+/* TIMELINE */
+.timeline{max-width:700px;margin:0 auto}
+.tl-item{display:grid;grid-template-columns:80px 3px 1fr;gap:20px;padding-bottom:36px;position:relative}
+.tl-item:last-child{padding-bottom:0}
+.tl-day{text-align:right;padding-top:4px}
+.tl-day .day-range{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--green)}
+.tl-day .day-label{font-size:11px;color:var(--muted)}
+.tl-line{background:var(--border);border-radius:2px;position:relative}
+.tl-line::before{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid #fff;box-shadow:0 0 0 3px rgba(16,185,129,0.15)}
+.tl-content{padding-top:0}
+.tl-content h4{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-0.01em}
+.tl-content p{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+/* TESTIMONIAL */
+.testimonial{max-width:620px;margin:0 auto;text-align:center;padding:40px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
+.testimonial blockquote{font-size:17px;font-style:italic;line-height:1.6;color:var(--text);margin-bottom:16px}
+.testimonial .t-author{font-size:13px;font-weight:600;color:var(--muted)}
+
+/* CTA */
+.cta{text-align:center;padding:80px 24px;background:linear-gradient(180deg,#fff 0%,var(--green-50) 100%)}
+.cta h2{font-size:clamp(28px,3.5vw,38px);font-weight:800;letter-spacing:-0.025em;margin-bottom:14px}
+.cta p{font-size:16px;color:var(--text-secondary);max-width:480px;margin:0 auto 28px}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* FOOTER */
+footer{background:#0F172A;color:#94A3B8;padding:56px 24px 32px;font-size:13px}
+.ft-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:2fr repeat(4,1fr);gap:32px}
+.ft-brand p{margin-top:10px;font-size:13px;line-height:1.5;color:#64748B}
+.ft-col h5{color:#fff;font-size:13px;font-weight:600;margin-bottom:14px}
+.ft-col a{display:block;color:#94A3B8;text-decoration:none;margin-bottom:10px;font-size:13px;transition:color .15s}
+.ft-col a:hover{color:#fff}
+.ft-bottom{max-width:var(--max-w);margin:40px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#475569}
+.ft-bottom a{color:#64748B;text-decoration:none}
+.ft-bottom a:hover{color:#94A3B8}
+@media(max-width:768px){
+  .ft-inner{grid-template-columns:1fr 1fr}
+  .ft-brand{grid-column:1/-1}
+  .hero h1{font-size:32px}
+  .pipeline-track{grid-template-columns:1fr;gap:28px}
+  .pipeline-track::before{display:none}
+  .detail-grid{grid-template-columns:1fr}
+  .tl-item{grid-template-columns:60px 3px 1fr;gap:14px}
+  .platforms-grid{gap:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo-link"><img src="/site/logo.svg" alt="FinanceOS" width="24" height="24" style="border-radius:5px;vertical-align:middle;margin-right:8px"><span class="ldot"></span>FinanceOS</a>
+    <div class="nav-mid">
+      <a href="/solutions">Solutions</a>
+      <a href="/competitors">Compare</a>
+      <a href="/engine">Engine</a>
+      <a href="/consolidation">Consolidation</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/resources">Resources</a>
+    </div>
+    <div class="nav-end">
+      <a href="/login">Sign In</a>
+      <a href="/contact" class="btn-sub">Schedule Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge fade-in">
+      <span class="badge-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </span>
+      AI-Powered Platform Migration
+    </div>
+    <h1 class="fade-in">Meet <span class="brand-accent">LiftOff&trade;</span></h1>
+    <p class="fade-in">The AI migration engine that reads your legacy FP&amp;A models, translates every formula, maps every dimension, and rebuilds everything inside FinanceOS &mdash; in days, not months.</p>
+    <div class="hero-ctas fade-in">
+      <a href="/contact" class="btn btn-primary btn-lg">Request Migration Assessment</a>
+      <a href="/competitors" class="btn btn-outline btn-lg">See How We Compare</a>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORTED PLATFORMS -->
+<div class="platforms-strip">
+  <div class="ps-label">Migrate from any platform</div>
+  <div class="platforms-grid fade-in">
+    <div class="plat-item">
+      <div class="plat-icon" style="color:#0066CC">A</div>
+      <span class="plat-name">Anaplan</span>
+    </div>
+    <div class="plat-item">
+      <div class="plat-icon" style="color:#E85D00">W</div>
+      <span class="plat-name">Workday Adaptive</span>
+    </div>
+    <div class="plat-item">
+      <div class="plat-icon" style="color:#6D28D9">P</div>
+      <span class="plat-name">Planful</span>
+    </div>
+    <div class="plat-item">
+      <div class="plat-icon" style="color:#0078D4">O</div>
+      <span class="plat-name">Oracle PBCS</span>
+    </div>
+    <div class="plat-item">
+      <div class="plat-icon" style="color:#217346">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#217346" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+      </div>
+      <span class="plat-name">Excel / Sheets</span>
+    </div>
+    <div class="plat-item">
+      <div class="plat-icon" style="color:#1E40AF">S</div>
+      <span class="plat-name">SAP BPC</span>
+    </div>
+  </div>
+</div>
+
+<!-- METRICS -->
+<div class="metrics-strip">
+  <div class="metrics-inner fade-in">
+    <div><div class="m-val">400+</div><div class="m-label">Migrations completed</div></div>
+    <div><div class="m-val">14 days</div><div class="m-label">Avg. time-to-value</div></div>
+    <div><div class="m-val">94%</div><div class="m-label">Auto-conversion rate</div></div>
+    <div><div class="m-val">0</div><div class="m-label">Data loss incidents</div></div>
+  </div>
+</div>
+
+<!-- PIPELINE VISUAL -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">LiftOff&trade; Pipeline</div>
+    <h2>Five stages. Fully automated.</h2>
+    <p>LiftOff scans your existing platform, builds a semantic model of every formula and dimension, and translates everything into native FinanceOS objects.</p>
+  </div>
+  <div class="pipeline fade-in">
+    <div class="pipeline-track">
+      <div class="pipe-stage">
+        <div class="pipe-node">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <h4>Discover</h4>
+        <p>Automated scan of models, lists, modules, formulas, and dependencies</p>
+        <div class="pipe-time">~2 hours</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-node">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8M16 17H8M10 9H8"/></svg>
+        </div>
+        <h4>Parse</h4>
+        <p>AI builds an Abstract Syntax Tree of every calculation and mapping rule</p>
+        <div class="pipe-time">~4 hours</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-node">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <h4>Translate</h4>
+        <p>Formula-by-formula conversion into native FinanceOS Engine syntax</p>
+        <div class="pipe-time">~1 day</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-node">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h4>Validate</h4>
+        <p>Side-by-side output comparison with automated variance detection</p>
+        <div class="pipe-time">~1 day</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-node">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </div>
+        <h4>Launch</h4>
+        <p>Go live on FinanceOS with full historical data and live dashboards</p>
+        <div class="pipe-time">Day 1 live</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVE CAPABILITIES -->
+<div class="section-alt">
+  <section class="section">
+    <div class="section-header">
+      <div class="overline">Under the Hood</div>
+      <h2>How LiftOff&trade; actually works</h2>
+      <p>Not a lift-and-shift copy job. LiftOff uses AI to understand the intent behind your models and rebuild them natively for the FinanceOS Engine.</p>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-card fade-in">
+        <div class="card-icon" style="background:var(--green-50)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3>Semantic Model Parser</h3>
+        <p>Builds an Abstract Syntax Tree from your source platform &mdash; every formula, every list relationship, every module dependency. Understands nested IF logic, LOOKUP chains, and cross-dimensional references.</p>
+        <div class="card-stat">100%</div>
+        <div class="card-stat-label">Formula coverage</div>
+      </div>
+      <div class="detail-card fade-in">
+        <div class="card-icon" style="background:#EDE9FE">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+        </div>
+        <h3>Formula Transpiler</h3>
+        <p>Converts proprietary calculation syntax into native FinanceOS formulas. Breaks complex nested statements into optimized, readable building blocks &mdash; improving performance and maintainability.</p>
+        <div class="card-stat">94%</div>
+        <div class="card-stat-label">Auto-converted, no manual rewrite</div>
+      </div>
+      <div class="detail-card fade-in">
+        <div class="card-icon" style="background:#ECFEFF">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+        </div>
+        <h3>Dimension Mapper</h3>
+        <p>Automatically maps hierarchies, list structures, and dimension metadata. Detects orphaned items, circular references, and inconsistent granularity before they cause downstream errors.</p>
+        <div class="card-stat">200+</div>
+        <div class="card-stat-label">Data quality checks</div>
+      </div>
+      <div class="detail-card fade-in">
+        <div class="card-icon" style="background:#FFFBEB">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3>Variance Validator</h3>
+        <p>Runs source vs. target comparison on every calculation output. Flags variances above configurable thresholds and generates a full reconciliation report for sign-off.</p>
+        <div class="card-stat">&lt;0.01%</div>
+        <div class="card-stat-label">Accepted variance threshold</div>
+      </div>
+      <div class="detail-card fade-in">
+        <div class="card-icon" style="background:#FEF2F2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Schema Guardian</h3>
+        <p>Validates every table structure, column mapping, and data type conversion. Ensures referential integrity across multi-entity structures and prevents data loss during transfer.</p>
+        <div class="card-stat">0</div>
+        <div class="card-stat-label">Records lost, ever</div>
+      </div>
+      <div class="detail-card fade-in">
+        <div class="card-icon" style="background:var(--green-50)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <h3>Health Dashboard</h3>
+        <p>Real-time migration progress tracking with percentage complete, error logs, and estimated time remaining. Stakeholders get a live link &mdash; no status meetings required.</p>
+        <div class="card-stat">Live</div>
+        <div class="card-stat-label">Real-time visibility</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- TERMINAL DEMO -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">LiftOff&trade; CLI</div>
+    <h2>Watch the migration happen</h2>
+    <p>LiftOff provides a live terminal feed so your team can see exactly what's being converted, flagged, or optimized &mdash; in real time.</p>
+  </div>
+  <div class="terminal fade-in">
+    <div class="terminal-header"><span></span><span></span><span></span><span class="t-title">LiftOff&trade; &mdash; Migration Engine v3.2</span></div>
+    <div class="terminal-body">
+      <div class="prompt">liftoff &rarr; scan --source anaplan --workspace "Global FP&A"</div><br>
+      <div class="response">Discovered 47 modules, 312 line items, 18 lists, 4 time ranges</div><br>
+      <div class="prompt">liftoff &rarr; parse --deep</div><br>
+      <span class="dim">Parsing formulas...</span> <span class="ok">&check; 289/312 auto-converted</span><br>
+      <span class="dim">Flagged for review:</span> <span class="warn">23 nested IF chains (&gt;8 levels)</span><br>
+      <div class="response">Refactoring flagged formulas into optimized building blocks...</div><br>
+      <span class="ok">&check; 23/23 refactored &mdash; avg complexity reduced 64%</span><br><br>
+      <div class="prompt">liftoff &rarr; validate --threshold 0.01%</div><br>
+      <span class="ok">&check; 312/312 outputs match within threshold</span><br>
+      <span class="ok">&check; 0 variance exceptions</span><br>
+      <div class="response">Migration ready. Run `liftoff deploy` to go live.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<div class="section-alt">
+  <section class="section">
+    <div class="section-header">
+      <div class="overline">Why LiftOff</div>
+      <h2>Migration methods compared</h2>
+      <p>Most platform switches are manual rebuild projects that take 6&ndash;12 months. LiftOff changes the math entirely.</p>
+    </div>
+    <div class="compare-table fade-in">
+      <table>
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th class="highlight">LiftOff&trade;</th>
+            <th>Manual Rebuild</th>
+            <th>Consulting Firm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature">Timeline</td><td class="highlight"><span class="check">~14 days</span></td><td><span class="partial">6&ndash;12 months</span></td><td><span class="partial">3&ndash;6 months</span></td></tr>
+          <tr><td class="feature">Formula conversion</td><td class="highlight"><span class="check">94% automated</span></td><td><span class="none">100% manual</span></td><td><span class="partial">Mix</span></td></tr>
+          <tr><td class="feature">Variance validation</td><td class="highlight"><span class="check">Automated</span></td><td><span class="none">Manual spot-check</span></td><td><span class="partial">Sampling</span></td></tr>
+          <tr><td class="feature">Data loss risk</td><td class="highlight"><span class="check">Near zero</span></td><td><span class="partial">Moderate</span></td><td><span class="partial">Low&ndash;moderate</span></td></tr>
+          <tr><td class="feature">Historical data</td><td class="highlight"><span class="check">Full transfer</span></td><td><span class="partial">Often truncated</span></td><td><span class="partial">Varies</span></td></tr>
+          <tr><td class="feature">Cost</td><td class="highlight"><span class="check">Included</span></td><td><span class="none">Internal FTE time</span></td><td><span class="none">$150K&ndash;$500K+</span></td></tr>
+          <tr><td class="feature">Post-migration support</td><td class="highlight"><span class="check">90-day CSM</span></td><td><span class="none">&mdash;</span></td><td><span class="partial">Paid retainer</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- MIGRATION TIMELINE -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">Your Timeline</div>
+    <h2>Two weeks from kickoff to live</h2>
+    <p>Here's what a typical LiftOff engagement looks like, from discovery call to production cutover.</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-item fade-in">
+      <div class="tl-day">
+        <div class="day-range">Day 1&ndash;2</div>
+        <div class="day-label">Discovery</div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-content">
+        <h4>Platform Scan &amp; Data Audit</h4>
+        <p>LiftOff connects to your source environment via read-only API. We map every model, module, list, formula, user permission, and data dependency. You receive a Migration Blueprint &mdash; a full inventory of what will be converted, optimized, or flagged for review.</p>
+      </div>
+    </div>
+    <div class="tl-item fade-in">
+      <div class="tl-day">
+        <div class="day-range">Day 3&ndash;5</div>
+        <div class="day-label">Convert</div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-content">
+        <h4>AI Formula Translation &amp; Schema Mapping</h4>
+        <p>The transpiler converts proprietary formulas into native FinanceOS syntax. Dimension hierarchies, list relationships, and time ranges are rebuilt. Complex nested logic is refactored into cleaner, faster building blocks. Historical data is streamed into the FinanceOS Engine.</p>
+      </div>
+    </div>
+    <div class="tl-item fade-in">
+      <div class="tl-day">
+        <div class="day-range">Day 6&ndash;9</div>
+        <div class="day-label">Validate</div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-content">
+        <h4>Side-by-Side Verification</h4>
+        <p>Every calculation output is compared against the source platform. The Variance Validator flags any discrepancy above 0.01%. Your team reviews a reconciliation dashboard and signs off on accuracy before cutover.</p>
+      </div>
+    </div>
+    <div class="tl-item fade-in">
+      <div class="tl-day">
+        <div class="day-range">Day 10&ndash;12</div>
+        <div class="day-label">Train</div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-content">
+        <h4>Team Onboarding &amp; Parallel Run</h4>
+        <p>Self-paced video training plus live sessions tailored to your workflows. Both platforms run in parallel so your team can verify outputs in their real planning cycle before committing to the switch.</p>
+      </div>
+    </div>
+    <div class="tl-item fade-in">
+      <div class="tl-day">
+        <div class="day-range">Day 14</div>
+        <div class="day-label">Go Live</div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-content">
+        <h4>Production Cutover &amp; CSM Assignment</h4>
+        <p>Flip the switch. A dedicated Customer Success Manager is assigned for the first 90 days. 99.9% uptime SLA from day one. Your legacy platform contract? We'll help you negotiate the exit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<div class="section-alt">
+  <section class="section">
+    <div class="section-header">
+      <div class="overline">From Our Customers</div>
+      <h2>They switched. Here's what happened.</h2>
+    </div>
+    <div class="testimonial fade-in">
+      <blockquote>&ldquo;We had 47 Anaplan modules and were quoted 8 months by two consulting firms. LiftOff converted everything in 11 days. The variance report showed zero material differences. Our CFO couldn't believe it.&rdquo;</blockquote>
+      <div class="t-author">VP of FP&amp;A &mdash; Series D SaaS, 800 employees</div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to leave your legacy platform behind?</h2>
+  <p>Get a free Migration Blueprint &mdash; a complete audit of your current platform, conversion complexity score, and projected timeline.</p>
+  <div class="cta-buttons">
+    <a href="/contact" class="btn btn-primary btn-lg">Request Migration Assessment</a>
+    <a href="/pricing" class="btn btn-outline btn-lg">View Pricing</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="/" class="logo-link"><img src="/site/logo.svg" alt="FinanceOS" width="24" height="24" style="border-radius:5px;vertical-align:middle;margin-right:8px"><span class="ldot"></span>FinanceOS</a>
+      <p>AI-native financial planning &amp; analysis for modern finance teams.</p>
+    </div>
+    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/engine">Engine</a><a href="/migration">LiftOff&trade;</a><a href="/pricing">Pricing</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/consolidation">Consolidation</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="/about">About</a><a href="/about">Careers</a><a href="/contact">Contact</a></div>
+  </div>
+  <div class="ft-bottom">
+    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <div style="display:flex;gap:20px"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

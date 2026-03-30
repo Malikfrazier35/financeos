@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sign In â FinanceOS</title>
+<title>Sign In — FinanceOS</title>
 <link rel="icon" type="image/svg+xml" href="/site/logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -276,13 +276,13 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
   if (sb) {
     sb.auth.getSession().then(function(result){
       if (result.data && result.data.session) {
-        window.location.href = '/';
+        window.location.href = '/dashboard';
       }
     });
 
     sb.auth.onAuthStateChange(function(event, session){
       if (event === 'SIGNED_IN' && session) {
-        window.location.href = '/';
+        window.location.href = '/dashboard';
       }
     });
   }
@@ -296,7 +296,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
       btn.disabled = true;
       sb.auth.signInWithOAuth({
         provider: provider,
-        options: { redirectTo: window.location.origin + '/login' }
+        options: { redirectTo: window.location.origin + '/dashboard' }
       }).then(function(result){
         if (result.error) {
           showError('Authentication error: ' + result.error.message);
