@@ -285,6 +285,20 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .settings-row .value{font-weight:600;font-family:var(--mono);display:flex;align-items:center;gap:6px;}
 .settings-row .value .status-dot{width:6px;height:6px;border-radius:50%;}
 
+/* Product identity badge in topbar */
+.product-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:0.02em;margin-left:8px;border:1px solid var(--border);transition:all 0.3s var(--ease);}
+.product-badge .product-icon{font-size:12px;}
+.product-badge .product-name{white-space:nowrap;}
+
+/* Product label in dashboard header */
+.product-header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);margin-bottom:16px;transition:all 0.3s var(--ease);}
+.product-header .ph-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+.product-header .ph-info{flex:1;}
+.product-header .ph-name{font-size:14px;font-weight:800;letter-spacing:-0.01em;}
+.product-header .ph-tagline{font-size:11px;color:var(--t4);font-weight:500;}
+.product-header .ph-switch{font-size:10px;font-weight:700;color:var(--accent);cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;transition:all 0.15s;}
+.product-header .ph-switch:hover{background:var(--accent-dim);}
+
 /* Bottom spacer for customize bar */
 .bottom-spacer{height:70px;}
 </style>
@@ -300,10 +314,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
 <!-- Top Bar -->
 <div class="topbar">
-  <div class="topbar-logo">
+  <a href="/site/landing.html" class="topbar-logo" style="text-decoration:none;color:inherit;">
     <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
     <span class="name">FinanceOS</span>
     <span class="plan-badge">ENTERPRISE</span>
+  </a>
+  <div class="product-badge" id="productBadge" style="background:rgba(59,130,246,0.08);color:#3B82F6;">
+    <span class="product-icon">◎</span>
+    <span class="product-name">ClearView</span>
   </div>
   <div class="topbar-breadcrumb" id="breadcrumb"><strong>Dashboard</strong></div>
   <div style="margin-left:8px;">
@@ -330,71 +348,71 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
   <div class="sidebar" id="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">OVERVIEW</div>
-      <div class="sidebar-item active" onclick="showView('dashboard')">
+      <div class="sidebar-item active" onclick="showView('dashboard',this)">
         <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
         Dashboard <span class="count">4</span>
       </div>
-      <div class="sidebar-item" onclick="showView('dashboard')">
+      <div class="sidebar-item" onclick="showView('copilot',this)">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        AI Cop... <span class="tier-tag growth"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> GROWTH</span>
+        AI Copilot <span class="tier-tag growth" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">FINANCIAL</div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('pnl',this)">
         <svg viewBox="0 0 16 16" fill="none"><path d="M2 14V4l4-2 4 2 4-2v10l-4 2-4-2-4 2z" stroke="currentColor" stroke-width="1.2"/></svg>
-        P&L Statement <span class="tier-tag starter"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> STARTER</span>
+        P&L Statement <span class="tier-tag starter" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('forecast',this)">
         <svg viewBox="0 0 16 16" fill="none"><path d="M2 12l4-4 3 3 5-6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Forecast <span class="tier-tag growth"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> GROWTH</span>
+        Forecast <span class="tier-tag growth" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('consolidation',this)">
         <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 8h12" stroke="currentColor" stroke-width="1.2"/></svg>
-        Consolidation <span class="tier-tag growth"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> GROWTH</span>
+        Consolidation <span class="tier-tag growth" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">PLANNING</div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('scenarios',this)">
         <svg viewBox="0 0 16 16" fill="none"><path d="M4 2v12M12 2v12M2 6h12M2 10h12" stroke="currentColor" stroke-width="1.2"/></svg>
-        Scenarios <span class="tier-tag growth"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> GROWTH</span>
+        Scenarios <span class="tier-tag growth" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('close',this)">
         <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Close T... <span class="tier-tag business"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> BUSINESS</span> <span class="count" style="background:var(--amber);font-size:9px;">6</span>
+        Close Tasks <span class="tier-tag business" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span> <span class="count" style="background:var(--amber);font-size:9px;">6</span>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">COLLABORATE</div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('team',this)">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><circle cx="11" cy="10" r="3" stroke="currentColor" stroke-width="1.2"/></svg>
-        Team <span class="tier-tag business"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> BUSINESS</span>
+        Team <span class="tier-tag business" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">PLATFORM</div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('integrations',this)">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v2M8 12v2M2 8h2M12 8h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Integrations <span class="tier-tag starter"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> STARTER</span>
+        Integrations <span class="tier-tag starter" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
-      <div class="sidebar-item" onclick="showView('admin')">
+      <div class="sidebar-item" onclick="showView('admin',this)">
         <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 8h4M8 6v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         Admin
       </div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('investor',this)">
         <svg viewBox="0 0 16 16" fill="none"><path d="M3 4l5-2 5 2v4c0 3-5 6-5 6s-5-3-5-6V4z" stroke="currentColor" stroke-width="1.2"/></svg>
-        Investor Met... <span class="tier-tag business"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> BUSINESS</span>
+        Investor Metrics <span class="tier-tag business" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('command',this)">
         <svg viewBox="0 0 16 16" fill="none"><path d="M4 14V8l4-6 4 6v6" stroke="currentColor" stroke-width="1.2"/><path d="M4 14h8" stroke="currentColor" stroke-width="1.2"/></svg>
-        Command C... <span class="tier-tag business"><svg viewBox="0 0 8 8" fill="none"><rect x="1" y="4" width="6" height="3" rx="1" stroke="currentColor" stroke-width="0.8"/><path d="M3 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="0.8"/></svg> BUSINESS</span>
+        Command Center <span class="tier-tag business" style="background:var(--green-dim);color:var(--green);"><svg viewBox="0 0 8 8" fill="none"><path d="M2 4l1.5 1.5L7 2" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg> INCLUDED</span>
       </div>
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showView('intelligence',this)">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
         Intelligence
       </div>
-      <div class="sidebar-item" onclick="showView('settings')">
+      <div class="sidebar-item" onclick="showView('settings',this)">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M13 3l-1.5 1.5M4.5 11.5L3 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         Settings
       </div>
@@ -421,14 +439,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
       <div style="padding:6px 8px;margin-top:4px;border-top:1px solid var(--border);padding-top:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="sidebar-avatar" style="background:linear-gradient(135deg,#10B981,#059669);width:24px;height:24px;font-size:9px;">MF</div>
-          <div><div style="font-size:11px;font-weight:600;">Malik Frazier</div><div style="font-size:9px;color:var(--t4);">ENTERPRISE · Financial Holding LLC</div></div>
+          <div><div style="font-size:11px;font-weight:600;">Malik Frazier</div><div style="font-size:9px;color:var(--t4);">ENTERPRISE</div></div>
         </div>
       </div>
       <div class="theme-toggle">
-        <div class="theme-opt active">Light</div>
-        <div class="theme-opt">Dark</div>
+        <div class="theme-opt active" onclick="applyTheme('light')">Light</div>
+        <div class="theme-opt" onclick="applyTheme('midnight')">Dark</div>
       </div>
-      <div style="padding:4px 12px;font-size:11px;color:var(--t4);cursor:pointer;display:flex;align-items:center;gap:6px;">
+      <a href="/site/landing.html" style="padding:4px 12px;font-size:11px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;">
+        <svg viewBox="0 0 16 16" fill="none" style="width:12px;height:12px;"><path d="M8 2L2 8l6 6M2 8h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Site
+      </a>
+      <div onclick="window.location.href='/site/landing.html'" style="padding:4px 12px;font-size:11px;color:var(--t4);cursor:pointer;display:flex;align-items:center;gap:6px;">
         <svg viewBox="0 0 16 16" fill="none" style="width:12px;height:12px;"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3M11 12l3-4-3-4M7 8h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Log Out
       </div>
@@ -486,18 +508,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 <!-- Customization Bar -->
 <div class="customize-bar">
   <div class="cbar-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4l2-4z" stroke="#fff" stroke-width="1.2" fill="none"/></svg></div>
-  <span class="cbar-title">Customize</span>
+  <span class="cbar-title"><span id="cbarProductName">ClearView</span></span>
   <div class="cbar-divider"></div>
   <span class="cbar-label">Theme</span>
-  <div class="cbar-swatch active" style="background:linear-gradient(135deg,#F3F4F8,#E2E8F0);" title="Light (Current)"></div>
-  <div class="cbar-swatch" style="background:linear-gradient(135deg,#030711,#0C1323);" title="Midnight"></div>
-  <div class="cbar-swatch" style="background:linear-gradient(135deg,#FFFBF5,#F5E6D3);" title="Warm Sand"></div>
-  <div class="cbar-swatch" style="background:linear-gradient(135deg,#040D0A,#0D3320);" title="Forest"></div>
-  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0C0A1A,#1A1040);" title="Executive"></div>
-  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0a0a0a,#111);" title="Terminal"></div>
+  <div class="cbar-swatch active" style="background:linear-gradient(135deg,#F3F4F8,#E2E8F0);" title="Arctic Light" onclick="applyTheme('light')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#030711,#0C1323);" title="Midnight" onclick="applyTheme('midnight')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#FFFBF5,#F5E6D3);" title="Warm Sand" onclick="applyTheme('warm')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#040D0A,#0D3320);" title="Forest" onclick="applyTheme('forest')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0C0A1A,#1A1040);" title="Executive" onclick="applyTheme('executive')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0a0a0a,#111);" title="Terminal" onclick="applyTheme('terminal')"></div>
   <div class="cbar-divider"></div>
-  <button class="cbar-btn active">Grid</button>
-  <button class="cbar-btn">Compact</button>
+  <button class="cbar-btn active" onclick="setLayout('grid',this)">Grid</button>
+  <button class="cbar-btn" onclick="setLayout('compact',this)">Compact</button>
   <div class="cbar-divider"></div>
   <button class="cbar-template" onclick="openTemplates()">
     <svg viewBox="0 0 14 14" fill="none" style="width:12px;height:12px;"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
@@ -509,7 +531,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 <div class="modal-overlay" id="tplModal" onclick="if(event.target===this)closeTemplates()">
   <div class="modal">
     <div class="modal-head">
-      <div><h2>Pick your dashboard template</h2><p>Every plan includes full theme customization. Switch anytime from Settings.</p></div>
+      <div><h2>Choose your dashboard product</h2><p>Each dashboard is a unique experience. Your Enterprise plan includes all 6 products.</p></div>
       <button class="modal-close" onclick="closeTemplates()">&times;</button>
     </div>
     <div class="modal-body">
@@ -523,58 +545,164 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 function updateClock(){const n=new Date();document.getElementById('clockDisplay').textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});}
 updateClock();setInterval(updateClock,60000);
 
-// Templates data
+// Current theme tracking
+var currentTheme='light';
+var currentLayout='grid';
+
+// ═══ DASHBOARD PRODUCT IDENTITIES ═══
+const PRODUCTS={
+  light:{name:'ClearView',tagline:'Crystal-clear financial visibility',icon:'◎',gradient:'linear-gradient(135deg,#3B82F6,#60A5FA)',badgeBg:'rgba(59,130,246,0.08)',badgeColor:'#3B82F6'},
+  midnight:{name:'NightOwl',tagline:'After-hours analytics, built for late shifts',icon:'◑',gradient:'linear-gradient(135deg,#22D3EE,#818CF8)',badgeBg:'rgba(34,211,238,0.12)',badgeColor:'#22D3EE'},
+  warm:{name:'Emberstone',tagline:'Warm, focused financial command',icon:'◈',gradient:'linear-gradient(135deg,#D97706,#F59E0B)',badgeBg:'rgba(217,119,6,0.1)',badgeColor:'#D97706'},
+  forest:{name:'Canopy',tagline:'Sustainable growth intelligence',icon:'◇',gradient:'linear-gradient(135deg,#34D399,#10B981)',badgeBg:'rgba(52,211,153,0.12)',badgeColor:'#34D399'},
+  executive:{name:'Boardroom',tagline:'Board-ready executive reporting',icon:'◆',gradient:'linear-gradient(135deg,#818CF8,#A78BFA)',badgeBg:'rgba(129,140,248,0.12)',badgeColor:'#818CF8'},
+  terminal:{name:'Devline',tagline:'Engineering-grade financial ops',icon:'▣',gradient:'linear-gradient(135deg,#22D3EE,#06B6D4)',badgeBg:'rgba(34,211,238,0.1)',badgeColor:'#22D3EE'}
+};
+
+// ═══ THEME SYSTEM ═══
+const THEMES={
+  light:{bg:'#f3f4f8',surface:'#ffffff',card:'#ffffff',elevated:'#eef0f5',border:'#e2e5ed',border2:'#cdd2de',t1:'#0a0d15',t2:'#3a4259',t3:'#576175',t4:'#8792a8',accent:'#3b82f6',accentDim:'rgba(59,130,246,0.07)',greenDim:'rgba(16,185,129,0.07)',redDim:'rgba(239,68,68,0.07)',amberDim:'rgba(245,158,11,0.07)',purpleDim:'rgba(139,92,246,0.07)',cyanDim:'rgba(6,182,212,0.07)',modalBg:'#fff'},
+  midnight:{bg:'#030711',surface:'#070D19',card:'#0C1323',elevated:'#111D33',border:'rgba(30,48,80,0.5)',border2:'rgba(40,65,110,0.6)',t1:'#F1F5F9',t2:'#CBD5E1',t3:'#94A3B8',t4:'#64748B',accent:'#22D3EE',accentDim:'rgba(34,211,238,0.1)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#0C1323'},
+  warm:{bg:'#FFFBF5',surface:'#FFF8EE',card:'#ffffff',elevated:'#F5EDE0',border:'rgba(180,140,100,0.15)',border2:'rgba(160,120,80,0.25)',t1:'#1C1410',t2:'#4A3728',t3:'#7A6550',t4:'#A08E78',accent:'#D97706',accentDim:'rgba(217,119,6,0.08)',greenDim:'rgba(16,185,129,0.08)',redDim:'rgba(239,68,68,0.08)',amberDim:'rgba(245,158,11,0.1)',purpleDim:'rgba(139,92,246,0.08)',cyanDim:'rgba(6,182,212,0.08)',modalBg:'#FFF8EE'},
+  forest:{bg:'#040D0A',surface:'#061210',card:'#0A1A14',elevated:'#0F2A20',border:'rgba(52,211,153,0.1)',border2:'rgba(52,211,153,0.18)',t1:'#D1FAE5',t2:'#A7F3D0',t3:'#6EE7B7',t4:'#34D399',accent:'#34D399',accentDim:'rgba(52,211,153,0.1)',greenDim:'rgba(16,185,129,0.15)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#0A1A14'},
+  executive:{bg:'#0C0A1A',surface:'#100E24',card:'#14102A',elevated:'#1E1840',border:'rgba(129,140,248,0.12)',border2:'rgba(129,140,248,0.2)',t1:'#E2E0F0',t2:'#C4C0E0',t3:'#9B95C8',t4:'#7570A0',accent:'#818CF8',accentDim:'rgba(129,140,248,0.1)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.15)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#14102A'},
+  terminal:{bg:'#0a0a0a',surface:'#0f0f0f',card:'#141414',elevated:'#1a1a1a',border:'rgba(34,211,238,0.08)',border2:'rgba(34,211,238,0.15)',t1:'#E0E0E0',t2:'#B0B0B0',t3:'#808080',t4:'#606060',accent:'#22D3EE',accentDim:'rgba(34,211,238,0.08)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#141414'}
+};
+
+function applyTheme(id){
+  var t=THEMES[id];if(!t)return;
+  currentTheme=id;
+  var r=document.documentElement.style;
+  r.setProperty('--bg',t.bg);
+  r.setProperty('--surface',t.surface);
+  r.setProperty('--card',t.card);
+  r.setProperty('--elevated',t.elevated);
+  r.setProperty('--border',t.border);
+  r.setProperty('--border2',t.border2);
+  r.setProperty('--t1',t.t1);
+  r.setProperty('--t2',t.t2);
+  r.setProperty('--t3',t.t3);
+  r.setProperty('--t4',t.t4);
+  r.setProperty('--accent',t.accent);
+  r.setProperty('--accent-dim',t.accentDim);
+  r.setProperty('--green-dim',t.greenDim);
+  r.setProperty('--red-dim',t.redDim);
+  r.setProperty('--amber-dim',t.amberDim);
+  r.setProperty('--purple-dim',t.purpleDim);
+  r.setProperty('--cyan-dim',t.cyanDim);
+  // Update modal bg
+  var modal=document.querySelector('.modal');
+  if(modal)modal.style.background=t.modalBg;
+  // Update product badge in topbar
+  var p=PRODUCTS[id];
+  if(p){
+    var badge=document.getElementById('productBadge');
+    if(badge){
+      badge.style.background=p.badgeBg;
+      badge.style.color=p.badgeColor;
+      badge.querySelector('.product-icon').textContent=p.icon;
+      badge.querySelector('.product-name').textContent=p.name;
+    }
+    // Update customize bar product label
+    var cbarName=document.getElementById('cbarProductName');
+    if(cbarName)cbarName.textContent=p.name;
+  }
+  // Update swatch active states
+  document.querySelectorAll('.cbar-swatch').forEach(function(s){s.classList.remove('active');});
+  var swatches=document.querySelectorAll('.cbar-swatch');
+  var order=['light','midnight','warm','forest','executive','terminal'];
+  var idx=order.indexOf(id);
+  if(idx>=0&&swatches[idx])swatches[idx].classList.add('active');
+  // Update template picker selection
+  document.querySelectorAll('.tpl-card').forEach(function(c){c.classList.remove('selected');});
+  // Update Light/Dark toggle
+  var isDark=['midnight','forest','executive','terminal'].indexOf(id)>=0;
+  var opts=document.querySelectorAll('.theme-opt');
+  if(opts.length===2){
+    opts[0].classList.toggle('active',!isDark);
+    opts[1].classList.toggle('active',isDark);
+  }
+  // Re-render current view to pick up new colors
+  showView(currentView,null,true);
+}
+
+// ═══ LAYOUT SYSTEM ═══
+function setLayout(mode,btn){
+  currentLayout=mode;
+  document.querySelectorAll('.cbar-btn').forEach(function(b){
+    if(b.textContent.trim()==='Grid'||b.textContent.trim()==='Compact')b.classList.remove('active');
+  });
+  if(btn)btn.classList.add('active');
+  showView(currentView,null,true);
+}
+
+// Templates data — each has a unique product name
 const TPLS=[
-  {id:'light',name:'Arctic Light',desc:'Clean white with blue accents',tags:[{l:'DEFAULT',c:'#3B82F6'},{l:'LIGHT',c:'#64748B'}],bg:'#F3F4F8',sidebar:'#fff',topbar:'#fff',kpi:'#fff',accent:'#3B82F6',text:'#0F172A',border:'rgba(15,23,42,0.08)',bars:[45,58,65,52,75,68,82,74,88]},
-  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow',tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#22D3EE',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52]},
-  {id:'warm',name:'Warm Sand',desc:'Cream tones, amber accents',tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],bg:'#FFFBF5',sidebar:'#FFF8EE',topbar:'#FFFBF5',kpi:'#fff',accent:'#D97706',text:'#1C1410',border:'rgba(180,140,100,0.12)',bars:[60,55,70,48,65,72,58,80,62]},
-  {id:'forest',name:'Forest',desc:'Deep emerald, green data viz',tags:[{l:'DARK',c:'#34D399'}],bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#34D399',text:'#D1FAE5',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78]},
-  {id:'executive',name:'Executive',desc:'Deep violet, board-ready',tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],bg:'#0C0A1A',sidebar:'#0C0A1A',topbar:'#0C0A1A',kpi:'#14102A',accent:'#818CF8',text:'#E2E0F0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75]},
-  {id:'terminal',name:'Terminal',desc:'Black + cyan, monospace',tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#22D3EE',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48]}
+  {id:'light',name:'ClearView',subtitle:'Arctic Light Theme',desc:'Crystal-clear financial visibility with clean whites and blue accents',tags:[{l:'DEFAULT',c:'#3B82F6'},{l:'LIGHT',c:'#64748B'}],bg:'#F3F4F8',sidebar:'#fff',topbar:'#fff',kpi:'#fff',accent:'#3B82F6',text:'#0F172A',border:'rgba(15,23,42,0.08)',bars:[45,58,65,52,75,68,82,74,88]},
+  {id:'midnight',name:'NightOwl',subtitle:'Midnight Theme',desc:'After-hours analytics with deep navy and cyan glow',tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#22D3EE',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52]},
+  {id:'warm',name:'Emberstone',subtitle:'Warm Sand Theme',desc:'Warm, focused financial command with cream and amber tones',tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],bg:'#FFFBF5',sidebar:'#FFF8EE',topbar:'#FFFBF5',kpi:'#fff',accent:'#D97706',text:'#1C1410',border:'rgba(180,140,100,0.12)',bars:[60,55,70,48,65,72,58,80,62]},
+  {id:'forest',name:'Canopy',subtitle:'Forest Theme',desc:'Sustainable growth intelligence with deep emerald data viz',tags:[{l:'DARK',c:'#34D399'}],bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#34D399',text:'#D1FAE5',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78]},
+  {id:'executive',name:'Boardroom',subtitle:'Executive Theme',desc:'Board-ready executive reporting with deep violet',tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],bg:'#0C0A1A',sidebar:'#0C0A1A',topbar:'#0C0A1A',kpi:'#14102A',accent:'#818CF8',text:'#E2E0F0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75]},
+  {id:'terminal',name:'Devline',subtitle:'Terminal Theme',desc:'Engineering-grade financial ops with monospace and cyan',tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#22D3EE',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48]}
 ];
 
 function openTemplates(){document.getElementById('tplModal').classList.add('open');renderTpls();}
 function closeTemplates(){document.getElementById('tplModal').classList.remove('open');}
 
 function renderTpls(){
-  document.getElementById('tplGrid').innerHTML=TPLS.map(t=>`
-    <div class="tpl-card${t.id==='light'?' selected':''}" onclick="this.parentElement.querySelectorAll('.tpl-card').forEach(c=>c.classList.remove('selected'));this.classList.add('selected');" style="position:relative;">
-      <div class="tpl-mini" style="background:${t.bg};">
-        <div class="m-sidebar" style="background:${t.sidebar};border-color:${t.border};"></div>
-        <div class="m-topbar" style="background:${t.topbar};border-color:${t.border};color:${t.text};">Dashboard</div>
-        <div class="m-content" style="background:${t.bg};">
-          <div class="m-kpis">
-            <div class="m-kpi" style="background:${t.kpi};border-color:${t.border};"><div class="m-kpi-val" style="color:${t.text};">$55M</div></div>
-            <div class="m-kpi" style="background:${t.kpi};border-color:${t.border};"><div class="m-kpi-val" style="color:${t.text};">$46M</div></div>
-            <div class="m-kpi" style="background:${t.kpi};border-color:${t.border};"><div class="m-kpi-val" style="color:${t.text};">$41M</div></div>
-          </div>
-          <div class="m-chart" style="background:${t.kpi};border-color:${t.border};">
-            ${t.bars.map(h=>`<div class="m-bar" style="height:${h}%;background:${t.accent};opacity:0.5;"></div>`).join('')}
-          </div>
-        </div>
-      </div>
-      <div class="tpl-info">
-        <h4>${t.name}</h4>
-        <p>${t.desc}</p>
-        <div class="tpl-tags">${t.tags.map(g=>`<span class="tpl-tag" style="color:${g.c};background:${g.c}12;border:1px solid ${g.c}25;">${g.l}</span>`).join('')}</div>
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('tplGrid').innerHTML=TPLS.map(function(t){
+    var p=PRODUCTS[t.id];
+    return '<div class="tpl-card'+(t.id===currentTheme?' selected':'')+'" onclick="selectTemplate(\''+t.id+'\')" style="position:relative;">'+
+    '<div class="tpl-mini" style="background:'+t.bg+';">'+
+    '<div class="m-sidebar" style="background:'+t.sidebar+';border-color:'+t.border+';"></div>'+
+    '<div class="m-topbar" style="background:'+t.topbar+';border-color:'+t.border+';color:'+t.text+';">'+p.icon+' '+t.name+'</div>'+
+    '<div class="m-content" style="background:'+t.bg+';">'+
+    '<div class="m-kpis">'+
+    '<div class="m-kpi" style="background:'+t.kpi+';border-color:'+t.border+';"><div class="m-kpi-val" style="color:'+t.text+';">$55M</div></div>'+
+    '<div class="m-kpi" style="background:'+t.kpi+';border-color:'+t.border+';"><div class="m-kpi-val" style="color:'+t.text+';">$46M</div></div>'+
+    '<div class="m-kpi" style="background:'+t.kpi+';border-color:'+t.border+';"><div class="m-kpi-val" style="color:'+t.text+';">$41M</div></div>'+
+    '</div>'+
+    '<div class="m-chart" style="background:'+t.kpi+';border-color:'+t.border+';">'+t.bars.map(function(h){return '<div class="m-bar" style="height:'+h+'%;background:'+t.accent+';opacity:0.5;"></div>';}).join('')+'</div>'+
+    '</div></div>'+
+    '<div class="tpl-info"><h4>'+t.name+'</h4><p style="font-size:9px;color:'+t.accent+';font-weight:600;margin-bottom:2px;">'+t.subtitle+'</p><p>'+t.desc+'</p>'+
+    '<div class="tpl-tags">'+t.tags.map(function(g){return '<span class="tpl-tag" style="color:'+g.c+';background:'+g.c+'12;border:1px solid '+g.c+'25;">'+g.l+'</span>';}).join('')+'</div></div></div>';
+  }).join('');
 }
 
-// Views
-function showView(view){
-  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
-  event?.target?.closest('.sidebar-item')?.classList.add('active');
-  if(view==='dashboard') renderDashboard();
-  else if(view==='admin') renderAdmin();
-  else if(view==='settings') renderSettings();
+function selectTemplate(id){
+  applyTheme(id);
+  renderTpls();
+}
+
+// ═══ VIEWS ═══
+var currentView='dashboard';
+
+function showView(view,el,skipActive){
+  currentView=view;
+  if(!skipActive){
+    document.querySelectorAll('.sidebar-item').forEach(function(i){i.classList.remove('active');});
+    if(el)el.classList.add('active');
+  }
+  var renderers={
+    dashboard:renderDashboard,admin:renderAdmin,settings:renderSettings,
+    copilot:renderCopilot,pnl:renderPnl,forecast:renderForecast,
+    consolidation:renderConsolidation,scenarios:renderScenarios,close:renderClose,
+    team:renderTeam,integrations:renderIntegrations,investor:renderInvestor,
+    command:renderCommand,intelligence:renderIntelligence
+  };
+  var fn=renderers[view];
+  if(fn)fn();
+}
+
+function getProductHeader(){
+  var p=PRODUCTS[currentTheme];
+  return '<div class="product-header"><div class="ph-icon" style="background:'+p.gradient+';">'+p.icon+'</div><div class="ph-info"><div class="ph-name">FinanceOS '+p.name+'</div><div class="ph-tagline">'+p.tagline+'</div></div><button class="ph-switch" onclick="openTemplates()">Switch Dashboard</button></div>';
 }
 
 function renderDashboard(){
   document.getElementById('breadcrumb').innerHTML='<strong>Dashboard</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML=`
+  document.getElementById('mainContent').innerHTML=getProductHeader()+`
     <div class="dash-header">
       <div class="dash-date">☀ SATURDAY, MARCH 28, 2026</div>
       <div style="display:flex;align-items:center;">
@@ -701,11 +829,11 @@ function renderAdmin(){
     </div>
 
     <div class="view-tabs">
-      <button class="view-tab active">◫ Overview</button>
-      <button class="view-tab">⚙ Users & Roles</button>
-      <button class="view-tab">$ Revenue</button>
-      <button class="view-tab">✧ System Health</button>
-      <button class="view-tab">◎ Workspace</button>
+      <button class="view-tab active" onclick="switchAdminTab(this)">◫ Overview</button>
+      <button class="view-tab" onclick="switchAdminTab(this)">⚙ Users & Roles</button>
+      <button class="view-tab" onclick="switchAdminTab(this)">$ Revenue</button>
+      <button class="view-tab" onclick="switchAdminTab(this)">✧ System Health</button>
+      <button class="view-tab" onclick="switchAdminTab(this)">◎ Workspace</button>
     </div>
 
     <div class="section-label">PLATFORM METRICS</div>
@@ -794,55 +922,343 @@ function renderAdmin(){
         </div>
       </div>
     </div>
-    <div class="bottom-spacer"></div>
-  `;
-}
-
-function renderSettings(){
-  document.getElementById('breadcrumb').innerHTML='Dashboard / Admin Console / <strong>Settings</strong>';
-  document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML=`
-    <div style="margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-        <svg viewBox="0 0 20 20" fill="none" style="width:20px;height:20px;"><circle cx="10" cy="10" r="4" stroke="var(--t3)" stroke-width="1.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <span style="font-size:20px;font-weight:800;">Settings</span>
+    <!-- Team Dashboard Assignments -->
+    <div class="section-label" style="margin-top:20px;">TEAM DASHBOARD PRODUCTS</div>
+    <div class="team-list">
+      <div class="team-list-header">
+        <h3>Dashboard Assignments</h3>
+        <span style="font-size:11px;color:var(--accent);font-weight:600;cursor:pointer;">Assign All</span>
       </div>
-      <div style="font-size:12px;color:var(--t4);">Manage your workspace, billing, security, and preferences</div>
+      <div class="team-member">
+        <div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">AM</div>
+        <div class="info"><div class="name">Alex Morgan</div><div class="dept">Owner · Finance</div></div>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(59,130,246,0.08);color:#3B82F6;margin-left:auto;">◎ ClearView</span>
+        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
+      </div>
+      <div class="team-member">
+        <div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">SC</div>
+        <div class="info"><div class="name">Sarah Chen</div><div class="dept">Admin · FP&A</div></div>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(129,140,248,0.12);color:#818CF8;margin-left:auto;">◆ Boardroom</span>
+        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
+      </div>
+      <div class="team-member">
+        <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#DB2777);">PP</div>
+        <div class="info"><div class="name">Priya Patel</div><div class="dept">Manager · Accounting</div></div>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(34,211,238,0.1);color:#22D3EE;margin-left:auto;">◑ NightOwl</span>
+        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
+      </div>
+      <div class="team-member">
+        <div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">JR</div>
+        <div class="info"><div class="name">James Rodriguez</div><div class="dept">Budget Owner · Ops</div></div>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(52,211,153,0.12);color:#34D399;margin-left:auto;">◇ Canopy</span>
+        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
+      </div>
+      <div class="team-member">
+        <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#0891B2);">DK</div>
+        <div class="info"><div class="name">David Kim</div><div class="dept">Viewer · RevOps</div></div>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(217,119,6,0.1);color:#D97706;margin-left:auto;">◈ Emberstone</span>
+        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
+      </div>
     </div>
 
-    <div class="settings-layout">
-      <div class="settings-nav">
-        <div class="settings-nav-item"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/></svg> Organization</div>
-        <div class="settings-nav-item active"><svg viewBox="0 0 16 16" fill="none"><path d="M4 8h8M8 4v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Billing</div>
-        <div class="settings-nav-item"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.2"/></svg> Security</div>
-        <div class="settings-nav-item"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M2 8h12" stroke="currentColor" stroke-width="1.2"/></svg> Regional</div>
-        <div class="settings-nav-item"><svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Session</div>
+    <!-- Bi-directional Admin Controls -->
+    <div class="section-label" style="margin-top:20px;">BI-DIRECTIONAL CONTROLS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="chart-card">
+        <div class="chart-title">Admin → Team (Directives)</div>
+        <div class="chart-subtitle">Outbound controls and task assignments</div>
+        <div style="margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></span>
+            <span style="font-weight:600;flex:1;">Urgent: Complete Q1 close reconciliation</span>
+            <span style="font-size:10px;color:var(--t4);">→ Sarah Chen</span>
+            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--amber-dim);color:var(--amber);">PENDING</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;"></span>
+            <span style="font-weight:600;flex:1;">Review variance report before board sync</span>
+            <span style="font-size:10px;color:var(--t4);">→ Priya Patel</span>
+            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--green-dim);color:var(--green);">ACK</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;font-size:12px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span>
+            <span style="font-weight:600;flex:1;">Update forecast model assumptions</span>
+            <span style="font-size:10px;color:var(--t4);">→ All Managers</span>
+            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--green-dim);color:var(--green);">DONE</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button class="qa-btn" style="color:var(--accent);">+ New Directive</button>
+          <button class="qa-btn">Broadcast Alert</button>
+        </div>
       </div>
-      <div class="settings-content">
-        <div class="settings-card">
-          <h3>$ Billing & Subscription</h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">
-            <div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);">
-              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">CURRENT PLAN</div>
-              <div style="font-size:24px;font-weight:800;">Enterprise</div>
-              <div style="font-size:12px;color:var(--t4);">Custom pricing</div>
-            </div>
-            <div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);">
-              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">STATUS</div>
-              <div style="font-size:24px;font-weight:800;color:var(--green);">Active</div>
-              <div style="font-size:12px;color:var(--t4);">Financial Holding LLC</div>
-            </div>
+      <div class="chart-card">
+        <div class="chart-title">Team → Admin (Escalations)</div>
+        <div class="chart-subtitle">Inbound reports, requests, and escalations</div>
+        <div style="margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></span>
+            <span style="font-weight:600;flex:1;">Escalation: NetSuite sync discrepancy $142K</span>
+            <span style="font-size:10px;color:var(--t4);">← James R.</span>
+            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--red-dim);color:var(--red);">URGENT</span>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">
-            <button class="qa-btn" style="justify-content:center;color:var(--accent);">Manage Subscription</button>
-            <button class="qa-btn" style="justify-content:center;">View Invoices</button>
-            <button class="qa-btn" style="justify-content:center;">Update Payment</button>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;"></span>
+            <span style="font-weight:600;flex:1;">Request: Access to Consolidation module</span>
+            <span style="font-size:10px;color:var(--t4);">← David Kim</span>
+            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--amber-dim);color:var(--amber);">REVIEW</span>
           </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;font-size:12px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>
+            <span style="font-weight:600;flex:1;">Report: Monthly close completed early</span>
+            <span style="font-size:10px;color:var(--t4);">← Priya Patel</span>
+            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--green-dim);color:var(--green);">NOTED</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button class="qa-btn" style="color:var(--accent);">View All Escalations</button>
+          <button class="qa-btn">Audit Trail</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corporate Tracking -->
+    <div class="section-label" style="margin-top:20px;">CORPORATE ACTIVITY TRACKING</div>
+    <div class="chart-card">
+      <div class="chart-title">Real-Time Activity Feed <span class="live-badge">LIVE</span></div>
+      <div class="chart-subtitle">All user actions across dashboards — visible to Admin and Owner roles</div>
+      <div style="margin-top:12px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">2 min ago</span>
+          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#7C3AED);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">SC</div>
+          <span style="font-weight:600;">Sarah Chen</span>
+          <span style="color:var(--t3);">exported</span>
+          <span style="font-weight:600;color:var(--accent);">Q1 Board Deck</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(129,140,248,0.12);color:#818CF8;">◆ Boardroom</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">15 min ago</span>
+          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#EC4899,#DB2777);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">PP</div>
+          <span style="font-weight:600;">Priya Patel</span>
+          <span style="color:var(--t3);">completed task</span>
+          <span style="font-weight:600;color:var(--green);">March Accruals</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(34,211,238,0.1);color:#22D3EE;">◑ NightOwl</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
+          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">1 hr ago</span>
+          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#D97706);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">JR</div>
+          <span style="font-weight:600;">James Rodriguez</span>
+          <span style="color:var(--t3);">escalated</span>
+          <span style="font-weight:600;color:var(--red);">NetSuite Discrepancy</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(52,211,153,0.12);color:#34D399;">◇ Canopy</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12px;">
+          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">3 hr ago</span>
+          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#06B6D4,#0891B2);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">DK</div>
+          <span style="font-weight:600;">David Kim</span>
+          <span style="color:var(--t3);">viewed</span>
+          <span style="font-weight:600;color:var(--accent);">Revenue Dashboard</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(217,119,6,0.1);color:#D97706;">◈ Emberstone</span>
         </div>
       </div>
     </div>
     <div class="bottom-spacer"></div>
   `;
+}
+
+var settingsTab='billing';
+function renderSettings(tab){
+  if(tab)settingsTab=tab;
+  document.getElementById('breadcrumb').innerHTML='Dashboard / Admin Console / <strong>Settings</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  var tabContent='';
+  if(settingsTab==='org') tabContent=renderSettingsOrg();
+  else if(settingsTab==='billing') tabContent=renderSettingsBilling();
+  else if(settingsTab==='security') tabContent=renderSettingsSecurity();
+  else if(settingsTab==='regional') tabContent=renderSettingsRegional();
+  else if(settingsTab==='session') tabContent=renderSettingsSession();
+
+  document.getElementById('mainContent').innerHTML=
+    '<div style="margin-bottom:20px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><svg viewBox="0 0 20 20" fill="none" style="width:20px;height:20px;"><circle cx="10" cy="10" r="4" stroke="var(--t3)" stroke-width="1.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-size:20px;font-weight:800;">Settings</span></div><div style="font-size:12px;color:var(--t4);">Manage your workspace, billing, security, and preferences</div></div>'+
+    '<div class="settings-layout"><div class="settings-nav">'+
+    '<div class="settings-nav-item'+(settingsTab==='org'?' active':'')+'" onclick="renderSettings(\'org\')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/></svg> Organization</div>'+
+    '<div class="settings-nav-item'+(settingsTab==='billing'?' active':'')+'" onclick="renderSettings(\'billing\')"><svg viewBox="0 0 16 16" fill="none"><path d="M4 8h8M8 4v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Billing</div>'+
+    '<div class="settings-nav-item'+(settingsTab==='security'?' active':'')+'" onclick="renderSettings(\'security\')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.2"/></svg> Security</div>'+
+    '<div class="settings-nav-item'+(settingsTab==='regional'?' active':'')+'" onclick="renderSettings(\'regional\')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M2 8h12" stroke="currentColor" stroke-width="1.2"/></svg> Regional</div>'+
+    '<div class="settings-nav-item'+(settingsTab==='session'?' active':'')+'" onclick="renderSettings(\'session\')"><svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Session</div>'+
+    '</div><div class="settings-content">'+tabContent+'</div></div><div class="bottom-spacer"></div>';
+}
+
+function renderSettingsBilling(){
+  return '<div class="settings-card"><h3>$ Billing & Subscription</h3>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">'+
+    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">CURRENT PLAN</div><div style="font-size:24px;font-weight:800;">Enterprise</div><div style="font-size:12px;color:var(--t4);">Custom pricing</div></div>'+
+    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">STATUS</div><div style="font-size:24px;font-weight:800;color:var(--green);">Active</div><div style="font-size:12px;color:var(--t4);">FinanceOS Inc.</div></div></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">'+
+    '<button class="qa-btn" style="justify-content:center;color:var(--accent);">Manage Subscription</button>'+
+    '<button class="qa-btn" style="justify-content:center;">View Invoices</button>'+
+    '<button class="qa-btn" style="justify-content:center;">Update Payment</button></div></div>';
+}
+
+function renderSettingsOrg(){
+  return '<div class="settings-card"><h3>◫ Organization</h3><div class="subtitle">Your workspace details and branding</div>'+
+    '<div class="settings-row"><span class="label">Company Name</span><span class="value">FinanceOS Inc.</span></div>'+
+    '<div class="settings-row"><span class="label">Workspace URL</span><span class="value" style="font-family:var(--mono);font-size:12px;">finance-os.app/dashboard</span></div>'+
+    '<div class="settings-row"><span class="label">Industry</span><span class="value">Financial Technology (FinTech)</span></div>'+
+    '<div class="settings-row"><span class="label">Company Size</span><span class="value">50-200 employees</span></div>'+
+    '<div class="settings-row"><span class="label">Primary Contact</span><span class="value">Malik Frazier</span></div>'+
+    '<div class="settings-row"><span class="label">Admin Email</span><span class="value">admin@finance-os.app</span></div>'+
+    '</div>'+
+    '<div class="settings-card"><h3>Workspace Branding</h3><div class="subtitle">Customize how your workspace appears</div>'+
+    '<div class="settings-row"><span class="label">Logo</span><span class="value"><span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">F</span> FinanceOS</span></div>'+
+    '<div class="settings-row"><span class="label">Theme</span><span class="value">'+currentTheme.charAt(0).toUpperCase()+currentTheme.slice(1)+'</span></div>'+
+    '<div class="settings-row"><span class="label">Fiscal Year Start</span><span class="value">January</span></div>'+
+    '</div>';
+}
+
+function renderSettingsSecurity(){
+  return '<div class="settings-card"><h3>◎ Security & Authentication</h3><div class="subtitle">Manage access controls and security policies</div>'+
+    '<div class="settings-row"><span class="label">Single Sign-On (SSO)</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Enabled (SAML 2.0)</span></div>'+
+    '<div class="settings-row"><span class="label">Two-Factor Authentication</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Required for all users</span></div>'+
+    '<div class="settings-row"><span class="label">Session Timeout</span><span class="value">30 minutes</span></div>'+
+    '<div class="settings-row"><span class="label">IP Allowlisting</span><span class="value"><span class="status-dot" style="background:var(--amber);"></span> 3 ranges configured</span></div>'+
+    '<div class="settings-row"><span class="label">Encryption</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> AES-256 at rest + TLS 1.3</span></div>'+
+    '<div class="settings-row"><span class="label">Audit Logging</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Active (90-day retention)</span></div>'+
+    '</div>'+
+    '<div class="settings-card"><h3>Compliance</h3><div class="subtitle">Certifications and regulatory compliance</div>'+
+    '<div class="settings-row"><span class="label">SOC 2 Type II</span><span class="value" style="color:var(--green);">Certified</span></div>'+
+    '<div class="settings-row"><span class="label">GDPR</span><span class="value" style="color:var(--green);">Compliant</span></div>'+
+    '<div class="settings-row"><span class="label">SOX Controls</span><span class="value" style="color:var(--green);">Active</span></div>'+
+    '</div>';
+}
+
+function renderSettingsRegional(){
+  return '<div class="settings-card"><h3>◎ Regional Settings</h3><div class="subtitle">Currency, locale, and time zone preferences</div>'+
+    '<div class="settings-row"><span class="label">Default Currency</span><span class="value">USD ($)</span></div>'+
+    '<div class="settings-row"><span class="label">Number Format</span><span class="value">1,234,567.89</span></div>'+
+    '<div class="settings-row"><span class="label">Date Format</span><span class="value">MM/DD/YYYY</span></div>'+
+    '<div class="settings-row"><span class="label">Time Zone</span><span class="value">America/New_York (EST)</span></div>'+
+    '<div class="settings-row"><span class="label">Language</span><span class="value">English (US)</span></div>'+
+    '<div class="settings-row"><span class="label">Fiscal Year Start</span><span class="value">January 1</span></div>'+
+    '</div>'+
+    '<div class="settings-card"><h3>Multi-Currency</h3><div class="subtitle">Supported currencies for reporting</div>'+
+    '<div class="settings-row"><span class="label">USD</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Primary</span></div>'+
+    '<div class="settings-row"><span class="label">EUR</span><span class="value"><span class="status-dot" style="background:var(--accent);"></span> Active</span></div>'+
+    '<div class="settings-row"><span class="label">GBP</span><span class="value"><span class="status-dot" style="background:var(--accent);"></span> Active</span></div>'+
+    '<div class="settings-row"><span class="label">CAD</span><span class="value"><span class="status-dot" style="background:var(--t4);"></span> Inactive</span></div>'+
+    '</div>';
+}
+
+function renderSettingsSession(){
+  return '<div class="settings-card"><h3>⚡ Session & Activity</h3><div class="subtitle">Active sessions and login history</div>'+
+    '<div class="settings-row"><span class="label">Current Session</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Active · This device</span></div>'+
+    '<div class="settings-row"><span class="label">Session ID</span><span class="value" style="font-family:var(--mono);font-size:11px;">fos-sess-7a3f...d821</span></div>'+
+    '<div class="settings-row"><span class="label">Login Time</span><span class="value">Today, 9:14 AM EST</span></div>'+
+    '<div class="settings-row"><span class="label">IP Address</span><span class="value" style="font-family:var(--mono);font-size:11px;">192.168.1.•••</span></div>'+
+    '<div class="settings-row"><span class="label">Browser</span><span class="value">Safari 18.3 · macOS</span></div>'+
+    '<div class="settings-row"><span class="label">Last Activity</span><span class="value">Just now</span></div>'+
+    '</div>'+
+    '<div class="settings-card"><h3>Recent Logins</h3><div class="subtitle">Last 5 login events</div>'+
+    '<div class="settings-row"><span class="label">Today 9:14 AM</span><span class="value" style="color:var(--green);">Safari · NYC</span></div>'+
+    '<div class="settings-row"><span class="label">Mar 29, 2:31 PM</span><span class="value" style="color:var(--green);">Chrome · NYC</span></div>'+
+    '<div class="settings-row"><span class="label">Mar 28, 10:05 AM</span><span class="value" style="color:var(--green);">Safari · NYC</span></div>'+
+    '<div class="settings-row"><span class="label">Mar 27, 8:42 AM</span><span class="value" style="color:var(--green);">Mobile App · NYC</span></div>'+
+    '<div class="settings-row"><span class="label">Mar 26, 3:18 PM</span><span class="value" style="color:var(--green);">Chrome · NYC</span></div>'+
+    '</div>';
+}
+
+// ═══ FEATURE PAGE RENDERERS ═══
+function featurePage(title,breadcrumb,icon,desc,metrics){
+  document.getElementById('breadcrumb').innerHTML=breadcrumb;
+  document.getElementById('resourcesPanel').style.display='';
+  var gap=currentLayout==='compact'?'10px':'14px';
+  document.getElementById('mainContent').innerHTML=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">'+
+    '<div style="width:40px;height:40px;border-radius:12px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:18px;">'+icon+'</div>'+
+    '<div><div style="font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;">'+title+' <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--green-dim);color:var(--green);">ENTERPRISE</span></div>'+
+    '<div style="font-size:12px;color:var(--t4);">'+desc+'</div></div></div>'+
+    '<div class="section-label">KEY METRICS</div>'+
+    '<div class="kpi-grid" style="gap:'+gap+';">'+metrics.map(function(m){
+      return '<div class="kpi-card"><div class="kpi-header"><div class="kpi-icon" style="background:'+m.iconBg+';"><span style="color:'+m.iconColor+';">'+m.icon+'</span></div><span class="kpi-label">'+m.label+'</span></div><div class="kpi-value" style="font-size:'+(currentLayout==='compact'?'22px':'28px')+';">'+m.value+'</div><div class="kpi-change"><span class="'+m.dir+'">'+m.change+'</span> <span class="label">'+m.sub+'</span></div></div>';
+    }).join('')+'</div>'+
+    '<div style="padding:40px;text-align:center;color:var(--t4);font-size:13px;border:1px dashed var(--border);border-radius:var(--radius);margin-top:20px;">'+
+    '<div style="font-size:28px;margin-bottom:8px;">'+icon+'</div>'+
+    '<div style="font-weight:700;color:var(--t2);margin-bottom:4px;">'+title+' Module</div>'+
+    'Full interactive data views, charts, and AI-powered insights available in your live workspace.</div>'+
+    '<div class="bottom-spacer"></div>';
+}
+
+function renderCopilot(){featurePage('AI Copilot','Dashboard / <strong>AI Copilot</strong>','✨','Natural language financial queries powered by Claude',[
+  {icon:'✨',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'QUERIES TODAY',value:'47',dir:'up',change:'↗ +12 vs yesterday',sub:'Avg response: 1.8s'},
+  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'ACCURACY',value:'98.4%',dir:'up',change:'↗ +0.3% this week',sub:'Based on 1,240 queries'},
+  {icon:'⚡',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'INSIGHTS GENERATED',value:'23',dir:'up',change:'↗ 6 actionable',sub:'Revenue, COGS, OpEx'}
+]);}
+
+function renderPnl(){featurePage('P&L Statement','Dashboard / <strong>P&L Statement</strong>','$','Income statement with real-time variance tracking',[
+  {icon:'$',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'TOTAL REVENUE',value:'$55.0M',dir:'up',change:'↗ +$2.09M vs budget',sub:'9 months YTD'},
+  {icon:'↕',iconBg:'var(--red-dim)',iconColor:'var(--red)',label:'TOTAL EXPENSES',value:'$49.9M',dir:'down',change:'↘ 90.7% of revenue',sub:'COGS + OpEx'},
+  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'NET INCOME',value:'$5.1M',dir:'up',change:'↗ 9.2% margin',sub:'Bottom line'}
+]);}
+
+function renderForecast(){featurePage('Forecast','Dashboard / <strong>Forecast</strong>','◎','AI-powered financial forecasting with scenario modeling',[
+  {icon:'◎',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'FY2025 PROJECTED',value:'$73.3M',dir:'up',change:'↗ +18% YoY growth',sub:'Annualized from 9mo'},
+  {icon:'⚡',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'FORECAST ACCURACY',value:'96.2%',dir:'up',change:'↗ Within 3.8% variance',sub:'Rolling 6-month'},
+  {icon:'◇',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'SCENARIOS',value:'8',dir:'up',change:'↗ 3 active models',sub:'Base, bull, bear + custom'}
+]);}
+
+function renderConsolidation(){featurePage('Consolidation','Dashboard / <strong>Consolidation</strong>','◫','Multi-entity financial consolidation and intercompany eliminations',[
+  {icon:'◫',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'ENTITIES',value:'4',dir:'up',change:'↗ All reconciled',sub:'Parent + 3 subsidiaries'},
+  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'ELIMINATIONS',value:'$12.3M',dir:'up',change:'↗ 18 intercompany entries',sub:'Auto-matched'},
+  {icon:'$',iconBg:'var(--amber-dim)',iconColor:'var(--amber)',label:'CONSOLIDATED REV',value:'$67.8M',dir:'up',change:'↗ Post-elimination',sub:'Group total'}
+]);}
+
+function renderScenarios(){featurePage('Scenarios','Dashboard / Planning / <strong>Scenarios</strong>','◇','What-if analysis and scenario planning engine',[
+  {icon:'◇',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'ACTIVE SCENARIOS',value:'8',dir:'up',change:'↗ 3 running simulations',sub:'Monte Carlo + linear'},
+  {icon:'⚡',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'VARIABLES',value:'42',dir:'up',change:'↗ Across all models',sub:'Revenue, costs, headcount'},
+  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'BEST CASE',value:'$82.1M',dir:'up',change:'↗ 95th percentile',sub:'FY2025 projected'}
+]);}
+
+function renderClose(){featurePage('Close Tasks','Dashboard / Planning / <strong>Close Tasks</strong>','✓','Month-end and quarter-end close task management',[
+  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'COMPLETED',value:'18/24',dir:'up',change:'↗ 75% done',sub:'March close'},
+  {icon:'⚡',iconBg:'var(--amber-dim)',iconColor:'var(--amber)',label:'OVERDUE',value:'2',dir:'down',change:'↘ Accruals, IC recon',sub:'Due by Apr 3'},
+  {icon:'◎',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'AVG CLOSE TIME',value:'4.2 days',dir:'up',change:'↗ -1.8 days vs Q3',sub:'Improving'}
+]);}
+
+function renderTeam(){featurePage('Team','Dashboard / Collaborate / <strong>Team</strong>','◉','Team workspace with roles, permissions, and collaboration',[
+  {icon:'◉',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'TEAM MEMBERS',value:'6',dir:'up',change:'↗ +2 this month',sub:'5 active now'},
+  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'TASKS ASSIGNED',value:'36',dir:'up',change:'↗ 24 completed',sub:'This month'},
+  {icon:'⚡',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'MESSAGES',value:'142',dir:'up',change:'↗ 28 threads',sub:'Last 7 days'}
+]);}
+
+function renderIntegrations(){featurePage('Integrations','Dashboard / Platform / <strong>Integrations</strong>','⚡','Connected data sources and API integrations',[
+  {icon:'⚡',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'CONNECTED',value:'7',dir:'up',change:'↗ All syncing',sub:'0 errors'},
+  {icon:'◎',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'RECORDS SYNCED',value:'3.1M',dir:'up',change:'↗ Last sync: 53s ago',sub:'Across all sources'},
+  {icon:'$',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'DATA SOURCES',value:'5',dir:'up',change:'↗ NetSuite, SF, Stripe...',sub:'ERP, CRM, Payments'}
+]);}
+
+function renderInvestor(){featurePage('Investor Metrics','Dashboard / Platform / <strong>Investor Metrics</strong>','◎','Board-ready metrics, KPIs, and investor reporting',[
+  {icon:'$',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'ARR',value:'$73.3M',dir:'up',change:'↗ +18% YoY',sub:'Annualized'},
+  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'RULE OF 40',value:'52.1',dir:'up',change:'↗ Above benchmark',sub:'Growth + margin'},
+  {icon:'⚡',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'NRR',value:'118%',dir:'up',change:'↗ +3% QoQ',sub:'Net revenue retention'}
+]);}
+
+function renderCommand(){featurePage('Command Center','Dashboard / Platform / <strong>Command Center</strong>','◎','Real-time operational command center with alerts and monitoring',[
+  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'SYSTEM STATUS',value:'100%',dir:'up',change:'↗ All systems operational',sub:'Uptime: 99.97%'},
+  {icon:'⚡',iconBg:'var(--amber-dim)',iconColor:'var(--amber)',label:'ACTIVE ALERTS',value:'3',dir:'down',change:'↘ 1 critical, 2 warning',sub:'Requires attention'},
+  {icon:'✓',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'AUTOMATIONS',value:'24',dir:'up',change:'↗ 18 active workflows',sub:'6 scheduled'}
+]);}
+
+function renderIntelligence(){featurePage('Intelligence','Dashboard / Platform / <strong>Intelligence</strong>','◇','AI-driven insights, anomaly detection, and predictive analytics',[
+  {icon:'◇',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'INSIGHTS THIS WEEK',value:'34',dir:'up',change:'↗ 8 actionable',sub:'Auto-generated'},
+  {icon:'⚡',iconBg:'var(--red-dim)',iconColor:'var(--red)',label:'ANOMALIES DETECTED',value:'5',dir:'down',change:'↘ 2 require review',sub:'Revenue + COGS'},
+  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'PREDICTION ACCURACY',value:'94.8%',dir:'up',change:'↗ +2.1% this quarter',sub:'ML model v3.2'}
+]);}
+
+
+// Admin tab switcher
+function switchAdminTab(btn){
+  btn.parentElement.querySelectorAll('.view-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
 }
 
 // Init
