@@ -11,36 +11,31 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%}
 body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
-
 .login-wrapper{flex:1;display:grid;grid-template-columns:1.1fr 0.9fr;min-height:0}
 
 /* LEFT */
 .left{position:relative;padding:48px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 40%,#D1FAE5 100%);overflow:hidden}
 .left-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
 .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.25;animation:float 12s ease-in-out infinite}
-.orb.o1{width:350px;height:350px;background:var(--green);top:10%;left:-8%;animation-delay:0s}
+.orb.o1{width:350px;height:350px;background:var(--green);top:10%;left:-8%}
 .orb.o2{width:250px;height:250px;background:#22D3EE;bottom:15%;right:-5%;animation-delay:-4s}
 .orb.o3{width:200px;height:200px;background:#8B5CF6;top:45%;left:35%;animation-delay:-8s;opacity:0.12}
 @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.03)}}
-
 .left-content{position:relative;z-index:1}
 .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;margin-bottom:80px;color:var(--text);text-decoration:none}
 .logo-dot{width:10px;height:10px;background:var(--green);border-radius:50%}
 .left h1{font-size:clamp(30px,3.5vw,44px);font-weight:700;line-height:1.15;margin-bottom:32px;color:var(--text);letter-spacing:-0.02em}
 .left h1 span{color:var(--green-dark)}
-
 .feature-list{display:flex;flex-direction:column;gap:20px;margin-bottom:40px}
 .feature-item{display:flex;align-items:flex-start;gap:14px}
 .feature-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .feature-item h4{font-size:14px;font-weight:600;margin-bottom:2px;color:var(--text)}
 .feature-item p{font-size:13px;color:var(--text-secondary);line-height:1.4}
-
 .testimonial-container{position:relative;height:80px;margin-bottom:40px}
 .testimonial{position:absolute;top:0;left:0;right:0;opacity:0;transition:opacity .8s;max-width:440px}
 .testimonial.active{opacity:1}
 .testimonial p{font-size:14px;color:var(--text-secondary);line-height:1.6;font-style:italic;margin-bottom:6px}
 .testimonial .author{font-size:13px;font-weight:600;color:var(--text)}
-
 .left-stats{position:relative;z-index:1;display:flex;gap:28px;padding-top:20px;border-top:1px solid rgba(16,185,129,0.2)}
 .left-stat .val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text)}
 .left-stat .label{font-size:11px;color:var(--muted);margin-top:1px}
@@ -50,47 +45,77 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 .form-container{width:100%;max-width:360px}
 .form-container h2{font-size:26px;font-weight:700;margin-bottom:4px}
 .form-container .subtitle{color:var(--muted);font-size:14px;margin-bottom:28px}
-
 .sso-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all .15s;margin-bottom:8px}
 .sso-btn:hover{border-color:#CBD5E1;background:var(--bg-alt)}
 .sso-btn:active{transform:scale(0.98)}
 .sso-btn:disabled{opacity:0.6;pointer-events:none}
 .sso-btn svg{flex-shrink:0}
-
+.sso-btn .spinner{display:none;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.6s linear infinite}
+.sso-btn.loading .spinner{display:block}
+.sso-btn.loading .btn-label{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
 .divider{display:flex;align-items:center;gap:14px;margin:20px 0}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .divider span{font-size:12px;color:#94A3B8;text-transform:uppercase}
-
 .field{margin-bottom:14px}
 .field label{display:block;font-size:13px;font-weight:500;margin-bottom:5px;color:var(--text-secondary)}
 .field-input-wrap{position:relative}
-.field input[type="email"],
-.field input[type="password"],
-.field input[type="text"]{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:all .15s;-webkit-appearance:none;appearance:none}
+.field input[type="email"],.field input[type="password"],.field input[type="text"]{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:all .15s;-webkit-appearance:none;appearance:none}
 .field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.1)}
 .field input.error{border-color:#EF4444;box-shadow:0 0 0 3px rgba(239,68,68,0.1)}
 .field .error-msg{font-size:12px;color:#EF4444;margin-top:3px;display:none}
 .field .error-msg.show{display:block}
 .toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font);padding:4px 8px}
 .toggle-pw:hover{color:var(--text)}
-
 .forgot-row{text-align:right;margin-bottom:20px}
-.forgot-row a{font-size:13px;color:var(--green-dark);font-weight:500;text-decoration:none}
+.forgot-row a{font-size:13px;color:var(--green-dark);font-weight:500;text-decoration:none;cursor:pointer}
 .forgot-row a:hover{text-decoration:underline}
-
 .submit-btn{width:100%;padding:12px;border-radius:10px;background:var(--green);color:#fff;font-size:15px;font-weight:600;font-family:var(--font);border:none;cursor:pointer;transition:all .15s}
 .submit-btn:hover{background:var(--green-dark);box-shadow:0 2px 8px rgba(16,185,129,0.25)}
 .submit-btn:disabled{opacity:0.6;cursor:not-allowed}
-
 .signup-link{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
-.signup-link a{color:var(--green-dark);font-weight:600;text-decoration:none}
+.signup-link a{color:var(--green-dark);font-weight:600;text-decoration:none;cursor:pointer}
 .signup-link a:hover{text-decoration:underline}
-
 .trust-badges{display:flex;justify-content:center;gap:16px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
 .trust-badge{font-size:11px;color:#94A3B8;font-weight:500}
+.auth-msg{border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;line-height:1.5}
+.auth-msg.show{display:block}
+.auth-msg.error{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B}
+.auth-msg.success{background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46}
+.auth-msg.info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF}
+.rate-limit-bar{height:3px;background:transparent;border-radius:2px;margin-top:8px;overflow:hidden;transition:all 0.3s}
+.rate-limit-bar.warning{background:rgba(245,158,11,0.2)}
+.rate-limit-bar.blocked{background:rgba(239,68,68,0.2)}
+.rate-limit-bar .fill{height:100%;border-radius:2px;transition:width 0.3s}
+.rate-limit-bar.warning .fill{background:#F59E0B}
+.rate-limit-bar.blocked .fill{background:#EF4444}
 
-.auth-error{background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:16px;display:none}
-.auth-error.show{display:block}
+/* SSO MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.4);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:90%;max-width:420px;padding:28px;box-shadow:0 24px 80px rgba(0,0,0,0.15);animation:modalSlide 0.25s ease}
+@keyframes modalSlide{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+.modal-box h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal-box .mdesc{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.modal-box .minput{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:var(--font);outline:none;transition:all .15s}
+.modal-box .minput:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.1)}
+.modal-box .mmsg{font-size:12px;margin-top:8px;display:none}
+.modal-box .mmsg.show{display:block}
+.modal-box .mmsg.err{color:#991B1B}
+.modal-box .mmsg.ok{color:#065F46}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .15s}
+.mbtn-cancel{background:transparent;border:1px solid var(--border);color:var(--text-secondary)}
+.mbtn-cancel:hover{background:var(--bg-alt)}
+.mbtn-go{background:var(--green);border:none;color:#fff}
+.mbtn-go:hover{background:var(--green-dark)}
+.mbtn-go:disabled{opacity:0.6;cursor:not-allowed}
+.sso-hint{font-size:11px;color:var(--muted);margin-top:10px}
+.sso-hint strong{color:var(--green-dark)}
+.sso-providers{display:flex;flex-direction:column;gap:6px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.sso-prov{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--bg-alt);font-size:12px;color:var(--text-secondary)}
+.sso-prov .sdot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.sso-prov strong{color:var(--text)}
 
 /* FOOTER */
 footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
@@ -107,15 +132,8 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
 .logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
 
-@media(max-width:900px){
-  .login-wrapper{grid-template-columns:1fr}
-  .left{display:none}
-  .right{border-left:none;min-height:100vh}
-}
-@media(max-width:768px){
-  .ft-inner{grid-template-columns:1fr 1fr;gap:24px}
-  .ft-bottom{flex-direction:column;gap:10px;text-align:center}
-}
+@media(max-width:900px){.login-wrapper{grid-template-columns:1fr}.left{display:none}.right{border-left:none;min-height:100vh}}
+@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}.ft-bottom{flex-direction:column;gap:10px;text-align:center}}
 </style>
 </head>
 <body>
@@ -155,26 +173,29 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 
 <div class="right">
   <div class="form-container">
-    <h2>Welcome back</h2>
-    <p class="subtitle">Sign in to your FinanceOS account</p>
-
-    <div class="auth-error" id="authError"></div>
+    <h2 id="formTitle">Welcome back</h2>
+    <p class="subtitle" id="formSubtitle">Sign in to your FinanceOS account</p>
+    <div class="auth-msg" id="authMsg"></div>
 
     <button class="sso-btn" id="btn-google" type="button">
+      <div class="spinner"></div>
       <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09a7.12 7.12 0 010-4.17V7.08H2.18a11.97 11.97 0 000 9.84l3.66-2.83z" fill="#FBBC05"/><path d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.07l3.66 2.84c.87-2.6 3.3-4.16 6.16-4.16z" fill="#EA4335"/></svg>
-      Continue with Google
+      <span class="btn-label">Continue with Google</span>
     </button>
     <button class="sso-btn" id="btn-microsoft" type="button">
+      <div class="spinner"></div>
       <svg width="18" height="18" viewBox="0 0 23 23"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#00a4ef" d="M1 12h10v10H1z"/><path fill="#7fba00" d="M12 1h10v10H12z"/><path fill="#ffb900" d="M12 12h10v10H12z"/></svg>
-      Continue with Microsoft
+      <span class="btn-label">Continue with Microsoft</span>
     </button>
     <button class="sso-btn" id="btn-apple" type="button">
+      <div class="spinner"></div>
       <svg width="18" height="18" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#000"/></svg>
-      Continue with Apple
+      <span class="btn-label">Continue with Apple</span>
     </button>
     <button class="sso-btn" id="btn-sso" type="button">
+      <div class="spinner"></div>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-      Continue with SSO / SAML
+      <span class="btn-label">Continue with SSO / SAML</span>
     </button>
 
     <div class="divider"><span>or</span></div>
@@ -193,14 +214,47 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
         </div>
         <div class="error-msg" id="pwError">Password must be at least 8 characters</div>
       </div>
-      <div class="forgot-row"><a href="#">Forgot password?</a></div>
+      <div class="forgot-row"><a id="forgotLink">Forgot password?</a></div>
       <button type="submit" class="submit-btn" id="submitBtn">Sign In</button>
+      <div class="rate-limit-bar" id="rateLimitBar"><div class="fill" id="rateLimitFill"></div></div>
     </form>
 
-    <div class="signup-link">Don't have an account? <a href="#" id="signupLink">Get Started</a></div>
+    <div class="signup-link">Don't have an account? <a id="signupLink">Get Started</a></div>
     <div class="trust-badges"><span class="trust-badge">SOC 2 Type II</span><span class="trust-badge">|</span><span class="trust-badge">SOX 404</span><span class="trust-badge">|</span><span class="trust-badge">256-bit Encryption</span></div>
   </div>
 </div>
+</div>
+
+<!-- SSO MODAL (replaces browser prompt) -->
+<div class="modal-overlay" id="ssoModal">
+  <div class="modal-box">
+    <h3>Enterprise SSO / SAML</h3>
+    <p class="mdesc">Enter your company email domain to sign in through your organization's identity provider.</p>
+    <input type="text" class="minput" id="ssoInput" placeholder="e.g. finance-os.app" autocomplete="off" spellcheck="false">
+    <div class="mmsg err" id="ssoErr"></div>
+    <div class="sso-hint">Configured domain: <strong>finance-os.app</strong></div>
+    <div class="sso-providers">
+      <div class="sso-prov"><span class="sdot"></span> <strong>finance-os.app</strong> — Google Workspace SAML</div>
+    </div>
+    <div class="modal-actions">
+      <button class="mbtn-cancel" onclick="closeSsoModal()">Cancel</button>
+      <button class="mbtn-go" id="ssoGoBtn" onclick="submitSso()">Continue with SSO</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal-box">
+    <h3>Reset your password</h3>
+    <p class="mdesc">Enter your email and we'll send a secure link to reset your password.</p>
+    <input type="email" class="minput" id="forgotEmail" placeholder="you@company.com" autocomplete="email">
+    <div class="mmsg" id="forgotMsg"></div>
+    <div class="modal-actions">
+      <button class="mbtn-cancel" onclick="closeForgotModal()">Cancel</button>
+      <button class="mbtn-go" id="forgotGoBtn" onclick="submitForgot()">Send Reset Link</button>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -225,193 +279,332 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 (function(){
   'use strict';
 
-  const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+  // ═══════════════════════════════════════════
+  // SUPABASE INIT — PKCE FLOW (secure)
+  // ═══════════════════════════════════════════
+  var SUPABASE_URL='https://crecesswagluelvkesul.supabase.co';
+  var SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+  var sb;
+  try{
+    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON,{
+      auth:{
+        flowType:'pkce',
+        autoRefreshToken:true,
+        persistSession:true,
+        detectSessionInUrl:true
+      }
+    });
+  }catch(e){console.error('Supabase init failed:',e);}
 
-  let sb;
-  try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  } catch(e) {
-    console.error('Supabase init failed:', e);
+  // ═══════════════════════════════════════════
+  // RATE LIMITER
+  // ═══════════════════════════════════════════
+  var attempts=0,maxAttempts=5,lockoutUntil=0;
+  var rlBar=document.getElementById('rateLimitBar');
+  var rlFill=document.getElementById('rateLimitFill');
+
+  function rlCheck(){
+    if(Date.now()<lockoutUntil){
+      var s=Math.ceil((lockoutUntil-Date.now())/1000);
+      showMsg('Too many attempts. Wait '+s+' seconds.','error');
+      return false;
+    }
+    if(attempts>=maxAttempts){
+      lockoutUntil=Date.now()+30000;
+      attempts=0;
+      rlUpdate();
+      showMsg('Account temporarily locked. Wait 30 seconds or use SSO.','error');
+      return false;
+    }
+    return true;
+  }
+  function rlUpdate(){
+    if(attempts===0&&Date.now()>=lockoutUntil){rlBar.className='rate-limit-bar';rlFill.style.width='0%';return;}
+    var p=(attempts/maxAttempts)*100;
+    if(Date.now()<lockoutUntil){rlBar.className='rate-limit-bar blocked';rlFill.style.width='100%';}
+    else if(attempts>=3){rlBar.className='rate-limit-bar warning';rlFill.style.width=p+'%';}
+    else{rlBar.className='rate-limit-bar';rlFill.style.width='0%';}
   }
 
-  // ---- UI refs ----
-  const emailInput = document.getElementById('email');
-  const pwInput = document.getElementById('password');
-  const emailError = document.getElementById('emailError');
-  const pwError = document.getElementById('pwError');
-  const authError = document.getElementById('authError');
-  const submitBtn = document.getElementById('submitBtn');
-  const togglePw = document.getElementById('togglePw');
+  // ═══════════════════════════════════════════
+  // UI REFS
+  // ═══════════════════════════════════════════
+  var emailIn=document.getElementById('email');
+  var pwIn=document.getElementById('password');
+  var emailErr=document.getElementById('emailError');
+  var pwErr=document.getElementById('pwError');
+  var authMsg=document.getElementById('authMsg');
+  var submitBtn=document.getElementById('submitBtn');
+  var togglePw=document.getElementById('togglePw');
+  var formTitle=document.getElementById('formTitle');
+  var formSubtitle=document.getElementById('formSubtitle');
+  var isSignup=false;
+  var isRecovery=false;
 
-  // ---- Testimonial rotation ----
-  const testimonials = document.querySelectorAll('.testimonial');
-  let current = 0;
-  if (testimonials.length > 1) {
-    setInterval(function(){
-      testimonials[current].classList.remove('active');
-      current = (current + 1) % testimonials.length;
-      testimonials[current].classList.add('active');
-    }, 5000);
+  function showMsg(m,t){
+    authMsg.textContent=m;
+    authMsg.className='auth-msg show '+(t||'error');
+    if(t!=='info')setTimeout(function(){authMsg.className='auth-msg';},10000);
   }
+  function clearMsg(){authMsg.className='auth-msg';}
 
-  // ---- Password toggle ----
-  togglePw.addEventListener('click', function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    var isPw = pwInput.type === 'password';
-    pwInput.type = isPw ? 'text' : 'password';
-    togglePw.textContent = isPw ? 'Hide' : 'Show';
-    pwInput.focus();
+  // ═══════════════════════════════════════════
+  // TESTIMONIALS
+  // ═══════════════════════════════════════════
+  var tSlides=document.querySelectorAll('.testimonial'),tIdx=0;
+  if(tSlides.length>1)setInterval(function(){tSlides[tIdx].classList.remove('active');tIdx=(tIdx+1)%tSlides.length;tSlides[tIdx].classList.add('active');},5000);
+
+  // ═══════════════════════════════════════════
+  // PASSWORD TOGGLE
+  // ═══════════════════════════════════════════
+  togglePw.addEventListener('click',function(e){
+    e.preventDefault();e.stopPropagation();
+    var isPw=pwIn.type==='password';
+    pwIn.type=isPw?'text':'password';
+    togglePw.textContent=isPw?'Hide':'Show';
+    pwIn.focus();
   });
 
-  // ---- Show error message ----
-  function showError(msg) {
-    authError.textContent = msg;
-    authError.classList.add('show');
-    setTimeout(function(){ authError.classList.remove('show'); }, 8000);
-  }
+  // ═══════════════════════════════════════════
+  // SESSION CHECK + PKCE CALLBACK
+  // ═══════════════════════════════════════════
+  if(sb){
+    // Handle PKCE code exchange from URL
+    var params=new URLSearchParams(window.location.search);
+    var code=params.get('code');
+    if(code){
+      showMsg('Completing sign in...','info');
+      sb.auth.exchangeCodeForSession(code).then(function(r){
+        if(r.error){showMsg('Auth error: '+r.error.message,'error');window.history.replaceState({},'',window.location.pathname);}
+        else{window.location.href='/dashboard';}
+      }).catch(function(){showMsg('Connection error. Please try again.','error');window.history.replaceState({},'',window.location.pathname);});
+    }
 
-  // ---- Check session on load ----
-  if (sb) {
-    sb.auth.getSession().then(function(result){
-      if (result.data && result.data.session) {
-        window.location.href = '/dashboard';
+    // Handle hash fragments (for password recovery tokens)
+    if(window.location.hash){
+      var hashParams=new URLSearchParams(window.location.hash.substring(1));
+      var accessToken=hashParams.get('access_token');
+      var type=hashParams.get('type');
+      if(accessToken&&type==='recovery'){
+        sb.auth.setSession({access_token:accessToken,refresh_token:hashParams.get('refresh_token')||''}).then(function(){
+          isRecovery=true;
+          formTitle.textContent='Set new password';
+          formSubtitle.textContent='Enter your new password below';
+          submitBtn.textContent='Update Password';
+          document.querySelector('.forgot-row').style.display='none';
+          showMsg('Enter your new password below.','info');
+          window.history.replaceState({},'',window.location.pathname);
+        });
       }
+    }
+
+    // Check existing session
+    sb.auth.getSession().then(function(r){
+      if(r.data&&r.data.session&&!isRecovery)window.location.href='/dashboard';
     });
 
-    sb.auth.onAuthStateChange(function(event, session){
-      if (event === 'SIGNED_IN' && session) {
-        window.location.href = '/dashboard';
+    // Auth state listener
+    sb.auth.onAuthStateChange(function(ev,session){
+      if(ev==='SIGNED_IN'&&session&&!isRecovery)window.location.href='/dashboard';
+      if(ev==='PASSWORD_RECOVERY'){
+        isRecovery=true;
+        formTitle.textContent='Set new password';
+        formSubtitle.textContent='Enter your new password below';
+        submitBtn.textContent='Update Password';
+        document.querySelector('.forgot-row').style.display='none';
+        showMsg('Enter your new password below.','info');
       }
     });
   }
 
-  // ---- OAuth buttons ----
-  function handleOAuth(provider) {
-    return function(e) {
+  // ═══════════════════════════════════════════
+  // OAUTH (Google, Microsoft, Apple)
+  // ═══════════════════════════════════════════
+  function oauthClick(provider,btnId){
+    return function(e){
       e.preventDefault();
-      if (!sb) { showError('Authentication service unavailable. Please try again.'); return; }
-      var btn = e.currentTarget;
-      btn.disabled = true;
-      sb.auth.signInWithOAuth({
-        provider: provider,
-        options: { redirectTo: window.location.origin + '/dashboard' }
-      }).then(function(result){
-        if (result.error) {
-          showError('Authentication error: ' + result.error.message);
-          btn.disabled = false;
-        }
-      }).catch(function(err){
-        showError('Connection error. Please try again.');
-        btn.disabled = false;
-      });
+      if(!sb){showMsg('Auth service unavailable.','error');return;}
+      var btn=document.getElementById(btnId);
+      btn.classList.add('loading');btn.disabled=true;
+
+      var opts={redirectTo:window.location.origin+'/login'};
+      if(provider==='google')opts.queryParams={access_type:'offline',prompt:'consent'};
+
+      sb.auth.signInWithOAuth({provider:provider,options:opts}).then(function(r){
+        if(r.error){showMsg('Auth error: '+r.error.message,'error');btn.classList.remove('loading');btn.disabled=false;}
+      }).catch(function(){showMsg('Connection error. Try again.','error');btn.classList.remove('loading');btn.disabled=false;});
     };
   }
 
-  document.getElementById('btn-google').addEventListener('click', handleOAuth('google'));
-  document.getElementById('btn-microsoft').addEventListener('click', handleOAuth('azure'));
-  document.getElementById('btn-apple').addEventListener('click', handleOAuth('apple'));
+  document.getElementById('btn-google').addEventListener('click',oauthClick('google','btn-google'));
+  document.getElementById('btn-microsoft').addEventListener('click',oauthClick('azure','btn-microsoft'));
+  document.getElementById('btn-apple').addEventListener('click',oauthClick('apple','btn-apple'));
 
-  // ---- SSO/SAML button ----
-  document.getElementById('btn-sso').addEventListener('click', function(e){
+  // ═══════════════════════════════════════════
+  // SSO MODAL (replaces browser prompt)
+  // ═══════════════════════════════════════════
+  document.getElementById('btn-sso').addEventListener('click',function(e){
     e.preventDefault();
-    if (!sb) { showError('Authentication service unavailable.'); return; }
-    var domain = prompt('Enter your company email domain (e.g. company.com):');
-    if (domain && domain.trim()) {
-      sb.auth.signInWithSSO({ domain: domain.trim() }).then(function(result){
-        if (result.error) {
-          showError('SSO error: ' + result.error.message);
-        } else if (result.data && result.data.url) {
-          window.location.href = result.data.url;
-        }
-      }).catch(function(err){
-        showError('SSO connection error. Please try again.');
-      });
-    }
+    document.getElementById('ssoModal').classList.add('open');
+    setTimeout(function(){document.getElementById('ssoInput').focus();},100);
   });
 
-  // ---- Form validation + sign in ----
-  document.getElementById('loginForm').addEventListener('submit', function(e){
+  window.closeSsoModal=function(){
+    document.getElementById('ssoModal').classList.remove('open');
+    document.getElementById('ssoInput').value='';
+    document.getElementById('ssoErr').className='mmsg err';
+  };
+
+  window.submitSso=function(){
+    var domain=document.getElementById('ssoInput').value.trim();
+    var errEl=document.getElementById('ssoErr');
+    var btn=document.getElementById('ssoGoBtn');
+
+    if(!domain){errEl.textContent='Please enter a domain (e.g. finance-os.app)';errEl.className='mmsg err show';return;}
+    domain=domain.replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/^www\./,'');
+    if(!domain.match(/^[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/)){errEl.textContent='Invalid domain. Example: finance-os.app';errEl.className='mmsg err show';return;}
+
+    btn.disabled=true;btn.textContent='Connecting...';
+
+    sb.auth.signInWithSSO({domain:domain}).then(function(r){
+      if(r.error){errEl.textContent='SSO not configured for this domain. Contact your admin.';errEl.className='mmsg err show';btn.disabled=false;btn.textContent='Continue with SSO';}
+      else if(r.data&&r.data.url){window.location.href=r.data.url;}
+    }).catch(function(){errEl.textContent='Connection error. Try again.';errEl.className='mmsg err show';btn.disabled=false;btn.textContent='Continue with SSO';});
+  };
+
+  document.getElementById('ssoInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submitSso();}});
+  document.getElementById('ssoModal').addEventListener('click',function(e){if(e.target===this)closeSsoModal();});
+
+  // ═══════════════════════════════════════════
+  // FORGOT PASSWORD MODAL (real Supabase reset)
+  // ═══════════════════════════════════════════
+  document.getElementById('forgotLink').addEventListener('click',function(e){
     e.preventDefault();
-    authError.classList.remove('show');
-    var valid = true;
-    var emailVal = emailInput.value.trim();
-    var pwVal = pwInput.value;
+    document.getElementById('forgotModal').classList.add('open');
+    var fEmail=document.getElementById('forgotEmail');
+    if(emailIn.value.trim())fEmail.value=emailIn.value.trim();
+    setTimeout(function(){fEmail.focus();},100);
+  });
 
-    // Validate email
-    if (!emailVal.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      emailInput.classList.add('error');
-      emailError.classList.add('show');
-      valid = false;
-    } else {
-      emailInput.classList.remove('error');
-      emailError.classList.remove('show');
+  window.closeForgotModal=function(){
+    document.getElementById('forgotModal').classList.remove('open');
+    document.getElementById('forgotEmail').value='';
+    document.getElementById('forgotMsg').className='mmsg';
+  };
+
+  window.submitForgot=function(){
+    var email=document.getElementById('forgotEmail').value.trim();
+    var msgEl=document.getElementById('forgotMsg');
+    var btn=document.getElementById('forgotGoBtn');
+
+    if(!email||!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
+      msgEl.textContent='Please enter a valid email address.';
+      msgEl.className='mmsg err show';
+      return;
     }
 
-    // Validate password
-    if (pwVal.length < 8) {
-      pwInput.classList.add('error');
-      pwError.classList.add('show');
-      valid = false;
-    } else {
-      pwInput.classList.remove('error');
-      pwError.classList.remove('show');
-    }
+    btn.disabled=true;btn.textContent='Sending...';
 
-    if (!valid) return;
-    if (!sb) { showError('Authentication service unavailable.'); return; }
-
-    submitBtn.textContent = 'Signing in...';
-    submitBtn.disabled = true;
-
-    sb.auth.signInWithPassword({ email: emailVal, password: pwVal }).then(function(result){
-      if (result.error) {
-        submitBtn.textContent = 'Sign In';
-        submitBtn.disabled = false;
-
-        if (result.error.message.indexOf('Invalid login') !== -1) {
-          // Try creating account
-          sb.auth.signUp({ email: emailVal, password: pwVal }).then(function(suResult){
-            if (suResult.error) {
-              showError(suResult.error.message);
-            } else {
-              showError('Account created! Check your email for a confirmation link, then sign in.');
-              authError.style.background = '#ECFDF5';
-              authError.style.borderColor = '#A7F3D0';
-              authError.style.color = '#065F46';
-            }
-          });
-        } else {
-          showError(result.error.message);
-        }
-      } else {
-        window.location.href = '/';
+    sb.auth.resetPasswordForEmail(email,{
+      redirectTo:window.location.origin+'/login'
+    }).then(function(r){
+      if(r.error){msgEl.textContent='Error: '+r.error.message;msgEl.className='mmsg err show';}
+      else{msgEl.textContent='Reset link sent! Check your inbox (and spam).';msgEl.className='mmsg ok show';
+        setTimeout(function(){closeForgotModal();showMsg('Password reset email sent to '+email,'success');},3000);
       }
-    }).catch(function(err){
-      submitBtn.textContent = 'Sign In';
-      submitBtn.disabled = false;
-      showError('Connection error. Please check your internet and try again.');
+      btn.disabled=false;btn.textContent='Send Reset Link';
+    }).catch(function(){
+      msgEl.textContent='Connection error. Try again.';msgEl.className='mmsg err show';
+      btn.disabled=false;btn.textContent='Send Reset Link';
     });
-  });
+  };
 
-  // ---- Sign up link ----
-  document.getElementById('signupLink').addEventListener('click', function(e){
+  document.getElementById('forgotEmail').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submitForgot();}});
+  document.getElementById('forgotModal').addEventListener('click',function(e){if(e.target===this)closeForgotModal();});
+
+  // ═══════════════════════════════════════════
+  // LOGIN / SIGNUP FORM
+  // ═══════════════════════════════════════════
+  document.getElementById('loginForm').addEventListener('submit',function(e){
     e.preventDefault();
-    submitBtn.textContent = 'Create Account';
-    document.querySelector('.form-container h2').textContent = 'Create your account';
-    document.querySelector('.form-container .subtitle').textContent = 'Get started with FinanceOS';
+    clearMsg();
+    if(!rlCheck())return;
+
+    var valid=true;
+    var em=emailIn.value.trim(),pw=pwIn.value;
+
+    if(!em.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){emailIn.classList.add('error');emailErr.classList.add('show');valid=false;}
+    else{emailIn.classList.remove('error');emailErr.classList.remove('show');}
+    if(pw.length<8){pwIn.classList.add('error');pwErr.classList.add('show');valid=false;}
+    else{pwIn.classList.remove('error');pwErr.classList.remove('show');}
+    if(!valid)return;
+    if(!sb){showMsg('Auth service unavailable.','error');return;}
+
+    // Password recovery mode
+    if(isRecovery){
+      submitBtn.textContent='Updating...';submitBtn.disabled=true;
+      sb.auth.updateUser({password:pw}).then(function(r){
+        if(r.error){showMsg('Error: '+r.error.message,'error');submitBtn.textContent='Update Password';submitBtn.disabled=false;}
+        else{showMsg('Password updated! Redirecting...','success');setTimeout(function(){window.location.href='/dashboard';},1500);}
+      });
+      return;
+    }
+
+    submitBtn.textContent=isSignup?'Creating account...':'Signing in...';
+    submitBtn.disabled=true;
+
+    if(isSignup){
+      sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:window.location.origin+'/login'}}).then(function(r){
+        submitBtn.disabled=false;submitBtn.textContent='Create Account';
+        if(r.error)showMsg(r.error.message,'error');
+        else showMsg('Account created! Check your email for a confirmation link.','success');
+      }).catch(function(){submitBtn.textContent='Create Account';submitBtn.disabled=false;showMsg('Connection error.','error');});
+    }else{
+      sb.auth.signInWithPassword({email:em,password:pw}).then(function(r){
+        if(r.error){
+          attempts++;rlUpdate();submitBtn.textContent='Sign In';submitBtn.disabled=false;
+          if(r.error.message.indexOf('Invalid login')!==-1)showMsg('Invalid email or password.','error');
+          else if(r.error.message.indexOf('Email not confirmed')!==-1)showMsg('Confirm your email first. Check inbox.','error');
+          else showMsg(r.error.message,'error');
+        }else{
+          attempts=0;rlUpdate();showMsg('Signed in! Redirecting...','success');
+          setTimeout(function(){window.location.href='/dashboard';},500);
+        }
+      }).catch(function(){submitBtn.textContent='Sign In';submitBtn.disabled=false;showMsg('Connection error.','error');});
+    }
   });
 
-  // ---- Clear errors on input ----
-  emailInput.addEventListener('input', function(){
-    emailInput.classList.remove('error');
-    emailError.classList.remove('show');
-  });
-  pwInput.addEventListener('input', function(){
-    pwInput.classList.remove('error');
-    pwError.classList.remove('show');
-  });
+  // ═══════════════════════════════════════════
+  // SIGNUP TOGGLE
+  // ═══════════════════════════════════════════
+  function attachSignupToggle(){
+    var link=document.getElementById('signupLink');
+    if(!link)return;
+    link.addEventListener('click',function(e){
+      e.preventDefault();
+      isSignup=!isSignup;
+      if(isSignup){
+        formTitle.textContent='Create your account';
+        formSubtitle.textContent='Get started with FinanceOS';
+        submitBtn.textContent='Create Account';
+        link.parentElement.innerHTML='Already have an account? <a id="signupLink">Sign In</a>';
+      }else{
+        formTitle.textContent='Welcome back';
+        formSubtitle.textContent='Sign in to your FinanceOS account';
+        submitBtn.textContent='Sign In';
+        link.parentElement.innerHTML='Don\'t have an account? <a id="signupLink">Get Started</a>';
+      }
+      attachSignupToggle();
+    });
+  }
+  attachSignupToggle();
+
+  // ═══════════════════════════════════════════
+  // CLEAR ERRORS + KEYBOARD SHORTCUTS
+  // ═══════════════════════════════════════════
+  emailIn.addEventListener('input',function(){emailIn.classList.remove('error');emailErr.classList.remove('show');});
+  pwIn.addEventListener('input',function(){pwIn.classList.remove('error');pwErr.classList.remove('show');});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeSsoModal();closeForgotModal();}});
 
 })();
 </script>
