@@ -4,91 +4,80 @@
 const V3 = "/site";
 
 const nextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
+
   async headers() {
     return [
       {
-        source: '/(.*)' ,
+        source: "/(.*)",
         headers: [
+          // Transport Security
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+
+          // Content Protection
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+
+          // Permissions
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=(), serial=(), hid=()" },
+
+          // Cross-Origin Policies
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+          { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
+
+          // Content Security Policy
           {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-          },
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on',
-          },
-          {
-            key: 'Content-Security-Policy',
+            key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://cdn.plaid.com https://plausible.io",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://js.stripe.com https://cdn.plaid.com https://plausible.io",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com",
+              "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://*.plaid.com https://plausible.io https://api.anthropic.com https://oauth.platform.intuit.com https://*.api.intuit.com https://sandbox-quickbooks.api.intuit.com https://quickbooks.api.intuit.com wss://*.supabase.co",
+              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://*.plaid.com https://plausible.io https://api.anthropic.com https://oauth.platform.intuit.com https://*.api.intuit.com https://sandbox-quickbooks.api.intuit.com https://quickbooks.api.intuit.com https://fonts.googleapis.com https://accounts.google.com https://appleid.apple.com wss://*.supabase.co",
               "frame-src https://js.stripe.com https://hooks.stripe.com https://cdn.plaid.com",
-              "base-uri 'self'",
-              "form-action 'self'",
               "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self' https://checkout.stripe.com https://*.supabase.co https://accounts.google.com https://appleid.apple.com",
               "upgrade-insecure-requests",
-            ].join('; '),
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups',
+            ].join("; "),
           },
         ],
       },
+      // Cache static assets aggressively
       {
-        source: '/_next/static/(.*)',
+        source: "/(.*)\\.(svg|png|ico|woff2|woff|webp)",
         headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
       {
-        source: '/fonts/(.*)',
+        source: "/_next/static/(.*)",
         headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
       {
-        source: '/opengraph-image',
+        source: "/fonts/(.*)",
         headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=3600, stale-while-revalidate=7200',
-          },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
       {
-        source: '/icon.svg',
+        source: "/opengraph-image",
         headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
+          { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=7200" },
+        ],
+      },
+      {
+        source: "/icon.svg",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
     ];
@@ -112,6 +101,14 @@ const nextConfig = {
         { source: "/pain-points", destination: `${V3}/pain-points.html` },
         { source: "/ad-campaign", destination: `${V3}/ad-campaign.html` },
         { source: "/login", destination: `${V3}/login.html` },
+        { source: "/migration", destination: `${V3}/migration.html` },
+        { source: "/engine", destination: `${V3}/engine.html` },
+        { source: "/consolidation", destination: `${V3}/consolidation.html` },
+        { source: "/dashboard", destination: `${V3}/dashboard.html` },
+        { source: "/flowsync", destination: `${V3}/flowsync.html` },
+        { source: "/finsight", destination: `${V3}/finsight.html` },
+        { source: "/privacy", destination: `${V3}/privacy.html` },
+        { source: "/terms", destination: `${V3}/terms.html` },
 
         // Dashboard showcase pages
         { source: "/dashboard/standard", destination: `${V3}/dashboard/standard.html` },
@@ -144,9 +141,13 @@ const nextConfig = {
     };
   },
 
-  reactStrictMode: true,
-  poweredByHeader: false,
-  compress: true,
+  async redirects() {
+    return [
+      // Redirect www to non-www
+      { source: "/:path*", has: [{ type: "host", value: "www.finance-os.app" }], destination: "https://finance-os.app/:path*", permanent: true },
+    ];
+  },
+
   images: {
     minimumCacheTTL: 2592000,
     formats: ['image/avif', 'image/webp'],
