@@ -108,11 +108,7 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
 /* DATA FLOW DIAGRAM */
 .flow-diagram{max-width:800px;margin:0 auto 48px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
 .flow-header{padding:12px 20px;background:var(--bg-alt);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.flow-header .dots{display:flex;gap:5px}
-.flow-header .dots span{width:9px;height:9px;border-radius:50%}
-.flow-header .dots span:nth-child(1){background:#EF4444}
-.flow-header .dots span:nth-child(2){background:#F59E0B}
-.flow-header .dots span:nth-child(3){background:var(--green)}
+.flow-header .flow-brand{font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)}
 .flow-header .label{font-size:11px;font-family:var(--mono);color:var(--muted);margin-left:12px}
 .flow-body{padding:32px 28px}
 .flow-step{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:flex-start;position:relative;padding-bottom:28px}
@@ -363,7 +359,7 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:56px 
 
   <div class="flow-diagram fade-in">
     <div class="flow-header">
-      <div class="dots"><span></span><span></span><span></span></div>
+      <span class="flow-brand">FINANCEOS</span>
       <div class="label">data-lifecycle-flow</div>
     </div>
     <div class="flow-body">
