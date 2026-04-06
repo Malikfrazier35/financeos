@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FinanceOS — Dashboard Customizer (Matches Live Site)</title>
+<title>Castford — Dashboard Customizer (Matches Live Site)</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -316,7 +316,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 <div class="topbar">
   <a href="/site/landing.html" class="topbar-logo" style="text-decoration:none;color:inherit;">
     <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-    <span class="name">FinanceOS</span>
+    <span class="name">Castford</span>
     <span class="plan-badge">ENTERPRISE</span>
   </a>
   <div class="product-badge" id="productBadge" style="background:rgba(59,130,246,0.08);color:#3B82F6;">
@@ -696,7 +696,7 @@ function showView(view,el,skipActive){
 
 function getProductHeader(){
   var p=PRODUCTS[currentTheme];
-  return '<div class="product-header"><div class="ph-icon" style="background:'+p.gradient+';">'+p.icon+'</div><div class="ph-info"><div class="ph-name">FinanceOS '+p.name+'</div><div class="ph-tagline">'+p.tagline+'</div></div><button class="ph-switch" onclick="openTemplates()">Switch Dashboard</button></div>';
+  return '<div class="product-header"><div class="ph-icon" style="background:'+p.gradient+';">'+p.icon+'</div><div class="ph-info"><div class="ph-name">Castford '+p.name+'</div><div class="ph-tagline">'+p.tagline+'</div></div><button class="ph-switch" onclick="openTemplates()">Switch Dashboard</button></div>';
 }
 
 function renderDashboard(){
@@ -1093,7 +1093,7 @@ function renderSettingsBilling(){
   return '<div class="settings-card"><h3>$ Billing & Subscription</h3>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">'+
     '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">CURRENT PLAN</div><div style="font-size:24px;font-weight:800;">Enterprise</div><div style="font-size:12px;color:var(--t4);">Custom pricing</div></div>'+
-    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">STATUS</div><div style="font-size:24px;font-weight:800;color:var(--green);">Active</div><div style="font-size:12px;color:var(--t4);">FinanceOS Inc.</div></div></div>'+
+    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">STATUS</div><div style="font-size:24px;font-weight:800;color:var(--green);">Active</div><div style="font-size:12px;color:var(--t4);">Castford Inc.</div></div></div>'+
     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">'+
     '<button class="qa-btn" style="justify-content:center;color:var(--accent);">Manage Subscription</button>'+
     '<button class="qa-btn" style="justify-content:center;">View Invoices</button>'+
@@ -1102,15 +1102,15 @@ function renderSettingsBilling(){
 
 function renderSettingsOrg(){
   return '<div class="settings-card"><h3>◫ Organization</h3><div class="subtitle">Your workspace details and branding</div>'+
-    '<div class="settings-row"><span class="label">Company Name</span><span class="value">FinanceOS Inc.</span></div>'+
-    '<div class="settings-row"><span class="label">Workspace URL</span><span class="value" style="font-family:var(--mono);font-size:12px;">finance-os.app/dashboard</span></div>'+
+    '<div class="settings-row"><span class="label">Company Name</span><span class="value">Castford Inc.</span></div>'+
+    '<div class="settings-row"><span class="label">Workspace URL</span><span class="value" style="font-family:var(--mono);font-size:12px;">castford.com/dashboard</span></div>'+
     '<div class="settings-row"><span class="label">Industry</span><span class="value">Financial Technology (FinTech)</span></div>'+
     '<div class="settings-row"><span class="label">Company Size</span><span class="value">50-200 employees</span></div>'+
     '<div class="settings-row"><span class="label">Primary Contact</span><span class="value">Malik Frazier</span></div>'+
-    '<div class="settings-row"><span class="label">Admin Email</span><span class="value">admin@finance-os.app</span></div>'+
+    '<div class="settings-row"><span class="label">Admin Email</span><span class="value">admin@castford.com</span></div>'+
     '</div>'+
     '<div class="settings-card"><h3>Workspace Branding</h3><div class="subtitle">Customize how your workspace appears</div>'+
-    '<div class="settings-row"><span class="label">Logo</span><span class="value"><span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">F</span> FinanceOS</span></div>'+
+    '<div class="settings-row"><span class="label">Logo</span><span class="value"><span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">F</span> Castford</span></div>'+
     '<div class="settings-row"><span class="label">Theme</span><span class="value">'+currentTheme.charAt(0).toUpperCase()+currentTheme.slice(1)+'</span></div>'+
     '<div class="settings-row"><span class="label">Fiscal Year Start</span><span class="value">January</span></div>'+
     '</div>';

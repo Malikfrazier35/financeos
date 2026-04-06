@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinanceOS — Platform &amp; Conversion Audit</title>
+<title>Castford — Platform &amp; Conversion Audit</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -92,8 +92,8 @@ h3{font-size:17px;font-weight:700;letter-spacing:-0.01em;margin:28px 0 10px;colo
 
 <div class="badge blue"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)"></span> PLATFORM AUDIT — MARCH 2026</div>
 
-<h1>FinanceOS Conversion &amp; Responsive Audit</h1>
-<p class="subtitle">Full assessment of finance-os.app across desktop, tablet, and mobile — covering conversion funnel, responsive layout, and platform-specific optimizations. Based on analysis of page.jsx (~11,600 lines).</p>
+<h1>Castford Conversion &amp; Responsive Audit</h1>
+<p class="subtitle">Full assessment of castford.com across desktop, tablet, and mobile — covering conversion funnel, responsive layout, and platform-specific optimizations. Based on analysis of page.jsx (~11,600 lines).</p>
 
 <div class="toc">
   <a href="#scores">Scores</a>
@@ -320,7 +320,7 @@ h3{font-size:17px;font-weight:700;letter-spacing:-0.01em;margin:28px 0 10px;colo
 
 <div class="issue">
   <div class="issue-header"><span class="issue-sev p0">P0</span><span class="issue-title">Analyst reports may not be real</span></div>
-  <div class="issue-body">Lines 2375-2377 and 5629-5631 cite Gartner "Market Guide for Cloud FP&A, 2026", Forrester "Wave: Financial Planning, Q1 2026", and IDC "MarketScape: EPM Vendors, 2026" — with direct quotes. If these reports don't exist or FinanceOS isn't actually featured, this is a credibility catastrophe. Enterprise CFOs verify analyst citations.</div>
+  <div class="issue-body">Lines 2375-2377 and 5629-5631 cite Gartner "Market Guide for Cloud FP&A, 2026", Forrester "Wave: Financial Planning, Q1 2026", and IDC "MarketScape: EPM Vendors, 2026" — with direct quotes. If these reports don't exist or Castford isn't actually featured, this is a credibility catastrophe. Enterprise CFOs verify analyst citations.</div>
   <div class="issue-fix">Fix: Replace with verifiable trust signals: G2 ratings, TrustRadius badges, actual customer count ("Trusted by 200+ finance teams"), or SOC 2 certification badge. If you have real analyst mentions, link to the actual reports.</div>
 </div>
 
@@ -338,7 +338,7 @@ h3{font-size:17px;font-weight:700;letter-spacing:-0.01em;margin:28px 0 10px;colo
 
 <div class="issue">
   <div class="issue-header"><span class="issue-sev p1">P1</span><span class="issue-title">No social proof near pricing</span></div>
-  <div class="issue-body">The pricing section has no customer count, no "X teams trust FinanceOS" badge, no review score. The trust logos appear in the hero section but aren't repeated near the conversion decision point. Visitors who scroll directly to pricing (via nav anchor) miss all social proof.</div>
+  <div class="issue-body">The pricing section has no customer count, no "X teams trust Castford" badge, no review score. The trust logos appear in the hero section but aren't repeated near the conversion decision point. Visitors who scroll directly to pricing (via nav anchor) miss all social proof.</div>
   <div class="issue-fix">Fix: Add a compact trust bar immediately above the pricing grid: "Trusted by 200+ finance teams · 4.9/5 on G2 · SOC 2 Type II". Repeat the key logos in a smaller format.</div>
 </div>
 
@@ -434,10 +434,10 @@ const isTablet = useMediaQuery("(min-width: 769px) and (max-width: 1024px)");
 // Update grid patterns:
 gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr 1fr" : "1fr 1fr 1fr"
 
-// Auto-collapse sidebar on tablet (FinanceOSApp, ~line 10329):
+// Auto-collapse sidebar on tablet (CastfordApp, ~line 10329):
 const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
   if (typeof window !== "undefined" && window.innerWidth <= 1024) return true;
-  try { return localStorage.getItem("financeos-sidebar") === "collapsed"; }
+  try { return localStorage.getItem("castford-sidebar") === "collapsed"; }
   catch { return false; }
 });</div>
 

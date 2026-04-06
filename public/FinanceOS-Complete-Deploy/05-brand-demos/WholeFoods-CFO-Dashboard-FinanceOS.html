@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#00674b">
 <meta name="msapplication-TileColor" content="#00674b">
 <meta name="msapplication-navbutton-color" content="#00674b">
-<title>Whole Foods Market — Executive Finance Terminal | FinanceOS Enterprise</title>
+<title>Whole Foods Market — Executive Finance Terminal | Castford Enterprise</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════
@@ -384,7 +384,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font
       <div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#1d4ed8,#6d28d9);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(29,78,216,0.15)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="3" height="20" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="2" width="16" height="3" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="9.5" width="11" height="2.5" rx="1" fill="white" opacity=".6"/><rect x="14" y="14" width="2.5" height="8" rx="1" fill="white" opacity=".35"/><rect x="18" y="10" width="2.5" height="12" rx="1" fill="white" opacity=".5"/></svg>
       </div>
-      <span style="font-size:12px;font-weight:800;letter-spacing:-.02em;color:var(--text)">FinanceOS</span>
+      <span style="font-size:12px;font-weight:800;letter-spacing:-.02em;color:var(--text)">Castford</span>
     </div>
     <div id="adminTabs" style="display:flex;height:44px"></div>
   </div>
@@ -592,7 +592,7 @@ function renderContent(){
   else if(activeView==='approvals')el.innerHTML=renderApprovals(admin);
   else if(activeView==='celebrations')el.innerHTML=renderCelebrations(admin);
   else if(activeView==='refunds')el.innerHTML=renderRefunds(admin);
-  else el.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;color:var(--textMuted)"><div style="width:56px;height:56px;border-radius:16px;background:var(--wf-pale);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;border:1px solid var(--wf-pale);color:var(--wf);animation:float 3s ease-in-out infinite">◆</div><div style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text)">${activeView.charAt(0).toUpperCase()+activeView.slice(1)}</div><div style="font-size:12px">Available in the full FinanceOS Enterprise deployment.</div></div>`;
+  else el.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;color:var(--textMuted)"><div style="width:56px;height:56px;border-radius:16px;background:var(--wf-pale);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;border:1px solid var(--wf-pale);color:var(--wf);animation:float 3s ease-in-out infinite">◆</div><div style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text)">${activeView.charAt(0).toUpperCase()+activeView.slice(1)}</div><div style="font-size:12px">Available in the full Castford Enterprise deployment.</div></div>`;
 }
 
 function renderOverview(admin){
@@ -792,14 +792,14 @@ function renderOverview(admin){
     </div>
   </div>
 
-  <!-- FinanceOS Competitive Footer -->
+  <!-- Castford Competitive Footer -->
   <div style="margin-top:16px;padding:18px 24px;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--wf-tint),var(--surfaceAlt));border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
     <div style="display:flex;align-items:center;gap:12px">
       <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#1d4ed8,#6d28d9);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(29,78,216,0.12)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="3" height="20" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="2" width="16" height="3" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="9.5" width="11" height="2.5" rx="1" fill="white" opacity=".6"/></svg>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:800;color:var(--text)">Powered by FinanceOS · Enterprise</div>
+        <div style="font-size:11px;font-weight:800;color:var(--text)">Powered by Castford · Enterprise</div>
         <div style="font-size:9px;color:var(--textMuted)">SOC 2 Type II · AES-256 Encryption · 99.9% SLA · Real-Time Sync</div>
       </div>
     </div>
@@ -1034,7 +1034,7 @@ function renderCelebrations(){
     {title:"Q1 Close Tracking Ahead of Schedule",desc:"The team is on track to close 1 day early — the fastest close in Whole Foods Finance history.",type:"milestone",icon:"M"},
     {title:"365 Brand Margin Record",desc:"Private label EBITDA hit 38.2%, surpassing the 36% target by 220bps. Great work Maya & Rachel!",type:"achievement",icon:"T"},
     {title:"AI Inventory Pilot Success",desc:"Midwest shrinkage reduced 22%. The pilot is approved for 200-store rollout in Q2.",type:"innovation",icon:"AI"},
-    {title:"Welcome to the Team!",desc:"The entire Whole Foods Finance leadership team is now live on FinanceOS. Let's build something great together!",type:"welcome",icon:"W"},
+    {title:"Welcome to the Team!",desc:"The entire Whole Foods Finance leadership team is now live on Castford. Let's build something great together!",type:"welcome",icon:"W"},
   ];
   return `<div class="fade" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px"><div><div class="section-title">Team Hub</div><h2 style="font-size:22px;font-weight:800;letter-spacing:-.03em">Celebrations & Milestones</h2></div></div>
 
@@ -1042,7 +1042,7 @@ function renderCelebrations(){
   <div class="celebration fade" style="margin-bottom:20px;padding:24px 28px">
     <div style="display:flex;flex-direction:column;align-items:center;text-align:center;width:100%">
       <div class="avatar-stack" style="margin-bottom:14px;justify-content:center">${admins.map(a=>`<img src="${a.photo}" class="avatar" style="width:42px;height:42px;border-width:3px;animation:popIn .5s var(--bounce) both">`).join('')}</div>
-      <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px">Welcome to FinanceOS, Whole Foods Finance!</div>
+      <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px">Welcome to Castford, Whole Foods Finance!</div>
       <div style="font-size:12px;color:var(--textSec);max-width:500px;line-height:1.6">Your digital workspace is live. ${admins.length} team members connected. Real-time collaboration, AI-powered insights, and streamlined workflows — all in one place.</div>
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="btn btn-wf" onclick="switchView('messages')">Say Hello to the Team</button>

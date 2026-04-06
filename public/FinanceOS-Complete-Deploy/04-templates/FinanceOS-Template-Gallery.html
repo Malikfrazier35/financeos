@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FinanceOS — Confidential Client Onboarding</title>
+<title>Castford — Confidential Client Onboarding</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -328,10 +328,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 <p class="nda-sub">You're entering a secure, NDA-protected environment. All dashboard configurations, financial data, and company information shared here are treated as strictly confidential.</p>
 
 <div class="nda-terms">
-<h4>FinanceOS Mutual Non-Disclosure Agreement</h4>
+<h4>Castford Mutual Non-Disclosure Agreement</h4>
 <p><strong>1. Confidential Information.</strong> "Confidential Information" includes all financial data, dashboard configurations, pricing terms, business metrics, proprietary algorithms, and any information marked or reasonably understood to be confidential that is disclosed by either party during this engagement.</p>
-<p style="margin-top:8px"><strong>2. Obligations.</strong> Each party agrees to: (a) hold Confidential Information in strict confidence; (b) not disclose it to any third party without prior written consent; (c) use it solely for the purpose of evaluating and implementing FinanceOS Command Center solutions; (d) protect it with the same degree of care used for its own confidential information.</p>
-<p style="margin-top:8px"><strong>3. Data Security.</strong> FinanceOS maintains SOC 2 Type II compliance, encrypts all data at rest (AES-256) and in transit (TLS 1.3), and provides isolated tenant environments with no cross-customer data access. All dashboard instances are deployed on dedicated infrastructure.</p>
+<p style="margin-top:8px"><strong>2. Obligations.</strong> Each party agrees to: (a) hold Confidential Information in strict confidence; (b) not disclose it to any third party without prior written consent; (c) use it solely for the purpose of evaluating and implementing Castford Command Center solutions; (d) protect it with the same degree of care used for its own confidential information.</p>
+<p style="margin-top:8px"><strong>3. Data Security.</strong> Castford maintains SOC 2 Type II compliance, encrypts all data at rest (AES-256) and in transit (TLS 1.3), and provides isolated tenant environments with no cross-customer data access. All dashboard instances are deployed on dedicated infrastructure.</p>
 <p style="margin-top:8px"><strong>4. Duration.</strong> This NDA remains in effect for 3 years from the date of acceptance or until the Confidential Information no longer qualifies as confidential, whichever is longer.</p>
 <p style="margin-top:8px"><strong>5. Exclusions.</strong> Information that is (a) publicly available, (b) independently developed, (c) received from a third party without restriction, or (d) required to be disclosed by law is excluded from this agreement.</p>
 </div>
@@ -339,7 +339,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 <label class="nda-check" onclick="document.getElementById('ndaAccept').checked=!document.getElementById('ndaAccept').checked;toggleNdaBtn()">
 <input type="checkbox" id="ndaAccept" onclick="event.stopPropagation();toggleNdaBtn()">
 <span>
-I have read and agree to the FinanceOS Mutual NDA. I understand that all information shared in this portal is confidential.
+I have read and agree to the Castford Mutual NDA. I understand that all information shared in this portal is confidential.
 <span class="nda-small">By proceeding, a timestamped NDA record is created for your account.</span>
 </span>
 </label>
@@ -365,7 +365,7 @@ Enter Secure Portal
 <nav class="topnav">
 <div class="topnav-logo">
 <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="url(#g1)" stroke-width="2"/><path d="M8 18V12M12 18V10M16 18V14M20 18V8" stroke="url(#g1)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="g1" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#5b9cf5"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
-<span>FinanceOS</span>
+<span>Castford</span>
 </div>
 <div class="topnav-actions">
 <span class="tier-badge growth" id="currentTier">Growth Plan</span>
@@ -1136,7 +1136,7 @@ function showConsultForm(templateId, flowType) {
       <div style="padding:14px 16px;border-radius:10px;background:rgba(52,211,153,.03);border:1px solid rgba(52,211,153,.1);margin-top:8px">
         <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--dim);line-height:1.6">
           <input type="checkbox" id="intakeNDA" style="margin-top:3px;accent-color:var(--green);width:16px;height:16px;flex-shrink:0" checked>
-          <span>I agree to the <strong style="color:var(--green);cursor:pointer;text-decoration:underline">FinanceOS Mutual NDA</strong> and acknowledge that all dashboard configurations, financial data, and company information shared during this process are treated as confidential under our standard non-disclosure agreement. FinanceOS maintains SOC 2 Type II compliance, AES-256 encryption at rest, and TLS 1.3 in transit.</span>
+          <span>I agree to the <strong style="color:var(--green);cursor:pointer;text-decoration:underline">Castford Mutual NDA</strong> and acknowledge that all dashboard configurations, financial data, and company information shared during this process are treated as confidential under our standard non-disclosure agreement. Castford maintains SOC 2 Type II compliance, AES-256 encryption at rest, and TLS 1.3 in transit.</span>
         </label>
       </div>
     </div>
@@ -1284,7 +1284,7 @@ async function submitConsultation(templateId, flowType) {
   };
 
   // Log payload (in production this would POST to your API)
-  console.log('📋 FinanceOS Consultation Request:', JSON.stringify(payload, null, 2));
+  console.log('📋 Castford Consultation Request:', JSON.stringify(payload, null, 2));
 
   // Hide form, show processing
   document.getElementById('intakeForm').style.display = 'none';

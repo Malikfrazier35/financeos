@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FinanceOS — Secure Client Deal Room</title>
+<title>Castford — Secure Client Deal Room</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -307,11 +307,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 <div class="gate-panel">
 <div class="gate-logo">
 <svg viewBox="0 0 36 36" fill="none"><rect x="3" y="3" width="30" height="30" rx="8" stroke="url(#gl)" stroke-width="2.5"/><path d="M11 24V16M16 24V13M21 24V18M26 24V10" stroke="url(#gl)" stroke-width="2.5" stroke-linecap="round"/><defs><linearGradient id="gl" x1="0" y1="0" x2="36" y2="36"><stop stop-color="#5b9cf5"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
-<span>FinanceOS</span>
+<span>Castford</span>
 </div>
 <div class="gate-shield"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
 <h2>Secure Client Deal Room</h2>
-<p class="gate-sub">This is a private, invitation-only portal. Enter the access code provided by your FinanceOS account executive to continue.</p>
+<p class="gate-sub">This is a private, invitation-only portal. Enter the access code provided by your Castford account executive to continue.</p>
 
 <div class="code-input-wrap" id="codeWrap">
 <input class="code-input" maxlength="1" data-idx="0" autocomplete="off">
@@ -345,7 +345,7 @@ Enter Deal Room
 <nav class="onboard-nav">
 <div class="onboard-logo">
 <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="url(#gn)" stroke-width="2"/><path d="M7 16V11M10.5 16V9M14 16V13M17.5 16V7" stroke="url(#gn)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="gn" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#5b9cf5"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
-<span>FinanceOS</span>
+<span>Castford</span>
 </div>
 <div class="onboard-client">
 <div>
@@ -371,7 +371,7 @@ Enter Deal Room
 
 <div class="doc-viewer">
 <h4>1. Engagement Scope <span class="cls-tag cls-confidential">Confidential</span></h4>
-<p>FinanceOS Inc. ("Provider") agrees to provide Client with access to the FinanceOS Command Center platform, including dashboard templates, AI-powered analytics, data connectors, and related professional services as described in the attached Statement of Work.</p>
+<p>Castford Inc. ("Provider") agrees to provide Client with access to the Castford Command Center platform, including dashboard templates, AI-powered analytics, data connectors, and related professional services as described in the attached Statement of Work.</p>
 <h4>2. Data Handling & Security <span class="cls-tag cls-restricted">Restricted</span></h4>
 <p>All Client financial data processed through the Platform shall be: (a) encrypted at rest using AES-256 and in transit using TLS 1.3; (b) stored in isolated, single-tenant environments; (c) subject to SOC 2 Type II audited controls; (d) accessible only by authorized personnel with role-based access control (RBAC). Provider maintains ISO 27001 certification and undergoes annual third-party penetration testing.</p>
 <h4>3. Intellectual Property <span class="cls-tag cls-confidential">Confidential</span></h4>
@@ -741,7 +741,7 @@ async function approveProposal() {
   deliveryView.style.display = 'block';
 
   const slug = state.selectedTpl + '-' + Math.random().toString(36).substr(2,8);
-  document.getElementById('delUrl').textContent = 'portal.finance-os.app/install/' + slug;
+  document.getElementById('delUrl').textContent = 'portal.castford.com/install/' + slug;
 
   logAudit('Private install link generated: /install/' + slug, 'green');
   logAudit('Link delivered to ' + state.clientEmail, 'green');

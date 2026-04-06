@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FinanceOS - Design Studio V7</title>
+<title>Castford - Design Studio V7</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -290,7 +290,7 @@ body.dark-mode .studio-name h4{color:var(--t1);}
 <body>
 <div class="toast-container" id="toasts"></div>
 <div class="topbar" id="topbar">
-  <div class="topbar-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="name">FinanceOS</span><span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span></div>
+  <div class="topbar-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="name">Castford</span><span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span></div>
   <div class="topbar-info"><span>Enterprise / FY2025 YTD</span><span class="sep"></span><span class="clock" id="clock"></span></div>
   <div class="search-box" onclick="toast('info','Search','Cmd+K to search across views')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> Search... <kbd>Cmd+K</kbd></div>
   <div class="topbar-controls">
@@ -515,7 +515,7 @@ function selectAccent(color,el){accentColor=color;document.querySelectorAll('.ac
 function applyDesign(){closeStudio();const d=DESIGNS.find(x=>x.id===design);applyThemeCSS(d);render();const sw=document.querySelectorAll('.cbar-swatch');sw.forEach(s=>s.classList.remove('active'));const idx=DESIGNS.findIndex(x=>x.id===design);if(sw[idx])sw[idx].classList.add('active');toast('success','Design Applied',d.name+' is now live');}
 
 render();
-setTimeout(()=>toast('success','FinanceOS','Dashboard loaded -- 7 connectors synced'),600);
+setTimeout(()=>toast('success','Castford','Dashboard loaded -- 7 connectors synced'),600);
 </script>
 </body>
 </html>

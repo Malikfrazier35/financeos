@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sign In — FinanceOS</title>
+<title>Sign In — Castford</title>
 <link rel="icon" type="image/svg+xml" href="/site/logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -142,7 +142,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 <div class="left">
   <div class="left-bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
   <div class="left-content">
-    <a href="/" class="logo"><span class="logo-dot"></span> FinanceOS</a>
+    <a href="/" class="logo"><span class="logo-dot"></span> Castford</a>
     <h1>Plan smarter.<br><span>Close faster.</span></h1>
     <div class="feature-list">
       <div class="feature-item">
@@ -159,8 +159,8 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
       </div>
     </div>
     <div class="testimonial-container" id="testimonials">
-      <div class="testimonial active"><p>"FinanceOS gives our finance team the tools to close faster and forecast with confidence."</p><div class="author">Finance Leader</div></div>
-      <div class="testimonial"><p>"We replaced three separate tools with FinanceOS. The FP&A planning finally connects our revenue team to finance."</p><div class="author">CFO, Growth-Stage Startup</div></div>
+      <div class="testimonial active"><p>"Castford gives our finance team the tools to close faster and forecast with confidence."</p><div class="author">Finance Leader</div></div>
+      <div class="testimonial"><p>"We replaced three separate tools with Castford. The FP&A planning finally connects our revenue team to finance."</p><div class="author">CFO, Growth-Stage Startup</div></div>
       <div class="testimonial"><p>"The scenario modeling tools let us run multiple what-if analyses quickly and make better decisions."</p><div class="author">Head of FP&A, B2B Marketplace</div></div>
     </div>
   </div>
@@ -174,7 +174,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 <div class="right">
   <div class="form-container">
     <h2 id="formTitle">Welcome back</h2>
-    <p class="subtitle" id="formSubtitle">Sign in to your FinanceOS account</p>
+    <p class="subtitle" id="formSubtitle">Sign in to your Castford account</p>
     <div class="auth-msg" id="authMsg"></div>
 
     <button class="sso-btn" id="btn-google" type="button">
@@ -226,11 +226,11 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
   <div class="modal-box">
     <h3>Enterprise SSO / SAML</h3>
     <p class="mdesc">Enter your company email domain to sign in through your organization's identity provider.</p>
-    <input type="text" class="minput" id="ssoInput" placeholder="e.g. finance-os.app" autocomplete="off" spellcheck="false">
+    <input type="text" class="minput" id="ssoInput" placeholder="e.g. castford.com" autocomplete="off" spellcheck="false">
     <div class="mmsg err" id="ssoErr"></div>
-    <div class="sso-hint">Configured domain: <strong>finance-os.app</strong></div>
+    <div class="sso-hint">Configured domain: <strong>castford.com</strong></div>
     <div class="sso-providers">
-      <div class="sso-prov"><span class="sdot"></span> <strong>finance-os.app</strong> — Google Workspace SAML</div>
+      <div class="sso-prov"><span class="sdot"></span> <strong>castford.com</strong> — Google Workspace SAML</div>
     </div>
     <div class="modal-actions">
       <button class="mbtn-cancel" onclick="closeSsoModal()">Cancel</button>
@@ -256,7 +256,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 <footer>
   <div class="ft-inner">
     <div class="ft-brand">
-      <a href="/" class="logo-link"><img src="/site/logo.svg" alt="FinanceOS" width="24" height="24" style="border-radius:5px;vertical-align:middle;margin-right:8px"><span class="ldot"></span>FinanceOS</a>
+      <a href="/" class="logo-link"><img src="/site/logo.svg" alt="Castford" width="24" height="24" style="border-radius:5px;vertical-align:middle;margin-right:8px"><span class="ldot"></span>Castford</a>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
     <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
@@ -265,7 +265,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
     <div class="ft-col"><h5>Company</h5><a href="/about">About</a><a href="/about">Careers</a><a href="/contact">Contact</a></div>
   </div>
   <div class="ft-bottom">
-    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <span>&copy; 2026 Castford, Inc.</span>
     <div style="display:flex;gap:20px"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div>
   </div>
 </footer>
@@ -456,9 +456,9 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
     var errEl=document.getElementById('ssoErr');
     var btn=document.getElementById('ssoGoBtn');
 
-    if(!domain){errEl.textContent='Please enter a domain (e.g. finance-os.app)';errEl.className='mmsg err show';return;}
+    if(!domain){errEl.textContent='Please enter a domain (e.g. castford.com)';errEl.className='mmsg err show';return;}
     domain=domain.replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/^www\./,'');
-    if(!domain.match(/^[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/)){errEl.textContent='Invalid domain. Example: finance-os.app';errEl.className='mmsg err show';return;}
+    if(!domain.match(/^[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/)){errEl.textContent='Invalid domain. Example: castford.com';errEl.className='mmsg err show';return;}
 
     btn.disabled=true;btn.textContent='Connecting...';
 
@@ -581,12 +581,12 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
       isSignup=!isSignup;
       if(isSignup){
         formTitle.textContent='Create your account';
-        formSubtitle.textContent='Get started with FinanceOS';
+        formSubtitle.textContent='Get started with Castford';
         submitBtn.textContent='Create Account';
         link.parentElement.innerHTML='Already have an account? <a id="signupLink">Sign In</a>';
       }else{
         formTitle.textContent='Welcome back';
-        formSubtitle.textContent='Sign in to your FinanceOS account';
+        formSubtitle.textContent='Sign in to your Castford account';
         submitBtn.textContent='Sign In';
         link.parentElement.innerHTML='Don\'t have an account? <a id="signupLink">Get Started</a>';
       }
