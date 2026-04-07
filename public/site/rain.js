@@ -27,7 +27,7 @@
       var sz = s.sz[0] + Math.floor(Math.random() * (s.sz[1] - s.sz[0]));
       var spd = 7 + Math.random() * 8;
       var del = Math.random() * 12;
-      var peak = 0.12 + Math.random() * 0.25;
+      var peak = 0.05 + Math.random() * 0.12;
       var jitter = (Math.random() - 0.5) * 4;
 
       var el = document.createElement('div');
