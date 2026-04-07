@@ -358,5 +358,20 @@ setTimeout(()=>{animateCounters();animateBars()},400);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  if (window.CastfordData) {
+    var cd = await CastfordData.init();
+    if (!cd.isDemoMode()) {
+      // Replace static P&L with live GL data
+      var rev = await cd.getRevenue();
+      var vals = document.querySelectorAll('.pl-val');
+      // Future: map each .pl-val to real GL account data
+      console.log('Castford: Live data connected', rev);
+    }
+  }
+});
+</script>
 </body>
 </html>
