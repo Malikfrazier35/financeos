@@ -66,24 +66,24 @@ window.CastfordData = (function() {
 
   async function getAccounts(type) {
     var q = sb.from('gl_accounts').select('*').eq('org_id', orgId).order('code');
-    if (type) q = q.eq('type', type);
+    if (type) q = q.eq('account_type', type);
     var { data, error } = await q;
     return error ? [] : data;
   }
 
   async function getTransactions(opts) {
     opts = opts || {};
-    var q = sb.from('gl_transactions').select('*, gl_accounts(name, type, code)').eq('org_id', orgId).order('date', { ascending: false });
+    var q = sb.from('gl_transactions').select('*, gl_accounts(name, account_type)').eq('org_id', orgId).order('txn_date', { ascending: false });
     if (opts.accountId) q = q.eq('account_id', opts.accountId);
-    if (opts.startDate) q = q.gte('date', opts.startDate);
-    if (opts.endDate) q = q.lte('date', opts.endDate);
+    if (opts.startDate) q = q.gte('txn_date', opts.startDate);
+    if (opts.endDate) q = q.lte('txn_date', opts.endDate);
     if (opts.limit) q = q.limit(opts.limit);
     var { data, error } = await q;
     return error ? [] : data;
   }
 
   async function getBudgets(period) {
-    var q = sb.from('gl_budgets').select('*, gl_accounts(name, type, code)').eq('org_id', orgId).order('period');
+    var q = sb.from('gl_budgets').select('*, gl_accounts(name, account_type)').eq('org_id', orgId).order('period');
     if (period) q = q.eq('period', period);
     var { data, error } = await q;
     return error ? [] : data;
@@ -93,8 +93,8 @@ window.CastfordData = (function() {
     var txns = await getTransactions({ startDate: startDate, endDate: endDate });
     var revenue = 0, expenses = 0;
     txns.forEach(function(t) {
-      if (t.gl_accounts?.type === 'revenue') revenue += Math.abs(t.amount || 0);
-      if (t.gl_accounts?.type === 'expense') expenses += Math.abs(t.amount || 0);
+      if (t.gl_accounts?.account_type === 'revenue' || t.gl_accounts?.account_type === 'other_income') revenue += Math.abs(t.amount || 0);
+      if (t.gl_accounts?.account_type === 'expense') expenses += Math.abs(t.amount || 0);
     });
     return { revenue: revenue, expenses: expenses, net: revenue - expenses, count: txns.length };
   }
@@ -103,7 +103,7 @@ window.CastfordData = (function() {
     var txns = await getTransactions({ limit: 100 });
     var byMonth = {};
     txns.forEach(function(t) {
-      var month = (t.date || '').slice(0, 7);
+      var month = (t.txn_date || '').slice(0, 7);
       if (!byMonth[month]) byMonth[month] = { inflow: 0, outflow: 0 };
       if (t.amount > 0) byMonth[month].inflow += t.amount;
       else byMonth[month].outflow += Math.abs(t.amount);
@@ -127,8 +127,8 @@ window.CastfordData = (function() {
       var variance = b.amount - actual;
       return {
         account: b.gl_accounts?.name,
-        code: b.gl_accounts?.code,
-        type: b.gl_accounts?.type,
+        account: b.gl_accounts?.name,
+        type: b.gl_accounts?.account_type,
         budget: b.amount,
         actual: actual,
         variance: variance,
