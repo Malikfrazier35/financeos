@@ -61,6 +61,14 @@
     doc.head.appendChild(rain);
   }
 
+  // 4b. Load consent banner if not already loaded
+  if (!doc.querySelector('script[src*="consent-banner"]')) {
+    var consent = doc.createElement('script');
+    consent.src = '/site/consent-banner.js';
+    consent.defer = true;
+    doc.head.appendChild(consent);
+  }
+
   // 5. Text rebrand: FinanceOS → Castford (DOM walk)
   var walker = doc.createTreeWalker(body, NodeFilter.SHOW_TEXT, null, false);
   var node;
@@ -78,6 +86,17 @@
   }
   if (doc.title.indexOf('Finance OS') !== -1) {
     doc.title = doc.title.replace(/Finance OS/g, 'Castford');
+  }
+
+  // 6. CCPA: Inject "Do Not Sell" link in footer if missing
+  var footer = doc.querySelector('.cf-ft-bottom, footer');
+  if (footer && !doc.querySelector('[href*="ccpa"], [href*="do-not-sell"]')) {
+    var dnsLink = doc.createElement('a');
+    dnsLink.href = '/privacy#ccpa';
+    dnsLink.textContent = 'Do Not Sell My Info';
+    dnsLink.style.cssText = 'color:var(--t3,#6E738F);font-size:13px;text-decoration:none;margin-left:16px';
+    var bottomRow = footer.querySelector('div[style*="flex"]') || footer;
+    if (bottomRow) bottomRow.appendChild(dnsLink);
   }
 
 })();
