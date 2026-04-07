@@ -131,7 +131,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,17,23,0.7);backdrop-fil
 
 /* ===== BENTO ===== */
 .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.bento-card{background:var(--surface);border:1px solid var(--border-v);border-radius:var(--r-lg);padding:28px;transition:all .3s var(--ease);position:relative;overflow:hidden}
+.bento-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);border-radius:var(--r-lg);padding:28px;transition:all .3s var(--ease);position:relative;overflow:hidden}
 .bento-card:hover{box-shadow:var(--glow-md);border-color:var(--accent-border);transform:translateY(-3px)}
 .bento-card.span-2{grid-column:span 2}
 .bento-over{font-family:var(--mono);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
@@ -162,13 +162,13 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,17,23,0.7);backdrop-fil
 
 /* ===== INTEGRATIONS ===== */
 .int-grid{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;max-width:720px;margin:0 auto 24px}
-.int-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:100px;background:var(--surface);border:1px solid var(--border-v);font-size:12px;font-weight:500;color:var(--text);transition:all .2s var(--ease)}
+.int-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:100px;background:rgba(255,255,255,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.4);font-size:12px;font-weight:500;color:var(--text);transition:all .2s var(--ease)}
 .int-chip:hover{transform:translateY(-2px);box-shadow:var(--glow);border-color:var(--accent-border)}
 .int-dot{width:6px;height:6px;border-radius:3px}
 
 /* ===== RESULTS ===== */
 .results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.result-card{background:var(--surface);border:1px solid var(--border-v);border-radius:var(--r-lg);padding:32px 24px;text-align:center;transition:all .3s var(--ease)}
+.result-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);border-radius:var(--r-lg);padding:32px 24px;text-align:center;transition:all .3s var(--ease)}
 .result-card:hover{transform:translateY(-3px);box-shadow:var(--glow-md)}
 .result-val{font-family:var(--display);font-size:32px;font-weight:700;color:var(--accent);letter-spacing:-1px;margin-bottom:4px}
 .result-name{font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:4px}
@@ -220,7 +220,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
 <nav>
   <div class="nav-in">
     <a href="/" class="nav-logo">
-      <div class="nav-mark"><svg viewBox="0 0 40 40" width="26" height="26"><rect width="40" height="40" rx="9" fill="#CF8A2E"/><path d="M19.5 10.5C14.8 10.5 11 14.1 11 18.8V21.2C11 25.9 14.8 29.5 19.5 29.5C21.8 29.5 23.8 28.6 25.2 27.1" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round" fill="none"/><line x1="27" y1="11" x2="27" y2="29" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="11" x2="33" y2="11" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="19.5" x2="32" y2="19.5" stroke="#0A0A09" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+      <div class="nav-mark"><svg viewBox="0 0 80 80" width="26" height="26"><rect x="4" y="4" width="72" height="72" rx="16" fill="#CF8A2E"/><path d="M22 56L22 24L40 24" stroke="#0E1117" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M40 24C52 24 58 32 58 40C58 48 52 56 40 56" stroke="#0E1117" stroke-width="3.5" stroke-linecap="round" fill="none"/><line x1="22" y1="56" x2="40" y2="56" stroke="#0E1117" stroke-width="3.5" stroke-linecap="round"/><line x1="34" y1="24" x2="34" y2="56" stroke="#0E1117" stroke-width="3" stroke-linecap="round"/><line x1="34" y1="38" x2="46" y2="38" stroke="#0E1117" stroke-width="2.5" stroke-linecap="round"/></svg></div>
       <span class="nav-name">Castford</span>
     </a>
     <div class="nav-links">
@@ -242,8 +242,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
   <div class="hero-frost">
     <div class="hero-content">
       <div class="hero-badge">Plan across 7 departments in one platform <span class="hero-badge-tag">NEW</span></div>
-      <h1>The numbers your<br>board <em>hasn't seen yet.</em></h1>
-      <p class="hero-sub">AI-native FP&A that surfaces what spreadsheets bury. Close faster, forecast accurately, plan across every department.</p>
+      <h1>Forecast with<br><em>conviction.</em></h1>
+      <p class="hero-sub">AI-native FP&A for teams that outgrew spreadsheets. Close faster, forecast accurately, plan across every department.</p>
       <div class="hero-btns">
         <button class="btn-hero btn-amber">Get Started Free</button>
         <button class="btn-hero btn-glass">Book a Demo</button>
@@ -375,7 +375,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
 <div class="w" style="padding-top:72px">
   <div class="cta-section">
     <div class="cta-inner">
-      <h2>See what the numbers see.</h2>
+      <h2>Forecast with conviction.</h2>
       <p>Join finance teams that outgrew spreadsheets. Setup in minutes.</p>
       <div class="cta-btns">
         <button class="btn-hero btn-amber">Get Started Free</button>
@@ -390,7 +390,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:48px
 <footer><div class="w">
   <div class="ft-grid">
     <div class="ft-brand">
-      <div class="nav-logo" style="margin-bottom:0"><div class="nav-mark"><svg viewBox="0 0 40 40" width="22" height="22"><rect width="40" height="40" rx="9" fill="#CF8A2E"/><path d="M19.5 10.5C14.8 10.5 11 14.1 11 18.8V21.2C11 25.9 14.8 29.5 19.5 29.5C21.8 29.5 23.8 28.6 25.2 27.1" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round" fill="none"/><line x1="27" y1="11" x2="27" y2="29" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="11" x2="33" y2="11" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="19.5" x2="32" y2="19.5" stroke="#0A0A09" stroke-width="2.8" stroke-linecap="round"/></svg></div><span class="nav-name" style="font-size:15px;color:var(--ink)">Castford</span></div>
+      <div class="nav-logo" style="margin-bottom:0"><div class="nav-mark"><svg viewBox="0 0 80 80" width="22" height="22"><rect x="4" y="4" width="72" height="72" rx="16" fill="#CF8A2E"/><path d="M22 56L22 24L40 24" stroke="#0E1117" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M40 24C52 24 58 32 58 40C58 48 52 56 40 56" stroke="#0E1117" stroke-width="3.5" stroke-linecap="round" fill="none"/><line x1="22" y1="56" x2="40" y2="56" stroke="#0E1117" stroke-width="3.5" stroke-linecap="round"/><line x1="34" y1="24" x2="34" y2="56" stroke="#0E1117" stroke-width="3" stroke-linecap="round"/><line x1="34" y1="38" x2="46" y2="38" stroke="#0E1117" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="nav-name" style="font-size:15px;color:var(--ink)">Castford</span></div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
     <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
