@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castford — Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f7f4;--bg-warm:#f3f1ec;--surface:#ffffff;--surface-2:#faf9f6;--surface-3:#f0eeea;
+  --border:rgba(0,0,0,0.06);--border-hover:rgba(59,130,246,0.25);
+  --text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
+  --blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;
+  --green:#059669;--green-soft:#d1fae5;--green-text:#065f46;
+  --amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;
+  --rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;
+  --purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;
+  --radius:20px;--radius-sm:14px;--radius-xs:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(219,234,254,0.4),transparent),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(209,250,229,0.3),transparent);pointer-events:none;z-index:0}
+
+.dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
+.dash-logo{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text)}
+.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(37,99,235,0.25)}
+.dash-logo-text{font-size:19px;font-weight:800}
+.dash-nav{display:flex;gap:8px}
+.dash-nav a{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:var(--text-2);transition:all .2s}
+.dash-nav a:hover{background:var(--surface);color:var(--text)}
+.dash-nav a.active{background:var(--blue-soft);color:var(--blue-text)}
+
+.container{max-width:800px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.page-title{font-size:28px;font-weight:800;letter-spacing:-0.02em}
+.header-actions{display:flex;gap:8px}
+.btn{padding:8px 18px;border-radius:10px;font-weight:700;font-size:12px;border:none;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-ghost{background:transparent;color:var(--text-2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--text-3);color:var(--text)}
+
+.filters{display:flex;gap:8px;margin-bottom:20px}
+.filter-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all .2s}
+.filter-chip:hover{border-color:var(--blue);color:var(--blue)}
+.filter-chip.active{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-text)}
+.filter-count{font-size:10px;font-weight:800;background:var(--rose);color:#fff;border-radius:10px;padding:1px 6px;margin-left:4px}
+
+.notif-list{display:flex;flex-direction:column;gap:2px}
+.notif-item{display:flex;gap:14px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .25s;position:relative}
+.notif-item:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.notif-item.unread{border-left:3px solid var(--blue)}
+.notif-item.unread::before{content:'';position:absolute;top:20px;left:8px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+
+.notif-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700}
+.icon-alert{background:var(--rose-soft);color:var(--rose-text)}
+.icon-billing{background:var(--green-soft);color:var(--green-text)}
+.icon-system{background:var(--blue-soft);color:var(--blue-text)}
+.icon-copilot{background:var(--purple-soft);color:var(--purple-text)}
+.icon-health{background:var(--amber-soft);color:var(--amber-text)}
+
+.notif-content{flex:1;min-width:0}
+.notif-title{font-size:14px;font-weight:600;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notif-body{font-size:12px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notif-time{font-size:11px;color:var(--text-3);flex-shrink:0;margin-top:2px}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.3}
+.empty-title{font-size:16px;font-weight:700;color:var(--text-2);margin-bottom:4px}
+.empty-sub{font-size:13px}
+
+.skeleton{background:linear-gradient(90deg,rgba(0,0,0,0.04) 25%,rgba(0,0,0,0.08) 50%,rgba(0,0,0,0.04) 75%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<header class="dash-header">
+  <a href="/site/dashboard/standard.html" class="dash-logo">
+    <div class="dash-logo-icon">C</div>
+    <div class="dash-logo-text">Castford</div>
+  </a>
+  <nav class="dash-nav">
+    <a href="/site/dashboard/standard.html">Dashboard</a>
+    <a href="/site/dashboard/workspace.html">Workspace</a>
+    <a href="/site/dashboard/notifications.html" class="active">Notifications</a>
+    <a href="/site/dashboard/billing.html">Billing</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="page-header">
+    <h1 class="page-title">Notifications</h1>
+    <div class="header-actions">
+      <button class="btn btn-ghost" onclick="markAllRead()">Mark all read</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-chip active" data-filter="all" onclick="filterNotifs('all',this)">All <span class="filter-count" id="count-all">0</span></div>
+    <div class="filter-chip" data-filter="alert" onclick="filterNotifs('alert',this)">Alerts</div>
+    <div class="filter-chip" data-filter="billing" onclick="filterNotifs('billing',this)">Billing</div>
+    <div class="filter-chip" data-filter="system" onclick="filterNotifs('system',this)">System</div>
+    <div class="filter-chip" data-filter="copilot" onclick="filterNotifs('copilot',this)">Copilot</div>
+  </div>
+
+  <div class="notif-list" id="notif-list">
+    <div class="notif-item" style="padding:20px"><div class="skeleton" style="width:100%;height:40px"></div></div>
+    <div class="notif-item" style="padding:20px"><div class="skeleton" style="width:100%;height:40px"></div></div>
+    <div class="notif-item" style="padding:20px"><div class="skeleton" style="width:100%;height:40px"></div></div>
+  </div>
+</div>
+
+<script src="/site/castford-energy.js" defer></script>
+<script>
+const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODkwNjIsImV4cCI6MjA4OTQ2NTA2Mn0.bR9I7_-eFbJzMBncm5Azgj7CfJWlTMXBpjz_vYfX7_Q';
+
+let allNotifs = [];
+let currentFilter = 'all';
+
+function classifyNotif(n) {
+  const t = (n.title || '').toLowerCase();
+  if (t.includes('budget') || t.includes('variance') || t.includes('unusual') || t.includes('revenue drop') || t.includes('alert')) return 'alert';
+  if (t.includes('payment') || t.includes('plan') || t.includes('subscription') || t.includes('welcome to castford')) return 'billing';
+  if (t.includes('copilot') || t.includes('forecast') || t.includes('report')) return 'copilot';
+  return 'system';
+}
+
+function iconForType(type) {
+  const icons = { alert: ['icon-alert', 'A'], billing: ['icon-billing', '$'], copilot: ['icon-copilot', 'AI'], system: ['icon-system', 'S'], health: ['icon-health', 'H'] };
+  return icons[type] || icons.system;
+}
+
+function timeAgo(dateStr) {
+  const d = new Date(dateStr); const now = new Date(); const diff = (now - d) / 1000;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function renderNotifs(notifs) {
+  const list = document.getElementById('notif-list');
+  if (!notifs.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#9745;</div><div class="empty-title">All caught up</div><div class="empty-sub">No notifications to show.</div></div>';
+    return;
+  }
+  list.innerHTML = notifs.map(n => {
+    const type = classifyNotif(n);
+    const [iconClass, iconLetter] = iconForType(type);
+    const isUnread = !n.read;
+    return '<div class="notif-item ' + (isUnread ? 'unread' : '') + '" onclick="markRead(\'' + n.id + '\')" data-type="' + type + '">' +
+      '<div class="notif-icon ' + iconClass + '">' + iconLetter + '</div>' +
+      '<div class="notif-content"><div class="notif-title">' + (n.title || 'Notification') + '</div><div class="notif-body">' + (n.body || '') + '</div></div>' +
+      '<div class="notif-time">' + timeAgo(n.created_at) + '</div></div>';
+  }).join('');
+}
+
+function filterNotifs(type, el) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = type === 'all' ? allNotifs : allNotifs.filter(n => classifyNotif(n) === type);
+  renderNotifs(filtered);
+}
+
+async function loadNotifications() {
+  const token = localStorage.getItem('sb_access_token');
+  if (!token) {
+    document.getElementById('notif-list').innerHTML = '<div class="empty-state"><div class="empty-title">Sign in to view notifications</div></div>';
+    return;
+  }
+  try {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ action: 'list', limit: 50 })
+    });
+    const data = await res.json();
+    allNotifs = data.notifications || [];
+    document.getElementById('count-all').textContent = allNotifs.length;
+    renderNotifs(allNotifs);
+  } catch (e) {
+    console.error('Notifications error:', e);
+    // Show demo notifications
+    allNotifs = [
+      { id: '1', title: 'FX Gains / (Losses): Over budget by 224.1%', body: 'Actual $3.2M vs Budget $1.0M — critical variance spike detected', read: false, created_at: new Date(Date.now() - 3600000).toISOString() },
+      { id: '2', title: 'Interest Income: Over budget by 68.8%', body: 'Actual $1.7M vs Budget $1.0M — high variance detected', read: false, created_at: new Date(Date.now() - 7200000).toISOString() },
+      { id: '3', title: 'Support & Onboarding: Under budget by 31.4%', body: 'Actual $686K vs Budget $1.0M — spending below target', read: false, created_at: new Date(Date.now() - 14400000).toISOString() },
+      { id: '4', title: 'Welcome to Castford Enterprise!', body: 'Your plan has been activated. 30-day money-back guarantee is active.', read: true, created_at: new Date(Date.now() - 86400000).toISOString() },
+      { id: '5', title: 'Monthly board report generated', body: 'Revenue $55.4M, Gross Margin 85.1%, Net Income $5.1M', read: true, created_at: new Date(Date.now() - 172800000).toISOString() },
+      { id: '6', title: 'Cloud Infrastructure: Over budget by 24.3%', body: 'Actual $1.2M vs Budget $1.0M — moderate variance', read: true, created_at: new Date(Date.now() - 259200000).toISOString() },
+      { id: '7', title: 'Health score updated: 15/100', body: 'Churn risk: critical. Connect an integration to improve your score.', read: true, created_at: new Date(Date.now() - 345600000).toISOString() },
+    ];
+    document.getElementById('count-all').textContent = allNotifs.length;
+    renderNotifs(allNotifs);
+  }
+}
+
+async function markRead(id) {
+  const n = allNotifs.find(n => n.id === id);
+  if (n) n.read = true;
+  const filtered = currentFilter === 'all' ? allNotifs : allNotifs.filter(n => classifyNotif(n) === currentFilter);
+  renderNotifs(filtered);
+}
+
+async function markAllRead() {
+  allNotifs.forEach(n => n.read = true);
+  const filtered = currentFilter === 'all' ? allNotifs : allNotifs.filter(n => classifyNotif(n) === currentFilter);
+  renderNotifs(filtered);
+  const token = localStorage.getItem('sb_access_token');
+  if (token) {
+    try { await fetch(SUPABASE_URL + '/functions/v1/notify', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, 'apikey': SUPABASE_KEY }, body: JSON.stringify({ action: 'read_all' }) }); } catch {}
+  }
+}
+
+loadNotifications();
+</script>
+</body>
+</html>
