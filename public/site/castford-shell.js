@@ -4,7 +4,7 @@
    2. Raindrop geometry cascade (via rain.js)
    3. localStorage theme persistence
    4. Favicon injection
-   5. FinanceOS → Castford text rebrand
+   5. Castford → Castford text rebrand
    
    Usage: <script src="/site/castford-shell.js" defer></script>
    Respects: data-no-rain, data-no-grid, prefers-reduced-motion */
@@ -69,20 +69,20 @@
     doc.head.appendChild(consent);
   }
 
-  // 5. Text rebrand: FinanceOS → Castford (DOM walk)
+  // 5. Text rebrand: Castford → Castford (DOM walk)
   var walker = doc.createTreeWalker(body, NodeFilter.SHOW_TEXT, null, false);
   var node;
   while (node = walker.nextNode()) {
-    if (node.nodeValue.indexOf('FinanceOS') !== -1) {
-      node.nodeValue = node.nodeValue.replace(/FinanceOS/g, 'Castford');
+    if (node.nodeValue.indexOf('Castford') !== -1) {
+      node.nodeValue = node.nodeValue.replace(/Castford/g, 'Castford');
     }
     if (node.nodeValue.indexOf('Finance OS') !== -1) {
       node.nodeValue = node.nodeValue.replace(/Finance OS/g, 'Castford');
     }
   }
   // Also fix title
-  if (doc.title.indexOf('FinanceOS') !== -1) {
-    doc.title = doc.title.replace(/FinanceOS/g, 'Castford');
+  if (doc.title.indexOf('Castford') !== -1) {
+    doc.title = doc.title.replace(/Castford/g, 'Castford');
   }
   if (doc.title.indexOf('Finance OS') !== -1) {
     doc.title = doc.title.replace(/Finance OS/g, 'Castford');

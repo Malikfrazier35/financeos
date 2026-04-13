@@ -414,5 +414,6 @@ document.getElementById('themeToggle').addEventListener('click',()=>{const h=doc
 const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');if(el.target.classList.contains('cnt')){const t=parseInt(el.target.dataset.to);const s=el.target.dataset.suffix||'';let c=0;const step=Math.ceil(t/30);const int=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(int)}el.target.textContent=c+s},25)}}})},{threshold:0.08});
 document.querySelectorAll('.fin,.cnt').forEach(el=>obs.observe(el));
 </script>
+<script src="/site/castford-energy.js" defer></script>
 </body>
 </html>
