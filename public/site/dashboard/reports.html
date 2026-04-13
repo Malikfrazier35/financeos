@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castford — Reports</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8f7f4;--surface:#ffffff;--surface-2:#faf9f6;--surface-3:#f0eeea;--border:rgba(0,0,0,0.06);--text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;--shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);--shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);--blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;--green:#059669;--green-soft:#d1fae5;--green-text:#065f46;--amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;--purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;--radius:20px;--radius-sm:14px}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(219,234,254,0.4),transparent),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(209,250,229,0.3),transparent);pointer-events:none;z-index:0}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
+.dash-logo{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text)}
+.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(37,99,235,0.25)}
+.dash-logo-text{font-size:19px;font-weight:800}
+.dash-nav{display:flex;gap:8px}
+.dash-nav a{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:var(--text-2);transition:all .2s}
+.dash-nav a:hover{background:var(--surface);color:var(--text)}
+.dash-nav a.active{background:var(--purple-soft);color:var(--purple-text)}
+
+.container{max-width:900px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.page-title{font-size:28px;font-weight:800;letter-spacing:-0.02em}
+.btn{padding:10px 24px;border-radius:10px;font-weight:700;font-size:13px;border:none;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.25)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(37,99,235,0.3)}
+
+.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px;box-shadow:var(--shadow-sm);transition:all .25s;cursor:pointer}
+.report-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.report-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.type-board{background:var(--purple-soft);color:var(--purple-text)}
+.type-quarterly{background:var(--blue-soft);color:var(--blue-text)}
+.report-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.report-period{font-size:12px;color:var(--text-2);margin-bottom:14px}
+.report-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.kpi-mini{text-align:center;padding:8px;background:var(--surface-2);border-radius:8px}
+.kpi-mini-val{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-0.02em}
+.kpi-mini-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3)}
+.report-footer{display:flex;align-items:center;justify-content:space-between}
+.report-date{font-size:11px;color:var(--text-3)}
+.report-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px}
+.status-generated{background:var(--green-soft);color:var(--green-text)}
+</style>
+</head>
+<body>
+
+<header class="dash-header">
+  <a href="/site/dashboard/standard.html" class="dash-logo">
+    <div class="dash-logo-icon">C</div>
+    <div class="dash-logo-text">Castford</div>
+  </a>
+  <nav class="dash-nav">
+    <a href="/site/dashboard/standard.html">Dashboard</a>
+    <a href="/site/dashboard/alerts.html">Alerts</a>
+    <a href="/site/dashboard/reports.html" class="active">Reports</a>
+    <a href="/site/dashboard/billing.html">Billing</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="page-header">
+    <h1 class="page-title">Reports</h1>
+    <button class="btn btn-primary" onclick="generateReport()">Generate New Report</button>
+  </div>
+
+  <div class="report-grid" id="report-grid"></div>
+</div>
+
+<script src="/site/castford-energy.js" defer></script>
+<script>
+function fmt(v) { const a=Math.abs(v); if(a>=1e6)return'$'+(v/1e6).toFixed(1)+'M'; if(a>=1e3)return'$'+(v/1e3).toFixed(0)+'K'; return'$'+v.toFixed(0); }
+
+const demoReports = [
+  { id:'1', report_type:'monthly_board', title:'Financial Holding LLC — Monthly Board Report', period:'2026-04', status:'generated', created_at:new Date().toISOString(), content:{ kpis:{ revenue:55395000, gross_profit:47115000, gross_margin:'85.1', net_income:5067000, net_margin:'9.1', transactions:162 } } },
+  { id:'2', report_type:'monthly_board', title:'Financial Holding LLC — Monthly Board Report', period:'2026-03', status:'generated', created_at:new Date(Date.now()-2592000000).toISOString(), content:{ kpis:{ revenue:52100000, gross_profit:44285000, gross_margin:'85.0', net_income:4700000, net_margin:'9.0', transactions:148 } } },
+  { id:'3', report_type:'monthly_board', title:'Financial Holding LLC — Monthly Board Report', period:'2026-02', status:'generated', created_at:new Date(Date.now()-5184000000).toISOString(), content:{ kpis:{ revenue:49800000, gross_profit:42330000, gross_margin:'85.0', net_income:4200000, net_margin:'8.4', transactions:135 } } },
+];
+
+function renderReports(reports) {
+  const grid = document.getElementById('report-grid');
+  if (!reports.length) {
+    grid.innerHTML = '<div style="grid-column:span 2;text-align:center;padding:60px;color:var(--text-3)"><div style="font-size:16px;font-weight:700;color:var(--text-2)">No reports yet</div><div style="font-size:13px;margin-top:4px">Click "Generate New Report" to create your first board-ready report.</div></div>';
+    return;
+  }
+  grid.innerHTML = reports.map(r => {
+    const k = r.content?.kpis || {};
+    const typeLabel = r.report_type === 'monthly_board' ? 'Monthly board' : 'Financial report';
+    const typeClass = r.report_type === 'monthly_board' ? 'type-board' : 'type-quarterly';
+    return '<div class="report-card" onclick="viewReport(\'' + r.id + '\')">' +
+      '<div class="report-type ' + typeClass + '">' + typeLabel + '</div>' +
+      '<div class="report-title">' + (r.title || 'Report') + '</div>' +
+      '<div class="report-period">Period: ' + r.period + '</div>' +
+      '<div class="report-kpis">' +
+        '<div class="kpi-mini"><div class="kpi-mini-val">' + fmt(k.revenue || 0) + '</div><div class="kpi-mini-label">Revenue</div></div>' +
+        '<div class="kpi-mini"><div class="kpi-mini-val">' + (k.gross_margin || '—') + '%</div><div class="kpi-mini-label">GM</div></div>' +
+        '<div class="kpi-mini"><div class="kpi-mini-val">' + fmt(k.net_income || 0) + '</div><div class="kpi-mini-label">Net Income</div></div>' +
+      '</div>' +
+      '<div class="report-footer">' +
+        '<div class="report-date">' + new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</div>' +
+        '<div class="report-status status-generated">Generated</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function viewReport(id) { alert('Full report viewer coming soon.'); }
+
+async function generateReport() {
+  const token = localStorage.getItem('sb_access_token');
+  if (!token) { alert('Sign in to generate reports.'); return; }
+  const btn = event.target; btn.textContent = 'Generating...'; btn.disabled = true;
+  try {
+    const res = await fetch('https://crecesswagluelvkesul.supabase.co/functions/v1/report-generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODkwNjIsImV4cCI6MjA4OTQ2NTA2Mn0.bR9I7_-eFbJzMBncm5Azgj7CfJWlTMXBpjz_vYfX7_Q' },
+      body: JSON.stringify({ action: 'generate', report_type: 'monthly_board' })
+    });
+    const data = await res.json();
+    if (data.status === 'generated') { alert('Report generated: ' + data.title); location.reload(); }
+    else { alert(data.error || 'Report generation failed'); }
+  } catch (e) { alert('Error: ' + e.message); }
+  btn.textContent = 'Generate New Report'; btn.disabled = false;
+}
+
+renderReports(demoReports);
+</script>
+</body>
+</html>

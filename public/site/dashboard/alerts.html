@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castford — Financial Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f7f4;--surface:#ffffff;--surface-2:#faf9f6;--surface-3:#f0eeea;
+  --border:rgba(0,0,0,0.06);--text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
+  --blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;
+  --green:#059669;--green-soft:#d1fae5;--green-text:#065f46;
+  --amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;
+  --rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;
+  --purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;
+  --radius:20px;--radius-sm:14px;--radius-xs:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(219,234,254,0.4),transparent),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(209,250,229,0.3),transparent);pointer-events:none;z-index:0}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
+.dash-logo{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text)}
+.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(37,99,235,0.25)}
+.dash-logo-text{font-size:19px;font-weight:800}
+.dash-nav{display:flex;gap:8px}
+.dash-nav a{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:var(--text-2);transition:all .2s}
+.dash-nav a:hover{background:var(--surface);color:var(--text)}
+.dash-nav a.active{background:var(--rose-soft);color:var(--rose-text)}
+
+.container{max-width:900px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
+.page-title{font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.page-sub{color:var(--text-2);font-size:14px;margin-bottom:28px}
+
+.summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.summary-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;box-shadow:var(--shadow-sm)}
+.summary-val{font-size:26px;font-weight:800;letter-spacing:-0.02em}
+.summary-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-top:4px}
+
+.alert-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow-sm);transition:all .25s;cursor:default}
+.alert-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.alert-card.critical{border-left:4px solid var(--rose)}
+.alert-card.high{border-left:4px solid var(--amber)}
+.alert-card.medium{border-left:4px solid var(--blue)}
+.alert-inner{display:flex;align-items:center;gap:16px;padding:18px 20px}
+.alert-severity{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+.sev-critical{background:var(--rose-soft);color:var(--rose-text)}
+.sev-high{background:var(--amber-soft);color:var(--amber-text)}
+.sev-medium{background:var(--blue-soft);color:var(--blue-text)}
+.alert-body{flex:1;min-width:0}
+.alert-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.alert-desc{font-size:12px;color:var(--text-2)}
+.alert-meta{display:flex;gap:12px;align-items:center;flex-shrink:0}
+.alert-deviation{font-size:18px;font-weight:800;letter-spacing:-0.02em;font-family:'JetBrains Mono',monospace}
+.alert-deviation.over{color:var(--rose)}
+.alert-deviation.under{color:var(--green)}
+.alert-type-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}
+.alert-time{font-size:11px;color:var(--text-3)}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3)}
+.empty-title{font-size:16px;font-weight:700;color:var(--text-2);margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<header class="dash-header">
+  <a href="/site/dashboard/standard.html" class="dash-logo">
+    <div class="dash-logo-icon">C</div>
+    <div class="dash-logo-text">Castford</div>
+  </a>
+  <nav class="dash-nav">
+    <a href="/site/dashboard/standard.html">Dashboard</a>
+    <a href="/site/dashboard/notifications.html">Notifications</a>
+    <a href="/site/dashboard/alerts.html" class="active">Alerts</a>
+    <a href="/site/dashboard/billing.html">Billing</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Financial Alerts</h1>
+  <p class="page-sub">Anomalies detected by the alert evaluator across your GL data. Evaluated every 6 hours.</p>
+
+  <div class="summary-strip" id="summary">
+    <div class="summary-box"><div class="summary-val" id="total-alerts">—</div><div class="summary-label">Total alerts</div></div>
+    <div class="summary-box"><div class="summary-val" style="color:var(--rose)" id="critical-count">—</div><div class="summary-label">Critical</div></div>
+    <div class="summary-box"><div class="summary-val" style="color:var(--amber)" id="high-count">—</div><div class="summary-label">High</div></div>
+    <div class="summary-box"><div class="summary-val" style="color:var(--blue)" id="medium-count">—</div><div class="summary-label">Medium</div></div>
+  </div>
+
+  <div id="alerts-list"></div>
+</div>
+
+<script src="/site/castford-energy.js" defer></script>
+<script>
+const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODkwNjIsImV4cCI6MjA4OTQ2NTA2Mn0.bR9I7_-eFbJzMBncm5Azgj7CfJWlTMXBpjz_vYfX7_Q';
+
+function fmt(v) { const a=Math.abs(v); if(a>=1e6)return'$'+(v/1e6).toFixed(1)+'M'; if(a>=1e3)return'$'+(v/1e3).toFixed(0)+'K'; return'$'+v.toFixed(0); }
+function timeAgo(d) { const diff=(Date.now()-new Date(d))/1000; if(diff<3600)return Math.floor(diff/60)+'m ago'; if(diff<86400)return Math.floor(diff/3600)+'h ago'; return Math.floor(diff/86400)+'d ago'; }
+
+const demoAlerts = [
+  { id:'1', alert_type:'variance_spike', severity:'critical', title:'FX Gains / (Losses): Over budget by 224.1%', description:'Actual $3.2M vs Budget $1.0M', deviation_pct:224.1, created_at:new Date(Date.now()-3600000).toISOString() },
+  { id:'2', alert_type:'variance_spike', severity:'critical', title:'Interest Income: Over budget by 68.8%', description:'Actual $1.7M vs Budget $1.0M', deviation_pct:68.8, created_at:new Date(Date.now()-7200000).toISOString() },
+  { id:'3', alert_type:'variance_spike', severity:'high', title:'Support & Onboarding: Under budget by 31.4%', description:'Actual $686K vs Budget $1.0M', deviation_pct:-31.4, created_at:new Date(Date.now()-14400000).toISOString() },
+  { id:'4', alert_type:'variance_spike', severity:'medium', title:'Usage / AI Module: Over budget by 29.4%', description:'Actual $1.3M vs Budget $1.0M', deviation_pct:29.4, created_at:new Date(Date.now()-28800000).toISOString() },
+  { id:'5', alert_type:'variance_spike', severity:'medium', title:'Revenue Operations: Over budget by 26.0%', description:'Actual $1.3M vs Budget $1.0M', deviation_pct:26.0, created_at:new Date(Date.now()-43200000).toISOString() },
+  { id:'6', alert_type:'variance_spike', severity:'medium', title:'Cloud Infrastructure: Over budget by 24.3%', description:'Actual $1.2M vs Budget $1.0M', deviation_pct:24.3, created_at:new Date(Date.now()-57600000).toISOString() },
+  { id:'7', alert_type:'variance_spike', severity:'medium', title:'Sales: Over budget by 18.5%', description:'Actual $1.2M vs Budget $1.0M', deviation_pct:18.5, created_at:new Date(Date.now()-72000000).toISOString() },
+];
+
+function renderAlerts(alerts) {
+  const list = document.getElementById('alerts-list');
+  const critical = alerts.filter(a => a.severity === 'critical').length;
+  const high = alerts.filter(a => a.severity === 'high').length;
+  const medium = alerts.filter(a => a.severity === 'medium').length;
+
+  document.getElementById('total-alerts').textContent = alerts.length;
+  document.getElementById('critical-count').textContent = critical;
+  document.getElementById('high-count').textContent = high;
+  document.getElementById('medium-count').textContent = medium;
+
+  if (!alerts.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-title">No alerts detected</div><div>Your GL data looks clean. The evaluator runs every 6 hours.</div></div>';
+    return;
+  }
+
+  const sorted = [...alerts].sort((a, b) => {
+    const sev = { critical: 0, high: 1, medium: 2 };
+    return (sev[a.severity] || 3) - (sev[b.severity] || 3) || Math.abs(b.deviation_pct || 0) - Math.abs(a.deviation_pct || 0);
+  });
+
+  list.innerHTML = sorted.map(a => {
+    const dev = a.deviation_pct || 0;
+    const typeLabels = { variance_spike: 'Variance', large_transaction: 'Outlier', trend_break: 'Trend' };
+    return '<div class="alert-card ' + a.severity + '">' +
+      '<div class="alert-inner">' +
+        '<div class="alert-severity sev-' + a.severity + '">' + (a.severity === 'critical' ? 'CRIT' : a.severity === 'high' ? 'HIGH' : 'MED') + '</div>' +
+        '<div class="alert-body"><div class="alert-title">' + a.title + '</div><div class="alert-desc">' + (a.description || '') + '</div></div>' +
+        '<div class="alert-meta">' +
+          '<div class="alert-deviation ' + (dev > 0 ? 'over' : 'under') + '">' + (dev > 0 ? '+' : '') + dev.toFixed(1) + '%</div>' +
+          '<div class="alert-type-badge">' + (typeLabels[a.alert_type] || a.alert_type) + '</div>' +
+          '<div class="alert-time">' + timeAgo(a.created_at) + '</div>' +
+        '</div>' +
+      '</div></div>';
+  }).join('');
+}
+
+async function loadAlerts() {
+  const token = localStorage.getItem('sb_access_token');
+  if (!token) { renderAlerts(demoAlerts); return; }
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/financial_alerts?org_id=eq.' + localStorage.getItem('sb_org_id') + '&status=eq.active&order=created_at.desc&limit=50', {
+      headers: { 'Authorization': 'Bearer ' + token, 'apikey': SUPABASE_KEY }
+    });
+    const data = await res.json();
+    renderAlerts(data.length ? data : demoAlerts);
+  } catch { renderAlerts(demoAlerts); }
+}
+
+loadAlerts();
+</script>
+</body>
+</html>
