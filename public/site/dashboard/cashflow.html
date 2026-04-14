@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cash Flow — Castford</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--surface:#fff;--surface-2:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--text-2:#475569;--text-3:#94a3b8;--blue:#1e40af;--blue-light:#dbeafe;--green:#059669;--green-light:#d1fae5;--amber:#d97706;--red:#dc2626;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,0.06)}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 20px;display:flex;flex-direction:column;gap:8px}
+.logo{font-size:20px;font-weight:800;color:var(--blue);letter-spacing:-0.5px;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;color:var(--text-2);font-size:14px;font-weight:500;text-decoration:none;transition:all .15s}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:600}
+.nav-divider{height:1px;background:var(--border);margin:12px 0}
+.main{padding:32px 40px;overflow-y:auto}
+.page-title{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
+.page-subtitle{font-size:14px;color:var(--text-2);margin-bottom:32px}
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:28px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px}
+.kpi-value{font-size:24px;font-weight:800;margin-top:6px;letter-spacing:-0.5px}
+.kpi-sub{font-size:12px;color:var(--text-2);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%}
+.cf-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}
+.cf-row:last-child{border-bottom:none}
+.cf-name{font-weight:500;color:var(--text)}
+.cf-amount{font-weight:700;font-variant-numeric:tabular-nums}
+.cf-total{border-top:2px solid var(--text);padding-top:12px;margin-top:4px;font-weight:800;font-size:16px}
+.trend-row{display:grid;grid-template-columns:80px 1fr 100px 100px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.trend-row:last-child{border-bottom:none}
+.trend-bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.trend-fill{height:100%;border-radius:4px;background:var(--green);transition:width .6s}
+.loading{background:linear-gradient(90deg,var(--surface-2) 25%,#e8edf3 50%,var(--surface-2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;min-height:180px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(max-width:1024px){.layout{grid-template-columns:1fr}.sidebar{display:none}.kpi-strip{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="logo"><div class="logo-icon">C</div> Castford</div>
+    <a class="nav-item" href="/site/dashboard/command-center.html">Command Center</a>
+    <a class="nav-item" href="/site/dashboard/cfo.html">CFO Dashboard</a>
+    <a class="nav-item active" href="/site/dashboard/cashflow.html">Cash Flow</a>
+    <a class="nav-item" href="/site/dashboard/xpa.html">xP&A Planning</a>
+    <a class="nav-item" href="/site/dashboard/scenarios.html">Scenario Modeling</a>
+    <div class="nav-divider"></div>
+    <a class="nav-item" href="/site/dashboard/billing.html">Billing</a>
+    <a class="nav-item" href="/site/dashboard/alerts.html">Alerts</a>
+    <a class="nav-item" href="/site/dashboard/reports.html">Reports</a>
+  </nav>
+  <main class="main">
+    <div class="page-title">Cash Flow Analysis</div>
+    <div class="page-subtitle">Indirect method cash flow statement generated from GL data</div>
+
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-label">Net Income</div><div class="kpi-value" id="k-ni">--</div></div>
+      <div class="kpi"><div class="kpi-label">Operating CF</div><div class="kpi-value" id="k-ocf">--</div></div>
+      <div class="kpi"><div class="kpi-label">Investing CF</div><div class="kpi-value" id="k-icf">--</div></div>
+      <div class="kpi"><div class="kpi-label">Free Cash Flow</div><div class="kpi-value" id="k-fcf">--</div><div class="kpi-sub" id="k-fcf-margin"></div></div>
+      <div class="kpi"><div class="kpi-label">Cash Conversion</div><div class="kpi-value" id="k-conv">--</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--green)"></div> Cash Flow Statement</div>
+        <div id="cf-statement"><div class="loading"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--blue)"></div> Monthly Trend</div>
+        <div id="cf-trend"><div class="loading"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/site/castford-api.js" defer></script>
+<script src="/site/castford-energy.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  await new Promise(r => setTimeout(r, 200));
+  if (!window.cfapi) return;
+  var api = window.cfapi;
+  var fmt = CastfordAPI ? CastfordAPI.fmt : function(v){return '$'+v};
+
+  // Summary KPIs
+  try {
+    var s = await api.cashflow('summary');
+    if (s && !s.error) {
+      document.getElementById('k-ni').textContent = s.net_income || '--';
+      document.getElementById('k-ocf').textContent = s.operating_cf || '--';
+      document.getElementById('k-icf').textContent = s.investing_cf || '--';
+      document.getElementById('k-fcf').textContent = s.free_cash_flow || '--';
+      document.getElementById('k-fcf-margin').textContent = s.fcf_margin || '';
+      document.getElementById('k-conv').textContent = s.cash_conversion || '--';
+    }
+  } catch(e) {}
+
+  // Full statement
+  try {
+    var f = await api.cashflow('full');
+    if (f && f.operating) {
+      var html = '<div style="font-size:13px;font-weight:600;color:var(--text-3);margin-bottom:8px">Starting: Net Income</div>';
+      html += '<div class="cf-row"><span class="cf-name">Net Income</span><span class="cf-amount">' + fmt(f.net_income) + '</span></div>';
+      html += '<div style="font-size:13px;font-weight:600;color:var(--green);margin:16px 0 8px">Operating Activities</div>';
+      f.operating.items.forEach(function(i) {
+        html += '<div class="cf-row"><span class="cf-name">' + i.name + '</span><span class="cf-amount" style="color:' + (i.amount >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (i.amount >= 0 ? '+' : '') + fmt(i.amount) + '</span></div>';
+      });
+      html += '<div class="cf-row cf-total"><span>Cash from Operations</span><span>' + fmt(f.operating.total) + '</span></div>';
+      html += '<div style="font-size:13px;font-weight:600;color:var(--amber);margin:16px 0 8px">Investing Activities</div>';
+      f.investing.items.forEach(function(i) {
+        html += '<div class="cf-row"><span class="cf-name">' + i.name + '</span><span class="cf-amount" style="color:var(--red)">' + fmt(i.amount) + '</span></div>';
+      });
+      html += '<div class="cf-row cf-total"><span>Cash from Investing</span><span>' + fmt(f.investing.total) + '</span></div>';
+      if (f.financing.items.length) {
+        html += '<div style="font-size:13px;font-weight:600;color:var(--blue);margin:16px 0 8px">Financing Activities</div>';
+        f.financing.items.forEach(function(i) {
+          html += '<div class="cf-row"><span class="cf-name">' + i.name + '</span><span class="cf-amount">' + fmt(i.amount) + '</span></div>';
+        });
+        html += '<div class="cf-row cf-total"><span>Cash from Financing</span><span>' + fmt(f.financing.total) + '</span></div>';
+      }
+      html += '<div class="cf-row cf-total" style="font-size:18px;margin-top:12px"><span>Free Cash Flow</span><span style="color:var(--green)">' + fmt(f.free_cash_flow) + '</span></div>';
+      document.getElementById('cf-statement').innerHTML = html;
+    }
+  } catch(e) { console.warn(e); }
+
+  // Monthly trend
+  try {
+    var t = await api.cashflow('trend');
+    if (t && t.trend) {
+      var maxFcf = Math.max.apply(null, t.trend.map(function(m){return Math.abs(m.fcf)}));
+      var html = '<div class="trend-row" style="font-weight:600;color:var(--text-3);font-size:11px;text-transform:uppercase;letter-spacing:0.5px"><span>Month</span><span></span><span style="text-align:right">Revenue</span><span style="text-align:right">FCF</span></div>';
+      t.trend.forEach(function(m) {
+        var pct = maxFcf > 0 ? Math.round(Math.abs(m.fcf) / maxFcf * 100) : 0;
+        html += '<div class="trend-row"><span style="font-weight:600">' + m.month + '</span><div class="trend-bar"><div class="trend-fill" style="width:' + pct + '%"></div></div><span style="text-align:right;font-variant-numeric:tabular-nums">' + fmt(m.revenue) + '</span><span style="text-align:right;font-weight:600;color:var(--green);font-variant-numeric:tabular-nums">' + fmt(m.fcf) + '</span></div>';
+      });
+      document.getElementById('cf-trend').innerHTML = html;
+    }
+  } catch(e) { console.warn(e); }
+});
+</script>
+</body>
+</html>

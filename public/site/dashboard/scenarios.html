@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario Modeling — Castford</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--surface:#fff;--surface-2:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--text-2:#475569;--text-3:#94a3b8;--blue:#1e40af;--blue-light:#dbeafe;--green:#059669;--green-light:#d1fae5;--amber:#d97706;--red:#dc2626;--red-light:#fee2e2;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,0.06)}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 20px;display:flex;flex-direction:column;gap:8px}
+.logo{font-size:20px;font-weight:800;color:var(--blue);letter-spacing:-0.5px;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;color:var(--text-2);font-size:14px;font-weight:500;text-decoration:none;transition:all .15s}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:600}
+.nav-divider{height:1px;background:var(--border);margin:12px 0}
+.main{padding:32px 40px;overflow-y:auto}
+.page-title{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
+.page-subtitle{font-size:14px;color:var(--text-2);margin-bottom:32px}
+.templates-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.template-card:hover{border-color:var(--blue);box-shadow:0 4px 12px rgba(30,64,175,0.12);transform:translateY(-2px)}
+.template-card.selected{border-color:var(--blue);background:var(--blue-light)}
+.template-name{font-size:15px;font-weight:700;margin-bottom:6px}
+.template-desc{font-size:13px;color:var(--text-2);line-height:1.5}
+.controls{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:28px;box-shadow:var(--shadow)}
+.controls-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.control-row{display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin-bottom:16px}
+.control-group{display:flex;flex-direction:column;gap:4px}
+.control-label{font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px}
+.control-input{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;width:160px}
+.control-input:focus{outline:none;border-color:var(--blue)}
+.run-btn{padding:10px 24px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.run-btn:hover{background:#1e3a8a}
+.run-btn:disabled{opacity:0.5;cursor:not-allowed}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%}
+.metric-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.metric-row:last-child{border-bottom:none}
+.metric-label{color:var(--text-2)}
+.metric-value{font-weight:700;font-variant-numeric:tabular-nums}
+.impact-row{display:flex;justify-content:space-between;padding:12px;border-radius:8px;margin-bottom:8px;font-size:15px;font-weight:600}
+.impact-positive{background:var(--green-light);color:var(--green)}
+.impact-negative{background:var(--red-light);color:var(--red)}
+.hidden{display:none}
+@media(max-width:1024px){.layout{grid-template-columns:1fr}.sidebar{display:none}.templates-grid{grid-template-columns:1fr}.results{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="logo"><div class="logo-icon">C</div> Castford</div>
+    <a class="nav-item" href="/site/dashboard/command-center.html">Command Center</a>
+    <a class="nav-item" href="/site/dashboard/cfo.html">CFO Dashboard</a>
+    <a class="nav-item" href="/site/dashboard/cashflow.html">Cash Flow</a>
+    <a class="nav-item" href="/site/dashboard/xpa.html">xP&A Planning</a>
+    <a class="nav-item active" href="/site/dashboard/scenarios.html">Scenario Modeling</a>
+    <div class="nav-divider"></div>
+    <a class="nav-item" href="/site/dashboard/billing.html">Billing</a>
+    <a class="nav-item" href="/site/dashboard/alerts.html">Alerts</a>
+    <a class="nav-item" href="/site/dashboard/reports.html">Reports</a>
+  </nav>
+  <main class="main">
+    <div class="page-title">Scenario Modeling</div>
+    <div class="page-subtitle">Run what-if analysis against live GL data. See P&L impact before you commit.</div>
+
+    <div class="templates-grid" id="templates"><div style="grid-column:span 3;text-align:center;color:var(--text-3)">Loading templates...</div></div>
+
+    <div class="controls">
+      <div class="controls-title">Assumptions</div>
+      <div class="control-row">
+        <div class="control-group"><label class="control-label">Revenue Change %</label><input class="control-input" id="in-rev" type="number" placeholder="e.g. -20"></div>
+        <div class="control-group"><label class="control-label">OpEx Change %</label><input class="control-input" id="in-opex" type="number" placeholder="e.g. -10"></div>
+        <div class="control-group"><label class="control-label">New Hires</label><input class="control-input" id="in-hires" type="number" placeholder="e.g. 5"></div>
+        <div class="control-group"><label class="control-label">Avg Salary $</label><input class="control-input" id="in-salary" type="number" placeholder="120000" value="120000"></div>
+        <div class="control-group"><label class="control-label">Price Increase %</label><input class="control-input" id="in-price" type="number" placeholder="e.g. 15"></div>
+        <button class="run-btn" id="run-btn" onclick="runScenario()">Run Scenario</button>
+      </div>
+    </div>
+
+    <div class="results hidden" id="results">
+      <div class="result-card">
+        <div class="card-title"><div class="dot" style="background:var(--text-3)"></div> Baseline P&L</div>
+        <div id="baseline"></div>
+      </div>
+      <div class="result-card">
+        <div class="card-title"><div class="dot" style="background:var(--blue)"></div> Adjusted P&L</div>
+        <div id="adjusted"></div>
+      </div>
+      <div class="result-card" style="grid-column:span 2">
+        <div class="card-title"><div class="dot" style="background:var(--green)"></div> Impact Summary</div>
+        <div id="impact"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/site/castford-api.js" defer></script>
+<script src="/site/castford-energy.js" defer></script>
+<script>
+var fmt = function(v) { var a=Math.abs(v); if(a>=1e6)return'$'+(v/1e6).toFixed(1)+'M'; if(a>=1e3)return'$'+(v/1e3).toFixed(0)+'K'; return'$'+v.toFixed(0); };
+
+document.addEventListener('DOMContentLoaded', async function() {
+  await new Promise(r => setTimeout(r, 200));
+  if (!window.cfapi) return;
+  var data = await cfapi.scenarioTemplates();
+  if (data && data.templates) {
+    document.getElementById('templates').innerHTML = data.templates.map(function(t) {
+      return '<div class="template-card" onclick="selectTemplate(this, ' + JSON.stringify(JSON.stringify(t.assumptions)) + ')">' +
+        '<div class="template-name">' + t.name + '</div>' +
+        '<div class="template-desc">' + t.description + '</div></div>';
+    }).join('');
+  }
+});
+
+function selectTemplate(el, assumptionsJson) {
+  document.querySelectorAll('.template-card').forEach(function(c){c.classList.remove('selected')});
+  el.classList.add('selected');
+  var a = JSON.parse(assumptionsJson);
+  document.getElementById('in-rev').value = a.revenue_change_pct || '';
+  document.getElementById('in-opex').value = a.opex_change_pct || '';
+  document.getElementById('in-hires').value = a.new_hires || '';
+  if (a.price_increase_pct) document.getElementById('in-price').value = a.price_increase_pct;
+}
+
+async function runScenario() {
+  var btn = document.getElementById('run-btn');
+  btn.disabled = true; btn.textContent = 'Running...';
+  var assumptions = {};
+  var rev = document.getElementById('in-rev').value; if (rev) assumptions.revenue_change_pct = Number(rev);
+  var opex = document.getElementById('in-opex').value; if (opex) assumptions.opex_change_pct = Number(opex);
+  var hires = document.getElementById('in-hires').value; if (hires) { assumptions.new_hires = Number(hires); assumptions.avg_salary = Number(document.getElementById('in-salary').value) || 120000; }
+  var price = document.getElementById('in-price').value; if (price) assumptions.price_increase_pct = Number(price);
+
+  var data = await cfapi.runScenario(assumptions);
+  btn.disabled = false; btn.textContent = 'Run Scenario';
+  if (!data || data.error) return;
+
+  document.getElementById('results').classList.remove('hidden');
+  var b = data.baseline, a = data.adjusted, imp = data.impact;
+
+  function renderPL(d) {
+    return ['revenue','cogs','gross_profit','opex','net_income'].map(function(k) {
+      var label = k.replace(/_/g,' ').replace(/\b\w/g,function(l){return l.toUpperCase()});
+      var isBold = k === 'gross_profit' || k === 'net_income';
+      return '<div class="metric-row' + (isBold ? '" style="font-weight:800;border-top:2px solid var(--border)' : '') + '"><span class="metric-label">' + label + '</span><span class="metric-value">' + fmt(d[k]) + (d[k === 'gross_profit' ? 'gross_margin' : k === 'net_income' ? 'net_margin' : ''] !== undefined ? ' (' + (d[k === 'gross_profit' ? 'gross_margin' : 'net_margin'] || 0) + '%)' : '') + '</span></div>';
+    }).join('');
+  }
+  document.getElementById('baseline').innerHTML = renderPL(b);
+  document.getElementById('adjusted').innerHTML = renderPL(a);
+
+  var impactHtml = '';
+  [['Revenue', imp.revenue_delta, imp.revenue_delta_pct],['OpEx', imp.opex_delta, imp.opex_delta_pct],['Net Income', imp.ni_delta, imp.ni_delta_pct]].forEach(function(row) {
+    var pos = row[1] >= 0;
+    var cls = (row[0] === 'OpEx' ? !pos : pos) ? 'impact-positive' : 'impact-negative';
+    impactHtml += '<div class="impact-row ' + cls + '"><span>' + row[0] + '</span><span>' + (row[1] >= 0 ? '+' : '') + fmt(row[1]) + ' (' + (row[2] >= 0 ? '+' : '') + row[2] + '%)</span></div>';
+  });
+  if (data.summary) {
+    impactHtml += '<div style="margin-top:16px;padding:16px;background:var(--surface-2);border-radius:8px;font-size:14px"><strong>Summary:</strong> Revenue ' + data.summary.revenue + ' | Net Income ' + data.summary.net_income + ' | Margin ' + data.summary.margin + '</div>';
+  }
+  document.getElementById('impact').innerHTML = impactHtml;
+}
+</script>
+</body>
+</html>
