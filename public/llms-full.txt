@@ -124,12 +124,6 @@ Castford competes with:
 - Companies with 1-10 legal entities
 - US-based (expanding to EU, APAC)
 
-## Suite Products (by Financial Holding LLC)
-- **Castford**: FP&A platform (this product)
-- **Vaultline**: Treasury management for mid-market (https://vaultline.app)
-- **Parallax**: Aerospace supplier compliance OS
-- **Emberglow Advisory**: ESG/sustainability advisory
-
 ## Contact
 - Product demo: https://castford.com (click "Request Demo")
 - Sales: sales@castford.com

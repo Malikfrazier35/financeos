@@ -69,12 +69,6 @@ Castford is a cloud-native FP&A platform that replaces legacy FP&A tools and ent
 - Website: https://castford.com
 - GitHub: https://github.com/Malikfrazier35/castford
 
-## Part of the Financial Holding LLC Suite
-- Castford: FP&A and financial planning
-- Vaultline: Treasury management
-- Parallax: Aerospace supplier compliance (AS9100D, CMMC)
-- Emberglow Advisory: ESG and sustainability advisory
-
 ## Content Pages
 - Castford vs Anaplan: https://castford.com/compare/anaplan
 - Castford vs Pigment: https://castford.com/compare/pigment
