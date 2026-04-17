@@ -9,46 +9,12 @@ const nextConfig = {
   compress: true,
 
   async headers() {
+    // NOTE: Security headers (HSTS, CSP, X-Frame-Options, Permissions-Policy,
+    // Referrer-Policy, nosniff, COOP/CORP) are set in vercel.json which takes
+    // precedence over this file. Defining them here created drift between two
+    // sources. Only cache-control and non-security headers live here now.
+    // See Baseline finding F-009 (2026-04-17).
     return [
-      {
-        source: "/(.*)",
-        headers: [
-          // Transport Security
-          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-          { key: "X-DNS-Prefetch-Control", value: "on" },
-
-          // Content Protection
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-XSS-Protection", value: "1; mode=block" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-
-          // Permissions
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=(), serial=(), hid=()" },
-
-          // Cross-Origin Policies
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-          { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
-
-          // Content Security Policy
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://js.stripe.com https://cdn.plaid.com https://plausible.io",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com data:",
-              "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://*.plaid.com https://plausible.io https://api.anthropic.com https://oauth.platform.intuit.com https://*.api.intuit.com https://sandbox-quickbooks.api.intuit.com https://quickbooks.api.intuit.com https://fonts.googleapis.com https://accounts.google.com https://appleid.apple.com wss://*.supabase.co",
-              "frame-src https://js.stripe.com https://hooks.stripe.com https://cdn.plaid.com",
-              "frame-ancestors 'none'",
-              "base-uri 'self'",
-              "form-action 'self' https://checkout.stripe.com https://*.supabase.co https://accounts.google.com https://appleid.apple.com",
-              "upgrade-insecure-requests",
-            ].join("; "),
-          },
-        ],
-      },
       // Cache static assets aggressively
       {
         source: "/(.*)\\.(svg|png|ico|woff2|woff|webp)",
@@ -144,7 +110,7 @@ const nextConfig = {
   async redirects() {
     return [
       // Redirect www to non-www
-      { source: "/:path*", has: [{ type: "host", value: "www.finance-os.app" }], destination: "https://finance-os.app/:path*", permanent: true },
+      { source: "/:path*", has: [{ type: "host", value: "www.castford.com" }], destination: "https://castford.com/:path*", permanent: true },
     ];
   },
 
