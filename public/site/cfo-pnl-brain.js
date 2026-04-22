@@ -1,7 +1,8 @@
-/* Castford CFO P&L Brain v2 — period toggles + common-size */
+/* Castford CFO P&L Brain v3 — row hover via shared CSS, period toggle preserved */
 (function() {
   'use strict';
   function fmt(v) { return window.CF.fmt(v); }
+  var DENIM = '#5B7FCC', GREEN = '#22C55E', ROSE = '#EF4444';
   var currentPeriod = 'ttm';
   var commonSize = false;
   var lastData = null;
@@ -12,7 +13,7 @@
   }
   function setDelta(key, text, color) {
     var el = document.querySelector('[data-kpi-delta="' + key + '"]');
-    if (el) { el.textContent = text; el.style.display = 'inline-block'; if (color) el.style.background = 'rgba(' + (color.indexOf('green')>-1 ? '34,197,94' : color.indexOf('rose')>-1 ? '239,68,68' : '91,127,204') + ',0.1)'; el.style.color = color; }
+    if (el) { el.textContent = text; el.style.display = 'inline-block'; if (color) { el.style.background = 'rgba(' + (color === GREEN ? '34,197,94' : color === ROSE ? '239,68,68' : '91,127,204') + ',0.1)'; el.style.color = color; } }
   }
 
   async function loadPeriod(p) {
@@ -22,15 +23,8 @@
     });
     var labelEl = document.getElementById('period-label');
     if (labelEl) labelEl.textContent = p.toUpperCase();
-
-    var token = await window.CF.getToken();
-    if (!token) { window.location.href = '/login'; return; }
-    var resp = await fetch(window.CF.BASE + '/cfo-command-center?view=pnl&period=' + p, {
-      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-    });
-    if (resp.status === 401 || resp.status === 403) { window.location.href = '/login'; return; }
-    if (!resp.ok) return;
-    var data = await resp.json();
+    var data = await window.CF.fetchView('pnl', '&period=' + p);
+    if (!data) return;
     window.CF.buildSyncBadge(data.meta);
     lastData = data;
     paint();
@@ -47,14 +41,14 @@
     setKPI('gross_profit', fmt(s.gross_profit));
     setKPI('opex', fmt(s.opex));
     setKPI('net_income', fmt(s.net_income));
-    setDelta('gross_margin', s.gross_margin.toFixed(1) + '% margin', 'var(--denim)');
-    setDelta('net_margin', s.net_margin.toFixed(1) + '% margin', s.net_margin >= 0 ? 'var(--green)' : 'var(--rose)');
+    setDelta('gross_margin', s.gross_margin.toFixed(1) + '% margin', DENIM);
+    setDelta('net_margin', s.net_margin.toFixed(1) + '% margin', s.net_margin >= 0 ? GREEN : ROSE);
 
-    // Show period deltas where available
     sections.forEach(function(sec) {
       if (sec.delta !== null && sec.delta !== undefined) {
         var key = sec.key === 'revenue' ? 'revenue' : sec.key === 'opex' ? 'opex' : null;
-        if (key) setDelta(key, (sec.delta >= 0 ? '▲' : '▼') + ' ' + Math.abs(sec.delta).toFixed(1) + '% vs prior', sec.delta >= 0 && sec.key === 'revenue' ? 'var(--green)' : sec.delta >= 0 ? 'var(--rose)' : 'var(--green)');
+        if (key) setDelta(key, (sec.delta >= 0 ? '▲' : '▼') + ' ' + Math.abs(sec.delta).toFixed(1) + '% vs prior',
+          (sec.delta >= 0 && sec.key === 'revenue') ? GREEN : (sec.delta >= 0 ? ROSE : GREEN));
       }
     });
 
@@ -81,7 +75,6 @@
         }
         html += '</tr>';
       });
-      // Section total
       html += '<tr class="total-row"><td>Total ' + section.label + '</td>';
       periods.forEach(function(p) {
         var sum = section.accounts.reduce(function(acc, a) { return acc + (a.monthly[p.period] || 0); }, 0);
@@ -95,24 +88,20 @@
       html += '</tr>';
     });
 
-    // Net Income row
-    html += '<tr class="total-row" style="border-top:3px solid var(--denim)">' +
-      '<td><strong style="color:var(--denim)">Net Income</strong></td>';
+    html += '<tr class="total-row" style="border-top:3px solid var(--denim)"><td><strong style="color:var(--denim)">Net Income</strong></td>';
     periods.forEach(function(p) {
       var rv = (sections.find(function(x){return x.key==='revenue';})?.accounts || []).reduce(function(a,x){return a + (x.monthly[p.period]||0);}, 0);
       var cg = (sections.find(function(x){return x.key==='cogs';})?.accounts || []).reduce(function(a,x){return a + (x.monthly[p.period]||0);}, 0);
       var op = (sections.find(function(x){return x.key==='opex';})?.accounts || []).reduce(function(a,x){return a + (x.monthly[p.period]||0);}, 0);
       var net = rv - cg - op;
-      html += '<td class="num" style="color:' + (net >= 0 ? 'var(--green)' : 'var(--rose)') + ';font-weight:600">' + fmt(net) + '</td>';
+      html += '<td class="num" style="color:' + (net >= 0 ? GREEN : ROSE) + ';font-weight:600">' + fmt(net) + '</td>';
     });
-    html += '<td class="num" style="color:' + (s.net_income >= 0 ? 'var(--green)' : 'var(--rose)') + ';font-weight:700">' + fmt(s.net_income) + '</td>';
-    if (commonSize) {
-      html += '<td class="num" style="color:var(--denim);font-weight:700">' + s.net_margin.toFixed(1) + '%</td>';
-    }
+    html += '<td class="num" style="color:' + (s.net_income >= 0 ? GREEN : ROSE) + ';font-weight:700">' + fmt(s.net_income) + '</td>';
+    if (commonSize) html += '<td class="num" style="color:var(--denim);font-weight:700">' + s.net_margin.toFixed(1) + '%</td>';
     html += '</tr></tbody></table>';
     wrap.innerHTML = html;
 
-    console.log('[CFO P&L brain v2] painted', { period: currentPeriod, accounts: sections.reduce(function(a,s){return a+s.accounts.length;}, 0) });
+    console.log('[CFO P&L brain v3] painted', { period: currentPeriod, accounts: sections.reduce(function(a,s){return a+s.accounts.length;}, 0) });
   }
 
   function init() {
