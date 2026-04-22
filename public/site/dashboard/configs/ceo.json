@@ -1,8 +1,8 @@
 {
   "role": "ceo",
-  "version": 1,
+  "version": 2,
   "title": "Founder Dashboard",
-  "subtitle": "The four numbers that decide whether you survive: cash, runway, growth, and burn.",
+  "subtitle": "The four numbers that decide whether you survive: cash, runway, growth, and burn. Everything else is a distraction.",
   "tier_required": "starter",
 
   "kpi_cards": [
@@ -11,6 +11,8 @@
       "label": "Cash Position",
       "data_path": "kpis.cash_position",
       "format": "currency_short",
+      "sparkline_field": "derived_ocf",
+      "sparkline_style": "bars",
       "drill_to": "/ceo/cash"
     },
     {
@@ -26,6 +28,7 @@
       "label": "MRR",
       "data_path": "kpis.mrr",
       "format": "currency_short",
+      "sparkline_field": "revenue",
       "delta_path": "deltas.mrr_growth_pct",
       "delta_label": "MoM"
     },
@@ -40,13 +43,15 @@
       "id": "burn",
       "label": "Burn Rate",
       "data_path": "kpis.burn_rate_monthly",
-      "format": "currency_short_or_profitable"
+      "format": "currency_short_or_profitable",
+      "sparkline_field": "derived_burn"
     },
     {
       "id": "revenue_ttm",
       "label": "Revenue (TTM)",
       "data_path": "kpis.revenue_ttm",
       "format": "currency_short",
+      "sparkline_field": "revenue",
       "delta_path": "deltas.revenue_qoq_pct",
       "delta_label": "QoQ"
     }
@@ -65,7 +70,7 @@
     {
       "id": "cash_trend_12mo",
       "type": "cash_trend",
-      "title": "12-Month Cash Trend",
+      "title": "12-Month Net Cash Trend",
       "data_path": "trends.monthly",
       "value_field": "net"
     },
@@ -74,7 +79,7 @@
       "type": "kpi_grid",
       "title": "Growth Metrics",
       "cards": [
-        { "label": "MRR", "data_path": "kpis.mrr", "format": "currency_short" },
+        { "label": "MRR", "data_path": "kpis.mrr", "format": "currency_short", "sparkline_field": "revenue" },
         { "label": "ARR", "data_path": "kpis.arr", "format": "currency_short" },
         { "label": "NRR", "data_path": "kpis.nrr_pct", "format": "percent" },
         { "label": "Logo Churn", "data_path": "kpis.logo_churn_pct", "format": "percent" }
@@ -86,7 +91,7 @@
       "title": "Top Movers This Month",
       "icon": "🤖",
       "heading": "AI Layer ships in Session 5",
-      "message": "This panel will explain the 3 biggest financial movements each month in plain English — automatically detected, no prompting needed."
+      "message": "This panel will explain the 3 biggest financial movements each month in plain English — automatically detected, no prompting needed. Powered by Anthropic Claude with read-only access to your GL."
     }
   ]
 }
