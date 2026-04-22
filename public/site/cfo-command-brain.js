@@ -1,16 +1,13 @@
-/* Castford CFO Command Brain v4
- * Hub orchestrator. v4 adds (over v3):
- *   - LIVE sparkline rendering into .kpi-spark for all 6 KPI cards
- *   - wireSectionLinks: P&L Statement + Cash Position panel titles → subpages
- *   - injectSubpageNav: floating top-right pill row for full subpage access
+/* Castford CFO Command Brain v5
+ * Hub orchestrator. v5 adds (over v4):
+ *   - Verbose per-row P&L logging — log raw label and action for each .pl-row
+ *   - 3-stage re-paint (boot + 1500ms + 3500ms) — wins races against any DOM-touching script
+ *   - Cash bar hover tooltips — show exact $ value on hover
+ *   - Sparkline pulse on latest bar — subtle glow signaling "this is now"
+ *   - Quicknav entrance animation
  *
- * v3 paint behaviors preserved:
- *   - 6 KPIs (.kpi-card → .kpi-value/.kpi-label/.kpi-delta)
- *   - P&L statement rows (.pl-row → .pl-label/.pl-val/.pl-bar-fill)
- *   - Cash Position panel header pill (.panel-badge.badge-green)
- *   - Cash bars (6-month .cash-bar with data-h)
- *   - Cash stats (Current + Runway via .cash-stat-val)
- *   - Re-paint at 1500ms to win race with cfo.html inline animateBars
+ * Companion to cfo.html where hardcoded demo values have been replaced with "—".
+ * If a brain paint fails, the user sees "—" (visible failure) instead of stale demo numbers.
  */
 (function() {
   'use strict';
@@ -19,12 +16,7 @@
   var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MTU0NTAsImV4cCI6MjA3NjA5MTQ1MH0.h7nBkfmZHLbuzqJxhX6lgfRFWxgjYuxl5d2SbkRSaCk';
 
-  // Brand colors (match Castford theme)
-  var DENIM = '#5B7FCC';
-  var GOLD = '#C4884A';
-  var CYAN = '#0EA5E9';
-  var ROSE = '#EF4444';
-  var GREEN = '#22C55E';
+  var DENIM = '#5B7FCC', GOLD = '#C4884A', CYAN = '#0EA5E9', ROSE = '#EF4444', GREEN = '#22C55E';
 
   function fmt(v) {
     var n = Number(v) || 0; var a = Math.abs(n);
@@ -40,7 +32,7 @@
       if (window.supabase && window.supabase.createClient) {
         var c = window.supabase.createClient(SB_URL, SB_KEY);
         var s = await c.auth.getSession();
-        if (s.data && s.data.session && s.data.session.access_token) return s.data.session.access_token;
+        if (s.data && s.data.session) return s.data.session.access_token;
       }
     } catch (e) {}
     try {
@@ -73,39 +65,38 @@
       var deltaEl = card.querySelector('.kpi-delta');
       if (!labelEl || !valEl) return;
       var label = (labelEl.textContent || '').trim().toLowerCase();
-
       try {
         if (label === 'total revenue' || label === 'revenue') {
           valEl.textContent = fmt(kpis.revenue);
-          if (deltaEl && deltas.revenue_yoy !== null && deltas.revenue_yoy !== undefined) {
+          if (deltaEl && deltas.revenue_yoy != null) {
             deltaEl.textContent = (deltas.revenue_yoy >= 0 ? '▲ ' : '▼ ') + Math.abs(deltas.revenue_yoy).toFixed(0) + '% YoY';
             deltaEl.className = 'kpi-delta ' + (deltas.revenue_yoy >= 0 ? 'up' : 'down');
           }
           painted++;
         } else if (label === 'gross margin') {
           valEl.textContent = (kpis.gross_margin || 0).toFixed(1) + '%';
-          if (deltaEl && deltas.gross_margin_qoq !== null && deltas.gross_margin_qoq !== undefined) {
+          if (deltaEl && deltas.gross_margin_qoq != null) {
             deltaEl.textContent = (deltas.gross_margin_qoq >= 0 ? '▲ ' : '▼ ') + Math.abs(deltas.gross_margin_qoq).toFixed(1) + 'pts QoQ';
             deltaEl.className = 'kpi-delta ' + (deltas.gross_margin_qoq >= 0 ? 'up' : 'down');
           }
           painted++;
         } else if (label === 'operating cash flow' || label === 'ocf') {
           valEl.textContent = fmt(kpis.operating_cash_flow);
-          if (deltaEl && deltas.ocf_qoq !== null && deltas.ocf_qoq !== undefined) {
+          if (deltaEl && deltas.ocf_qoq != null) {
             deltaEl.textContent = (deltas.ocf_qoq >= 0 ? '▲ ' : '▼ ') + Math.abs(deltas.ocf_qoq).toFixed(1) + '% QoQ';
             deltaEl.className = 'kpi-delta ' + (deltas.ocf_qoq >= 0 ? 'up' : 'down');
           }
           painted++;
         } else if (label === 'roic') {
           valEl.textContent = (kpis.roic || 0).toFixed(1) + '%';
-          if (deltaEl && deltas.roic_yoy !== null && deltas.roic_yoy !== undefined) {
+          if (deltaEl && deltas.roic_yoy != null) {
             deltaEl.textContent = (deltas.roic_yoy >= 0 ? '▲ ' : '▼ ') + Math.abs(deltas.roic_yoy).toFixed(1) + 'pts YoY';
             deltaEl.className = 'kpi-delta ' + (deltas.roic_yoy >= 0 ? 'up' : 'down');
           }
           painted++;
         } else if (label === 'net income') {
           valEl.textContent = fmt(kpis.net_income);
-          if (deltaEl && deltas.net_income_yoy !== null && deltas.net_income_yoy !== undefined) {
+          if (deltaEl && deltas.net_income_yoy != null) {
             deltaEl.textContent = (deltas.net_income_yoy >= 0 ? '▲ ' : '▼ ') + Math.abs(deltas.net_income_yoy).toFixed(0) + '% YoY';
             deltaEl.className = 'kpi-delta ' + (deltas.net_income_yoy >= 0 ? 'up' : 'down');
           }
@@ -122,39 +113,49 @@
         }
       } catch (e) { console.warn('[CFO brain] KPI paint error on', label, e); }
     });
-    console.log('[CFO brain v4] KPIs painted:', painted, '/ 6');
+    console.log('[CFO brain v5] KPIs painted:', painted, '/ 6');
   }
 
   function paintPL(kpis) {
     var painted = 0;
-    document.querySelectorAll('.pl-row').forEach(function(row) {
+    var trace = [];
+    document.querySelectorAll('.pl-row').forEach(function(row, idx) {
       var labelEl = row.querySelector('.pl-label');
       var valEl = row.querySelector('.pl-val');
-      if (!labelEl || !valEl) return;
-      var label = (labelEl.textContent || '').trim().toLowerCase();
+      if (!labelEl || !valEl) {
+        trace.push('[' + idx + '] SKIP — missing label or val');
+        return;
+      }
+      var rawLabel = labelEl.textContent;
+      var label = (rawLabel || '').trim().toLowerCase();
+      var beforeText = valEl.textContent;
+      var action = 'no-match';
 
       try {
         if (label === 'revenue' || label === 'total revenue') {
-          valEl.textContent = fmt(kpis.revenue);
-          painted++;
+          valEl.textContent = fmt(kpis.revenue); action = 'REV → ' + fmt(kpis.revenue); painted++;
         } else if (label === 'cogs' || label.indexOf('cost of') > -1) {
-          valEl.textContent = fmtNeg(kpis.cogs);
-          painted++;
+          valEl.textContent = fmtNeg(kpis.cogs); action = 'COGS → ' + fmtNeg(kpis.cogs); painted++;
         } else if (label === 'gross profit') {
           valEl.textContent = fmt(kpis.gross_profit);
           valEl.style.color = 'var(--green,#22C55E)';
-          painted++;
+          action = 'GP → ' + fmt(kpis.gross_profit); painted++;
         } else if (label === 'opex' || label === 'operating expenses' || label.indexOf('operating') > -1) {
-          valEl.textContent = fmtNeg(kpis.opex);
-          painted++;
+          valEl.textContent = fmtNeg(kpis.opex); action = 'OPEX → ' + fmtNeg(kpis.opex); painted++;
         } else if (label === 'net income' || label === 'net profit') {
           valEl.textContent = fmt(kpis.net_income);
           valEl.style.color = kpis.net_income >= 0 ? 'var(--green,#22C55E)' : 'var(--rose,#EF4444)';
-          painted++;
+          action = 'NET → ' + fmt(kpis.net_income); painted++;
         }
-      } catch (e) { console.warn('[CFO brain] P&L paint error on', label, e); }
+      } catch (e) {
+        action = 'ERROR: ' + e.message;
+        console.warn('[CFO brain] P&L paint error on', label, e);
+      }
+
+      trace.push('[' + idx + '] "' + JSON.stringify(rawLabel) + '" before=' + JSON.stringify(beforeText) + ' → ' + action);
     });
-    console.log('[CFO brain v4] P&L rows painted:', painted);
+    console.log('[CFO brain v5] P&L rows painted:', painted);
+    console.log('[CFO brain v5] P&L trace:\n  ' + trace.join('\n  '));
   }
 
   function paintPLBars(bars) {
@@ -166,22 +167,19 @@
       if (!labelEl || !fillEl) return;
       var label = (labelEl.textContent || '').trim().toLowerCase();
       try {
-        if ((label === 'revenue' || label === 'total revenue') && bars.revenue && bars.revenue.pct !== null) {
-          fillEl.style.width = Math.min(100, bars.revenue.pct) + '%';
-          fillEl.dataset.w = Math.min(100, bars.revenue.pct) + '%';
-          painted++;
-        } else if ((label === 'cogs' || label.indexOf('cost of') > -1) && bars.cogs && bars.cogs.pct !== null) {
-          fillEl.style.width = Math.min(100, bars.cogs.pct) + '%';
-          fillEl.dataset.w = Math.min(100, bars.cogs.pct) + '%';
-          painted++;
-        } else if ((label === 'opex' || label.indexOf('operating') > -1) && bars.opex && bars.opex.pct !== null) {
-          fillEl.style.width = Math.min(100, bars.opex.pct) + '%';
-          fillEl.dataset.w = Math.min(100, bars.opex.pct) + '%';
-          painted++;
+        if ((label === 'revenue' || label === 'total revenue') && bars.revenue && bars.revenue.pct != null) {
+          var w = Math.min(100, bars.revenue.pct);
+          fillEl.style.width = w + '%'; fillEl.dataset.w = w + '%'; painted++;
+        } else if ((label === 'cogs' || label.indexOf('cost of') > -1) && bars.cogs && bars.cogs.pct != null) {
+          var w2 = Math.min(100, bars.cogs.pct);
+          fillEl.style.width = w2 + '%'; fillEl.dataset.w = w2 + '%'; painted++;
+        } else if ((label === 'opex' || label.indexOf('operating') > -1) && bars.opex && bars.opex.pct != null) {
+          var w3 = Math.min(100, bars.opex.pct);
+          fillEl.style.width = w3 + '%'; fillEl.dataset.w = w3 + '%'; painted++;
         }
-      } catch (e) { console.warn('[CFO brain] P&L bar paint error on', label, e); }
+      } catch (e) { console.warn('[CFO brain] P&L bar paint error', e); }
     });
-    console.log('[CFO brain v4] P&L bars painted:', painted);
+    console.log('[CFO brain v5] P&L bars painted:', painted);
   }
 
   function paintCashBars(bars) {
@@ -198,10 +196,27 @@
         el.dataset.h = d.pct + '%';
         var labelEl = el.querySelector('.cash-bar-label');
         if (labelEl) labelEl.textContent = d.label;
+
+        // Hover tooltip with exact value
+        el.style.cursor = 'pointer';
+        el.title = d.label + ': ' + fmt(d.value);
+        if (!el.dataset.cfoHoverWired) {
+          el.dataset.cfoHoverWired = 'true';
+          el.addEventListener('mouseenter', function() {
+            this.style.filter = 'brightness(1.15)';
+            this.style.transform = 'scaleY(1.04)';
+            this.style.transformOrigin = 'bottom';
+            this.style.transition = 'transform 0.2s, filter 0.2s';
+          });
+          el.addEventListener('mouseleave', function() {
+            this.style.filter = '';
+            this.style.transform = '';
+          });
+        }
         painted++;
       } catch (e) { console.warn('[CFO brain] Cash bar paint error', i, e); }
     }
-    console.log('[CFO brain v4] Cash bars painted:', painted);
+    console.log('[CFO brain v5] Cash bars painted:', painted);
   }
 
   function paintCashPosition(kpis) {
@@ -212,7 +227,6 @@
       if (title === 'cash position') {
         var badge = panel.querySelector('.panel-badge');
         if (badge) badge.textContent = fmt(kpis.cash_position);
-
         var stats = panel.querySelectorAll('.cash-stat-val');
         if (stats.length >= 1) stats[0].textContent = fmt(kpis.cash_position);
         if (stats.length >= 2) {
@@ -225,14 +239,12 @@
             stats[1].style.color = 'var(--green,#22C55E)';
           }
         }
-        console.log('[CFO brain v4] Cash Position painted: pill=' + (badge?'✓':'✗') + ', stats=' + stats.length);
+        console.log('[CFO brain v5] Cash Position painted: pill=' + (badge?'✓':'✗') + ', stats=' + stats.length);
       }
     });
   }
 
-  // ─────────────────────────────── NEW IN v4: SPARKLINES ───────────────────────────────
-
-  function renderSparklineSVG(data, color) {
+  function renderSparklineSVG(data, color, pulseLatest) {
     if (!data || !data.length) return '';
     var values = data.map(function(v) { return Math.abs(Number(v) || 0); });
     var max = Math.max.apply(null, values);
@@ -246,84 +258,75 @@
       var bh = (v / max) * h;
       var by = h - bh;
       var op = i === n - 1 ? '1' : (0.4 + 0.5 * (i / n)).toFixed(2);
-      bars += '<rect x="' + (i * barW + 0.5).toFixed(2) + '" y="' + by.toFixed(2) +
+      var pulseClass = (pulseLatest && i === n - 1) ? ' class="cfo-pulse"' : '';
+      bars += '<rect' + pulseClass + ' x="' + (i * barW + 0.5).toFixed(2) + '" y="' + by.toFixed(2) +
               '" width="' + (barW - 1).toFixed(2) + '" height="' + Math.max(0.5, bh).toFixed(2) +
               '" fill="' + color + '" opacity="' + op + '" rx="0.5"/>';
     }
     return '<svg viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" style="width:100%;height:100%;display:block">' + bars + '</svg>';
   }
 
+  function injectPulseCSS() {
+    if (document.getElementById('cfo-pulse-css')) return;
+    var style = document.createElement('style');
+    style.id = 'cfo-pulse-css';
+    style.textContent = '@keyframes cfoPulse { 0%,100% { opacity: 1; filter: brightness(1); } 50% { opacity: 0.65; filter: brightness(1.4); } } .cfo-pulse { animation: cfoPulse 2.4s ease-in-out infinite; transform-origin: center; } .cfo-quicknav { animation: cfoFadeDown 0.5s ease-out; } @keyframes cfoFadeDown { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }';
+    document.head.appendChild(style);
+  }
+
   function paintSparklines(monthlyTrend) {
-    if (!monthlyTrend || !monthlyTrend.length) {
-      console.log('[CFO brain v4] No monthly_trend data for sparklines');
-      return;
-    }
+    if (!monthlyTrend || !monthlyTrend.length) return;
+    injectPulseCSS();
     var painted = 0;
     document.querySelectorAll('.kpi-card').forEach(function(card) {
       var labelEl = card.querySelector('.kpi-label');
       var sparkEl = card.querySelector('.kpi-spark');
       if (!labelEl || !sparkEl) return;
       var label = (labelEl.textContent || '').trim().toLowerCase();
-
       var data = null, color = DENIM;
       if (label === 'total revenue' || label === 'revenue') {
         data = monthlyTrend.map(function(m) { return m.revenue; });
-        color = DENIM;
       } else if (label === 'gross margin') {
         data = monthlyTrend.map(function(m) { return m.revenue > 0 ? (m.revenue - m.cogs) / m.revenue * 100 : 0; });
-        color = DENIM;
       } else if (label === 'operating cash flow' || label === 'ocf') {
         data = monthlyTrend.map(function(m) { return m.revenue - m.opex; });
-        color = DENIM;
       } else if (label === 'roic') {
-        data = monthlyTrend.map(function(m) { return m.revenue > 0 ? m.net / m.revenue * 100 : 0; });
-        color = CYAN;
+        data = monthlyTrend.map(function(m) { return m.revenue > 0 ? m.net / m.revenue * 100 : 0; }); color = CYAN;
       } else if (label === 'net income') {
-        data = monthlyTrend.map(function(m) { return m.net; });
-        color = GOLD;
+        data = monthlyTrend.map(function(m) { return m.net; }); color = GOLD;
       } else if (label === 'burn rate') {
-        data = monthlyTrend.map(function(m) { return Math.max(0, -m.net); });
-        color = ROSE;
+        data = monthlyTrend.map(function(m) { return Math.max(0, -m.net); }); color = ROSE;
       }
       if (!data) return;
       try {
-        sparkEl.innerHTML = renderSparklineSVG(data, color);
+        sparkEl.innerHTML = renderSparklineSVG(data, color, true); // pulse latest bar
         painted++;
       } catch (e) { console.warn('[CFO brain] Sparkline render error on', label, e); }
     });
-    console.log('[CFO brain v4] Sparklines painted:', painted, '/ 6');
+    console.log('[CFO brain v5] Sparklines painted:', painted, '/ 6');
   }
-
-  // ─────────────────────────────── NEW IN v4: NAVIGATION ───────────────────────────────
 
   function wireSectionLinks() {
     document.querySelectorAll('.panel').forEach(function(panel) {
       var titleEl = panel.querySelector('.panel-title');
       if (!titleEl) return;
-      if (titleEl.dataset.cfoLinked === 'true') return; // idempotent
+      if (titleEl.dataset.cfoLinked === 'true') return;
       var title = (titleEl.textContent || '').trim().toLowerCase();
       var url = null;
       if (title === 'p&l statement') url = '/cfo/pnl';
       else if (title === 'cash position') url = '/cfo/cash';
       if (!url) return;
-
       titleEl.dataset.cfoLinked = 'true';
       titleEl.style.cursor = 'pointer';
       titleEl.style.transition = 'color 0.15s';
-
-      // Append a subtle → arrow if not already present
       if (!titleEl.querySelector('.section-arrow')) {
         var arrow = document.createElement('span');
         arrow.className = 'section-arrow';
-        arrow.style.cssText = 'margin-left:8px;font-size:14px;color:' + DENIM + ';opacity:0.7;transition:transform 0.15s';
+        arrow.style.cssText = 'margin-left:8px;font-size:14px;color:' + DENIM + ';opacity:0.7;transition:transform 0.15s,opacity 0.15s';
         arrow.textContent = '→';
         titleEl.appendChild(arrow);
       }
-
-      titleEl.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = url;
-      });
+      titleEl.addEventListener('click', function(e) { e.preventDefault(); window.location.href = url; });
       titleEl.addEventListener('mouseenter', function() {
         titleEl.style.color = DENIM;
         var a = titleEl.querySelector('.section-arrow');
@@ -335,7 +338,6 @@
         if (a) { a.style.transform = ''; a.style.opacity = '0.7'; }
       });
     });
-    console.log('[CFO brain v4] Section links wired');
   }
 
   function injectSubpageNav() {
@@ -353,7 +355,6 @@
       'font-family:Instrument Sans,-apple-system,sans-serif',
       'box-shadow:0 8px 24px rgba(0,0,0,0.3)',
     ].join(';');
-
     var path = window.location.pathname.replace(/\/$/, '') || '/cfo';
     var pages = [
       { url: '/cfo', label: 'Hub' },
@@ -362,7 +363,6 @@
       { url: '/cfo/budget', label: 'Budget' },
       { url: '/cfo/forecast', label: 'Forecast' },
     ];
-
     pages.forEach(function(p) {
       var current = path === p.url;
       var btn = document.createElement('a');
@@ -376,20 +376,12 @@
         'background:' + (current ? DENIM : 'transparent'),
       ].join(';');
       if (!current) {
-        btn.addEventListener('mouseenter', function() {
-          btn.style.color = '#fff';
-          btn.style.background = 'rgba(91,127,204,0.2)';
-        });
-        btn.addEventListener('mouseleave', function() {
-          btn.style.color = 'rgba(255,255,255,0.55)';
-          btn.style.background = 'transparent';
-        });
+        btn.addEventListener('mouseenter', function() { btn.style.color = '#fff'; btn.style.background = 'rgba(91,127,204,0.2)'; });
+        btn.addEventListener('mouseleave', function() { btn.style.color = 'rgba(255,255,255,0.55)'; btn.style.background = 'transparent'; });
       }
       nav.appendChild(btn);
     });
-
     document.body.appendChild(nav);
-    console.log('[CFO brain v4] Subpage quicknav injected (top-right)');
   }
 
   function paintSyncBadge(meta) {
@@ -405,8 +397,9 @@
 
   var lastData = null;
 
-  function paintAll(data) {
+  function paintAll(data, stage) {
     if (!data || !data.kpis) return;
+    console.log('[CFO brain v5] paintAll stage:', stage);
     paintKPIs(data.kpis, data.deltas || {});
     paintPL(data.kpis);
     paintPLBars(data.bars || {});
@@ -415,44 +408,29 @@
     paintSparklines(data.monthly_trend || []);
     paintSyncBadge(data.meta || {});
     wireSectionLinks();
-    console.log('[CFO brain v4] paintAll complete', { revenue: data.kpis.revenue, net: data.kpis.net_income, cash: data.kpis.cash_position });
   }
 
   async function run() {
-    // Inject the quicknav immediately, regardless of data fetch outcome
+    injectPulseCSS();
     injectSubpageNav();
 
     var token = await getToken();
-    if (!token) { console.warn('[CFO brain v4] No auth token — redirecting to /login'); window.location.href = '/login'; return; }
-
+    if (!token) { console.warn('[CFO brain v5] No auth token — redirecting'); window.location.href = '/login'; return; }
     try {
       var resp = await fetch(BASE + '/cfo-command-center?view=hub', {
         headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       });
       if (resp.status === 401 || resp.status === 403) { window.location.href = '/login'; return; }
-      if (!resp.ok) {
-        console.error('[CFO brain v4] Hub fetch failed', resp.status);
-        return;
-      }
+      if (!resp.ok) { console.error('[CFO brain v5] Hub fetch failed', resp.status); return; }
       var data = await resp.json();
       lastData = data;
+      if (data.meta && data.meta.demo_mode) { console.log('[CFO brain v5] demo mode'); return; }
 
-      if (data.meta && data.meta.demo_mode) {
-        console.log('[CFO brain v4] demo mode — designed values preserved');
-        return;
-      }
-
-      paintAll(data);
-
-      setTimeout(function() {
-        if (lastData) {
-          console.log('[CFO brain v4] re-firing paint @ 1500ms to win race');
-          paintAll(lastData);
-        }
-      }, 1500);
-
+      paintAll(data, 'boot');
+      setTimeout(function() { if (lastData) paintAll(lastData, '1500ms'); }, 1500);
+      setTimeout(function() { if (lastData) paintAll(lastData, '3500ms'); }, 3500);
     } catch (err) {
-      console.error('[CFO brain v4] Error:', err);
+      console.error('[CFO brain v5] Error:', err);
     }
   }
 
