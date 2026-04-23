@@ -108,7 +108,7 @@ export default function ComparePigment() {
         {/* CTA */}
         <div style={{ textAlign: "center", padding: "48px 0", borderTop: `1px solid ${BD}` }}>
           <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>See why teams are switching to Castford</h2>
-          <p style={{ fontSize: 14, color: TD, marginBottom: 28 }}>Try the full platform. No credit card, no sales call required.</p>
+          <p style={{ fontSize: 14, color: TD, marginBottom: 28 }}>Try the full platform. Cancel anytime.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
             <Link href="/" style={{ padding: "14px 32px", borderRadius: 12, background: `linear-gradient(135deg,${AC},${PU})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>Try Castford Free →</Link>
             <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" style={{ padding: "14px 32px", borderRadius: 12, border: `1px solid ${BD}`, color: T, fontWeight: 600, fontSize: 15, textDecoration: "none" }}>Book a Demo</a>
