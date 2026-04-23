@@ -42,11 +42,11 @@
           if (userId) {
             var types = level === 'all' ? ['essential','analytics','ai_processing'] : ['essential'];
             types.forEach(function(t) {
-              sb.from('consent_log').insert({
+              (async()=>{try{await sb.from('consent_log').insert({
                 user_id: userId, consent_type: t, granted: true, 
                 policy_version: '2026-04-07',
                 user_agent: navigator.userAgent
-              }).catch(function(){});
+              });}catch(e){console.warn("consent_log insert failed:",e.message);}})().catch(function(){});
             });
             if (level === 'essential') {
               sb.from('consent_log').insert({

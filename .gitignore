@@ -33,3 +33,7 @@ castford-*.py
 ship-workspace.py
 build-standard-dashboard.py
 x-bot/
+
+# Scratch scripts (local dev only)
+castford-diagnose-and-fix.py
+.env.local
