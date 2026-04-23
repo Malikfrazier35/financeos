@@ -98,7 +98,7 @@ export default function CompareAnaplan() {
         {/* CTA */}
         <div style={{ textAlign: "center", padding: "48px 0", borderTop: "1px solid #1e2230" }}>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f2f7", marginBottom: 12 }}>Ready to see Castford in action?</h2>
-          <p style={{ fontSize: 14, color: "#5a6178", marginBottom: 24 }}>Try the full platform free. No credit card required.</p>
+          <p style={{ fontSize: 14, color: "#5a6178", marginBottom: 24 }}>Try the full platform free. Cancel anytime.</p>
           <a href="/?ref=compare-anaplan" style={{ display: "inline-block", padding: "14px 32px", borderRadius: 10, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
             Try Castford Free
           </a>

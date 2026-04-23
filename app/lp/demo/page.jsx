@@ -119,7 +119,7 @@ export default function DemoLanding() {
                     {loading ? "Submitting..." : "Request Demo"}
                   </button>
                 </div>
-                <p style={{ fontSize: 10, color: "#3d4558", marginTop: 12, textAlign: "center" }}>No credit card required. 30-day money-back guarantee.</p>
+                <p style={{ fontSize: 10, color: "#3d4558", marginTop: 12, textAlign: "center" }}>Cancel anytime. 30-day money-back guarantee.</p>
               </>
             ) : (
               <div style={{ textAlign: "center", padding: "40px 0" }}>
