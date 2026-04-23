@@ -28,7 +28,7 @@ export default function TermsPage() {
 
         <div style={h2}>3. Subscriptions & Pricing</div>
         <div style={h3}>3.1 Plans</div>
-        <p style={p}>We offer the following subscription tiers: Starter ($599/month or $499/month billed annually), Growth ($1,799/month or $1,499/month billed annually), Business ($4,799/month or $3,999/month billed annually), and Enterprise (custom pricing). Pricing is subject to change with 30 days' written notice.</p>
+        <p style={p}>We offer the following subscription tiers: Starter (5 full + 5 view-only + 3 external observer seats, $599/month or $499/month billed annually), Growth (15 full + 25 view-only + 10 external observer seats, $1,799/month or $1,499/month billed annually), Business (30 full seats + unlimited view-only + unlimited external observer seats, $4,799/month or $3,999/month billed annually), and Enterprise (custom pricing). Additional full seats may be purchased on Growth at $80/month and on Business at $200/month. Additional view-only seats may be purchased on Starter and Growth at $25/month. Pricing is subject to change with 30 days' written notice.</p>
 
         <div style={h3}>3.2 Money-Back Guarantee</div>
         <p style={p}>All paid plans include a 30-day money-back guarantee from the date of first payment. If you are unsatisfied for any reason, contact us within 30 days for a full refund. This guarantee applies to first-time subscribers only. Annual plans receive a full refund of the first payment; monthly plans receive a full refund of the most recent charge.</p>

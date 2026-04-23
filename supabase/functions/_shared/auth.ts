@@ -201,9 +201,9 @@ const TIER_DASHBOARDS: Record<string, string[]> = {
 };
 
 const TIER_AI_BUDGET: Record<string, number> = { starter: 50, growth: 500, business: 99999, enterprise: 99999 };
-const TIER_FULL_SEAT_LIMIT: Record<string, number> = { starter: 1, growth: 5, business: 15, enterprise: 9999 };
-const TIER_VIEWER_SEAT_LIMIT: Record<string, number> = { starter: 1, growth: 5, business: 25, enterprise: 9999 };
-const TIER_EXTERNAL_SEAT_LIMIT: Record<string, number> = { starter: 2, growth: 5, business: 15, enterprise: 9999 };
+const TIER_FULL_SEAT_LIMIT: Record<string, number> = { starter: 5, growth: 15, business: 30, enterprise: 9999 };
+const TIER_VIEWER_SEAT_LIMIT: Record<string, number> = { starter: 5, growth: 25, business: 9999, enterprise: 9999 };
+const TIER_EXTERNAL_SEAT_LIMIT: Record<string, number> = { starter: 3, growth: 10, business: 9999, enterprise: 9999 };
 
 export function tierAllowsRole(tier: string, role: string): boolean {
   return TIER_DASHBOARDS[tier]?.includes(role) ?? false;
