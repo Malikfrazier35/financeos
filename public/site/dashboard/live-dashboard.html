@@ -454,6 +454,167 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
   .cp-shell{grid-template-columns:1fr;height:auto;}
   .sp-summary{grid-template-columns:repeat(2,1fr);}
 }
+
+/* ═══ CONSOLIDATION ═══ */
+.cn-entities{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:8px;margin-bottom:24px;}
+.cn-entity{display:grid;grid-template-columns:24px 1.6fr 1fr 1fr 1fr 100px;align-items:center;gap:14px;padding:12px 14px;border-radius:6px;font-size:13px;}
+.cn-entity:hover{background:var(--elevated);}
+.cn-entity.parent{font-weight:600;color:var(--t1);background:var(--accent-dim);}
+.cn-entity.child{padding-left:38px;color:var(--t2);}
+.cn-entity .icon{font-family:var(--mono);font-size:11px;color:var(--t4);text-align:center;}
+.cn-entity.parent .icon{color:var(--accent-ink);font-weight:600;}
+[data-theme="night"] .cn-entity.parent .icon{color:var(--accent);}
+.cn-entity .name{display:flex;flex-direction:column;gap:2px;}
+.cn-entity .name b{font-weight:600;letter-spacing:-0.2px;}
+.cn-entity .name span{font-family:var(--mono);font-size:9.5px;color:var(--t4);letter-spacing:0.4px;text-transform:uppercase;}
+.cn-entity .num{font-family:var(--mono);font-size:12.5px;text-align:right;color:var(--t1);}
+.cn-entity.parent .num{color:var(--t1);font-weight:600;}
+.cn-entity .currency{font-family:var(--mono);font-size:10px;color:var(--t4);text-align:center;letter-spacing:1.2px;}
+.cn-entity .status{font-family:var(--mono);font-size:9px;color:var(--green);text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:5px;letter-spacing:0.8px;text-transform:uppercase;}
+.cn-entity .status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);}
+
+.cn-fx{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.cn-fx-cell{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:14px 16px;}
+.cn-fx-pair{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;color:var(--t3);font-weight:500;text-transform:uppercase;margin-bottom:6px;}
+.cn-fx-rate{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--t1);letter-spacing:-0.4px;line-height:1;margin-bottom:4px;}
+.cn-fx-delta{font-family:var(--mono);font-size:9.5px;color:var(--t4);}
+
+.cn-elims{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;border-collapse:collapse;width:100%;margin-bottom:24px;}
+.cn-elims thead{background:var(--elevated);}
+.cn-elims th{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;font-weight:500;color:var(--t3);text-transform:uppercase;padding:12px 18px;text-align:right;border-bottom:0.5px solid var(--border);}
+.cn-elims th:first-child,.cn-elims th:nth-child(2){text-align:left;}
+.cn-elims td{padding:12px 18px;font-size:13px;color:var(--t1);text-align:right;border-bottom:0.5px solid var(--border-sub);}
+.cn-elims td:first-child,.cn-elims td:nth-child(2){text-align:left;color:var(--t2);}
+.cn-elims .num{font-family:var(--mono);font-size:12.5px;}
+.cn-elims .badge{font-family:var(--mono);font-size:9.5px;background:var(--gold-dim);color:var(--gold);padding:2px 7px;border-radius:3px;letter-spacing:0.6px;text-transform:uppercase;}
+
+/* ═══ SCENARIOS ═══ */
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.sc-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;cursor:pointer;transition:all .25s;position:relative;}
+.sc-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--border2);}
+.sc-card.active{border-color:var(--accent);}
+.sc-card .sc-eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--gold);font-weight:500;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.sc-card .sc-eyebrow .stat{color:var(--green);}
+.sc-card .sc-eyebrow .stat.draft{color:var(--t4);}
+.sc-card h3{font-family:var(--display);font-size:17px;font-weight:600;color:var(--t1);letter-spacing:-0.3px;margin-bottom:5px;}
+.sc-card .desc{font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:14px;min-height:36px;}
+.sc-card .sc-stats{display:flex;justify-content:space-between;padding-top:12px;border-top:0.5px solid var(--border);}
+.sc-card .sc-stat{display:flex;flex-direction:column;gap:2px;}
+.sc-card .sc-stat-label{font-family:var(--mono);font-size:9px;letter-spacing:1.2px;color:var(--t4);text-transform:uppercase;}
+.sc-card .sc-stat-val{font-family:var(--mono);font-size:14px;color:var(--t1);font-weight:500;}
+.sc-card .sc-stat-val.up{color:var(--green);}
+.sc-card .sc-stat-val.down{color:var(--red);}
+
+.sc-detail{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:24px;}
+.sc-detail-head{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:14px;margin-bottom:18px;border-bottom:0.5px solid var(--border);}
+.sc-detail-title{font-family:var(--display);font-size:17px;font-weight:600;color:var(--t1);letter-spacing:-0.3px;}
+.sc-detail-meta{font-family:var(--mono);font-size:10.5px;color:var(--t3);}
+.sc-assumptions{display:grid;grid-template-columns:1fr 100px 100px 100px;gap:12px 18px;align-items:center;font-size:13px;}
+.sc-assumptions .head{font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;color:var(--t3);text-transform:uppercase;font-weight:500;padding-bottom:6px;border-bottom:0.5px solid var(--border-sub);}
+.sc-assumptions .head:nth-child(n+2){text-align:right;}
+.sc-assumptions .row{padding:10px 0;border-bottom:0.5px solid var(--border-sub);color:var(--t2);}
+.sc-assumptions .num{font-family:var(--mono);text-align:right;color:var(--t1);font-size:12.5px;}
+.sc-assumptions .delta{font-family:var(--mono);text-align:right;font-size:11.5px;}
+.sc-assumptions .delta.up{color:var(--green);}
+.sc-assumptions .delta.down{color:var(--red);}
+
+/* ═══ CLOSE ═══ */
+.cl-progress{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;display:grid;grid-template-columns:1fr auto auto auto;gap:24px;align-items:center;}
+.cl-progress-bar{height:8px;background:var(--elevated);border-radius:4px;overflow:hidden;}
+.cl-progress-bar div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-ink));border-radius:4px;transition:width .4s var(--ease);}
+.cl-progress-stat{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;letter-spacing:0.4px;}
+.cl-progress-stat b{display:block;font-size:18px;color:var(--t1);font-weight:500;letter-spacing:-0.4px;margin-bottom:3px;}
+.cl-progress-stat.warn b{color:var(--gold);}
+
+.cl-phase{margin-bottom:24px;}
+.cl-phase-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.cl-phase-num{font-family:var(--mono);font-size:10px;background:var(--accent-dim);color:var(--accent-ink);width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:600;}
+[data-theme="night"] .cl-phase-num{color:var(--accent);}
+.cl-phase-name{font-family:var(--display);font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-0.2px;}
+.cl-phase-meta{font-family:var(--mono);font-size:10px;color:var(--t4);margin-left:auto;letter-spacing:0.3px;}
+
+.cl-tasks{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;}
+.cl-task{display:grid;grid-template-columns:30px 1.6fr 1fr 100px 110px;gap:14px;align-items:center;padding:12px 18px;border-bottom:0.5px solid var(--border-sub);font-size:13px;}
+.cl-task:last-child{border:none;}
+.cl-task:hover{background:var(--elevated);}
+.cl-task .check{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.cl-task.done .check{background:var(--green);border-color:var(--green);color:#fff;font-size:10px;}
+.cl-task.done .check::after{content:'✓';}
+.cl-task .task-name{color:var(--t1);font-weight:500;}
+.cl-task.done .task-name{color:var(--t3);text-decoration:line-through;}
+.cl-task .assignee{font-family:var(--font);font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+.cl-task .assignee .avatar{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-ink));color:#fff;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+.cl-task .due{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:right;letter-spacing:0.3px;}
+.cl-task .due.late{color:var(--red);}
+.cl-task .badge{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:4px;text-align:center;letter-spacing:0.6px;text-transform:uppercase;font-weight:500;}
+.cl-task .badge.todo{background:var(--elevated);color:var(--t3);}
+.cl-task .badge.doing{background:var(--accent-dim);color:var(--accent-ink);}
+[data-theme="night"] .cl-task .badge.doing{color:var(--accent);}
+.cl-task .badge.done{background:var(--green-dim);color:var(--green);}
+.cl-task .badge.review{background:var(--gold-dim);color:var(--gold);}
+
+/* ═══ TEAM ═══ */
+.tm-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.tm-sum-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
+.tm-sum-text{display:flex;flex-direction:column;gap:3px;}
+.tm-sum-num{font-family:var(--mono);font-size:24px;font-weight:500;color:var(--t1);letter-spacing:-0.6px;line-height:1;}
+.tm-sum-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--t3);font-weight:500;text-transform:uppercase;}
+.tm-sum-icon{width:36px;height:36px;border-radius:8px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;color:var(--accent-ink);}
+[data-theme="night"] .tm-sum-icon{color:var(--accent);}
+
+.tm-table{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;border-collapse:collapse;width:100%;margin-bottom:24px;}
+.tm-table thead{background:var(--elevated);}
+.tm-table th{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;font-weight:500;color:var(--t3);text-transform:uppercase;padding:12px 18px;text-align:left;border-bottom:0.5px solid var(--border);}
+.tm-table td{padding:14px 18px;font-size:13px;color:var(--t1);border-bottom:0.5px solid var(--border-sub);}
+.tm-table tr:last-child td{border:none;}
+.tm-table tr:hover td{background:var(--elevated);}
+.tm-table .person{display:flex;align-items:center;gap:11px;}
+.tm-table .avatar-lg{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-ink));color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;font-family:var(--mono);flex-shrink:0;}
+.tm-table .person-info{display:flex;flex-direction:column;gap:1px;}
+.tm-table .person-info b{font-weight:600;color:var(--t1);}
+.tm-table .person-info span{font-size:11px;color:var(--t4);}
+.tm-table .role{font-family:var(--mono);font-size:10px;background:var(--elevated);padding:3px 8px;border-radius:4px;letter-spacing:0.6px;text-transform:uppercase;color:var(--t2);font-weight:500;display:inline-block;}
+.tm-table .role.owner{background:var(--gold-dim);color:var(--gold);}
+.tm-table .role.admin{background:var(--accent-dim);color:var(--accent-ink);}
+[data-theme="night"] .tm-table .role.admin{color:var(--accent);}
+.tm-table .last-active{font-family:var(--mono);font-size:11px;color:var(--t3);}
+.tm-table .status-dot{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--t3);}
+.tm-table .status-dot.online::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);}
+.tm-table .status-dot.idle::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.tm-table .status-dot.offline::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--t4);}
+
+/* ═══ INTEGRATIONS ═══ */
+.in-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.in-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;transition:all .2s;}
+.in-card:hover{border-color:var(--border2);}
+.in-card.connected{border-left:2px solid var(--green);}
+.in-card.error{border-left:2px solid var(--red);}
+.in-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.in-card-logo{width:38px;height:38px;border-radius:8px;background:var(--elevated);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-0.2px;}
+.in-card-status{font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;display:flex;align-items:center;gap:5px;}
+.in-card-status.live{color:var(--green);}
+.in-card-status.live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);}
+.in-card-status.warn{color:var(--gold);}
+.in-card-status.warn::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);}
+.in-card-name{font-family:var(--display);font-size:15px;font-weight:600;color:var(--t1);margin-bottom:3px;letter-spacing:-0.2px;}
+.in-card-desc{font-size:11.5px;color:var(--t3);margin-bottom:14px;line-height:1.5;min-height:30px;}
+.in-card-stats{display:flex;justify-content:space-between;padding-top:12px;border-top:0.5px solid var(--border);font-family:var(--mono);font-size:10.5px;color:var(--t4);}
+.in-card-stats b{color:var(--t1);font-weight:500;}
+
+.in-available{margin-bottom:24px;}
+.in-avail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.in-avail{background:var(--surface);border:0.5px dashed var(--border2);border-radius:8px;padding:13px 16px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .2s;}
+.in-avail:hover{border-style:solid;border-color:var(--accent);background:var(--accent-dim);}
+.in-avail-logo{width:28px;height:28px;border-radius:6px;background:var(--elevated);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--t1);}
+.in-avail-name{font-size:12.5px;color:var(--t1);font-weight:500;}
+
+@media(max-width:1100px){
+  .cn-fx{grid-template-columns:repeat(2,1fr);}
+  .sc-grid{grid-template-columns:1fr;}
+  .tm-summary{grid-template-columns:repeat(2,1fr);}
+  .in-grid{grid-template-columns:1fr;}
+  .in-avail-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -1410,35 +1571,311 @@ function renderForecast(){
     + '<div class="bottom-spacer"></div>';
 }
 
-function renderConsolidation(){featurePage('Consolidation','Dashboard / <strong>Consolidation</strong>','◫','Multi-entity financial consolidation and intercompany eliminations',[
-  {icon:'◫',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'ENTITIES',value:'4',dir:'up',change:'↗ All reconciled',sub:'Parent + 3 subsidiaries'},
-  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'ELIMINATIONS',value:'$12.3M',dir:'up',change:'↗ 18 intercompany entries',sub:'Auto-matched'},
-  {icon:'$',iconBg:'var(--amber-dim)',iconColor:'var(--amber)',label:'CONSOLIDATED REV',value:'$67.8M',dir:'up',change:'↗ Post-elimination',sub:'Group total'}
-]);}
+function renderConsolidation(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Consolidation</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">MULTI-ENTITY · 5 LEGAL ENTITIES</div>'
+    +     '<h1 class="sp-title">Consolidation <em>view</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<select class="sp-select"><option>December 2025</option><option>November 2025</option><option>Q4 2025</option></select>'
+    +     '<select class="sp-select"><option>USD</option><option>EUR</option><option>GBP</option></select>'
+    +     '<button class="sp-btn primary">Run consolidation</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-summary">'
+    +   '<div class="sp-sum"><div class="sp-sum-label">CONSOLIDATED REVENUE</div><div class="sp-sum-value">$55.0M</div><div class="sp-sum-delta">↗ Across 5 entities</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">ELIMINATIONS</div><div class="sp-sum-value">$3.2M</div><div class="sp-sum-delta">12 intercompany items</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">FX IMPACT</div><div class="sp-sum-value">+$284K</div><div class="sp-sum-delta">Favorable USD vs EUR</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">LAST RUN</div><div class="sp-sum-value">14 min</div><div class="sp-sum-delta">Auto-sync enabled</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">ENTITY ROLLUP <span class="sp-sect-meta">Parent + 4 subsidiaries · post-elimination</span></div>'
+    + '<div class="cn-entities">'
+    +   '<div class="cn-entity parent"><div class="icon">▼</div><div class="name"><b>Castford Holdings, Inc.</b><span>Parent · Delaware</span></div><div class="num">$55,012,400</div><div class="currency">USD</div><div class="num">Consolidated</div><div class="status">Active</div></div>'
+    +   '<div class="cn-entity child"><div class="icon">└</div><div class="name"><b>Castford US Operations</b><span>Operating · California</span></div><div class="num">$38,250,000</div><div class="currency">USD</div><div class="num">1.000</div><div class="status">Synced</div></div>'
+    +   '<div class="cn-entity child"><div class="icon">└</div><div class="name"><b>Castford UK Ltd</b><span>Operating · London</span></div><div class="num">$9,840,200</div><div class="currency">GBP</div><div class="num">1.267</div><div class="status">Synced</div></div>'
+    +   '<div class="cn-entity child"><div class="icon">└</div><div class="name"><b>Castford EMEA GmbH</b><span>Operating · Berlin</span></div><div class="num">$5,422,200</div><div class="currency">EUR</div><div class="num">1.084</div><div class="status">Synced</div></div>'
+    +   '<div class="cn-entity child"><div class="icon">└</div><div class="name"><b>Castford APAC Pte Ltd</b><span>Operating · Singapore</span></div><div class="num">$4,700,000</div><div class="currency">SGD</div><div class="num">0.745</div><div class="status">Synced</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">FX RATES <span class="sp-sect-meta">Period-end rates · sourced from Bloomberg</span></div>'
+    + '<div class="cn-fx">'
+    +   '<div class="cn-fx-cell"><div class="cn-fx-pair">USD / GBP</div><div class="cn-fx-rate">1.2670</div><div class="cn-fx-delta">+0.018 vs prior</div></div>'
+    +   '<div class="cn-fx-cell"><div class="cn-fx-pair">USD / EUR</div><div class="cn-fx-rate">1.0840</div><div class="cn-fx-delta">−0.012 vs prior</div></div>'
+    +   '<div class="cn-fx-cell"><div class="cn-fx-pair">USD / SGD</div><div class="cn-fx-rate">0.7450</div><div class="cn-fx-delta">+0.004 vs prior</div></div>'
+    +   '<div class="cn-fx-cell"><div class="cn-fx-pair">USD / CAD</div><div class="cn-fx-rate">0.7320</div><div class="cn-fx-delta">−0.008 vs prior</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">INTERCOMPANY ELIMINATIONS <span class="sp-sect-meta">12 items removed from consolidated total</span></div>'
+    + '<table class="cn-elims">'
+    +   '<thead><tr><th>FROM</th><th>TO</th><th>TYPE</th><th>AMOUNT</th><th>STATUS</th></tr></thead>'
+    +   '<tbody>'
+    +     '<tr><td>Castford Holdings</td><td>Castford US Operations</td><td><span class="badge">Mgmt fee</span></td><td class="num">$1,250,000</td><td class="num">Eliminated</td></tr>'
+    +     '<tr><td>Castford US Operations</td><td>Castford UK Ltd</td><td><span class="badge">License</span></td><td class="num">$840,000</td><td class="num">Eliminated</td></tr>'
+    +     '<tr><td>Castford UK Ltd</td><td>Castford EMEA GmbH</td><td><span class="badge">Service</span></td><td class="num">$520,400</td><td class="num">Eliminated</td></tr>'
+    +     '<tr><td>Castford US Operations</td><td>Castford APAC Pte Ltd</td><td><span class="badge">License</span></td><td class="num">$420,000</td><td class="num">Eliminated</td></tr>'
+    +     '<tr><td>Castford Holdings</td><td>Castford EMEA GmbH</td><td><span class="badge">Loan int</span></td><td class="num">$169,600</td><td class="num">Eliminated</td></tr>'
+    +   '</tbody>'
+    + '</table>'
+    + '<div class="sp-footer-meta">Last consolidation run 14 minutes ago · 162 source transactions · 12 eliminations · 4 FX conversions applied</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderScenarios(){featurePage('Scenarios','Dashboard / Planning / <strong>Scenarios</strong>','◇','What-if analysis and scenario planning engine',[
-  {icon:'◇',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'ACTIVE SCENARIOS',value:'8',dir:'up',change:'↗ 3 running simulations',sub:'Monte Carlo + linear'},
-  {icon:'⚡',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'VARIABLES',value:'42',dir:'up',change:'↗ Across all models',sub:'Revenue, costs, headcount'},
-  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'BEST CASE',value:'$82.1M',dir:'up',change:'↗ 95th percentile',sub:'FY2025 projected'}
-]);}
+function renderScenarios(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Scenarios</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">PLANNING · 8 SAVED SCENARIOS</div>'
+    +     '<h1 class="sp-title">Scenario <em>library</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Compare scenarios</button>'
+    +     '<button class="sp-btn primary">+ New scenario</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta">Click any to view detail</span></div>'
+    + '<div class="sc-grid">'
+    +   '<div class="sc-card active">'
+    +     '<div class="sc-eyebrow"><span>BOARD APPROVED</span><span class="stat">● Active</span></div>'
+    +     '<h3>Q4 board scenario</h3>'
+    +     '<div class="desc">Conservative growth with 2 enterprise deals slipping to Q1.</div>'
+    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$78.0M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+6.4%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">28 mo</div></div></div>'
+    +   '</div>'
+    +   '<div class="sc-card">'
+    +     '<div class="sc-eyebrow"><span>HIRING PUSH</span><span class="stat">● Active</span></div>'
+    +     '<h3>20% headcount expansion</h3>'
+    +     '<div class="desc">Aggressive hiring across engineering and sales for FY26.</div>'
+    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$84.2M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+14.9%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val down">18 mo</div></div></div>'
+    +   '</div>'
+    +   '<div class="sc-card">'
+    +     '<div class="sc-eyebrow"><span>RECESSION</span><span class="stat">● Active</span></div>'
+    +     '<h3>Downturn protection</h3>'
+    +     '<div class="desc">Revenue contracts 8%, customer churn doubles, hiring freeze.</div>'
+    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val down">$62.4M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val down">−14.9%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">31 mo</div></div></div>'
+    +   '</div>'
+    +   '<div class="sc-card">'
+    +     '<div class="sc-eyebrow"><span>DRAFT</span><span class="stat draft">○ Draft</span></div>'
+    +     '<h3>EMEA expansion</h3>'
+    +     '<div class="desc">Open Berlin and Paris offices, 12 new hires across EMEA.</div>'
+    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$81.6M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+11.3%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">22 mo</div></div></div>'
+    +   '</div>'
+    +   '<div class="sc-card">'
+    +     '<div class="sc-eyebrow"><span>DRAFT</span><span class="stat draft">○ Draft</span></div>'
+    +     '<h3>Pricing model change</h3>'
+    +     '<div class="desc">Move to consumption-based pricing for enterprise tier.</div>'
+    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$80.5M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+9.8%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">26 mo</div></div></div>'
+    +   '</div>'
+    +   '<div class="sc-card">'
+    +     '<div class="sc-eyebrow"><span>DRAFT</span><span class="stat draft">○ Draft</span></div>'
+    +     '<h3>M&A target</h3>'
+    +     '<div class="desc">Acquire smaller competitor for $12M, integrate by Q3.</div>'
+    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$92.4M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+26.1%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val down">14 mo</div></div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">ASSUMPTIONS · BOARD SCENARIO <span class="sp-sect-meta">Editable · changes recalculate downstream</span></div>'
+    + '<div class="sc-detail">'
+    +   '<div class="sc-detail-head">'
+    +     '<div class="sc-detail-title">Q4 board scenario · driver overrides</div>'
+    +     '<div class="sc-detail-meta">6 changes from base · last edited 2 hours ago</div>'
+    +   '</div>'
+    +   '<div class="sc-assumptions">'
+    +     '<div class="head">DRIVER</div><div class="head">BASE</div><div class="head">SCENARIO</div><div class="head">DELTA</div>'
+    +     '<div class="row">New logo ARR / month</div><div class="num">$1.84M</div><div class="num">$1.62M</div><div class="delta down">−$220K</div>'
+    +     '<div class="row">Expansion rate</div><div class="num">118%</div><div class="num">122%</div><div class="delta up">+4 pts</div>'
+    +     '<div class="row">Gross churn</div><div class="num">1.8%</div><div class="num">2.1%</div><div class="delta down">+0.3 pts</div>'
+    +     '<div class="row">Sales cycle (days)</div><div class="num">42</div><div class="num">48</div><div class="delta down">+6 days</div>'
+    +     '<div class="row">CAC payback (months)</div><div class="num">11.4</div><div class="num">12.8</div><div class="delta down">+1.4 mo</div>'
+    +     '<div class="row">Headcount end of year</div><div class="num">142</div><div class="num">148</div><div class="delta up">+6 hires</div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">Scenarios stored in Supabase · all calculations versioned · 8 saved scenarios available</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderClose(){featurePage('Close Tasks','Dashboard / Planning / <strong>Close Tasks</strong>','✓','Month-end and quarter-end close task management',[
-  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'COMPLETED',value:'18/24',dir:'up',change:'↗ 75% done',sub:'March close'},
-  {icon:'⚡',iconBg:'var(--amber-dim)',iconColor:'var(--amber)',label:'OVERDUE',value:'2',dir:'down',change:'↘ Accruals, IC recon',sub:'Due by Apr 3'},
-  {icon:'◎',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'AVG CLOSE TIME',value:'4.2 days',dir:'up',change:'↗ -1.8 days vs Q3',sub:'Improving'}
-]);}
+function renderClose(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Close Tasks</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">JANUARY 2026 CLOSE · DAY 4 OF 7</div>'
+    +     '<h1 class="sp-title">Month-end <em>close</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Export checklist</button>'
+    +     '<button class="sp-btn primary">+ Add task</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-progress">'
+    +   '<div><div style="font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:8px;color:var(--t1);">Close progress</div><div class="cl-progress-bar"><div style="width:62%;"></div></div><div style="font-family:var(--mono);font-size:10.5px;color:var(--t3);margin-top:6px;letter-spacing:0.3px;">14 of 22 tasks complete · on track for February 7</div></div>'
+    +   '<div class="cl-progress-stat"><b>62%</b>COMPLETE</div>'
+    +   '<div class="cl-progress-stat"><b>3</b>DAYS LEFT</div>'
+    +   '<div class="cl-progress-stat warn"><b>2</b>BLOCKED</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">1</div><div class="cl-phase-name">Pre-close preparation</div><div class="cl-phase-meta">5 of 5 complete · finished Jan 31</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Lock period in NetSuite</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Jan 31</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Confirm cutoff dates with all entities</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Jan 31</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Run preliminary trial balance</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Jan 31</div><div class="badge done">Done</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">2</div><div class="cl-phase-name">Reconciliations</div><div class="cl-phase-meta">7 of 9 complete · 2 in progress</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Bank reconciliations (4 accounts)</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 1</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Credit card reconciliations</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 1</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Stripe payout reconciliation</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 2</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Intercompany reconciliation (5 entities)</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 3</div><div class="badge doing">In progress</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">AR aging review and bad debt analysis</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due late">Feb 2</div><div class="badge doing">In progress</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">3</div><div class="cl-phase-name">Adjustments and accruals</div><div class="cl-phase-meta">2 of 5 complete · 3 todo</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Prepaid expense amortization</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 3</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Depreciation entries</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 3</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Revenue cutoff adjustments</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 5</div><div class="badge todo">Todo</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Accrued expenses</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 5</div><div class="badge todo">Todo</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Equity-based comp accrual</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 6</div><div class="badge todo">Todo</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">4</div><div class="cl-phase-name">Review and finalize</div><div class="cl-phase-meta">0 of 3 complete · pending</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">CFO P&L review</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 6</div><div class="badge review">Review</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Generate consolidated reports</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 7</div><div class="badge todo">Todo</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Lock close period and notify stakeholders</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 7</div><div class="badge todo">Todo</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">Close cycle started Jan 31 · target completion Feb 7 · 4 contributors active</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderTeam(){featurePage('Team','Dashboard / Collaborate / <strong>Team</strong>','◉','Team workspace with roles, permissions, and collaboration',[
-  {icon:'◉',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'TEAM MEMBERS',value:'6',dir:'up',change:'↗ +2 this month',sub:'5 active now'},
-  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'TASKS ASSIGNED',value:'36',dir:'up',change:'↗ 24 completed',sub:'This month'},
-  {icon:'⚡',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'MESSAGES',value:'142',dir:'up',change:'↗ 28 threads',sub:'Last 7 days'}
-]);}
+function renderTeam(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Team</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">WORKSPACE · 8 MEMBERS · 2 PENDING</div>'
+    +     '<h1 class="sp-title">Team <em>members</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Export list</button>'
+    +     '<button class="sp-btn primary">+ Invite member</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="tm-summary">'
+    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">8</div><div class="tm-sum-label">ACTIVE MEMBERS</div></div><div class="tm-sum-icon">●</div></div>'
+    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">2</div><div class="tm-sum-label">PENDING INVITES</div></div><div class="tm-sum-icon">⏰</div></div>'
+    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">4</div><div class="tm-sum-label">ROLES IN USE</div></div><div class="tm-sum-icon">⚐</div></div>'
+    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">14</div><div class="tm-sum-label">SEATS REMAINING</div></div><div class="tm-sum-icon">▤</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">MEMBER DIRECTORY <span class="sp-sect-meta">8 active across 4 roles</span></div>'
+    + '<table class="tm-table">'
+    +   '<thead><tr><th>MEMBER</th><th>ROLE</th><th>STATUS</th><th>LAST ACTIVE</th><th></th></tr></thead>'
+    +   '<tbody>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">MF</div><div class="person-info"><b>Malik Frazier</b><span>malik@vaultline.app</span></div></div></td><td><span class="role owner">Owner</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">Just now</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">SC</div><div class="person-info"><b>Sarah Chen</b><span>sarah@castford.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">2 min ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">JM</div><div class="person-info"><b>Jordan Martinez</b><span>jordan@castford.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot idle">Idle</span></td><td><span class="last-active">23 min ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">RP</div><div class="person-info"><b>Riley Patel</b><span>riley@castford.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">8 min ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">DK</div><div class="person-info"><b>David Kim</b><span>david@castford.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">2 hours ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">EN</div><div class="person-info"><b>Emma Nakamura</b><span>emma@castford.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">Yesterday</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">AT</div><div class="person-info"><b>Alex Thompson</b><span>alex@castford.com</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">3 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">PV</div><div class="person-info"><b>Priya Venkatesh</b><span>priya@castford.com</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">1 week ago</span></td><td></td></tr>'
+    +   '</tbody>'
+    + '</table>'
+    + '<div class="sp-sect-label">PENDING INVITATIONS <span class="sp-sect-meta">2 awaiting acceptance</span></div>'
+    + '<table class="tm-table">'
+    +   '<thead><tr><th>EMAIL</th><th>ROLE</th><th>INVITED BY</th><th>SENT</th><th></th></tr></thead>'
+    +   '<tbody>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>marcus@example.com</b><span>Pending</span></div></div></td><td><span class="role">Editor</span></td><td><span class="last-active">Malik F.</span></td><td><span class="last-active">2 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>natalie@example.com</b><span>Pending</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="last-active">Sarah Chen</span></td><td><span class="last-active">5 days ago</span></td><td></td></tr>'
+    +   '</tbody>'
+    + '</table>'
+    + '<div class="sp-footer-meta">Workspace plan: Enterprise · 8 of 22 seats used · audit log enabled · SSO active</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderIntegrations(){featurePage('Integrations','Dashboard / Platform / <strong>Integrations</strong>','⚡','Connected data sources and API integrations',[
-  {icon:'⚡',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'CONNECTED',value:'7',dir:'up',change:'↗ All syncing',sub:'0 errors'},
-  {icon:'◎',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'RECORDS SYNCED',value:'3.1M',dir:'up',change:'↗ Last sync: 53s ago',sub:'Across all sources'},
-  {icon:'$',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'DATA SOURCES',value:'5',dir:'up',change:'↗ NetSuite, SF, Stripe...',sub:'ERP, CRM, Payments'}
-]);}
+function renderIntegrations(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Integrations</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">DATA SOURCES · 5 CONNECTED · 1 NEEDS ATTENTION</div>'
+    +     '<h1 class="sp-title">Connected <em>integrations</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Sync logs</button>'
+    +     '<button class="sp-btn primary">+ Add integration</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-summary">'
+    +   '<div class="sp-sum"><div class="sp-sum-label">CONNECTED SOURCES</div><div class="sp-sum-value">5</div><div class="sp-sum-delta">Across 5 categories</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">RECORDS SYNCED</div><div class="sp-sum-value">3.4M</div><div class="sp-sum-delta">↗ +47K today</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">LAST SYNC</div><div class="sp-sum-value">53s</div><div class="sp-sum-delta">All sources current</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">SYNC FAILURES (24H)</div><div class="sp-sum-value">2</div><div class="sp-sum-delta down">Rippling token expired</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">CONNECTED <span class="sp-sect-meta">5 active integrations · auto-sync every 6 hours</span></div>'
+    + '<div class="in-grid">'
+    +   '<div class="in-card connected">'
+    +     '<div class="in-card-head"><div class="in-card-logo">N</div><div class="in-card-status live">Live</div></div>'
+    +     '<div class="in-card-name">NetSuite</div>'
+    +     '<div class="in-card-desc">General ledger and chart of accounts source of truth.</div>'
+    +     '<div class="in-card-stats"><span><b>847,000</b> records</span><span>Synced 53s ago</span></div>'
+    +   '</div>'
+    +   '<div class="in-card connected">'
+    +     '<div class="in-card-head"><div class="in-card-logo">SF</div><div class="in-card-status live">Live</div></div>'
+    +     '<div class="in-card-name">Salesforce</div>'
+    +     '<div class="in-card-desc">CRM data for pipeline, opportunities, and customer attribution.</div>'
+    +     '<div class="in-card-stats"><span><b>124,000</b> records</span><span>Synced 1 min ago</span></div>'
+    +   '</div>'
+    +   '<div class="in-card connected">'
+    +     '<div class="in-card-head"><div class="in-card-logo">S</div><div class="in-card-status live">Live</div></div>'
+    +     '<div class="in-card-name">Stripe</div>'
+    +     '<div class="in-card-desc">Subscription billing and payment processing data.</div>'
+    +     '<div class="in-card-stats"><span><b>38,000</b> records</span><span>Synced 2 min ago</span></div>'
+    +   '</div>'
+    +   '<div class="in-card connected">'
+    +     '<div class="in-card-head"><div class="in-card-logo">SN</div><div class="in-card-status live">Live</div></div>'
+    +     '<div class="in-card-name">Snowflake</div>'
+    +     '<div class="in-card-desc">Data warehouse for analytics and product usage metrics.</div>'
+    +     '<div class="in-card-stats"><span><b>2.1M</b> records</span><span>Synced 4 min ago</span></div>'
+    +   '</div>'
+    +   '<div class="in-card error">'
+    +     '<div class="in-card-head"><div class="in-card-logo">R</div><div class="in-card-status warn">Token expired</div></div>'
+    +     '<div class="in-card-name">Rippling</div>'
+    +     '<div class="in-card-desc">HRIS for headcount, payroll, and benefits data.</div>'
+    +     '<div class="in-card-stats"><span><b>312</b> records</span><span>Last sync 14 hours ago</span></div>'
+    +   '</div>'
+    +   '<div class="in-card connected">'
+    +     '<div class="in-card-head"><div class="in-card-logo">P</div><div class="in-card-status live">Live</div></div>'
+    +     '<div class="in-card-name">Plaid</div>'
+    +     '<div class="in-card-desc">Bank feed aggregation across 4 accounts and 5 entities.</div>'
+    +     '<div class="in-card-stats"><span><b>18,400</b> records</span><span>Synced 6 min ago</span></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">AVAILABLE TO CONNECT <span class="sp-sect-meta">8 integrations ready · click to connect</span></div>'
+    + '<div class="in-available">'
+    +   '<div class="in-avail-grid">'
+    +     '<div class="in-avail"><div class="in-avail-logo">QB</div><div class="in-avail-name">QuickBooks</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">X</div><div class="in-avail-name">Xero</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">G</div><div class="in-avail-name">Gusto</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">H</div><div class="in-avail-name">HubSpot</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">B</div><div class="in-avail-name">Brex</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">M</div><div class="in-avail-name">Mercury</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">RA</div><div class="in-avail-name">Ramp</div></div>'
+    +     '<div class="in-avail"><div class="in-avail-logo">A</div><div class="in-avail-name">Airbase</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">Sync schedule: every 6 hours · webhook events processed in real-time · 3.4M total records · 99.94% uptime (30d)</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
 function renderInvestor(){featurePage('Investor Metrics','Dashboard / Platform / <strong>Investor Metrics</strong>','◎','Board-ready metrics, KPIs, and investor reporting',[
   {icon:'$',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'ARR',value:'$73.3M',dir:'up',change:'↗ +18% YoY',sub:'Annualized'},
