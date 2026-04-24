@@ -277,6 +277,183 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
 /* Bottom spacer for customize bar */
 .bottom-spacer{height:70px;}
+
+/* ═══ SUBPAGE: SHARED HEADER ═══ */
+.sp-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;padding-bottom:18px;border-bottom:0.5px solid var(--border);gap:24px;flex-wrap:wrap;}
+.sp-title-block{display:flex;flex-direction:column;gap:6px;}
+.sp-eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:1.8px;color:var(--gold);font-weight:500;text-transform:uppercase;}
+.sp-title{font-family:var(--display);font-size:32px;font-weight:700;letter-spacing:-0.9px;color:var(--t1);line-height:1.05;}
+.sp-title em{font-style:normal;color:var(--accent-ink);position:relative;display:inline-block;}
+.sp-title em::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2.5px;background:var(--accent-ink);}
+[data-theme="night"] .sp-title em{color:var(--accent);}
+[data-theme="night"] .sp-title em::after{background:var(--accent);}
+.sp-actions{display:flex;align-items:center;gap:8px;}
+.sp-btn{font-family:var(--font);font-size:12px;font-weight:500;padding:8px 14px;border-radius:6px;border:0.5px solid var(--border2);background:var(--surface);color:var(--t1);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.sp-btn:hover{border-color:var(--accent);background:var(--accent-dim);}
+.sp-btn.primary{background:var(--accent-ink);color:#fff;border-color:var(--accent-ink);}
+.sp-btn.primary:hover{background:var(--accent);border-color:var(--accent);}
+[data-theme="night"] .sp-btn.primary{background:var(--accent);color:#0A0F1F;border-color:var(--accent);}
+.sp-select{font-family:var(--font);font-size:12px;font-weight:500;padding:7px 12px;border-radius:6px;border:0.5px solid var(--border2);background:var(--surface);color:var(--t1);cursor:pointer;}
+
+/* ═══ SUBPAGE: SUMMARY STRIP ═══ */
+.sp-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.sp-sum{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:14px 16px;}
+.sp-sum-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--gold);font-weight:500;text-transform:uppercase;margin-bottom:8px;}
+.sp-sum-value{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--t1);letter-spacing:-0.6px;line-height:1;margin-bottom:6px;}
+.sp-sum-delta{font-family:var(--mono);font-size:10.5px;color:var(--green);}
+.sp-sum-delta.down{color:var(--red);}
+
+/* ═══ SUBPAGE: SECTION ═══ */
+.sp-sect-label{font-family:var(--mono);font-size:10px;letter-spacing:1.6px;color:var(--t3);font-weight:500;text-transform:uppercase;margin-bottom:14px;padding-left:10px;border-left:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;}
+.sp-sect-meta{color:var(--t4);font-size:9.5px;font-weight:400;}
+
+/* ═══ P&L: STATEMENT TABLE ═══ */
+.pnl-table{width:100%;background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;border-collapse:collapse;margin-bottom:28px;}
+.pnl-table thead{background:var(--elevated);}
+.pnl-table th{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;font-weight:500;color:var(--t3);text-transform:uppercase;padding:14px 18px;text-align:right;border-bottom:0.5px solid var(--border);}
+.pnl-table th:first-child{text-align:left;}
+.pnl-table td{padding:13px 18px;font-family:var(--font);font-size:13px;color:var(--t1);text-align:right;border-bottom:0.5px solid var(--border-sub);}
+.pnl-table td:first-child{text-align:left;font-weight:500;color:var(--t2);}
+.pnl-table .num{font-family:var(--mono);font-size:12.5px;color:var(--t1);}
+.pnl-table tr.section-row td{background:var(--elevated);font-weight:600;color:var(--t1);font-size:12.5px;cursor:pointer;}
+.pnl-table tr.section-row:hover td{background:var(--accent-dim);}
+.pnl-table tr.section-row .arrow{display:inline-block;margin-right:8px;font-size:9px;color:var(--t3);transition:transform .2s;}
+.pnl-table tr.section-row.expanded .arrow{transform:rotate(90deg);}
+.pnl-table tr.line-row td{padding-left:36px;color:var(--t2);font-size:12.5px;}
+.pnl-table tr.line-row{display:none;}
+.pnl-table tr.line-row.shown{display:table-row;}
+.pnl-table tr.subtotal-row td{background:var(--accent-dim);font-weight:600;color:var(--accent-ink);border-top:1px solid var(--border2);}
+[data-theme="night"] .pnl-table tr.subtotal-row td{color:var(--accent);}
+.pnl-table tr.total-row td{background:var(--gold-dim);font-weight:700;color:var(--gold);font-size:14px;border-top:1.5px solid var(--gold);}
+.pnl-table tr.total-row .num{color:var(--gold);}
+.pnl-table .var-pos{color:var(--green);}
+.pnl-table .var-neg{color:var(--red);}
+
+/* ═══ P&L: VARIANCE CARDS ═══ */
+.pnl-variance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.var-card{background:var(--surface);border:0.5px solid var(--border);border-left:2px solid var(--gold);border-radius:8px;padding:16px 18px;}
+.var-card-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--gold);font-weight:500;text-transform:uppercase;margin-bottom:8px;}
+.var-card h4{font-family:var(--display);font-size:15px;font-weight:600;color:var(--t1);margin-bottom:6px;letter-spacing:-0.3px;}
+.var-card p{font-size:12px;color:var(--t2);line-height:1.55;}
+.var-card .var-amount{font-family:var(--mono);font-size:14px;font-weight:500;margin-top:10px;}
+.var-card .var-amount.up{color:var(--green);}
+.var-card .var-amount.down{color:var(--red);}
+
+/* ═══ P&L: TREND CHART ═══ */
+.trend-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:24px;}
+.trend-head{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:14px;margin-bottom:14px;border-bottom:0.5px solid var(--border);}
+.trend-title{font-family:var(--display);font-size:15px;font-weight:600;color:var(--t1);letter-spacing:-0.3px;}
+.trend-period{font-family:var(--mono);font-size:10.5px;color:var(--t3);letter-spacing:0.3px;}
+.trend-bars{display:flex;align-items:flex-end;gap:6px;height:120px;padding:4px 0;}
+.trend-bars .bar{flex:1;background:var(--accent);opacity:0.55;border-radius:1px;transition:opacity .15s;cursor:pointer;}
+.trend-bars .bar:hover{opacity:0.95;}
+.trend-labels{display:flex;gap:6px;margin-top:8px;}
+.trend-labels span{flex:1;text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--t4);letter-spacing:0.3px;}
+
+/* ═══ P&L: FOOTER ═══ */
+.sp-footer-meta{font-family:var(--mono);font-size:10.5px;color:var(--t3);letter-spacing:0.3px;padding:14px 0;border-top:0.5px solid var(--border);display:flex;align-items:center;gap:6px;}
+.sp-footer-meta::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;}
+
+/* ═══ FORECAST: SCENARIO CARDS ═══ */
+.fc-scenarios{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.fc-scenario{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 18px 16px;cursor:pointer;transition:all .25s;position:relative;}
+.fc-scenario:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.fc-scenario.active{border-color:var(--accent);border-width:1.5px;}
+.fc-scenario.active::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:2px;background:var(--accent);border-radius:10px 10px 0 0;}
+.fc-scen-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;font-weight:500;text-transform:uppercase;margin-bottom:12px;display:inline-flex;align-items:center;gap:5px;}
+.fc-scen-tag.base{color:var(--accent);}
+.fc-scen-tag.bull{color:var(--green);}
+.fc-scen-tag.bear{color:var(--red);}
+.fc-scen-tag.custom{color:var(--gold);}
+.fc-scen-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;}
+.fc-scen-name{font-family:var(--display);font-size:15px;font-weight:600;color:var(--t1);margin-bottom:4px;letter-spacing:-0.3px;}
+.fc-scen-arr{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--t1);letter-spacing:-0.6px;line-height:1;margin:8px 0;}
+.fc-scen-meta{font-family:var(--mono);font-size:10.5px;color:var(--t3);display:flex;justify-content:space-between;padding-top:10px;border-top:0.5px solid var(--border);margin-top:10px;}
+.fc-scen-meta b{color:var(--t1);font-weight:500;}
+
+/* ═══ FORECAST: DRIVER INPUTS ═══ */
+.fc-drivers{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;}
+.fc-drivers-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:14px;border-bottom:0.5px solid var(--border);}
+.fc-drivers-title{font-family:var(--display);font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-0.2px;}
+.fc-driver-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 24px;}
+.fc-driver{display:flex;flex-direction:column;gap:5px;}
+.fc-driver-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;color:var(--t3);font-weight:500;text-transform:uppercase;}
+.fc-driver-value{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--t1);letter-spacing:-0.4px;}
+.fc-driver-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:3px;}
+.fc-driver-bar div{height:100%;background:var(--accent);border-radius:2px;}
+
+/* ═══ FORECAST: ACCURACY GRID ═══ */
+.fc-accuracy{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;}
+.fc-acc-cell{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:14px 16px;text-align:center;}
+.fc-acc-horizon{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--t3);font-weight:500;text-transform:uppercase;margin-bottom:6px;}
+.fc-acc-value{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--t1);letter-spacing:-0.4px;line-height:1;margin-bottom:4px;}
+.fc-acc-delta{font-family:var(--mono);font-size:9.5px;color:var(--green);}
+
+/* ═══ FORECAST: SENSITIVITY TABLE ═══ */
+.fc-sens{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;border-collapse:collapse;width:100%;}
+.fc-sens thead{background:var(--elevated);}
+.fc-sens th{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;font-weight:500;color:var(--t3);text-transform:uppercase;padding:12px 18px;text-align:right;border-bottom:0.5px solid var(--border);}
+.fc-sens th:first-child{text-align:left;}
+.fc-sens td{padding:13px 18px;font-family:var(--font);font-size:13px;color:var(--t1);text-align:right;border-bottom:0.5px solid var(--border-sub);}
+.fc-sens td:first-child{text-align:left;color:var(--t2);}
+.fc-sens .num{font-family:var(--mono);font-size:12.5px;}
+.fc-sens .impact-pos{color:var(--green);}
+.fc-sens .impact-neg{color:var(--red);}
+
+/* ═══ COPILOT: TWO-PANE LAYOUT ═══ */
+.cp-shell{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;height:calc(100vh - 220px);min-height:560px;margin-bottom:14px;}
+.cp-pane{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;}
+.cp-pane-head{padding:14px 18px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--elevated);}
+.cp-pane-title{font-family:var(--display);font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-0.2px;display:flex;align-items:center;gap:8px;}
+.cp-pane-meta{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:0.3px;}
+
+/* COPILOT: chat */
+.cp-chat{flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:18px;}
+.cp-msg{display:flex;gap:12px;align-items:flex-start;}
+.cp-msg.user{flex-direction:row-reverse;}
+.cp-avatar{width:28px;height:28px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;font-family:var(--mono);}
+.cp-msg.user .cp-avatar{background:linear-gradient(135deg,var(--accent-ink),var(--accent));}
+.cp-msg.ai .cp-avatar{background:linear-gradient(135deg,var(--gold),#a06832);color:#fff;}
+.cp-bubble{max-width:78%;padding:13px 16px;border-radius:8px;font-size:13px;line-height:1.6;color:var(--t1);}
+.cp-msg.user .cp-bubble{background:var(--accent-dim);border:0.5px solid var(--border2);}
+.cp-msg.ai .cp-bubble{background:var(--elevated);border:0.5px solid var(--border);}
+.cp-bubble strong{color:var(--accent-ink);font-weight:600;}
+[data-theme="night"] .cp-bubble strong{color:var(--accent);}
+.cp-bubble .cite{display:inline-block;font-family:var(--mono);font-size:10px;background:var(--gold-dim);color:var(--gold);padding:1px 6px;border-radius:3px;margin:0 2px;letter-spacing:0.2px;}
+
+/* COPILOT: input */
+.cp-input{padding:14px 18px;border-top:0.5px solid var(--border);background:var(--surface);}
+.cp-suggest{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.cp-suggest button{font-family:var(--font);font-size:11px;padding:5px 11px;border-radius:14px;border:0.5px solid var(--border2);background:var(--elevated);color:var(--t2);cursor:pointer;transition:all .15s;}
+.cp-suggest button:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-dim);}
+[data-theme="night"] .cp-suggest button:hover{color:var(--accent);}
+.cp-input-row{display:flex;gap:8px;align-items:flex-end;}
+.cp-input-row textarea{flex:1;font-family:var(--font);font-size:13px;padding:10px 12px;border:0.5px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--t1);resize:none;min-height:42px;max-height:120px;line-height:1.5;}
+.cp-input-row textarea:focus{outline:none;border-color:var(--accent);}
+.cp-input-row .send{font-family:var(--font);font-size:12px;font-weight:500;padding:10px 18px;border-radius:6px;border:none;background:var(--accent-ink);color:#fff;cursor:pointer;height:42px;}
+.cp-input-row .send:hover{background:var(--accent);}
+[data-theme="night"] .cp-input-row .send{background:var(--accent);color:#0A0F1F;}
+
+/* COPILOT: data context pane */
+.cp-context{padding:18px 20px;overflow-y:auto;flex:1;}
+.cp-ctx-section{margin-bottom:22px;}
+.cp-ctx-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--gold);font-weight:500;text-transform:uppercase;margin-bottom:10px;}
+.cp-ctx-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:0.5px solid var(--border-sub);}
+.cp-ctx-row:last-child{border:none;}
+.cp-ctx-row .key{color:var(--t3);}
+.cp-ctx-row .val{font-family:var(--mono);color:var(--t1);font-weight:500;}
+.cp-ctx-source{font-family:var(--mono);font-size:10px;color:var(--t3);padding:6px 0;display:flex;justify-content:space-between;}
+.cp-ctx-source .live{color:var(--green);display:flex;align-items:center;gap:4px;}
+.cp-ctx-source .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);}
+
+@media(max-width:1100px){
+  .pnl-variance-grid{grid-template-columns:1fr;}
+  .fc-scenarios{grid-template-columns:repeat(2,1fr);}
+  .fc-accuracy{grid-template-columns:repeat(2,1fr);}
+  .fc-driver-grid{grid-template-columns:repeat(2,1fr);}
+  .cp-shell{grid-template-columns:1fr;height:auto;}
+  .sp-summary{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -990,23 +1167,248 @@ function featurePage(title,breadcrumb,icon,desc,metrics){
     '<div class="bottom-spacer"></div>';
 }
 
-function renderCopilot(){featurePage('AI Copilot','Dashboard / <strong>AI Copilot</strong>','✨','Natural language financial queries powered by Claude',[
-  {icon:'✨',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'QUERIES TODAY',value:'47',dir:'up',change:'↗ +12 vs yesterday',sub:'Avg response: 1.8s'},
-  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'ACCURACY',value:'98.4%',dir:'up',change:'↗ +0.3% this week',sub:'Based on 1,240 queries'},
-  {icon:'⚡',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'INSIGHTS GENERATED',value:'23',dir:'up',change:'↗ 6 actionable',sub:'Revenue, COGS, OpEx'}
-]);}
+function renderCopilot(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>AI Copilot</strong>';
+  document.getElementById('resourcesPanel').style.display='none';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">AI · POWERED BY CLAUDE</div>'
+    +     '<h1 class="sp-title">Castford <em>Copilot</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Conversation history</button>'
+    +     '<button class="sp-btn primary">+ New thread</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cp-shell">'
+    +   '<div class="cp-pane">'
+    +     '<div class="cp-pane-head">'
+    +       '<div class="cp-pane-title">Conversation</div>'
+    +       '<div class="cp-pane-meta">Thread started 14 min ago · 4 messages</div>'
+    +     '</div>'
+    +     '<div class="cp-chat" id="copilotChat">'
+    +       '<div class="cp-msg user">'
+    +         '<div class="cp-avatar">MF</div>'
+    +         '<div class="cp-bubble">Why did COGS spike in March compared to plan?</div>'
+    +       '</div>'
+    +       '<div class="cp-msg ai">'
+    +         '<div class="cp-avatar">AI</div>'
+    +         '<div class="cp-bubble">March COGS came in at <strong>$3.42M</strong> versus the <strong>$3.20M</strong> plan — <strong>6.9% over</strong>. Two drivers: <span class="cite">Snowflake-2024-03</span> compute spend ran $145K above forecast due to higher query volume from new enterprise accounts, and AWS egress fees (<span class="cite">AWS-EGR-Q1</span>) added $75K from increased API traffic. Both line items are scaling linearly with new customer onboarding, so I would expect the trend to continue without optimization.</div>'
+    +       '</div>'
+    +       '<div class="cp-msg user">'
+    +         '<div class="cp-avatar">MF</div>'
+    +         '<div class="cp-bubble">Is there a Snowflake credit pool we could shift queries to?</div>'
+    +       '</div>'
+    +       '<div class="cp-msg ai">'
+    +         '<div class="cp-avatar">AI</div>'
+    +         '<div class="cp-bubble">Yes — your annual Snowflake commit (<span class="cite">SNFLK-COMMIT-2026</span>) has <strong>$284K of unused credits</strong> through end of fiscal year. Routing the analytical queries currently hitting the standard warehouse to your committed warehouse would save approximately <strong>$78K through year-end</strong>. Want me to draft a recommendation for the data engineering team?</div>'
+    +       '</div>'
+    +     '</div>'
+    +     '<div class="cp-input">'
+    +       '<div class="cp-suggest">'
+    +         '<button>Explain this month\'s variance</button>'
+    +         '<button>What\'s our runway?</button>'
+    +         '<button>Compare departments</button>'
+    +         '<button>Top 5 expense categories</button>'
+    +         '<button>Forecast Q1 ARR</button>'
+    +       '</div>'
+    +       '<div class="cp-input-row">'
+    +         '<textarea placeholder="Ask anything about your financials..."></textarea>'
+    +         '<button class="send">Send</button>'
+    +       '</div>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="cp-pane">'
+    +     '<div class="cp-pane-head">'
+    +       '<div class="cp-pane-title">Live data context</div>'
+    +       '<div class="cp-pane-meta">7 sources</div>'
+    +     '</div>'
+    +     '<div class="cp-context">'
+    +       '<div class="cp-ctx-section">'
+    +         '<div class="cp-ctx-label">CURRENT KPIS</div>'
+    +         '<div class="cp-ctx-row"><span class="key">Revenue (YTD)</span><span class="val">$55.0M</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Gross margin</span><span class="val">84.9%</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Net income</span><span class="val">$5.1M</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Runway</span><span class="val">24 mo</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">ARR growth</span><span class="val">+18% YoY</span></div>'
+    +       '</div>'
+    +       '<div class="cp-ctx-section">'
+    +         '<div class="cp-ctx-label">DATA SCOPE</div>'
+    +         '<div class="cp-ctx-row"><span class="key">GL accounts</span><span class="val">18</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Transactions in scope</span><span class="val">3,142</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Period</span><span class="val">FY2025</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Last sync</span><span class="val">53s ago</span></div>'
+    +       '</div>'
+    +       '<div class="cp-ctx-section">'
+    +         '<div class="cp-ctx-label">CONNECTED SOURCES</div>'
+    +         '<div class="cp-ctx-source"><span>NetSuite</span><span class="live">847K records</span></div>'
+    +         '<div class="cp-ctx-source"><span>Salesforce</span><span class="live">124K records</span></div>'
+    +         '<div class="cp-ctx-source"><span>Stripe</span><span class="live">38K records</span></div>'
+    +         '<div class="cp-ctx-source"><span>Snowflake</span><span class="live">2.1M records</span></div>'
+    +         '<div class="cp-ctx-source"><span>Rippling</span><span class="live">312 records</span></div>'
+    +       '</div>'
+    +       '<div class="cp-ctx-section">'
+    +         '<div class="cp-ctx-label">SESSION USAGE</div>'
+    +         '<div class="cp-ctx-row"><span class="key">Tokens used</span><span class="val">12,840</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Model</span><span class="val">claude-opus-4</span></div>'
+    +         '<div class="cp-ctx-row"><span class="key">Avg response</span><span class="val">1.8s</span></div>'
+    +       '</div>'
+    +     '</div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderPnl(){featurePage('P&L Statement','Dashboard / <strong>P&L Statement</strong>','$','Income statement with real-time variance tracking',[
-  {icon:'$',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'TOTAL REVENUE',value:'$55.0M',dir:'up',change:'↗ +$2.09M vs budget',sub:'9 months YTD'},
-  {icon:'↕',iconBg:'var(--red-dim)',iconColor:'var(--red)',label:'TOTAL EXPENSES',value:'$49.9M',dir:'down',change:'↘ 90.7% of revenue',sub:'COGS + OpEx'},
-  {icon:'✓',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'NET INCOME',value:'$5.1M',dir:'up',change:'↗ 9.2% margin',sub:'Bottom line'}
-]);}
+function renderPnl(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>P&L Statement</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">FINANCIAL · FY2025 YTD</div>'
+    +     '<h1 class="sp-title">P&L <em>Statement</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<select class="sp-select"><option>FY2025 YTD</option><option>Q4 2025</option><option>Last 12 months</option><option>Custom range</option></select>'
+    +     '<button class="sp-btn">Export PDF</button>'
+    +     '<button class="sp-btn primary" onclick="showView(\'copilot\',null)">Ask Copilot →</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-summary">'
+    +   '<div class="sp-sum"><div class="sp-sum-label">REVENUE</div><div class="sp-sum-value">$55.0M</div><div class="sp-sum-delta">↗ +$2.09M vs budget</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">GROSS PROFIT</div><div class="sp-sum-value">$46.7M</div><div class="sp-sum-delta">↗ 84.9% margin</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">OPERATING EXPENSES</div><div class="sp-sum-value">$41.7M</div><div class="sp-sum-delta down">↘ 75.8% of revenue</div></div>'
+    +   '<div class="sp-sum"><div class="sp-sum-label">NET INCOME</div><div class="sp-sum-value">$5.1M</div><div class="sp-sum-delta">↗ 9.2% margin</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">INCOME STATEMENT <span class="sp-sect-meta">Click any section to expand · all amounts in USD</span></div>'
+    + '<table class="pnl-table">'
+    +   '<thead><tr><th>LINE ITEM</th><th>ACTUAL</th><th>BUDGET</th><th>VARIANCE</th><th>VAR %</th></tr></thead>'
+    +   '<tbody>'
+    +     '<tr class="section-row" onclick="togglePnlSection(this)" data-section="rev"><td><span class="arrow">▶</span>Revenue</td><td class="num">$55,012,400</td><td class="num">$52,920,000</td><td class="num var-pos">+$2,092,400</td><td class="num var-pos">+4.0%</td></tr>'
+    +       '<tr class="line-row" data-parent="rev"><td>Subscription Revenue</td><td class="num">$48,210,300</td><td class="num">$46,500,000</td><td class="num var-pos">+$1,710,300</td><td class="num var-pos">+3.7%</td></tr>'
+    +       '<tr class="line-row" data-parent="rev"><td>Professional Services</td><td class="num">$5,420,800</td><td class="num">$5,120,000</td><td class="num var-pos">+$300,800</td><td class="num var-pos">+5.9%</td></tr>'
+    +       '<tr class="line-row" data-parent="rev"><td>Other Revenue</td><td class="num">$1,381,300</td><td class="num">$1,300,000</td><td class="num var-pos">+$81,300</td><td class="num var-pos">+6.3%</td></tr>'
+    +     '<tr class="section-row" onclick="togglePnlSection(this)" data-section="cogs"><td><span class="arrow">▶</span>Cost of Revenue</td><td class="num">$8,302,150</td><td class="num">$7,938,000</td><td class="num var-neg">+$364,150</td><td class="num var-neg">+4.6%</td></tr>'
+    +       '<tr class="line-row" data-parent="cogs"><td>Hosting & Infrastructure</td><td class="num">$3,420,000</td><td class="num">$3,200,000</td><td class="num var-neg">+$220,000</td><td class="num var-neg">+6.9%</td></tr>'
+    +       '<tr class="line-row" data-parent="cogs"><td>Customer Success</td><td class="num">$2,840,150</td><td class="num">$2,738,000</td><td class="num var-neg">+$102,150</td><td class="num var-neg">+3.7%</td></tr>'
+    +       '<tr class="line-row" data-parent="cogs"><td>Payment Processing</td><td class="num">$2,042,000</td><td class="num">$2,000,000</td><td class="num var-neg">+$42,000</td><td class="num var-neg">+2.1%</td></tr>'
+    +     '<tr class="subtotal-row"><td>Gross Profit</td><td class="num">$46,710,250</td><td class="num">$44,982,000</td><td class="num var-pos">+$1,728,250</td><td class="num var-pos">+3.8%</td></tr>'
+    +     '<tr class="subtotal-row"><td>Gross Margin %</td><td class="num">84.9%</td><td class="num">85.0%</td><td class="num var-neg">−0.1 pts</td><td class="num"></td></tr>'
+    +     '<tr class="section-row" onclick="togglePnlSection(this)" data-section="opex"><td><span class="arrow">▶</span>Operating Expenses</td><td class="num">$41,672,800</td><td class="num">$40,250,000</td><td class="num var-neg">+$1,422,800</td><td class="num var-neg">+3.5%</td></tr>'
+    +       '<tr class="line-row" data-parent="opex"><td>Sales & Marketing</td><td class="num">$18,420,000</td><td class="num">$17,800,000</td><td class="num var-neg">+$620,000</td><td class="num var-neg">+3.5%</td></tr>'
+    +       '<tr class="line-row" data-parent="opex"><td>Research & Development</td><td class="num">$14,250,000</td><td class="num">$13,950,000</td><td class="num var-neg">+$300,000</td><td class="num var-neg">+2.2%</td></tr>'
+    +       '<tr class="line-row" data-parent="opex"><td>General & Administrative</td><td class="num">$9,002,800</td><td class="num">$8,500,000</td><td class="num var-neg">+$502,800</td><td class="num var-neg">+5.9%</td></tr>'
+    +     '<tr class="subtotal-row"><td>EBITDA</td><td class="num">$5,037,450</td><td class="num">$4,732,000</td><td class="num var-pos">+$305,450</td><td class="num var-pos">+6.5%</td></tr>'
+    +     '<tr><td>Other Income / (Expense)</td><td class="num">$62,550</td><td class="num">$68,000</td><td class="num var-neg">−$5,450</td><td class="num var-neg">−8.0%</td></tr>'
+    +     '<tr class="total-row"><td>Net Income</td><td class="num">$5,100,000</td><td class="num">$4,800,000</td><td class="num">+$300,000</td><td class="num">+6.3%</td></tr>'
+    +   '</tbody>'
+    + '</table>'
+    + '<div class="sp-sect-label">VARIANCE HIGHLIGHTS <span class="sp-sect-meta">AI-detected · top 3 by impact</span></div>'
+    + '<div class="pnl-variance-grid">'
+    +   '<div class="var-card"><div class="var-card-label">REVENUE BEAT</div><h4>Subscription expansion outperformed</h4><p>Strong upgrade activity from mid-market customers drove $1.71M above plan, primarily Q4 expansions to higher tiers.</p><div class="var-amount up">+$1.71M favorable</div></div>'
+    +   '<div class="var-card"><div class="var-card-label">COST PRESSURE</div><h4>Hosting costs accelerating</h4><p>Snowflake compute and AWS spend running 6.9% above plan due to higher query volume from new enterprise accounts.</p><div class="var-amount down">−$220K unfavorable</div></div>'
+    +   '<div class="var-card"><div class="var-card-label">G&A WATCH</div><h4>Legal and audit fees elevated</h4><p>Security audit and contract renegotiations pushed G&A 5.9% above plan. Expected to normalize in Q1.</p><div class="var-amount down">−$502K unfavorable</div></div>'
+    + '</div>'
+    + '<div class="trend-card">'
+    +   '<div class="trend-head"><div class="trend-title">12-month revenue trend</div><div class="trend-period">Feb 2025 → Jan 2026 · monthly</div></div>'
+    +   '<div class="trend-bars">'
+    +     [40,48,52,60,58,66,72,78,84,80,92,96].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
+    +   '</div>'
+    +   '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">GL data sourced from NetSuite · last sync 53 seconds ago · 162 transactions in period · 18 GL accounts</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderForecast(){featurePage('Forecast','Dashboard / <strong>Forecast</strong>','◎','AI-powered financial forecasting with scenario modeling',[
-  {icon:'◎',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'FY2025 PROJECTED',value:'$73.3M',dir:'up',change:'↗ +18% YoY growth',sub:'Annualized from 9mo'},
-  {icon:'⚡',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'FORECAST ACCURACY',value:'96.2%',dir:'up',change:'↗ Within 3.8% variance',sub:'Rolling 6-month'},
-  {icon:'◇',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'SCENARIOS',value:'8',dir:'up',change:'↗ 3 active models',sub:'Base, bull, bear + custom'}
-]);}
+function togglePnlSection(rowEl){
+  var section = rowEl.getAttribute('data-section');
+  rowEl.classList.toggle('expanded');
+  var rows = document.querySelectorAll('.line-row[data-parent="'+section+'"]');
+  rows.forEach(function(r){ r.classList.toggle('shown'); });
+}
+
+function renderForecast(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Forecast</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">FORECASTING · FY2026 PROJECTION</div>'
+    +     '<h1 class="sp-title">Forecast <em>scenarios</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Export model</button>'
+    +     '<button class="sp-btn primary">Generate new forecast</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta">Click to view detail · 3 of 8 active</span></div>'
+    + '<div class="fc-scenarios">'
+    +   '<div class="fc-scenario active">'
+    +     '<div class="fc-scen-tag base">BASE CASE</div>'
+    +     '<div class="fc-scen-name">Steady growth</div>'
+    +     '<div class="fc-scen-arr">$73.3M</div>'
+    +     '<div class="fc-scen-meta"><span>Growth: <b>+18%</b></span><span>MAPE: <b>3.2%</b></span></div>'
+    +   '</div>'
+    +   '<div class="fc-scenario">'
+    +     '<div class="fc-scen-tag bull">BULL CASE</div>'
+    +     '<div class="fc-scen-name">Upside breakout</div>'
+    +     '<div class="fc-scen-arr">$82.1M</div>'
+    +     '<div class="fc-scen-meta"><span>Growth: <b>+32%</b></span><span>P95</span></div>'
+    +   '</div>'
+    +   '<div class="fc-scenario">'
+    +     '<div class="fc-scen-tag bear">BEAR CASE</div>'
+    +     '<div class="fc-scen-name">Downside pressure</div>'
+    +     '<div class="fc-scen-arr">$64.8M</div>'
+    +     '<div class="fc-scen-meta"><span>Growth: <b>+4%</b></span><span>P5</span></div>'
+    +   '</div>'
+    +   '<div class="fc-scenario">'
+    +     '<div class="fc-scen-tag custom">CUSTOM</div>'
+    +     '<div class="fc-scen-name">Board scenario</div>'
+    +     '<div class="fc-scen-arr">$78.0M</div>'
+    +     '<div class="fc-scen-meta"><span>Growth: <b>+24%</b></span><span>Custom drivers</span></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">DRIVER INPUTS <span class="sp-sect-meta">Adjust to recalculate base case</span></div>'
+    + '<div class="fc-drivers">'
+    +   '<div class="fc-drivers-head"><div class="fc-drivers-title">Base case assumptions</div><span class="sp-footer-meta" style="border:none;padding:0;">Last updated 14 minutes ago</span></div>'
+    +   '<div class="fc-driver-grid">'
+    +     '<div class="fc-driver"><div class="fc-driver-label">NEW LOGO ARR / MO</div><div class="fc-driver-value">$1.84M</div><div class="fc-driver-bar"><div style="width:62%;"></div></div></div>'
+    +     '<div class="fc-driver"><div class="fc-driver-label">EXPANSION RATE</div><div class="fc-driver-value">118%</div><div class="fc-driver-bar"><div style="width:78%;"></div></div></div>'
+    +     '<div class="fc-driver"><div class="fc-driver-label">GROSS CHURN</div><div class="fc-driver-value">1.8%</div><div class="fc-driver-bar"><div style="width:18%;"></div></div></div>'
+    +     '<div class="fc-driver"><div class="fc-driver-label">SALES CYCLE</div><div class="fc-driver-value">42 days</div><div class="fc-driver-bar"><div style="width:48%;"></div></div></div>'
+    +     '<div class="fc-driver"><div class="fc-driver-label">CAC PAYBACK</div><div class="fc-driver-value">11.4 mo</div><div class="fc-driver-bar"><div style="width:38%;"></div></div></div>'
+    +     '<div class="fc-driver"><div class="fc-driver-label">REP QUOTA ATTAINMENT</div><div class="fc-driver-value">87%</div><div class="fc-driver-bar"><div style="width:87%;"></div></div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">MODEL ACCURACY <span class="sp-sect-meta">MAPE by horizon · rolling 6-month window</span></div>'
+    + '<div class="fc-accuracy">'
+    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">1-MONTH</div><div class="fc-acc-value">1.4%</div><div class="fc-acc-delta">↗ −0.3 vs prior</div></div>'
+    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">3-MONTH</div><div class="fc-acc-value">3.2%</div><div class="fc-acc-delta">↗ −0.6 vs prior</div></div>'
+    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">6-MONTH</div><div class="fc-acc-value">5.8%</div><div class="fc-acc-delta">↗ −1.1 vs prior</div></div>'
+    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">12-MONTH</div><div class="fc-acc-value">9.4%</div><div class="fc-acc-delta">↗ Within target</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">SENSITIVITY ANALYSIS <span class="sp-sect-meta">Impact on FY2026 ARR per ±10% driver shift</span></div>'
+    + '<table class="fc-sens">'
+    +   '<thead><tr><th>DRIVER</th><th>−10%</th><th>BASE</th><th>+10%</th></tr></thead>'
+    +   '<tbody>'
+    +     '<tr><td>New logo ARR</td><td class="num impact-neg">−$2.4M</td><td class="num">$73.3M</td><td class="num impact-pos">+$2.4M</td></tr>'
+    +     '<tr><td>Expansion rate</td><td class="num impact-neg">−$3.8M</td><td class="num">$73.3M</td><td class="num impact-pos">+$3.8M</td></tr>'
+    +     '<tr><td>Gross churn</td><td class="num impact-pos">+$1.6M</td><td class="num">$73.3M</td><td class="num impact-neg">−$1.6M</td></tr>'
+    +     '<tr><td>Sales cycle length</td><td class="num impact-pos">+$1.1M</td><td class="num">$73.3M</td><td class="num impact-neg">−$1.1M</td></tr>'
+    +     '<tr><td>Rep attainment</td><td class="num impact-neg">−$2.1M</td><td class="num">$73.3M</td><td class="num impact-pos">+$2.1M</td></tr>'
+    +   '</tbody>'
+    + '</table>'
+    + '<div class="trend-card">'
+    +   '<div class="trend-head"><div class="trend-title">12-month forecast trajectory</div><div class="trend-period">Feb 2026 → Jan 2027 · base case projection</div></div>'
+    +   '<div class="trend-bars">'
+    +     [50,54,58,62,66,70,74,78,82,86,90,94].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
+    +   '</div>'
+    +   '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">Models: Linear regression + EMA + Monte Carlo (5000 runs) · last refreshed 14 minutes ago</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
 function renderConsolidation(){featurePage('Consolidation','Dashboard / <strong>Consolidation</strong>','◫','Multi-entity financial consolidation and intercompany eliminations',[
   {icon:'◫',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'ENTITIES',value:'4',dir:'up',change:'↗ All reconciled',sub:'Parent + 3 subsidiaries'},
