@@ -755,6 +755,107 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
   .cc-stats{grid-template-columns:repeat(2,1fr);}
   .cc-actions{grid-template-columns:repeat(3,1fr);}
   .it-insights{grid-template-columns:1fr;}
+  .resources-panel{display:none;}
+}
+
+/* ═══ MOBILE RESPONSIVE (Phase 2C-1 part 2) ═══ */
+
+/* Mobile menu toggle button — hidden on desktop, visible <=768px */
+.topbar-mobile-toggle{
+  display:none;
+  width:32px;height:32px;
+  align-items:center;justify-content:center;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--surface);color:var(--t1);
+  cursor:pointer;flex-shrink:0;
+  padding:0;
+}
+.topbar-mobile-toggle svg{width:16px;height:16px;display:block;}
+
+/* Sidebar backdrop overlay (off-canvas mode) */
+.sidebar-backdrop{
+  display:none;
+  position:fixed;inset:48px 0 0 0;
+  background:rgba(0,0,0,0.45);
+  z-index:150;
+  opacity:0;
+  transition:opacity .2s var(--ease);
+}
+.sidebar-backdrop.open{display:block;opacity:1;}
+
+@media(max-width:768px){
+  /* Topbar — compact */
+  .topbar{padding:0 12px;gap:8px;}
+  .topbar-mobile-toggle{display:flex;}
+  .product-badge,.topbar-breadcrumb,#fySelect,
+  .topbar-time,.topbar-search{display:none !important;}
+  .topbar-logo .plan-badge{display:none;}
+  .topbar-logo .name{font-size:14px;}
+  .topbar-right{margin-left:auto;gap:8px;}
+
+  /* Layout — single column */
+  .layout{display:block;min-height:calc(100vh - 48px);}
+
+  /* Sidebar — off-canvas drawer */
+  .sidebar{
+    position:fixed;
+    left:0;top:48px;bottom:0;
+    width:260px;max-width:80vw;
+    z-index:200;
+    transform:translateX(-100%);
+    transition:transform .25s var(--ease);
+    box-shadow:4px 0 18px rgba(0,0,0,0.18);
+  }
+  .sidebar.open{transform:translateX(0);}
+
+  /* Main content padding */
+  .main-content{padding:14px 14px;min-width:0;}
+
+  /* All multi-column grids → single column on mobile */
+  .kpi-grid,.admin-grid,.iv-grid,.sc-grid,
+  .cc-stats,.cc-actions{grid-template-columns:1fr !important;}
+
+  /* Inline `grid-template-columns:1fr 1fr` patterns used in renderAdmin etc.
+     Inline styles need !important to be overridden by the media query. */
+  .main-content > div[style*="grid-template-columns:1fr 1fr"],
+  .main-content > div[style*="grid-template-columns: 1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Subpage header — stack title and actions vertically */
+  .sp-header{flex-direction:column;align-items:flex-start;gap:12px;}
+  .sp-actions{width:100%;flex-wrap:wrap;}
+  .sp-title{font-size:24px;line-height:1.1;}
+  .sp-eyebrow{font-size:10px;}
+
+  /* Tabs — horizontally scrollable */
+  .view-tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;}
+  .view-tabs::-webkit-scrollbar{display:none;}
+  .view-tab{white-space:nowrap;flex-shrink:0;}
+
+  /* Tables and bench grids — allow horizontal scroll inside their wrapper */
+  .iv-bench,.sc-assumptions,.iv-cohort-grid{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .pnl-table{font-size:11px;}
+  .pnl-table th,.pnl-table td{padding:6px 4px;}
+
+  /* Card padding compression */
+  .iv-tile,.admin-card,.sc-card,.cc-stat,.it-card,.cl-card{padding:14px;}
+
+  /* Topbar logo gap on mobile */
+  .topbar-logo{gap:6px;}
+}
+
+/* Phone — additional compression */
+@media(max-width:480px){
+  .main-content{padding:12px 12px;}
+  .sp-title{font-size:20px;}
+  .iv-tile-value{font-size:22px;}
+  .admin-value{font-size:22px;}
+  .topbar-logo svg{width:24px;height:24px;}
+  .sp-actions .sp-btn{flex:1;min-width:120px;}
 }
 </style>
 <script src="/site/castford-shell.js" defer></script>
@@ -774,6 +875,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
 <!-- Top Bar -->
 <div class="topbar">
+  <button class="topbar-mobile-toggle" id="mobileMenuToggle" aria-label="Open menu">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
   <a href="/site/landing.html" class="topbar-logo" style="text-decoration:none;color:inherit;">
     <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#9B8AFF"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
     <span class="name">Castford</span>
@@ -805,6 +909,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 </div>
 
 <div class="layout">
+  <!-- Backdrop overlay for mobile off-canvas sidebar -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-section">
@@ -965,6 +1071,8 @@ function showView(view,el,skipActive){
     document.querySelectorAll('.sidebar-item').forEach(function(i){i.classList.remove('active');});
     if(el)el.classList.add('active');
   }
+  // Auto-close mobile sidebar drawer when a view is selected
+  closeMobileSidebar();
   var renderers={
     dashboard:renderDashboard,admin:renderAdmin,settings:renderSettings,
     copilot:renderCopilot,pnl:renderPnl,forecast:renderForecast,
@@ -975,6 +1083,51 @@ function showView(view,el,skipActive){
   var fn=renderers[view];
   if(fn)fn();
 }
+
+// ─── Mobile sidebar drawer ────────────────────────────────────────────
+function openMobileSidebar(){
+  var sb = document.getElementById('sidebar');
+  var bd = document.getElementById('sidebarBackdrop');
+  if (sb) sb.classList.add('open');
+  if (bd) bd.classList.add('open');
+}
+function closeMobileSidebar(){
+  var sb = document.getElementById('sidebar');
+  var bd = document.getElementById('sidebarBackdrop');
+  if (sb) sb.classList.remove('open');
+  if (bd) bd.classList.remove('open');
+}
+function toggleMobileSidebar(){
+  var sb = document.getElementById('sidebar');
+  if (sb && sb.classList.contains('open')) {
+    closeMobileSidebar();
+  } else {
+    openMobileSidebar();
+  }
+}
+
+(function(){
+  // Wire hamburger button + backdrop tap when DOM is ready
+  function bind(){
+    var btn = document.getElementById('mobileMenuToggle');
+    var bd = document.getElementById('sidebarBackdrop');
+    if (btn) btn.addEventListener('click', toggleMobileSidebar);
+    if (bd) bd.addEventListener('click', closeMobileSidebar);
+    // Close on Escape
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') closeMobileSidebar();
+    });
+    // Close on resize back to desktop
+    window.addEventListener('resize', function(){
+      if (window.innerWidth > 768) closeMobileSidebar();
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+})();
 
 function getProductHeader(){
   return '<div class="product-header"><div class="ph-icon" style="background:linear-gradient(135deg,#5B7FCC,#1A3F7A);">◎</div><div class="ph-info"><div class="ph-name">Castford Dashboard</div><div class="ph-tagline">Crystal-clear financial visibility</div></div></div>';
