@@ -402,6 +402,43 @@ window.CastfordData = (function() {
     return data || [];
   }
 
+  // close_periods — list all periods for the org, newest first
+  async function getClosePeriods() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('close_periods')
+      .select('id, period, fiscal_year, status, due_date, started_at, closed_by, closed_at, locked_at, notes, metadata, created_at, updated_at')
+      .eq('org_id', orgId)
+      .order('period', { ascending: false });
+    return data || [];
+  }
+
+  // close_periods — most recent open/in_progress period (the one to render)
+  async function getCurrentClosePeriod() {
+    if (!sb || demoMode || !orgId) return null;
+    var { data } = await sb
+      .from('close_periods')
+      .select('id, period, fiscal_year, status, due_date, started_at, closed_by, closed_at, locked_at, notes, metadata')
+      .eq('org_id', orgId)
+      .in('status', ['open','in_progress','review','reopened'])
+      .order('period', { ascending: false })
+      .limit(1);
+    return (data && data[0]) || null;
+  }
+
+  // workspace_tasks for a specific period — close tasks live here
+  async function getCloseTasks(period) {
+    if (!sb || demoMode || !orgId || !period) return [];
+    var { data } = await sb
+      .from('workspace_tasks')
+      .select('id, title, description, status, priority, category, period, assigned_to, due_date, completed_at, metadata, created_at')
+      .eq('org_id', orgId)
+      .eq('period', period)
+      .order('category', { ascending: true })
+      .order('due_date', { ascending: true, nullsFirst: false });
+    return data || [];
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -433,6 +470,9 @@ window.CastfordData = (function() {
     getOrgInvitations: getOrgInvitations,
     getIntegrations: getIntegrations,
     getConnectorRegistry: getConnectorRegistry,
+    getClosePeriods: getClosePeriods,
+    getCurrentClosePeriod: getCurrentClosePeriod,
+    getCloseTasks: getCloseTasks,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
