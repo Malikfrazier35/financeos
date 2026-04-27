@@ -2328,10 +2328,15 @@ function renderScenarios(){
 function renderClose(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Close Tasks</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = closeShellHTML(true);
+  loadCloseAndRender();
+}
+
+function closeShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">JANUARY 2026 CLOSE · DAY 4 OF 7</div>'
+    +     '<div class="sp-eyebrow" id="closeEyebrow">CLOSE WORKFLOW · LOADING…</div>'
     +     '<h1 class="sp-title">Month-end <em>close</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -2339,50 +2344,290 @@ function renderClose(){
     +     '<button class="sp-btn primary">+ Add task</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="cl-progress">'
-    +   '<div><div style="font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:8px;color:var(--t1);">Close progress</div><div class="cl-progress-bar"><div style="width:62%;"></div></div><div style="font-family:var(--mono);font-size:10.5px;color:var(--t3);margin-top:6px;letter-spacing:0.3px;">14 of 22 tasks complete · on track for February 7</div></div>'
-    +   '<div class="cl-progress-stat"><b>62%</b>COMPLETE</div>'
-    +   '<div class="cl-progress-stat"><b>3</b>DAYS LEFT</div>'
-    +   '<div class="cl-progress-stat warn"><b>2</b>BLOCKED</div>'
-    + '</div>'
-    + '<div class="cl-phase">'
-    +   '<div class="cl-phase-head"><div class="cl-phase-num">1</div><div class="cl-phase-name">Pre-close preparation</div><div class="cl-phase-meta">5 of 5 complete · finished Jan 31</div></div>'
-    +   '<div class="cl-tasks">'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Lock period in NetSuite</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Jan 31</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Confirm cutoff dates with all entities</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Jan 31</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Run preliminary trial balance</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Jan 31</div><div class="badge done">Done</div></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="cl-phase">'
-    +   '<div class="cl-phase-head"><div class="cl-phase-num">2</div><div class="cl-phase-name">Reconciliations</div><div class="cl-phase-meta">7 of 9 complete · 2 in progress</div></div>'
-    +   '<div class="cl-tasks">'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Bank reconciliations (4 accounts)</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 1</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Credit card reconciliations</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 1</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Stripe payout reconciliation</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 2</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Intercompany reconciliation (5 entities)</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 3</div><div class="badge doing">In progress</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">AR aging review and bad debt analysis</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due late">Feb 2</div><div class="badge doing">In progress</div></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="cl-phase">'
-    +   '<div class="cl-phase-head"><div class="cl-phase-num">3</div><div class="cl-phase-name">Adjustments and accruals</div><div class="cl-phase-meta">2 of 5 complete · 3 todo</div></div>'
-    +   '<div class="cl-tasks">'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Prepaid expense amortization</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 3</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Depreciation entries</div><div class="assignee"><div class="avatar">JM</div>Jordan M.</div><div class="due">Feb 3</div><div class="badge done">Done</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Revenue cutoff adjustments</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 5</div><div class="badge todo">Todo</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Accrued expenses</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 5</div><div class="badge todo">Todo</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Equity-based comp accrual</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 6</div><div class="badge todo">Todo</div></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="cl-phase">'
-    +   '<div class="cl-phase-head"><div class="cl-phase-num">4</div><div class="cl-phase-name">Review and finalize</div><div class="cl-phase-meta">0 of 3 complete · pending</div></div>'
-    +   '<div class="cl-tasks">'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">CFO P&L review</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 6</div><div class="badge review">Review</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Generate consolidated reports</div><div class="assignee"><div class="avatar">SC</div>Sarah Chen</div><div class="due">Feb 7</div><div class="badge todo">Todo</div></div>'
-    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Lock close period and notify stakeholders</div><div class="assignee"><div class="avatar">MF</div>Malik F.</div><div class="due">Feb 7</div><div class="badge todo">Todo</div></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="sp-footer-meta">Close cycle started Jan 31 · target completion Feb 7 · 4 contributors active</div>'
+    + '<div id="closeProgressWrap">' + (loading ? closeProgressSkeleton() : '') + '</div>'
+    + '<div id="closePhasesWrap">' + (loading ? closePhasesSkeleton() : '') + '</div>'
+    + '<div class="sp-footer-meta" id="closeFooterMeta">Loading close period…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function closeProgressSkeleton(){
+  return '<div class="cl-progress">'
+    + '<div><div style="font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:8px;color:var(--t1);opacity:.5">Loading close period…</div><div class="cl-progress-bar"><div style="width:0%"></div></div><div style="font-family:var(--mono);font-size:10.5px;color:var(--t3);margin-top:6px;letter-spacing:0.3px;">···</div></div>'
+    + '<div class="cl-progress-stat" style="opacity:.5"><b>···</b>COMPLETE</div>'
+    + '<div class="cl-progress-stat" style="opacity:.5"><b>···</b>DAYS LEFT</div>'
+    + '<div class="cl-progress-stat" style="opacity:.5"><b>···</b>BLOCKED</div>'
+    + '</div>';
+}
+
+function closePhasesSkeleton(){
+  return '<div style="padding:48px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING CLOSE PERIOD · close_periods + workspace_tasks</div>';
+}
+
+async function loadCloseAndRender(){
+  if (!window.CastfordData) {
+    renderCloseDemo('Data layer not loaded — showing sample close workflow');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderCloseDemo('Data layer init failed — showing sample close workflow');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderCloseDemo('Demo mode active — connect your workspace to see real close tasks');
+    return;
+  }
+
+  var period = await window.CastfordData.getCurrentClosePeriod();
+
+  if (!period) {
+    renderCloseDemo('No active close period · open a close in close_periods to track real progress');
+    return;
+  }
+
+  var tasks = await window.CastfordData.getCloseTasks(period.period);
+
+  if (!tasks || tasks.length === 0) {
+    renderCloseReal(period, [], 'Period open · no tasks yet for this period in workspace_tasks');
+    return;
+  }
+
+  renderCloseReal(period, tasks, null);
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function closePeriodLabel(period, fiscalYear){
+  if (!period) return 'Unknown period';
+  // period like "2026-04" → "April 2026 close"
+  var m = /^(\d{4})-(\d{2})$/.exec(period);
+  if (m) {
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var monthName = months[parseInt(m[2],10)-1] || period;
+    return monthName + ' ' + m[1] + ' close';
+  }
+  return period + (fiscalYear ? ' · ' + fiscalYear : '');
+}
+
+function closeStatusLabel(status){
+  return ({
+    open: 'Open',
+    in_progress: 'In progress',
+    review: 'In review',
+    locked: 'Locked',
+    reopened: 'Reopened'
+  })[status] || status || 'Open';
+}
+
+function closeDaysToDue(dueDate){
+  if (!dueDate) return null;
+  var d = new Date(dueDate + 'T00:00:00');
+  if (isNaN(d.getTime())) return null;
+  var now = new Date();
+  now.setHours(0,0,0,0);
+  return Math.round((d.getTime() - now.getTime()) / (1000*60*60*24));
+}
+
+function closeDaysSince(ts){
+  if (!ts) return null;
+  var d = new Date(ts);
+  if (isNaN(d.getTime())) return null;
+  return Math.max(0, Math.floor((Date.now() - d.getTime()) / (1000*60*60*24)));
+}
+
+function closeTaskAvatar(assignedTo){
+  if (!assignedTo) return '?';
+  // assigned_to is a uuid; we don't have the user name in this query.
+  // Show first 2 chars of the uuid as a stable visual marker.
+  return assignedTo.replace(/-/g,'').substring(0,2).toUpperCase();
+}
+
+function closeTaskBadge(status){
+  var s = (status || 'pending').toLowerCase();
+  if (s === 'completed' || s === 'done') return '<div class="badge done">Done</div>';
+  if (s === 'in_progress' || s === 'doing') return '<div class="badge doing">In progress</div>';
+  if (s === 'review') return '<div class="badge review">Review</div>';
+  if (s === 'blocked') return '<div class="badge warn">Blocked</div>';
+  return '<div class="badge todo">Todo</div>';
+}
+
+function closeTaskRowClass(status){
+  var s = (status || 'pending').toLowerCase();
+  if (s === 'completed' || s === 'done') return 'cl-task done';
+  return 'cl-task';
+}
+
+function closePhaseTitle(category){
+  if (!category) return 'General';
+  // Title case: "pre_close" → "Pre Close", "reconciliations" → "Reconciliations"
+  return category.replace(/[_-]/g,' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+}
+
+function closeFmtDate(d){
+  if (!d) return '—';
+  var dt = new Date(d + (d.length === 10 ? 'T00:00:00' : ''));
+  if (isNaN(dt.getTime())) return d;
+  var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return m[dt.getMonth()] + ' ' + dt.getDate();
+}
+
+// ─── real render ───────────────────────────────────────────────────────
+
+function renderCloseReal(period, tasks, banner){
+  var totalTasks = tasks.length;
+  var completedTasks = tasks.filter(function(t){ return t.status === 'completed' || t.status === 'done'; }).length;
+  var blockedTasks = tasks.filter(function(t){ return t.status === 'blocked'; }).length;
+  var pct = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  var daysToDue = closeDaysToDue(period.due_date);
+  var daysSinceStart = closeDaysSince(period.started_at);
+
+  // Eyebrow
+  var statusLbl = closeStatusLabel(period.status);
+  var eb = closePeriodLabel(period.period, period.fiscal_year).toUpperCase() + ' · ' + statusLbl.toUpperCase();
+  if (daysSinceStart !== null && daysToDue !== null && daysToDue >= 0) {
+    var totalDays = daysSinceStart + daysToDue;
+    eb += ' · DAY ' + (daysSinceStart + 1) + ' OF ' + (totalDays + 1);
+  } else if (daysSinceStart !== null) {
+    eb += ' · DAY ' + (daysSinceStart + 1);
+  }
+  document.getElementById('closeEyebrow').textContent = eb;
+
+  // Progress bar
+  var progressDetail = completedTasks + ' of ' + totalTasks + ' task' + (totalTasks===1?'':'s') + ' complete';
+  if (period.due_date) {
+    progressDetail += ' · target ' + closeFmtDate(period.due_date);
+  }
+  if (totalTasks === 0) {
+    progressDetail = 'No tasks yet · add tasks to track progress';
+  }
+
+  var daysLeftStr = daysToDue === null ? '—' : (daysToDue < 0 ? 'OVER' : String(daysToDue));
+  var daysLeftLabel = daysToDue === null ? 'NO DUE DATE' : (daysToDue < 0 ? 'DAYS OVER' : 'DAYS LEFT');
+
+  document.getElementById('closeProgressWrap').innerHTML = '<div class="cl-progress">'
+    + '<div><div style="font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:8px;color:var(--t1);">Close progress</div>'
+    +   '<div class="cl-progress-bar"><div style="width:' + pct + '%;"></div></div>'
+    +   '<div style="font-family:var(--mono);font-size:10.5px;color:var(--t3);margin-top:6px;letter-spacing:0.3px;">' + progressDetail + '</div></div>'
+    + '<div class="cl-progress-stat"><b>' + pct + '%</b>COMPLETE</div>'
+    + '<div class="cl-progress-stat"><b>' + daysLeftStr + '</b>' + daysLeftLabel + '</div>'
+    + '<div class="cl-progress-stat' + (blockedTasks ? ' warn' : '') + '"><b>' + blockedTasks + '</b>BLOCKED</div>'
+    + '</div>';
+
+  // Group by category (phase)
+  var phasesMap = {};
+  var phaseOrder = [];
+  tasks.forEach(function(t){
+    var cat = t.category || 'general';
+    if (!phasesMap[cat]) {
+      phasesMap[cat] = [];
+      phaseOrder.push(cat);
+    }
+    phasesMap[cat].push(t);
+  });
+
+  var phasesHTML = '';
+  if (phaseOrder.length === 0) {
+    phasesHTML = '<div style="padding:48px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px;border:1px solid var(--border);border-radius:4px;background:var(--surface)">PERIOD OPEN · NO TASKS YET · ADD TASKS IN WORKSPACE_TASKS WITH PERIOD = ' + (period.period || '') + '</div>';
+  } else {
+    phaseOrder.forEach(function(cat, idx){
+      var phaseTasks = phasesMap[cat];
+      var phaseDone = phaseTasks.filter(function(t){ return t.status === 'completed' || t.status === 'done'; }).length;
+      var phaseInProgress = phaseTasks.filter(function(t){ return t.status === 'in_progress' || t.status === 'doing'; }).length;
+      var phaseMeta = phaseDone + ' of ' + phaseTasks.length + ' complete';
+      if (phaseInProgress) phaseMeta += ' · ' + phaseInProgress + ' in progress';
+
+      var tasksHTML = '';
+      phaseTasks.forEach(function(t){
+        var due = closeFmtDate(t.due_date);
+        var dueClass = '';
+        var d = closeDaysToDue(t.due_date);
+        if (d !== null && d < 0 && !(t.status === 'completed' || t.status === 'done')) dueClass = ' late';
+        tasksHTML += '<div class="' + closeTaskRowClass(t.status) + '">'
+          + '<div class="check"></div>'
+          + '<div class="task-name">' + (t.title || 'Untitled task') + '</div>'
+          + '<div class="assignee"><div class="avatar">' + closeTaskAvatar(t.assigned_to) + '</div>' + (t.assigned_to ? 'Assigned' : 'Unassigned') + '</div>'
+          + '<div class="due' + dueClass + '">' + due + '</div>'
+          + closeTaskBadge(t.status)
+          + '</div>';
+      });
+
+      phasesHTML += '<div class="cl-phase">'
+        + '<div class="cl-phase-head"><div class="cl-phase-num">' + (idx+1) + '</div><div class="cl-phase-name">' + closePhaseTitle(cat) + '</div><div class="cl-phase-meta">' + phaseMeta + '</div></div>'
+        + '<div class="cl-tasks">' + tasksHTML + '</div>'
+        + '</div>';
+    });
+  }
+  document.getElementById('closePhasesWrap').innerHTML = phasesHTML;
+
+  // Footer attribution
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  var startedFmt = closeFmtDate(period.started_at && period.started_at.split('T')[0]);
+  var dueFmt = closeFmtDate(period.due_date);
+  var footerText = 'Source: close_periods + workspace_tasks · period ' + period.period + ' · started ' + startedFmt + (period.due_date ? ' · target ' + dueFmt : '') + ' · org ' + orgIdShort;
+  if (banner) footerText = banner + ' · ' + footerText;
+  document.getElementById('closeFooterMeta').textContent = footerText;
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderCloseDemo(banner){
+  document.getElementById('closeEyebrow').textContent = 'SAMPLE CLOSE WORKFLOW · DEMO DATA';
+
+  document.getElementById('closeProgressWrap').innerHTML = '<div class="cl-progress">'
+    + '<div><div style="font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:8px;color:var(--t1);">Sample close progress</div>'
+    +   '<div class="cl-progress-bar"><div style="width:62%;"></div></div>'
+    +   '<div style="font-family:var(--mono);font-size:10.5px;color:var(--t3);margin-top:6px;letter-spacing:0.3px;">14 of 22 sample tasks complete · illustrative only</div></div>'
+    + '<div class="cl-progress-stat"><b>62%</b>COMPLETE</div>'
+    + '<div class="cl-progress-stat"><b>3</b>DAYS LEFT</div>'
+    + '<div class="cl-progress-stat warn"><b>2</b>BLOCKED</div>'
+    + '</div>';
+
+  document.getElementById('closePhasesWrap').innerHTML = ''
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">1</div><div class="cl-phase-name">Pre-close preparation</div><div class="cl-phase-meta">5 of 5 sample · finished</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Lock period in source GL</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 1</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Confirm cutoff dates with all entities</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 1</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Run preliminary trial balance</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 1</div><div class="badge done">Done</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">2</div><div class="cl-phase-name">Reconciliations</div><div class="cl-phase-meta">3 of 5 sample · 2 in progress</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Bank reconciliations (sample)</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 2</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Credit card reconciliations</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 2</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Payment processor reconciliation</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 3</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Intercompany reconciliation</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 4</div><div class="badge doing">In progress</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">AR aging review and bad debt analysis</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due late">Day 3</div><div class="badge doing">In progress</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">3</div><div class="cl-phase-name">Adjustments and accruals</div><div class="cl-phase-meta">2 of 5 sample · 3 todo</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Prepaid expense amortization</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 4</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task done"><div class="check"></div><div class="task-name">Depreciation entries</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 4</div><div class="badge done">Done</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Revenue cutoff adjustments</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 5</div><div class="badge todo">Todo</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Accrued expenses</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 5</div><div class="badge todo">Todo</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Equity-based comp accrual</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 6</div><div class="badge todo">Todo</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cl-phase">'
+    +   '<div class="cl-phase-head"><div class="cl-phase-num">4</div><div class="cl-phase-name">Review and finalize</div><div class="cl-phase-meta">0 of 3 sample · pending</div></div>'
+    +   '<div class="cl-tasks">'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">CFO P&L review</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 6</div><div class="badge review">Review</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Generate consolidated reports</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 7</div><div class="badge todo">Todo</div></div>'
+    +     '<div class="cl-task"><div class="check"></div><div class="task-name">Lock close period and notify stakeholders</div><div class="assignee"><div class="avatar">··</div>Sample</div><div class="due">Day 7</div><div class="badge todo">Todo</div></div>'
+    +   '</div>'
+    + '</div>';
+
+  document.getElementById('closeFooterMeta').textContent = (banner || 'Demo data') + ' · Open a period in close_periods and add tasks to workspace_tasks to track real progress';
 }
 
 // ═══ TEAM (Phase 2B-2) ═══
