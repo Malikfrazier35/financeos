@@ -790,6 +790,64 @@ window.CastfordData = (function() {
     };
   }
 
+  // The current authenticated user (joined public.users + auth.user metadata)
+  async function getCurrentUser() {
+    if (!sb) return null;
+    if (!session || !session.user) return null;
+    var { data } = await sb
+      .from('users')
+      .select('id, email, full_name, role, avatar_url, last_active_at, job_title, department, created_at, mfa_enabled, mfa_enrolled_at, theme_mode, timezone')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    return {
+      id: session.user.id,
+      email: (data && data.email) || session.user.email,
+      full_name: data && data.full_name,
+      role: data && data.role,
+      job_title: data && data.job_title,
+      department: data && data.department,
+      mfa_enabled: data && data.mfa_enabled,
+      mfa_enrolled_at: data && data.mfa_enrolled_at,
+      timezone: data && data.timezone,
+      last_active_at: data && data.last_active_at,
+      auth_provider: session.user.app_metadata && session.user.app_metadata.provider,
+      auth_providers: session.user.app_metadata && session.user.app_metadata.providers,
+      created_at: session.user.created_at,
+      last_sign_in_at: session.user.last_sign_in_at
+    };
+  }
+
+  // Current Supabase session info (for the Settings → Session tab)
+  function getSessionInfo() {
+    if (!session) return null;
+    var token = session.access_token || '';
+    return {
+      authenticated: true,
+      provider: session.user && session.user.app_metadata && session.user.app_metadata.provider,
+      tokenPreview: token ? (token.slice(0, 12) + '…' + token.slice(-6)) : null,
+      expires_at: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
+      user_email: session.user && session.user.email,
+      user_id: session.user && session.user.id,
+      last_sign_in_at: session.user && session.user.last_sign_in_at,
+      user_created_at: session.user && session.user.created_at
+    };
+  }
+
+  // Distinct currencies present in gl_transactions for this org
+  async function getDistinctCurrencies() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('gl_transactions')
+      .select('currency')
+      .eq('org_id', orgId)
+      .limit(1000);
+    if (!data) return [];
+    var set = {};
+    data.forEach(function(r){ if (r.currency) set[r.currency] = (set[r.currency] || 0) + 1; });
+    return Object.keys(set).map(function(c){ return { currency: c, count: set[c] }; })
+      .sort(function(a, b){ return b.count - a.count; });
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -841,6 +899,9 @@ window.CastfordData = (function() {
     getBudgetVersions: getBudgetVersions,
     getOrganization: getOrganization,
     getAdminCounts: getAdminCounts,
+    getCurrentUser: getCurrentUser,
+    getSessionInfo: getSessionInfo,
+    getDistinctCurrencies: getDistinctCurrencies,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
