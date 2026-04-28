@@ -201,7 +201,7 @@ async function handleProPackCheckoutCompleted(session: any, eventId: string): Pr
         channel: 'in_app',
         title: `${packLabel} pack activated`,
         body: `Your Castford ${packLabel} pack is now active. Access role-specific dashboards and workflows.`,
-        link: `/${packSlug.replace('_', '-')}`
+        link: `/${packSlug === 'fp_a' ? 'fpa' : packSlug}`
       })
     }
   } catch (_) { /* notification best-effort */ }
