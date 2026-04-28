@@ -3,28 +3,34 @@ import { NextResponse } from 'next/server';
 // Castford route → static HTML map.
 // Keep this in sync with middleware config.matcher below.
 //
-// Engine-driven dashboards (/ceo, /controller, /fpa, /treasurer) all rewrite
-// to the same hub.html. The role is derived from window.location.pathname
-// inside hub.html — NO query string in the rewrite target. (Vercel's static
-// resolver looks for literal file paths and query strings cause 404s.)
+// L3 Pro Pack pages (/cfo, /controller, /fpa, /ceo) each have their own
+// bespoke executive surface (Phase 3 part 6) with client-side entitlement
+// gating via /site/dashboard/pack-guard.js.
+//
+// /treasurer remains on the legacy engine-driven hub.html until its bespoke
+// page is built. The role is derived from window.location.pathname inside
+// hub.html. (Vercel's static resolver looks for literal file paths and
+// query strings cause 404s, so no query string in the rewrite target.)
 const ROUTE_MAP = {
   '/':           '/site/landing.html',
   '/login':      '/site/login.html',
   '/signup':     '/site/signup.html',
   '/logout':     '/site/logout.html',
 
-  // Role-specific command centers (existing — bespoke HTML per role)
+  // L3 Pro Pack command centers — bespoke HTML per role (Phase 3 part 6)
+  // Each page includes the pack-guard.js entitlement check.
   '/cfo':           '/site/dashboard/cfo.html',
+  '/controller':    '/site/dashboard/controller.html',
+  '/fpa':           '/site/dashboard/fpa.html',
+  '/ceo':           '/site/dashboard/ceo.html',
+
+  // CFO sub-routes
   '/cfo/pnl':       '/site/dashboard/cfo/pnl.html',
   '/cfo/cash':      '/site/dashboard/cfo/cash.html',
   '/cfo/budget':    '/site/dashboard/cfo/budget.html',
   '/cfo/forecast':  '/site/dashboard/cfo/forecast.html',
 
-  // Engine-driven dashboards — all use the same hub.html shell
-  // Role is derived from window.location.pathname inside hub.html
-  '/ceo':           '/site/dashboard/hub.html',
-  '/controller':    '/site/dashboard/hub.html',
-  '/fpa':           '/site/dashboard/hub.html',
+  // Engine-driven dashboards still using hub.html (no bespoke page yet)
   '/treasurer':     '/site/dashboard/hub.html',
 
   // Legacy routes
