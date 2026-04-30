@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forecast · Castford</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--b);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit;color:inherit}
+
+/* ── Top bar ────────────────────────────────────────────────────────── */
+.bar{position:sticky;top:0;z-index:var(--z-nav);background:var(--nav-bg);backdrop-filter:blur(20px) saturate(1.3);border-bottom:1px solid var(--bdr)}
+.bar-in{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:32px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:28px;height:28px}
+.brand-text{font-family:var(--d);font-size:20px;font-weight:600;letter-spacing:-0.02em;color:var(--ink)}
+.nav{display:flex;gap:24px;flex:1}
+.nav a{font-size:13.5px;color:var(--t2);font-weight:500;padding:6px 0;border-bottom:1.5px solid transparent;transition:color var(--dur-fast),border-color var(--dur-fast)}
+.nav a:hover{color:var(--ink)}
+.nav a.active{color:var(--ink);border-bottom-color:var(--accent)}
+.bar-r{display:flex;align-items:center;gap:14px}
+.theme-toggle{display:flex;border:1px solid var(--bdr);border-radius:var(--r-md);overflow:hidden}
+.theme-toggle button{padding:6px 8px;color:var(--t3);transition:all var(--dur-fast)}
+.theme-toggle button.on{background:var(--prime-bg);color:var(--prime)}
+.theme-toggle svg{width:14px;height:14px}
+.user-pill{font-family:var(--m);font-size:12px;color:var(--t3)}
+.user-pill strong{color:var(--t1);font-weight:500}
+
+/* ── Hero ────────────────────────────────────────────────────────────── */
+.wrap{max-width:var(--max);margin:0 auto;padding:36px 32px 80px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--bdr)}
+.hero-l{max-width:600px}
+.eyebrow{font-family:var(--m);font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:14px}
+.hero h1{font-family:'Instrument Serif',Georgia,serif;font-size:40px;font-weight:400;line-height:1.05;letter-spacing:-0.025em;color:var(--ink);margin-bottom:10px}
+.hero h1 em{font-style:italic;color:var(--prime)}
+.hero p{font-size:14.5px;color:var(--t2);max-width:480px;line-height:1.6}
+.hero-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.scenario-select{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r-md);min-width:180px;cursor:pointer;transition:border-color var(--dur-fast)}
+.scenario-select:hover{border-color:var(--bdr-strong)}
+.scenario-select label{font-family:var(--m);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--t3);flex-shrink:0}
+.scenario-select select{flex:1;font-family:var(--b);font-size:13.5px;color:var(--ink);font-weight:500;background:transparent;border:none;outline:none;cursor:pointer}
+.btn{padding:10px 18px;font-size:13.5px;font-weight:500;border-radius:var(--r-md);transition:all var(--dur-fast);display:inline-flex;align-items:center;gap:8px}
+.btn-prime{background:var(--ink);color:var(--s1)}
+.btn-prime:hover{background:var(--t1)}
+.btn-prime:disabled{background:var(--t3);cursor:not-allowed}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Run banner ──────────────────────────────────────────────────────── */
+.run-banner{display:none;align-items:center;gap:16px;padding:12px 16px;background:var(--accent-bg);border:1px solid var(--accent-bdr);border-radius:var(--r-md);margin-bottom:28px;font-family:var(--m);font-size:12px;color:var(--accent-dark)}
+.run-banner.show{display:flex}
+.run-banner .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0}
+.run-banner-meta{margin-left:auto;font-size:11px;color:var(--t3);letter-spacing:0.04em}
+
+/* ── Layout ──────────────────────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}}
+
+/* ── Drivers panel ───────────────────────────────────────────────────── */
+.panel{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r-lg);overflow:hidden}
+.panel-head{padding:18px 22px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:baseline}
+.panel-title{font-family:'Instrument Serif',Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-0.01em;color:var(--ink)}
+.panel-meta{font-family:var(--m);font-size:11px;letter-spacing:0.04em;color:var(--t3)}
+.panel-body{padding:6px 0}
+
+.drv-cat{padding:14px 22px 18px;border-bottom:1px solid var(--bdr)}
+.drv-cat:last-child{border-bottom:none}
+.drv-cat-label{font-family:var(--m);font-size:10.5px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.drv-cat-label::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+.drv-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px dashed var(--bdr);font-size:13.5px}
+.drv-row:last-child{border-bottom:none}
+.drv-row:hover{background:rgba(91,127,204,0.02)}
+.drv-l{flex:1;min-width:0}
+.drv-name{color:var(--t1);font-weight:500;display:flex;align-items:center;gap:8px}
+.drv-name .pill{font-family:var(--m);font-size:9.5px;font-weight:600;letter-spacing:0.06em;padding:1px 6px;border-radius:3px;text-transform:uppercase;color:var(--t3);background:var(--s2)}
+.drv-name .pill.formula{color:var(--prime);background:var(--prime-bg)}
+.drv-formula{font-family:var(--m);font-size:11px;color:var(--t3);margin-top:3px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drv-r{flex-shrink:0;display:flex;align-items:center;gap:6px}
+.drv-input{font-family:var(--m);font-size:13px;font-weight:500;color:var(--ink);text-align:right;padding:5px 9px;width:108px;border:1px solid var(--bdr);background:var(--s1);border-radius:var(--r-sm);outline:none;transition:border-color var(--dur-fast)}
+.drv-input:hover{border-color:var(--bdr-strong)}
+.drv-input:focus{border-color:var(--prime);background:var(--s1)}
+.drv-input.derived{background:var(--s2);border-color:transparent;color:var(--t1)}
+.drv-unit{font-family:var(--m);font-size:11px;color:var(--t3);min-width:20px}
+.drv-row.dirty .drv-input{border-color:var(--accent)}
+.drv-row.saving .drv-unit::after{content:'·';color:var(--accent);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
+
+/* ── Forecast results panel ──────────────────────────────────────────── */
+.empty{padding:80px 32px;text-align:center}
+.empty-icon{width:48px;height:48px;border-radius:var(--r-md);background:var(--prime-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.empty-icon svg{width:22px;height:22px;stroke:var(--prime);fill:none;stroke-width:1.5}
+.empty h3{font-family:'Instrument Serif',Georgia,serif;font-size:22px;font-weight:400;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em}
+.empty p{font-size:13.5px;color:var(--t2);max-width:340px;margin:0 auto;line-height:1.55}
+
+.proj-wrap{padding:0;overflow:hidden}
+.proj-tabs{display:flex;gap:0;padding:0 22px;border-bottom:1px solid var(--bdr)}
+.proj-tab{padding:11px 16px;font-size:13px;color:var(--t3);font-weight:500;border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:all var(--dur-fast)}
+.proj-tab:hover{color:var(--t1)}
+.proj-tab.active{color:var(--ink);border-bottom-color:var(--accent)}
+
+.proj-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.proj-table thead th{position:sticky;top:0;background:var(--s1);text-align:right;font-family:var(--m);font-size:10.5px;font-weight:500;letter-spacing:0.04em;color:var(--t3);text-transform:uppercase;padding:10px 8px;border-bottom:1px solid var(--bdr)}
+.proj-table thead th:first-child{text-align:left;padding-left:22px;width:38%;font-weight:600;color:var(--t2)}
+.proj-table thead th:last-child{padding-right:22px}
+.proj-table tbody td{padding:9px 8px;text-align:right;font-family:var(--m);color:var(--t1);border-bottom:1px dashed var(--bdr)}
+.proj-table tbody td:first-child{text-align:left;font-family:var(--b);font-size:13px;color:var(--ink);font-weight:500;padding-left:22px}
+.proj-table tbody td:last-child{padding-right:22px}
+.proj-table tbody tr.section td:first-child{font-family:var(--m);font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);padding-top:18px;padding-bottom:6px}
+.proj-table tbody tr.section td{padding-top:18px;padding-bottom:6px;border-bottom:1px solid var(--bdr);background:var(--s2)}
+.proj-table tbody tr.totals td{font-weight:600;background:var(--prime-bg);color:var(--ink);border-bottom:none;border-top:1.5px solid var(--prime-bdr)}
+.proj-table tbody tr.totals td:first-child{font-family:var(--b);font-weight:600;color:var(--prime)}
+.proj-table tbody td.neg{color:var(--down)}
+.proj-table tbody td.pos{color:var(--up)}
+
+/* ── Footer / status ──────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;background:var(--ink);color:var(--s1);font-size:13px;border-radius:var(--r-md);font-family:var(--b);z-index:var(--z-toast);transform:translateY(80px);opacity:0;transition:all var(--dur-base);pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:var(--down)}
+
+.spinner{display:inline-block;width:12px;height:12px;border:1.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Loading state ───────────────────────────────────────────────────── */
+.skel{padding:32px 22px;display:flex;flex-direction:column;gap:14px}
+.skel-row{height:24px;background:var(--s2);border-radius:var(--r-sm);width:100%;animation:shimmer 1.5s infinite}
+.skel-row:nth-child(2n){width:88%}
+@keyframes shimmer{0%,100%{opacity:1}50%{opacity:0.6}}
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ─── -->
+<header class="bar">
+  <div class="bar-in">
+    <a href="/workspace" class="brand">
+      <svg viewBox="0 0 100 100">
+        <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+        <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+        <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+      </svg>
+      <span class="brand-text">Castford</span>
+    </a>
+    <nav class="nav">
+      <a href="/workspace">Workspace</a>
+      <a href="/live">Live</a>
+      <a href="/forecast" class="active">Forecast</a>
+      <a href="/workforce">Workforce</a>
+      <a href="/customizer">Customizer</a>
+    </nav>
+    <div class="bar-r">
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme-set="day" class="on" aria-label="Day">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="3" fill="currentColor" stroke="none"/><line x1="8" y1="2" x2="8" y2="3.5"/><line x1="8" y1="12.5" x2="8" y2="14"/><line x1="2" y1="8" x2="3.5" y2="8"/><line x1="12.5" y1="8" x2="14" y2="8"/></svg>
+        </button>
+        <button data-theme-set="night" aria-label="Night">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.5 2.6A6.2 6.2 0 1 0 13.4 11 6.7 6.7 0 0 1 8 5.6c0-1.1.3-2.1.8-3z"/></svg>
+        </button>
+      </div>
+      <span class="user-pill"><strong id="userEmail">…</strong></span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ─── -->
+<main class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-l">
+      <div class="eyebrow">Planning &amp; forecasting</div>
+      <h1>Driver-based <em>forecast</em>.</h1>
+      <p>Edit the assumptions that actually move your bottom line. Run a 12-month projection. See exactly which driver is doing the work.</p>
+    </div>
+    <div class="hero-r">
+      <div class="scenario-select">
+        <label>Scenario</label>
+        <select id="scenarioSelect">
+          <option value="">Base</option>
+        </select>
+      </div>
+      <button class="btn btn-prime" id="runBtn">
+        <svg viewBox="0 0 16 16"><path d="M3 2l10 6-10 6V2z"/></svg>
+        <span>Run forecast</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Run banner (shown after a successful run) -->
+  <div class="run-banner" id="runBanner">
+    <span class="dot"></span>
+    <span id="runBannerText">No forecast yet — click <strong>Run forecast</strong> to generate one.</span>
+    <span class="run-banner-meta" id="runBannerMeta"></span>
+  </div>
+
+  <!-- 2-col: drivers / projection -->
+  <div class="grid">
+
+    <!-- Drivers panel -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Drivers</h2>
+        <span class="panel-meta" id="drvMeta">loading…</span>
+      </div>
+      <div class="panel-body" id="drvBody">
+        <div class="skel"><div class="skel-row"></div><div class="skel-row"></div><div class="skel-row"></div><div class="skel-row"></div><div class="skel-row"></div></div>
+      </div>
+    </section>
+
+    <!-- Projection panel -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">12-month projection</h2>
+        <span class="panel-meta" id="projMeta">—</span>
+      </div>
+      <div class="proj-wrap" id="projBody">
+        <div class="empty">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
+          </div>
+          <h3>No forecast yet</h3>
+          <p>Edit your drivers on the left, then click <strong>Run forecast</strong> to materialize a 12-month projection.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- ── Supabase client ─── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ════════════════════════════════════════════════════════════════════ */
+/*                       Forecast page · vanilla JS                     */
+/* ════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict'
+
+  const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co'
+  const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODkwNjIsImV4cCI6MjA4OTQ2NTA2Mn0.bR9I7_-eFbJzMBncm5Azgj7CfJWlTMXBpjz_vYfX7_Q'
+  const sb = window.supabase.createClient(SUPABASE_URL, ANON_KEY, {
+    auth:{persistSession:true, autoRefreshToken:true, storageKey:'sb-crecesswagluelvkesul-auth-token'}
+  })
+
+  /* ─── State ──────────────────────────────────────────────────────── */
+  const state = {
+    user:null, orgId:null, period:currentPeriod(),
+    drivers:[], values:{},  // values[driverId] = number
+    valueIds:{},            // valueIds[driverId] = uuid (for update vs insert)
+    scenarios:[], scenarioId:null,
+    latestRun:null, projection:null,
+    saving:new Set(),
+    runActive:false
+  }
+
+  /* ─── Period helpers (mirror engine) ─────────────────────────────── */
+  function currentPeriod(){
+    const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`
+  }
+  function nextPeriod(p){
+    const [y,m]=p.split('-').map(Number);const nm=m===12?1:m+1;const ny=m===12?y+1:y
+    return `${ny}-${String(nm).padStart(2,'0')}`
+  }
+  function periodLabel(p){
+    const [y,m]=p.split('-').map(Number)
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    return `${months[m-1]} ${String(y).slice(2)}`
+  }
+
+  /* ─── Formula DSL (mirror engine for client-side preview) ────────── */
+  function extractRefs(formula){
+    const re=/\{D:([a-z_0-9]+)\}/g; const refs=[]; let m
+    while((m=re.exec(formula))!==null) refs.push(m[1])
+    return refs
+  }
+  function evaluateFormula(formula, varsByKey){
+    let s=formula.replace(/\{D:([a-z_0-9]+)\}/g,(_,k)=>{
+      const v=varsByKey[k]; if(v===undefined||v===null) throw new Error('unresolved: '+k)
+      return String(v)
+    })
+    return evalArith(s)
+  }
+  function evalArith(expr){
+    let i=0; const s=expr
+    function ws(){while(i<s.length && (s[i]===' '||s[i]==='\t')) i++}
+    function peek(){ws();return s[i]}
+    function eat(c){ws();if(s[i]===c){i++;return true}return false}
+    function parseNum(){
+      ws();const start=i
+      if(s[i]==='+'||s[i]==='-') i++
+      while(i<s.length && (s[i]==='.'||(s[i]>='0'&&s[i]<='9'))) i++
+      if(start===i) throw new Error('expected number at '+i)
+      return Number(s.slice(start,i))
+    }
+    function primary(){if(eat('(')){const v=expr2();if(!eat(')'))throw new Error('expected )');return v}return parseNum()}
+    function term(){let l=primary();while(true){const c=peek();if(c==='*'){i++;l*=primary()}else if(c==='/'){i++;const r=primary();l=r===0?0:l/r}else break}return l}
+    function expr2(){let l=term();while(true){const c=peek();if(c==='+'){i++;l+=term()}else if(c==='-'){i++;l-=term()}else break}return l}
+    const r=expr2();ws();if(i!==s.length) throw new Error('trailing input at '+i)
+    return r
+  }
+  function topoSort(drivers){
+    const byKey={};drivers.forEach(d=>byKey[d.key]=d)
+    const visited=new Set(),stack=new Set(),out=[]
+    function visit(d){
+      if(visited.has(d.key)) return
+      if(stack.has(d.key)) throw new Error('circular: '+d.key)
+      stack.add(d.key)
+      if(d.formula) for(const r of extractRefs(d.formula)){const dep=byKey[r];if(dep) visit(dep)}
+      stack.delete(d.key);visited.add(d.key);out.push(d)
+    }
+    for(const d of drivers) visit(d)
+    return out
+  }
+
+  /* ─── Compute formula values from manual inputs ──────────────────── */
+  function computeAll(){
+    const vars={}; const sorted=topoSort(state.drivers)
+    for(const d of sorted){
+      if(d.source_type==='manual'){
+        vars[d.key]=Number(state.values[d.id] ?? d.default_value ?? 0)
+      } else if(d.source_type==='formula' && d.formula){
+        try{ vars[d.key]=evaluateFormula(d.formula,vars) }
+        catch(e){ vars[d.key]=NaN }
+      } else { vars[d.key]=0 }
+    }
+    return vars
+  }
+
+  /* ─── Format helpers ─────────────────────────────────────────────── */
+  function fmt(n,unit){
+    if(!isFinite(n)) return '—'
+    if(unit==='currency'){
+      const a=Math.abs(n)
+      if(a>=1e6) return '$'+(n/1e6).toFixed(2)+'M'
+      if(a>=1e3) return '$'+Math.round(n/1e3)+'k'
+      return '$'+Math.round(n).toLocaleString()
+    }
+    if(unit==='percentage') return n.toFixed(1)
+    if(unit==='ratio') return n.toFixed(2)+'x'
+    return Math.round(n).toLocaleString()
+  }
+  function unitSym(unit){
+    if(unit==='currency') return '$'
+    if(unit==='percentage') return '%'
+    if(unit==='ratio') return 'x'
+    return ''
+  }
+
+  /* ─── Toast ──────────────────────────────────────────────────────── */
+  let toastTimer
+  function toast(msg, error){
+    const el=document.getElementById('toast')
+    el.textContent=msg
+    el.className='toast show'+(error?' error':'')
+    clearTimeout(toastTimer)
+    toastTimer=setTimeout(()=>el.className='toast'+(error?' error':''),3000)
+  }
+
+  /* ─── Auth gate ──────────────────────────────────────────────────── */
+  async function authGate(){
+    const {data:{session}} = await sb.auth.getSession()
+    if(!session){
+      const ret=encodeURIComponent('/forecast')
+      window.location.href='/login?return_to='+ret
+      return null
+    }
+    state.user=session.user
+    document.getElementById('userEmail').textContent=session.user.email||session.user.id.slice(0,8)
+    const {data:profile,error} = await sb.from('users').select('org_id').eq('id',session.user.id).maybeSingle()
+    if(error || !profile?.org_id){
+      toast('No organization found. Sign in again.',true)
+      return null
+    }
+    state.orgId=profile.org_id
+    return session.user
+  }
+
+  /* ─── Load drivers + values ──────────────────────────────────────── */
+  async function loadDrivers(){
+    const [{data:drivers,error:de},{data:values,error:ve},{data:scenarios}] = await Promise.all([
+      sb.from('drivers').select('*').eq('org_id',state.orgId).eq('is_active',true).order('display_order'),
+      sb.from('driver_values').select('id, driver_id, scenario_id, period, value, source').eq('org_id',state.orgId).eq('period',state.period),
+      sb.from('scenarios').select('id, name, scenario_type, status').eq('org_id',state.orgId).order('created_at',{ascending:false}).limit(20)
+    ])
+    if(de){ toast('Failed to load drivers: '+de.message,true); return }
+    state.drivers=drivers||[]
+    state.scenarios=scenarios||[]
+
+    state.values={}; state.valueIds={}
+    for(const v of values||[]){
+      const matchesScope = (state.scenarioId && v.scenario_id===state.scenarioId) || (!state.scenarioId && v.scenario_id===null)
+      if(matchesScope){ state.values[v.driver_id]=Number(v.value); state.valueIds[v.driver_id]=v.id }
+      // also remember base values as fallback when scenario picked but no override exists
+      if(state.scenarioId && v.scenario_id===null && state.values[v.driver_id]===undefined){
+        state.values[v.driver_id]=Number(v.value)
+      }
+    }
+    renderScenarios()
+    renderDrivers()
+  }
+
+  function renderScenarios(){
+    const sel=document.getElementById('scenarioSelect')
+    sel.innerHTML='<option value="">Base</option>'
+    for(const s of state.scenarios){
+      const opt=document.createElement('option')
+      opt.value=s.id; opt.textContent=s.name
+      if(s.id===state.scenarioId) opt.selected=true
+      sel.appendChild(opt)
+    }
+  }
+
+  function renderDrivers(){
+    const computed=computeAll()
+    const grouped={revenue:[],cost:[],headcount:[],unit_economics:[],workforce:[],general:[]}
+    for(const d of state.drivers){ (grouped[d.category]||grouped.general).push(d) }
+
+    const labels={revenue:'Revenue',cost:'Cost',headcount:'Headcount',unit_economics:'Unit economics',workforce:'Workforce',general:'General'}
+
+    let html=''
+    for(const cat of ['revenue','cost','headcount','unit_economics','workforce','general']){
+      const items=grouped[cat]||[]; if(!items.length) continue
+      html+=`<div class="drv-cat"><div class="drv-cat-label">${labels[cat]} <span style="opacity:.6;font-weight:400">${items.length}</span></div>`
+      for(const d of items){
+        const isFormula = d.source_type==='formula'
+        const isManual = d.source_type==='manual'
+        const v = isFormula ? computed[d.key] : (state.values[d.id] ?? d.default_value ?? 0)
+        const valStr = isFormula ? fmt(v, d.unit) : (v ?? '')
+        const pillHtml = isFormula ? '<span class="pill formula">formula</span>' : ''
+        const formulaHtml = isFormula ? `<div class="drv-formula">${escapeHtml(d.formula||'')}</div>` : ''
+
+        html+=`<div class="drv-row" data-driver="${d.id}" data-key="${d.key}">
+          <div class="drv-l">
+            <div class="drv-name">${escapeHtml(d.name)} ${pillHtml}</div>
+            ${formulaHtml}
+          </div>
+          <div class="drv-r">`
+        if(isFormula){
+          html+=`<input type="text" class="drv-input derived" value="${valStr}" readonly>`
+        } else {
+          html+=`<input type="number" step="any" class="drv-input" value="${v}" data-driver="${d.id}">`
+        }
+        html+=`<span class="drv-unit">${unitSym(d.unit)}</span></div></div>`
+      }
+      html+=`</div>`
+    }
+
+    document.getElementById('drvBody').innerHTML=html
+    document.getElementById('drvMeta').textContent = `${state.drivers.length} drivers · ${state.period}`
+
+    // Wire up edits
+    document.querySelectorAll('.drv-input:not(.derived)').forEach(inp=>{
+      inp.addEventListener('input',onDriverInput)
+      inp.addEventListener('blur',onDriverBlur)
+    })
+  }
+
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+  /* ─── Edit handling ──────────────────────────────────────────────── */
+  let saveTimer={}
+  function onDriverInput(e){
+    const driverId=e.target.dataset.driver
+    const v=parseFloat(e.target.value); if(!isFinite(v)) return
+    state.values[driverId]=v
+    e.target.closest('.drv-row').classList.add('dirty')
+    // Live re-render of formula values only (cheap)
+    refreshFormulaDisplays()
+  }
+  function refreshFormulaDisplays(){
+    const computed=computeAll()
+    document.querySelectorAll('.drv-input.derived').forEach(inp=>{
+      const row=inp.closest('.drv-row'); const key=row?.dataset.key
+      if(!key) return
+      const d=state.drivers.find(x=>x.key===key); if(!d) return
+      inp.value = fmt(computed[key], d.unit)
+    })
+  }
+  function onDriverBlur(e){
+    const driverId=e.target.dataset.driver
+    const row=e.target.closest('.drv-row')
+    if(!row.classList.contains('dirty')) return
+    clearTimeout(saveTimer[driverId])
+    saveTimer[driverId]=setTimeout(()=>persistValue(driverId,row),250)
+  }
+
+  async function persistValue(driverId,row){
+    const v=state.values[driverId]
+    row.classList.remove('dirty'); row.classList.add('saving')
+    try{
+      const existingId=state.valueIds[driverId]
+      if(existingId){
+        // Update only if this is a base→base or scenario→scenario row, not a fallback base loaded into a scenario context.
+        // We re-look-up the exact row by (driver_id, period, scenario_id) to be safe.
+        const lookup = state.scenarioId
+          ? sb.from('driver_values').select('id').eq('org_id',state.orgId).eq('driver_id',driverId).eq('period',state.period).eq('scenario_id',state.scenarioId).maybeSingle()
+          : sb.from('driver_values').select('id').eq('org_id',state.orgId).eq('driver_id',driverId).eq('period',state.period).is('scenario_id',null).maybeSingle()
+        const {data:hit} = await lookup
+        if(hit){
+          const {error} = await sb.from('driver_values').update({value:v, updated_at:new Date().toISOString()}).eq('id',hit.id)
+          if(error) throw error
+          state.valueIds[driverId]=hit.id
+        } else {
+          const {data:ins,error} = await sb.from('driver_values').insert({
+            org_id:state.orgId, driver_id:driverId, scenario_id:state.scenarioId, period:state.period, value:v, source:'manual'
+          }).select('id').single()
+          if(error) throw error
+          state.valueIds[driverId]=ins.id
+        }
+      } else {
+        const {data:ins,error} = await sb.from('driver_values').insert({
+          org_id:state.orgId, driver_id:driverId, scenario_id:state.scenarioId, period:state.period, value:v, source:'manual'
+        }).select('id').single()
+        if(error) throw error
+        state.valueIds[driverId]=ins.id
+      }
+    } catch(err){
+      toast('Save failed: '+err.message,true)
+      row.classList.add('dirty')
+    } finally {
+      row.classList.remove('saving')
+    }
+  }
+
+  /* ─── Run forecast (calls edge function) ─────────────────────────── */
+  async function runForecast(){
+    if(state.runActive) return
+    state.runActive=true
+    const btn=document.getElementById('runBtn')
+    const orig=btn.innerHTML
+    btn.disabled=true
+    btn.innerHTML='<span class="spinner"></span> Running…'
+
+    try {
+      const {data:{session}} = await sb.auth.getSession()
+      if(!session){ throw new Error('not signed in') }
+      const start=nextPeriod(state.period)
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/forecast-engine`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':ANON_KEY,
+          'Authorization':'Bearer '+session.access_token
+        },
+        body:JSON.stringify({
+          action:'run_forecast',
+          scenario_id:state.scenarioId,
+          period_start:start,
+          periods:12,
+          name:`Forecast ${new Date().toISOString().slice(0,16).replace('T',' ')} · ${state.scenarioId?currentScenarioName():'Base'}`
+        })
+      })
+      const j = await res.json()
+      if(!res.ok){ throw new Error(j.error||('http '+res.status)) }
+      state.latestRun=j
+      toast(`Forecast complete · ${j.outputs_written} outputs · ${j.duration_ms}ms`)
+      await loadProjection(j.run_id)
+    } catch(err){
+      toast('Forecast failed: '+err.message,true)
+    } finally {
+      btn.disabled=false
+      btn.innerHTML=orig
+      state.runActive=false
+    }
+  }
+
+  function currentScenarioName(){
+    const s=state.scenarios.find(x=>x.id===state.scenarioId)
+    return s?s.name:'Base'
+  }
+
+  /* ─── Load projection by run_id (or latest) ──────────────────────── */
+  async function loadProjection(runId){
+    let run
+    if(runId){
+      const {data} = await sb.from('forecast_runs').select('*').eq('id',runId).eq('org_id',state.orgId).maybeSingle()
+      run=data
+    } else {
+      let q = sb.from('forecast_runs').select('*').eq('org_id',state.orgId).eq('status','completed').order('created_at',{ascending:false}).limit(1)
+      q = state.scenarioId ? q.eq('scenario_id',state.scenarioId) : q.is('scenario_id',null)
+      const {data} = await q.maybeSingle()
+      run=data
+    }
+    if(!run){ renderEmptyProjection(); return }
+
+    const {data:outputs} = await sb.from('forecast_outputs')
+      .select('account_id, period, amount, output_type, gl_accounts(name, account_type)')
+      .eq('forecast_run_id',run.id).eq('org_id',state.orgId).eq('output_type','account')
+      .order('period')
+
+    state.projection={run, outputs:outputs||[]}
+    renderProjection()
+  }
+
+  function renderEmptyProjection(){
+    document.getElementById('projBody').innerHTML = `<div class="empty">
+      <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg></div>
+      <h3>No forecast yet</h3>
+      <p>Edit your drivers on the left, then click <strong>Run forecast</strong> to materialize a 12-month projection.</p>
+    </div>`
+    document.getElementById('projMeta').textContent='—'
+    document.getElementById('runBanner').classList.remove('show')
+  }
+
+  function renderProjection(){
+    const {run,outputs}=state.projection
+    const periods=[]; const start=run.period_start; let p=start
+    for(let i=0;i<run.periods_count;i++){ periods.push(p); p=nextPeriod(p) }
+
+    // Group by account
+    const byAccount={} // {accountName: {period: amount, account_type}}
+    for(const o of outputs){
+      if(!o.gl_accounts) continue
+      const name=o.gl_accounts.name
+      if(!byAccount[name]) byAccount[name]={periods:{}, account_type:o.gl_accounts.account_type}
+      byAccount[name].periods[o.period]=Number(o.amount)
+    }
+
+    // Order accounts by P&L category
+    const order={revenue:1, cost_of_revenue:2, expense:3, other_expense:4, other_income:5}
+    const accounts=Object.entries(byAccount).sort((a,b)=>{
+      const oa=order[a[1].account_type]||9, ob=order[b[1].account_type]||9
+      if(oa!==ob) return oa-ob
+      return a[0].localeCompare(b[0])
+    })
+
+    // Compute totals per period
+    const totals={revenue:{}, cogs:{}, opex:{}, ni:{}}
+    for(const period of periods){
+      let rev=0, cogs=0, opex=0
+      for(const [name,o] of accounts){
+        const v=o.periods[period]||0
+        if(o.account_type==='revenue'||o.account_type==='other_income') rev+=v
+        else if(o.account_type==='cost_of_revenue') cogs+=v
+        else if(o.account_type==='expense'||o.account_type==='other_expense') opex+=v
+      }
+      totals.revenue[period]=rev
+      totals.cogs[period]=cogs
+      totals.opex[period]=opex
+      totals.ni[period]=rev-cogs-opex
+    }
+
+    let html=`<table class="proj-table">
+      <thead><tr><th>P&amp;L line</th>`
+    for(const p of periods) html+=`<th>${periodLabel(p)}</th>`
+    html+=`<th>Total</th></tr></thead><tbody>`
+
+    // Revenue section
+    html+=renderProjSection('Revenue', accounts.filter(([_,o])=>o.account_type==='revenue'||o.account_type==='other_income'), periods)
+    // COGS section
+    html+=renderProjSection('Cost of revenue', accounts.filter(([_,o])=>o.account_type==='cost_of_revenue'), periods, true)
+    // Gross profit total row
+    html+=renderTotalRow('Gross profit', periods, p=> totals.revenue[p] - totals.cogs[p])
+    // OpEx section
+    html+=renderProjSection('Operating expenses', accounts.filter(([_,o])=>o.account_type==='expense'||o.account_type==='other_expense'), periods, true)
+    // Net income total
+    html+=renderTotalRow('Net income', periods, p=>totals.ni[p])
+
+    html+=`</tbody></table>`
+
+    document.getElementById('projBody').innerHTML = html
+    document.getElementById('projMeta').textContent = `${periodLabel(periods[0])} – ${periodLabel(periods[periods.length-1])} · ${run.drivers_evaluated} drivers · ${run.duration_ms}ms`
+
+    const banner=document.getElementById('runBanner')
+    banner.classList.add('show')
+    document.getElementById('runBannerText').innerHTML = `Latest run: <strong>${escapeHtml(run.name)}</strong>`
+    document.getElementById('runBannerMeta').textContent = `${run.outputs_count} outputs · ${run.duration_ms}ms · ${new Date(run.completed_at||run.created_at).toLocaleString()}`
+  }
+
+  function renderProjSection(label, accountRows, periods, neg){
+    let h=`<tr class="section"><td colspan="${periods.length+2}">${label}</td></tr>`
+    for(const [name,o] of accountRows){
+      let sum=0
+      h+=`<tr><td>${escapeHtml(name)}</td>`
+      for(const p of periods){
+        const v=o.periods[p]||0; sum+=v
+        h+=`<td class="${neg?'neg':''}">${neg?'(':''}${fmt(v,'currency').replace('$','$')}${neg?')':''}</td>`
+      }
+      h+=`<td class="${neg?'neg':''}">${neg?'(':''}${fmt(sum,'currency')}${neg?')':''}</td></tr>`
+    }
+    return h
+  }
+  function renderTotalRow(label, periods, fn){
+    let h=`<tr class="totals"><td>${label}</td>`
+    let sum=0
+    for(const p of periods){
+      const v=fn(p); sum+=v
+      h+=`<td class="${v<0?'neg':'pos'}">${fmt(v,'currency')}</td>`
+    }
+    h+=`<td class="${sum<0?'neg':'pos'}">${fmt(sum,'currency')}</td></tr>`
+    return h
+  }
+
+  /* ─── Theme toggle ───────────────────────────────────────────────── */
+  function setTheme(t){
+    document.documentElement.dataset.theme=t
+    localStorage.setItem('cf-theme',t)
+    document.querySelectorAll('#themeToggle button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.themeSet===t)
+    })
+  }
+  document.getElementById('themeToggle').addEventListener('click',e=>{
+    const b=e.target.closest('button[data-theme-set]'); if(b) setTheme(b.dataset.themeSet)
+  })
+
+  /* ─── Scenario change ────────────────────────────────────────────── */
+  document.getElementById('scenarioSelect').addEventListener('change',async e=>{
+    state.scenarioId = e.target.value || null
+    state.projection=null
+    renderEmptyProjection()
+    await loadDrivers()
+    await loadProjection() // will pick up most recent for this scenario if exists
+  })
+
+  /* ─── Run button ─────────────────────────────────────────────────── */
+  document.getElementById('runBtn').addEventListener('click',runForecast)
+
+  /* ─── Boot ───────────────────────────────────────────────────────── */
+  ;(async function boot(){
+    const t=localStorage.getItem('cf-theme'); if(t) setTheme(t)
+    const user = await authGate()
+    if(!user) return
+    await loadDrivers()
+    await loadProjection() // most-recent base run if any
+  })()
+
+})()
+</script>
+</body>
+</html>

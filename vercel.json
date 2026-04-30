@@ -130,6 +130,10 @@
     {
       "source": "/workforce",
       "destination": "/site/dashboard/workspace.html"
+    },
+    {
+      "source": "/forecast",
+      "destination": "/site/dashboard/forecast.html"
     }
   ]
 }
