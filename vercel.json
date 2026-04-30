@@ -40,6 +40,14 @@
       "destination": "/site/login.html"
     },
     {
+      "source": "/signup",
+      "destination": "/site/signup.html"
+    },
+    {
+      "source": "/logout",
+      "destination": "/site/logout.html"
+    },
+    {
       "source": "/pricing",
       "destination": "/site/pricing.html"
     },
@@ -92,24 +100,60 @@
       "destination": "/site/competitors.html"
     },
     {
-      "source": "/controller",
-      "destination": "/site/dashboard/controller.html"
+      "source": "/engine",
+      "destination": "/site/engine.html"
     },
     {
-      "source": "/fpa",
-      "destination": "/site/dashboard/fpa.html"
+      "source": "/consolidation",
+      "destination": "/site/consolidation.html"
     },
     {
-      "source": "/workspace",
-      "destination": "/site/dashboard/landing.html"
+      "source": "/home",
+      "destination": "/site/dashboard/workspace-hub.html"
     },
     {
       "source": "/dashboard",
       "destination": "/site/dashboard/live-dashboard.html"
     },
     {
-      "source": "/live",
-      "destination": "/site/dashboard/live-dashboard.html"
+      "source": "/team",
+      "destination": "/site/dashboard/workspace.html"
+    },
+    {
+      "source": "/billing",
+      "destination": "/site/dashboard/billing.html"
+    },
+    {
+      "source": "/onboarding",
+      "destination": "/site/dashboard/onboarding.html"
+    },
+    {
+      "source": "/notifications",
+      "destination": "/site/dashboard/notifications.html"
+    },
+    {
+      "source": "/alerts",
+      "destination": "/site/dashboard/alerts.html"
+    },
+    {
+      "source": "/reports",
+      "destination": "/site/dashboard/reports.html"
+    },
+    {
+      "source": "/scenarios",
+      "destination": "/site/dashboard/scenarios.html"
+    },
+    {
+      "source": "/cashflow",
+      "destination": "/site/dashboard/cashflow.html"
+    },
+    {
+      "source": "/command",
+      "destination": "/site/dashboard/command-center.html"
+    },
+    {
+      "source": "/spend",
+      "destination": "/site/dashboard/committed-spend.html"
     },
     {
       "source": "/customizer",
@@ -120,16 +164,43 @@
       "destination": "/site/dashboard/cfo.html"
     },
     {
-      "source": "/ceo",
-      "destination": "/site/dashboard/ceo.html"
+      "source": "/controller",
+      "destination": "/site/dashboard/controller.html"
     },
     {
-      "source": "/livedashboard",
-      "destination": "/site/dashboard/live-dashboard.html"
+      "source": "/fpa",
+      "destination": "/site/dashboard/fpa.html"
+    },
+    {
+      "source": "/ceo",
+      "destination": "/site/dashboard/ceo.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/workspace",
+      "destination": "/home",
+      "permanent": true
     },
     {
       "source": "/workforce",
-      "destination": "/site/dashboard/workspace.html"
+      "destination": "/team",
+      "permanent": true
+    },
+    {
+      "source": "/live",
+      "destination": "/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/livedashboard",
+      "destination": "/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/upgrade",
+      "destination": "/packs",
+      "permanent": true
     }
   ]
 }
