@@ -135,7 +135,7 @@
       '<div class="cf-shell-left">' +
       '<a class="cf-shell-logo" href="/dashboard" aria-label="Castford home">' + shield('cf-shell-logo-svg') + '<span>Castford</span></a>' +
       '<button class="cf-shell-workspace" id="cf-workspace-btn" aria-haspopup="menu" aria-expanded="false">' +
-      '<span class="cf-shell-workspace-name">Acme SaaS Corp</span>' + icon('arrow-right', 'cf-shell-chevron') + '</button>' +
+      '<span class="cf-shell-workspace-name" id="cf-shell-org-name">Loading…</span>' + icon('arrow-right', 'cf-shell-chevron') + '</button>' +
       '</div>' +
       '<div class="cf-shell-center">' +
       '<button class="cf-shell-search" id="cf-cmdk-btn" aria-label="Open command palette">' +
@@ -160,7 +160,7 @@
     return '<div class="cf-shell-backdrop" id="cf-shell-backdrop"></div>' +
       '<div class="cf-shell-menu" id="cf-menu-workspace" role="menu" style="top:52px;left:var(--sp-4)"><div class="cf-shell-menu-group">' +
       '<div class="cf-shell-menu-label">Workspace</div>' +
-      '<a class="cf-shell-menu-item active" href="#" role="menuitem">' + icon('check') + 'Acme SaaS Corp<span class="cf-shell-menu-meta">Current</span></a>' +
+      '<a class="cf-shell-menu-item active" href="#" role="menuitem" id="cf-shell-org-current">' + icon('check') + '<span id="cf-shell-org-current-name">Loading…</span><span class="cf-shell-menu-meta">Current</span></a>' +
       '<div class="cf-shell-menu-divider"></div>' +
       '<a class="cf-shell-menu-item" href="/settings/workspace" role="menuitem">' + icon('settings') + 'Workspace settings</a>' +
       '<a class="cf-shell-menu-item" href="/users" role="menuitem">' + icon('team') + 'Manage team</a>' +
@@ -172,8 +172,8 @@
       '<a class="cf-shell-menu-item" href="/settings/notifications" role="menuitem">' + icon('settings') + 'Notification settings</a>' +
       '</div></div>' +
       '<div class="cf-shell-menu" id="cf-menu-user" role="menu" style="top:52px;right:var(--sp-4)"><div class="cf-shell-menu-group">' +
-      '<div style="padding:10px 12px 6px"><div style="font-size:var(--fs-13);font-weight:500;color:var(--ink)">Malik Frazier</div>' +
-      '<div style="font-size:var(--fs-11);color:var(--t3);font-family:var(--m);margin-top:2px">malik@vaultline.app</div></div>' +
+      '<div style="padding:10px 12px 6px"><div style="font-size:var(--fs-13);font-weight:500;color:var(--ink)" id="cf-shell-user-name">—</div>' +
+      '<div style="font-size:var(--fs-11);color:var(--t3);font-family:var(--m);margin-top:2px" id="cf-shell-user-email">—</div></div>' +
       '<div class="cf-shell-menu-divider"></div>' +
       '<a class="cf-shell-menu-item" href="/settings/profile" role="menuitem">' + icon('settings') + 'Account settings</a>' +
       '<a class="cf-shell-menu-item" href="/billing" role="menuitem">' + icon('billing') + 'Billing</a>' +
@@ -307,6 +307,105 @@
     document.body.insertAdjacentHTML('afterbegin', buildShell());
     document.body.insertAdjacentHTML('beforeend', buildOverlays());
     wire();
+    hydrateRealIdentity();
+    injectGlobalNav();
+  }
+
+  // ── Real identity: replaces all "Loading…" placeholders with auth-guard data
+  function hydrateRealIdentity() {
+    function setText(id, txt) { var el = document.getElementById(id); if (el && txt != null) el.textContent = txt; }
+    function tryHydrate() {
+      var sb = window.__fos_supabase;
+      var session = window.__fos_session;
+      if (!sb || !session || !session.user) {
+        // Unauthenticated state — show a sign-in CTA instead of fake org
+        setText('cf-shell-org-name', 'Sign in →');
+        setText('cf-shell-org-current-name', 'Not signed in');
+        setText('cf-shell-user-name', 'Guest');
+        setText('cf-shell-user-email', 'Sign in to Castford');
+        var btn = document.getElementById('cf-workspace-btn');
+        if (btn) btn.onclick = function(e){ e.preventDefault(); window.location.href = '/login'; };
+        return;
+      }
+      var u = session.user;
+      var emailGuess = u.email || (u.user_metadata && u.user_metadata.email) || '—';
+      var nameGuess = (u.user_metadata && u.user_metadata.full_name) || emailGuess.split('@')[0];
+
+      setText('cf-shell-user-name', nameGuess);
+      setText('cf-shell-user-email', emailGuess);
+
+      // Lookup org name from public.users → organizations
+      sb.from('users').select('full_name, org_id').eq('id', u.id).maybeSingle()
+        .then(function(r){
+          if (r.data && r.data.full_name) setText('cf-shell-user-name', r.data.full_name);
+          if (r.data && r.data.org_id){
+            sb.from('organizations').select('name, plan').eq('id', r.data.org_id).maybeSingle()
+              .then(function(o){
+                if (o.data){
+                  var name = o.data.name || 'My Workspace';
+                  var planTag = o.data.plan ? ' · ' + o.data.plan.toUpperCase() : '';
+                  setText('cf-shell-org-name', name);
+                  setText('cf-shell-org-current-name', name);
+                  // Add a subtle plan tag in current-row meta if there's room
+                  var metaEl = document.querySelector('#cf-shell-org-current .cf-shell-menu-meta');
+                  if (metaEl) metaEl.textContent = (o.data.plan || '').toUpperCase() || 'Current';
+                } else {
+                  setText('cf-shell-org-name', 'No organization');
+                  setText('cf-shell-org-current-name', 'No organization');
+                }
+              });
+          } else {
+            setText('cf-shell-org-name', 'No organization');
+            setText('cf-shell-org-current-name', 'Set up your org');
+          }
+        });
+    }
+    // Wait for auth-guard to finish (max 5s)
+    var attempts = 0;
+    var iv = setInterval(function(){
+      attempts++;
+      if ((window.__fos_supabase && window.__fos_session) || attempts > 100) {
+        clearInterval(iv);
+        tryHydrate();
+      }
+    }, 50);
+  }
+
+  // ── Global nav: 4 buttons inserted into the shell topbar
+  // Highlights the current page based on window.location.pathname
+  function injectGlobalNav() {
+    var inner = document.querySelector('.cf-shell-inner');
+    if (!inner) return;
+    // Skip if already injected (idempotent)
+    if (document.getElementById('cf-shell-globalnav')) return;
+
+    var path = window.location.pathname.replace(/\/$/, '') || '/';
+    var items = [
+      { href: '/home',      label: 'Home',      match: ['/home','/workspace'] },
+      { href: '/dashboard', label: 'Dashboard', match: ['/dashboard','/live','/livedashboard'] },
+      { href: '/team',      label: 'Team',      match: ['/team','/workforce'] },
+      { href: '/packs',     label: 'Packs',     match: ['/packs','/cfo','/controller','/fpa','/ceo'] },
+      { href: '/billing',   label: 'Billing',   match: ['/billing'] },
+    ];
+    var html = '<nav id="cf-shell-globalnav" style="display:flex;align-items:center;gap:2px;margin-left:8px">';
+    items.forEach(function(it){
+      var active = it.match.some(function(m){ return path === m || path.indexOf(m + '/') === 0; });
+      html += '<a href="' + it.href + '" style="padding:6px 12px;font-family:var(--b);font-size:var(--fs-13);' +
+        'color:' + (active ? 'var(--ink)' : 'var(--t2)') + ';' +
+        'font-weight:' + (active ? '600' : '400') + ';' +
+        'text-decoration:none;border-bottom:2px solid ' + (active ? 'var(--prime)' : 'transparent') + ';' +
+        'transition:color var(--dur-fast),border-color var(--dur-fast)" ' +
+        'onmouseenter="this.style.color=\'var(--ink)\'" ' +
+        'onmouseleave="this.style.color=\'' + (active ? 'var(--ink)' : 'var(--t2)') + '\'"' +
+        '>' + it.label + '</a>';
+    });
+    html += '</nav>';
+
+    // Insert after the workspace switcher button (between org button and search)
+    var wsBtn = document.getElementById('cf-workspace-btn');
+    if (wsBtn && wsBtn.parentNode) {
+      wsBtn.insertAdjacentHTML('afterend', html);
+    }
   }
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
