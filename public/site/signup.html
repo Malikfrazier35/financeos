@@ -130,23 +130,93 @@ body{min-height:100vh;display:flex;flex-direction:column}
 <script>
 const SB_URL='https://crecesswagluelvkesul.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
-const RD=window.location.origin+'/workspace';
+const RD=window.location.origin+'/home';
+
+// Check for ?next=checkout&plan=X&interval=Y (came from /pricing Subscribe click)
+const urlParams=new URLSearchParams(window.location.search);
+const NEXT_ACTION = urlParams.get('next'); // 'checkout' or null
+const NEXT_PLAN = urlParams.get('plan');
+const NEXT_INTERVAL = urlParams.get('interval') || 'monthly';
+const stripeSessionId = urlParams.get('stripe_session_id'); // legacy
+
+// Build the post-auth URL that OAuth providers should redirect to.
+// Preserves next= params so we can continue to checkout after sign-up.
+function buildPostAuthRedirect(){
+  var base = window.location.origin + '/site/signup.html?step=2';
+  if (NEXT_ACTION === 'checkout' && NEXT_PLAN){
+    base += '&next=checkout&plan=' + encodeURIComponent(NEXT_PLAN) + '&interval=' + encodeURIComponent(NEXT_INTERVAL);
+  }
+  return base;
+}
+
+// After sign-up succeeds (any method), continue based on `next` param.
+// If next=checkout: provision org via verify-session, then call create-checkout,
+//                   redirect to Stripe — never show step 2.
+// Otherwise: show step 2 (company info) as before.
+async function continuePostAuth(){
+  if (NEXT_ACTION === 'checkout' && NEXT_PLAN){
+    // 1. Get current session
+    const sessRes = await sb.auth.getSession();
+    const session = sessRes.data && sessRes.data.session;
+    if (!session){
+      // No session somehow — fall back to showing step 1
+      showStep(1);
+      return;
+    }
+    // 2. Provision org via verify-session (idempotent — returns existing org if any)
+    try {
+      await fetch(SB_URL + '/functions/v1/verify-session', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token}
+      });
+    } catch(_){}
+    // 3. Call create-checkout
+    try {
+      const r = await fetch(SB_URL + '/functions/v1/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization':'Bearer '+session.access_token,
+          'apikey': SB_KEY
+        },
+        body: JSON.stringify({plan: NEXT_PLAN, interval: NEXT_INTERVAL})
+      });
+      const d = await r.json();
+      if (r.ok && d.url){
+        window.location.href = d.url;
+        return;
+      }
+      console.error('[signup] create-checkout failed:', d);
+      alert('Account created, but we could not start checkout. ' + (d.error||d.detail||''));
+      window.location.href = '/billing';
+    } catch(err){
+      console.error('[signup] create-checkout network error:', err);
+      alert('Account created, but checkout did not load. Please try again from /pricing.');
+      window.location.href = '/pricing';
+    }
+    return;
+  }
+  // Default flow: show step 2 (company info)
+  showStep(2);
+}
 
 document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
 
-// If already logged in with an org, go to dashboard
+// If already logged in: depends on context
 sb.auth.getSession().then(async({data:{session}})=>{
   if(session){
+    // Existing signed-in visitor on /signup —
+    //   - If they came from /pricing with next=checkout, continue to checkout immediately
+    //   - Otherwise: send them home
+    if (NEXT_ACTION === 'checkout' && NEXT_PLAN){
+      continuePostAuth();
+      return;
+    }
     const r=await fetch(SB_URL+'/functions/v1/verify-session',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token}});
-    if(r.ok){const d=await r.json();if(d.org_id){window.location.href=RD;return}}
-    // Has auth but no org — show step 2
+    if(r.ok){const d=await r.json();if(d.org && d.org.id){window.location.href=RD;return}}
     showStep(2);
   }
 });
-
-// Check for stripe_session_id in URL (user paid before signing up)
-const urlParams=new URLSearchParams(window.location.search);
-const stripeSessionId=urlParams.get('stripe_session_id');
 
 let currentUser=null;
 
@@ -160,12 +230,12 @@ function showStep(n){
 // OAuth signup
 document.getElementById('btn-google').addEventListener('click',async()=>{
   const b=document.getElementById('btn-google');b.classList.add('loading');
-  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/site/signup.html?step=2'}});
+  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:buildPostAuthRedirect()}});
   if(error){b.classList.remove('loading');alert(error.message)}
 });
 document.getElementById('btn-apple').addEventListener('click',async()=>{
   const b=document.getElementById('btn-apple');b.classList.add('loading');
-  const{error}=await sb.auth.signInWithOAuth({provider:'apple',options:{redirectTo:window.location.origin+'/site/signup.html?step=2'}});
+  const{error}=await sb.auth.signInWithOAuth({provider:'apple',options:{redirectTo:buildPostAuthRedirect()}});
   if(error){b.classList.remove('loading');alert(error.message)}
 });
 
@@ -180,14 +250,14 @@ document.getElementById('signupForm').addEventListener('submit',async(e)=>{
   if(!pw||pw.length<8){document.getElementById('pwError').style.display='block';return}
   const btn=document.getElementById('submitBtn');
   btn.textContent='Creating account...';btn.disabled=true;
-  const{data,error}=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:window.location.origin+'/site/signup.html?step=2'}});
+  const{data,error}=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:buildPostAuthRedirect()}});
   if(error){btn.textContent='Create Account';btn.disabled=false;document.getElementById('pwError').textContent=error.message;document.getElementById('pwError').style.display='block';return}
   currentUser=data.user;
   if(data.session){
-    // Email confirmation disabled — proceed to step 2
-    showStep(2);
+    // Email confirmation disabled — branch on next= action
+    continuePostAuth();
   } else {
-    // Email confirmation required
+    // Email confirmation required — wait for them to click the link
     btn.textContent='Check your email';
     document.getElementById('pwError').textContent='We sent a confirmation link to '+em+'. Click it to continue.';
     document.getElementById('pwError').style.display='block';
@@ -195,8 +265,8 @@ document.getElementById('signupForm').addEventListener('submit',async(e)=>{
   }
 });
 
-// If returning from OAuth with step=2
-if(urlParams.get('step')==='2'){showStep(2)}
+// If returning from OAuth with step=2 — branch on next= action
+if(urlParams.get('step')==='2'){continuePostAuth()}
 
 // Company info form — calls onboard edge function
 document.getElementById('companyForm').addEventListener('submit',async(e)=>{
