@@ -199,9 +199,18 @@ main{padding:36px 0 80px}
 
 /* L1 tools grid */
 .l1-grid{
-  display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:14px;
+  display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:14px;
   margin-bottom:48px;
 }
+@media (max-width:1100px){
+  .l1-grid{grid-template-columns:repeat(2,1fr)}
+  .tool-card.primary{grid-column:1/-1}
+}
+.tool-card.billing .tag{color:var(--warm)}
+.tool-card.billing .tag::before{background:var(--warm)}
+.tool-card.billing{border-left:2px solid var(--warm)}
+.tool-card.billing .meta-row .arrow{color:var(--warm)}
+[data-theme="night"] .tool-card.billing .meta-row .arrow{color:var(--warm)}
 .tool-card{
   background:var(--s1);border:0.5px solid var(--bdr);
   border-radius:10px;padding:24px 26px;
@@ -392,45 +401,45 @@ main{padding:36px 0 80px}
 
   <!-- Hero -->
   <section class="hero">
-    <div class="eyebrow">YOUR WORKSPACE</div>
-    <h1>Welcome back, <em>Malik</em>.</h1>
-    <p>Your financial operating surface for FY2026. All systems are syncing in real time across seven connected sources.</p>
-    <div class="status-strip">
-      <span class="live">All systems live</span>
-      <span>7 connectors active</span>
-      <span>Last sync 53 seconds ago</span>
-      <span>3.1M records synced</span>
+    <div class="eyebrow" id="heroEyebrow">YOUR WORKSPACE</div>
+    <h1>Welcome back, <em id="heroName">there</em>.</h1>
+    <p id="heroBlurb">Loading your financial operating surface…</p>
+    <div class="status-strip" id="statusStrip">
+      <span class="live" id="statusLive">Connecting…</span>
+      <span id="statusConnectors">— connectors</span>
+      <span id="statusSync">— sync</span>
+      <span id="statusRecords">— records synced</span>
     </div>
   </section>
 
   <!-- Section A: L1 Tools (always available) -->
   <div class="sect-label">
     Your Workspace
-    <span class="meta">INCLUDED IN ENTERPRISE</span>
+    <span class="meta" id="planLabel">LOADING…</span>
   </div>
   <div class="l1-grid">
 
-    <a href="/live" class="tool-card primary">
+    <a href="/dashboard" class="tool-card primary">
       <div class="tag">LIVE</div>
       <h3>Live <em>Dashboard</em></h3>
       <p>Real-time KPIs across revenue, margin, runway, and segment performance. Fed by your connected ledgers and refreshed every 6 hours.</p>
       <div class="meta-row">
-        <span>$28.5M ARR · 64.2% margin · 24mo runway</span>
+        <span id="dashKpiMeta">Loading metrics…</span>
         <span class="arrow">Open →</span>
       </div>
     </a>
 
-    <a href="/workforce" class="tool-card">
+    <a href="/team" class="tool-card">
       <div class="tag">PLANNING</div>
       <h3>Workforce</h3>
       <p>Headcount planning, ramp curves, and loaded cost across teams.</p>
       <div class="meta-row">
-        <span>312 active roles</span>
+        <span id="teamMeta">—</span>
         <span class="arrow">Open →</span>
       </div>
     </a>
 
-    <a href="/live#copilot" class="tool-card">
+    <a href="/dashboard#copilot" class="tool-card">
       <div class="tag">AI</div>
       <h3>Copilot</h3>
       <p>Ask plain-English questions across your live financial data.</p>
@@ -440,56 +449,66 @@ main{padding:36px 0 80px}
       </div>
     </a>
 
+    <a href="/billing" class="tool-card billing" id="billingCard">
+      <div class="tag">PLAN</div>
+      <h3>Billing &amp; <em>Plan</em></h3>
+      <p>Manage your subscription, view usage, and add pro packs.</p>
+      <div class="meta-row">
+        <span id="billingMeta">Loading plan…</span>
+        <span class="arrow">Manage →</span>
+      </div>
+    </a>
+
   </div>
 
-  <!-- Section B: L3 Pro Packs (entitlement-gated) -->
+  <!-- Section B: L3 Pro Packs (entitlement-gated, populated by JS) -->
   <div class="sect-label">
     Pro Packs
     <span class="meta">EXECUTIVE ROLE WORKSPACES</span>
   </div>
-  <div class="l3-grid">
+  <div class="l3-grid" id="packsGrid">
 
-    <a href="/cfo" class="pack-card unlocked">
-      <div class="pack-tag">OWNED</div>
+    <a href="/cfo" class="pack-card" data-pack="cfo">
+      <div class="pack-tag">—</div>
       <h3>CFO</h3>
       <div class="role">Strategic finance lead</div>
       <p>Board-ready dashboards, investor metrics, capital strategy, and the bridge view across your full financial picture.</p>
       <div class="pack-action">
-        <span class="price">Active in your plan</span>
-        <span class="cta">Enter →</span>
+        <span class="price">—</span>
+        <span class="cta">—</span>
       </div>
     </a>
 
-    <a href="/upgrade?pack=controller" class="pack-card locked">
-      <div class="pack-tag">LOCKED</div>
+    <a href="/controller" class="pack-card" data-pack="controller">
+      <div class="pack-tag">—</div>
       <h3>Controller</h3>
-      <div class="role">Close & compliance</div>
+      <div class="role">Close &amp; compliance</div>
       <p>Month-end close orchestration, journal entry automation, and audit trail with SOC 2 control mapping.</p>
       <div class="pack-action">
-        <span class="price">$599/mo</span>
-        <span class="cta">Upgrade →</span>
+        <span class="price">—</span>
+        <span class="cta">—</span>
       </div>
     </a>
 
-    <a href="/upgrade?pack=fpa" class="pack-card locked">
-      <div class="pack-tag">LOCKED</div>
+    <a href="/fpa" class="pack-card" data-pack="fpa">
+      <div class="pack-tag">—</div>
       <h3>FP&amp;A</h3>
       <div class="role">Forecasting analyst</div>
       <p>Driver-based modeling, multi-scenario sensitivity, unit economics, and a formula engine over your GL.</p>
       <div class="pack-action">
-        <span class="price">$599/mo</span>
-        <span class="cta">Upgrade →</span>
+        <span class="price">—</span>
+        <span class="cta">—</span>
       </div>
     </a>
 
-    <a href="/upgrade?pack=ceo" class="pack-card locked">
-      <div class="pack-tag">LOCKED</div>
+    <a href="/ceo" class="pack-card" data-pack="ceo">
+      <div class="pack-tag">—</div>
       <h3>CEO</h3>
       <div class="role">Executive command</div>
       <p>Quarterly board narrative, milestone tracking, runway extension scenarios, and a one-page command center.</p>
       <div class="pack-action">
-        <span class="price">$599/mo</span>
-        <span class="cta">Upgrade →</span>
+        <span class="price">—</span>
+        <span class="cta">—</span>
       </div>
     </a>
 
@@ -497,8 +516,8 @@ main{padding:36px 0 80px}
 
   <!-- Footer -->
   <div class="foot">
-    <span>CASTFORD · FINANCIAL HOLDING LLC · ENTERPRISE PLAN</span>
-    <span><a href="/billing">Billing</a> · <a href="/security">Trust Center</a> · <a href="/support">Support</a></span>
+    <span id="footOrg">CASTFORD · LOADING…</span>
+    <span><a href="/billing">Billing</a> · <a href="/security">Trust Center</a> · <a href="/contact">Support</a></span>
   </div>
 
 </main>
@@ -515,6 +534,190 @@ main{padding:36px 0 80px}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
 <script src="/site/cf-app-shell.js" defer></script>
+
+<!-- ─── Live data hydration (replaces all hardcoded values) ─────────── -->
+<script>
+(async function hydrateWorkspace(){
+  // Wait briefly for auth-guard.js to expose the session + supabase client
+  function waitFor(check, ms){return new Promise(function(res){var t=0;var iv=setInterval(function(){if(check()||t>=ms){clearInterval(iv);res()}t+=50},50)})}
+  await waitFor(function(){return window.__fos_supabase && window.__fos_session},5000);
+
+  var sb = window.__fos_supabase;
+  var session = window.__fos_session;
+
+  // Helper: safe text setter
+  function $(id){return document.getElementById(id)}
+  function setTxt(id, txt){var el=$(id); if(el) el.textContent = txt}
+
+  // Helper: format currency compact ($55.0M, $1.5K)
+  function fmtCur(n, opts){
+    opts = opts || {};
+    if (n == null || isNaN(n)) return '—';
+    var abs = Math.abs(n);
+    if (opts.compact !== false){
+      if (abs >= 1e9) return '$' + (n/1e9).toFixed(1) + 'B';
+      if (abs >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+      if (abs >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+    }
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  // 1. USER + ORG NAME ─────────────────────────────────────────────────
+  if (!session || !session.user){
+    setTxt('heroName','there');
+    setTxt('heroBlurb','Sign in to see your workspace.');
+    setTxt('statusLive','Not signed in');
+    setTxt('footOrg','CASTFORD');
+    return;
+  }
+  var userId = session.user.id;
+  var userEmail = session.user.email || '';
+  var firstName = (session.user.user_metadata && session.user.user_metadata.full_name)
+    ? session.user.user_metadata.full_name.split(' ')[0]
+    : (userEmail.split('@')[0] || 'there');
+
+  setTxt('heroName', firstName);
+
+  // 2. PROFILE + ORG ──────────────────────────────────────────────────
+  var profile = null, org = null;
+  try {
+    var pRes = await sb.from('users').select('id, org_id, full_name, role').eq('id', userId).maybeSingle();
+    profile = pRes.data;
+    if (profile && profile.full_name) {
+      setTxt('heroName', profile.full_name.split(' ')[0]);
+    }
+    if (profile && profile.org_id){
+      var oRes = await sb.from('organizations').select('id, name, plan, tier, billing_interval, mrr, mbg_expires_at, stripe_subscription_id').eq('id', profile.org_id).maybeSingle();
+      org = oRes.data;
+    }
+  } catch(e){ console.warn('[workspace-hub] profile/org lookup failed:', e); }
+
+  if (!org){
+    setTxt('heroBlurb','Your workspace is being set up. Connect a data source to start syncing.');
+    setTxt('planLabel','NO PLAN YET');
+    setTxt('billingMeta','Set up billing →');
+    setTxt('footOrg','CASTFORD · NO ORGANIZATION');
+    return;
+  }
+
+  // Plan label (top-right of Section A)
+  var planUpper = (org.plan || 'demo').toUpperCase();
+  setTxt('planLabel', 'INCLUDED IN ' + planUpper);
+
+  // Footer
+  setTxt('footOrg', 'CASTFORD · ' + (org.name || '').toUpperCase() + ' · ' + planUpper + ' PLAN');
+
+  // 3. PLAN PRICING for billing card meta ──────────────────────────────
+  try {
+    var plRes = await sb.from('plan_limits').select('display_name, monthly_price, annual_price').eq('plan', org.plan).maybeSingle();
+    var pl = plRes.data || {};
+    var price = org.billing_interval === 'annual' ? pl.annual_price : pl.monthly_price;
+    var billingTxt = '';
+    if (price && price > 0){
+      billingTxt = (pl.display_name || planUpper) + ' · $' + (price/100).toLocaleString() + '/' + (org.billing_interval === 'annual' ? 'yr' : 'mo');
+    } else if (org.plan === 'demo'){
+      billingTxt = 'Free demo plan';
+    } else if (org.plan === 'enterprise'){
+      billingTxt = 'Enterprise · custom pricing';
+    } else {
+      billingTxt = (pl.display_name || planUpper) + ' plan';
+    }
+    // Append MBG countdown if active
+    if (org.mbg_expires_at){
+      var daysLeft = Math.max(0, Math.ceil((new Date(org.mbg_expires_at) - Date.now()) / 86400000));
+      if (daysLeft > 0 && daysLeft <= 30) billingTxt += ' · ' + daysLeft + 'd MBG';
+    }
+    setTxt('billingMeta', billingTxt);
+  } catch(e){
+    setTxt('billingMeta', planUpper + ' plan');
+  }
+
+  // 4. DASHBOARD SUMMARY (KPIs + connector status) ─────────────────────
+  try {
+    var sumUrl = 'https://crecesswagluelvkesul.supabase.co/functions/v1/dashboard-summary?view=summary';
+    var sumRes = await fetch(sumUrl, {headers:{'Authorization':'Bearer '+session.access_token,'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg'}});
+    var sum = await sumRes.json();
+    if (sum && !sum.error){
+      // Hero blurb with real numbers
+      var rev = sum.revenue_ytd || sum.revenue || 0;
+      var nm = sum.net_margin_pct;
+      var blurb = 'Your financial operating surface for FY2026.';
+      if (rev > 0) blurb = 'Tracking ' + fmtCur(rev) + ' YTD revenue across your connected sources.';
+      setTxt('heroBlurb', blurb);
+
+      // Status strip
+      var connectors = sum.connectors_active || sum.connectors || 0;
+      var records = sum.records_synced || sum.transactions_count || 0;
+      var lastSync = sum.last_sync_at || sum.updated_at;
+      setTxt('statusLive', connectors > 0 ? 'All systems live' : 'No connectors yet');
+      setTxt('statusConnectors', connectors + ' connector' + (connectors===1?'':'s') + ' active');
+      if (lastSync){
+        var ago = Math.round((Date.now() - new Date(lastSync))/60000);
+        setTxt('statusSync', 'Sync ' + (ago<1?'just now':ago<60?ago+'m ago':Math.round(ago/60)+'h ago'));
+      } else {
+        setTxt('statusSync', 'No sync yet');
+      }
+      setTxt('statusRecords', records.toLocaleString() + ' records');
+
+      // Dashboard card meta
+      var dashMeta = [];
+      if (rev > 0) dashMeta.push(fmtCur(rev) + ' rev');
+      if (nm != null) dashMeta.push(nm.toFixed(1) + '% margin');
+      if (sum.gl_accounts) dashMeta.push(sum.gl_accounts + ' accounts');
+      setTxt('dashKpiMeta', dashMeta.length ? dashMeta.join(' · ') : 'Connect a data source →');
+    } else {
+      setTxt('heroBlurb','Connect a data source to start tracking your financials.');
+      setTxt('statusLive','No data yet');
+      setTxt('dashKpiMeta','Connect a data source →');
+    }
+  } catch(e){
+    console.warn('[workspace-hub] dashboard-summary failed:', e);
+    setTxt('statusLive','Sync error');
+  }
+
+  // 5. TEAM MEMBER COUNT ────────────────────────────────────────────────
+  try {
+    var tRes = await sb.from('users').select('id', {count:'exact', head:true}).eq('org_id', org.id);
+    setTxt('teamMeta', (tRes.count || 1) + ' member' + (tRes.count===1?'':'s'));
+  } catch(_){ setTxt('teamMeta', '—'); }
+
+  // 6. PRO PACK ENTITLEMENTS ────────────────────────────────────────────
+  // Fetch which packs this org owns
+  var ownedPacks = {};
+  try {
+    var pkRes = await sb.from('org_pack_purchases').select('pack_slug, status').eq('org_id', org.id).in('status', ['active','trialing']);
+    (pkRes.data || []).forEach(function(p){ ownedPacks[p.pack_slug] = p.status; });
+  } catch(e){ console.warn('[workspace-hub] pack lookup failed:', e); }
+
+  // Pack pricing (fallback: $599/mo for all unless we wire to product table)
+  var PACK_LABELS = {cfo:'CFO', controller:'Controller', fpa:'FP&A', ceo:'CEO'};
+  var PACK_PRICES = {cfo:'$599/mo', controller:'$599/mo', fpa:'$599/mo', ceo:'$599/mo'};
+
+  document.querySelectorAll('.pack-card[data-pack]').forEach(function(card){
+    var slug = card.dataset.pack;
+    var owned = !!ownedPacks[slug];
+    // If org plan = enterprise, give them all packs gratis (per existing pricing logic)
+    var enterpriseGratis = (org.plan === 'enterprise');
+    var hasAccess = owned || enterpriseGratis;
+
+    if (hasAccess){
+      card.classList.add('unlocked');
+      card.classList.remove('locked');
+      card.querySelector('.pack-tag').textContent = enterpriseGratis ? 'INCLUDED' : 'OWNED';
+      card.querySelector('.price').textContent = enterpriseGratis ? 'Active in Enterprise plan' : 'Active in your plan';
+      card.querySelector('.cta').textContent = 'Enter →';
+      card.href = '/' + slug;
+    } else {
+      card.classList.add('locked');
+      card.classList.remove('unlocked');
+      card.querySelector('.pack-tag').textContent = 'AVAILABLE';
+      card.querySelector('.price').textContent = PACK_PRICES[slug] || '—';
+      card.querySelector('.cta').textContent = 'Add pack →';
+      card.href = '/packs?pack=' + slug;
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
