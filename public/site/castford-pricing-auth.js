@@ -1,86 +1,166 @@
-/* Castford Pricing Auth v1 — castford-pricing-auth.js
-   Include on pricing.html AFTER the billing toggle script.
-   
-   What it does:
-   1. Checks if user is logged in via Supabase
-   2. If logged in: appends ?client_reference_id=ORG_ID to all Payment Link URLs
-   3. If not logged in: Payment Links work normally (email fallback in webhook)
-   4. Shows "Signed in as..." badge on pricing page
-   
-   This solves the org provisioning gap:
-   - Logged in user clicks Subscribe → Payment Link has org_id → webhook provisions correctly
-   - Anonymous user clicks Subscribe → pays → webhook uses email matching as fallback
-*/
+/* Castford Pricing Auth v2 — castford-pricing-auth.js
+   Wires every [data-checkout-plan] button on /pricing.
 
+   Behavior:
+   - Signed-in user with org → POST /functions/v1/create-checkout with
+     { plan, interval } → redirect to returned Stripe URL.
+   - Signed-in user with NO org (rare) → /signup?next=checkout&... so the
+     wizard finishes onboard before checkout.
+   - Anonymous user → /signup?next=checkout&plan=X&interval=Y so the wizard
+     runs and metadata.org_id ends up on the Stripe session. No more
+     orphan-payment loophole from buy.stripe.com Payment Links.
+
+   Also shows a small "Signed in as ..." badge on the page so logged-in
+   users know they don't need to re-authenticate.
+
+   Loads: castford-pricing-auth.js (after Supabase JS CDN, after the
+   page's setBilling() inline script that sets window.__cfBilling).
+*/
 (function() {
   'use strict';
 
   var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
 
-  async function init() {
-    if (!window.supabase) return;
-    var sb = window.supabase.createClient(SB_URL, SB_KEY);
-    var result = await sb.auth.getSession();
-    var session = result.data.session;
-    if (!session) return; // Not logged in — Payment Links work via email fallback
+  // Read the current monthly/annual selection. Falls back to annual (matches
+  // pricing.html default) if the page hasn't initialized yet.
+  function currentInterval() {
+    var b = window.__cfBilling;
+    return b === 'monthly' ? 'monthly' : 'annual';
+  }
 
-    // Get org_id
+  function setBtnLoading(btn, loading) {
+    if (!btn) return;
+    if (loading) {
+      btn.dataset._origText = btn.textContent;
+      btn.textContent = 'Loading…';
+      btn.disabled = true;
+    } else {
+      if (btn.dataset._origText) btn.textContent = btn.dataset._origText;
+      btn.disabled = false;
+    }
+  }
+
+  function showSignedInBadge(email) {
+    if (!email) return;
+    if (document.getElementById('cf-pricing-badge')) return;
+    var n = document.createElement('div');
+    n.id = 'cf-pricing-badge';
+    n.style.cssText = 'position:fixed;bottom:18px;left:18px;background:#0B0E1A;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;padding:8px 14px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,0.15);z-index:99;display:flex;align-items:center;gap:8px;';
+    n.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#4ADE80;display:inline-block"></span> Signed in as <strong style="font-weight:600">' + email + '</strong>';
+    document.body.appendChild(n);
+  }
+
+  // Build the /signup deep link with current selection so the wizard
+  // pre-fills + uses correct copy.
+  function signupRedirect(plan, interval) {
+    var qs = 'next=checkout&plan=' + encodeURIComponent(plan) + '&interval=' + encodeURIComponent(interval);
+    window.location.href = '/signup?' + qs;
+  }
+
+  // Authenticated path: ask the edge function for a checkout URL, redirect.
+  async function startCheckout(session, plan, interval, btn) {
     try {
-      var r = await fetch(SB_URL + '/functions/v1/verify-session', {
+      var r = await fetch(SB_URL + '/functions/v1/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+          'apikey': SB_KEY
+        },
+        body: JSON.stringify({ plan: plan, interval: interval })
+      });
+      var d = await r.json();
+      if (r.ok && d.url) {
+        window.location.href = d.url;
+        return;
+      }
+      console.error('[pricing-auth] create-checkout failed:', d);
+      setBtnLoading(btn, false);
+      // If it's an auth/org issue, fall through to wizard so the user
+      // can complete whatever step is missing.
+      if (r.status === 401 || r.status === 404 || /no.*org/i.test(d.error || '')) {
+        signupRedirect(plan, interval);
+        return;
+      }
+      alert('Checkout could not start. ' + (d.error || d.detail || 'Please try again or contact support.'));
+    } catch (err) {
+      console.error('[pricing-auth] create-checkout network error:', err);
+      setBtnLoading(btn, false);
+      alert('Network error reaching checkout. Please try again.');
+    }
+  }
+
+  async function handleClick(e) {
+    var btn = e.currentTarget;
+    var plan = btn.getAttribute('data-checkout-plan');
+    if (!plan) return;
+    var interval = currentInterval();
+    e.preventDefault();
+    setBtnLoading(btn, true);
+
+    if (!window.supabase) {
+      // Supabase CDN didn't load — fall back to wizard so the user isn't stuck
+      console.warn('[pricing-auth] Supabase CDN missing; routing through /signup');
+      signupRedirect(plan, interval);
+      return;
+    }
+
+    var sb = window.supabase.createClient(SB_URL, SB_KEY);
+    var sessRes;
+    try { sessRes = await sb.auth.getSession(); } catch (_) { sessRes = { data: {} }; }
+    var session = sessRes && sessRes.data ? sessRes.data.session : null;
+
+    if (!session) {
+      // Anonymous → /signup wizard with plan pre-fill
+      signupRedirect(plan, interval);
+      return;
+    }
+
+    // Signed-in: must have an org for checkout to set metadata.org_id correctly.
+    // verify-session is idempotent and provisions an org if missing.
+    var hasOrg = false;
+    try {
+      var vr = await fetch(SB_URL + '/functions/v1/verify-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token }
       });
-      if (!r.ok) return;
-      var data = await r.json();
-      var orgId = data.org_id || (data.organization && data.organization.id);
-      if (!orgId) return;
-
-      // Append client_reference_id to all Payment Link URLs
-      var links = document.querySelectorAll('a[href*="buy.stripe.com"]');
-      links.forEach(function(link) {
-        var href = link.getAttribute('href');
-        if (href && !href.includes('client_reference_id')) {
-          var separator = href.includes('?') ? '&' : '?';
-          link.setAttribute('href', href + separator + 'client_reference_id=' + orgId);
-        }
-        // Also update data-monthly and data-annual attributes
-        ['data-monthly', 'data-annual'].forEach(function(attr) {
-          var val = link.getAttribute(attr);
-          if (val && val.includes('buy.stripe.com') && !val.includes('client_reference_id')) {
-            var sep = val.includes('?') ? '&' : '?';
-            link.setAttribute(attr, val + sep + 'client_reference_id=' + orgId);
-          }
-        });
-      });
-
-      // Also patch the billing toggle function so switching monthly/annual preserves the param
-      var originalSetBilling = window.setBilling;
-      if (originalSetBilling) {
-        window.setBilling = function(mode) {
-          originalSetBilling(mode);
-          // Re-append client_reference_id after toggle switches URLs
-          document.querySelectorAll('.plan-btn.green').forEach(function(btn) {
-            var href = btn.getAttribute('href');
-            if (href && href.includes('buy.stripe.com') && !href.includes('client_reference_id')) {
-              var sep = href.includes('?') ? '&' : '?';
-              btn.setAttribute('href', href + sep + 'client_reference_id=' + orgId);
-            }
-          });
-        };
+      if (vr.ok) {
+        var vd = await vr.json();
+        hasOrg = !!(vd && vd.org && vd.org.id);
       }
+    } catch (_) {}
 
-      // Show signed-in badge
-      var email = session.user.email;
-      var plan = data.plan || (data.organization && data.organization.plan) || 'demo';
-      var badge = document.createElement('div');
-      badge.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:200;padding:8px 16px;background:var(--ink,#0f172a);color:#fff;font:600 12px "DM Sans",sans-serif;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15)';
-      badge.innerHTML = '<span style="width:6px;height:6px;background:#10b981;border-radius:50%;flex-shrink:0"></span>' + email + ' <span style="opacity:0.5">(' + plan + ')</span>';
-      document.body.appendChild(badge);
-
-    } catch (err) {
-      console.warn('Pricing auth: could not resolve org', err);
+    if (!hasOrg) {
+      // Has session but no org row yet — route through wizard step 2 to
+      // collect company info before the Stripe handoff.
+      signupRedirect(plan, interval);
+      return;
     }
+
+    await startCheckout(session, plan, interval, btn);
+  }
+
+  function wireButtons() {
+    var btns = document.querySelectorAll('[data-checkout-plan]');
+    btns.forEach(function(b) { b.addEventListener('click', handleClick); });
+  }
+
+  async function showBadgeIfSignedIn() {
+    if (!window.supabase) return;
+    try {
+      var sb = window.supabase.createClient(SB_URL, SB_KEY);
+      var r = await sb.auth.getSession();
+      var session = r && r.data ? r.data.session : null;
+      if (session && session.user && session.user.email) {
+        showSignedInBadge(session.user.email);
+      }
+    } catch (_) {}
+  }
+
+  function init() {
+    wireButtons();
+    showBadgeIfSignedIn();
   }
 
   if (document.readyState === 'loading') {
