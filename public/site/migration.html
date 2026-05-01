@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiftOff&trade; — AI Migration Engine | Castford</title>
 <link rel="icon" type="image/svg+xml" href="/site/logo.svg">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --green:#10B981;--green-50:#ECFDF5;--green-100:#D1FAE5;--green-200:#A7F3D0;--green-600:#059669;--green-700:#047857;
-  --cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--red:#EF4444;
+  --cyan:var(--prime-light);--purple:var(--prime);--blue:var(--prime);--amber:var(--gold);--red:var(--down);
   --bg:#FFFFFF;--bg-alt:#F8FAFC;--bg-warm:#FAFAF9;
   --text:#0F172A;--text-secondary:#334155;--muted:#64748B;--light:#94A3B8;
   --border:#E2E8F0;--border-light:#F1F5F9;
@@ -17,7 +17,7 @@
   --shadow-md:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -2px rgba(0,0,0,0.04);
   --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.07),0 4px 6px -4px rgba(0,0,0,0.04);
   --shadow-xl:0 20px 25px -5px rgba(0,0,0,0.07),0 8px 10px -6px rgba(0,0,0,0.04);
-  --font:'DM Sans',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+  --font:'DM Sans',system-ui,-apple-system,sans-serif;--mono:'Geist Mono',monospace;
   --radius:12px;--radius-lg:16px;--radius-xl:20px;--max-w:1200px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -116,8 +116,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 .terminal{max-width:700px;margin:0 auto;background:#0F172A;border-radius:var(--radius-lg);overflow:hidden;font-family:var(--mono);font-size:12px;box-shadow:var(--shadow-xl)}
 .terminal-header{padding:10px 16px;background:rgba(0,0,0,0.3);display:flex;align-items:center;gap:6px}
 .terminal-header span{width:10px;height:10px;border-radius:50%}
-.terminal-header span:nth-child(1){background:#EF4444}
-.terminal-header span:nth-child(2){background:#F59E0B}
+.terminal-header span:nth-child(1){background:var(--down)}
+.terminal-header span:nth-child(2){background:var(--gold)}
 .terminal-header span:nth-child(3){background:#10B981}
 .terminal-header .t-title{margin-left:12px;font-size:11px;color:#475569}
 .terminal-body{padding:20px;line-height:2;color:#94A3B8}
@@ -125,7 +125,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 .terminal-body .response{color:#67E8F9}
 .terminal-body .dim{color:#475569}
 .terminal-body .hl{color:#fff;font-weight:500}
-.terminal-body .warn{color:#F59E0B}
+.terminal-body .warn{color:var(--gold)}
 .terminal-body .ok{color:#10B981}
 
 /* COMPARISON TABLE */
@@ -315,7 +315,7 @@ footer{background:#0F172A;color:#94A3B8;padding:56px 24px 32px;font-size:13px}
       </div>
       <div class="pipe-stage">
         <div class="pipe-node">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#B83040" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </div>
         <h4>Launch</h4>
         <p>Go live on Castford with full historical data and live dashboards</p>
@@ -372,7 +372,7 @@ footer{background:#0F172A;color:#94A3B8;padding:56px 24px 32px;font-size:13px}
       </div>
       <div class="detail-card fade-in">
         <div class="card-icon" style="background:#FEF2F2">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B83040" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>Schema Guardian</h3>
         <p>Validates every table structure, column mapping, and data type conversion. Ensures referential integrity across multi-entity structures and prevents data loss during transfer.</p>

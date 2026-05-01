@@ -187,7 +187,7 @@ document.querySelector('.btn-submit').addEventListener('click', async function(e
     });
     var data = await res.json();
     if (data.success) {
-      btn.textContent = 'Demo Requested!'; btn.style.background = '#16a34a';
+      btn.textContent = 'Demo Requested!'; btn.style.background = 'var(--prime)';
       document.querySelector('.form-note').textContent = 'We\'ll be in touch within 4 hours. Check your email for next steps.';
     } else { btn.disabled = false; btn.textContent = 'Request Demo'; alert(data.error || 'Something went wrong.'); }
   } catch (err) { btn.disabled = false; btn.textContent = 'Request Demo'; alert('Connection error. Please try again.'); }
